@@ -11,6 +11,8 @@ This version is open for contributions as a part of **GirlScript Summer of Code 
 
 DSAMate Template helps contributors explore the frontend logic, filters, UI components, and page structure of a full-featured DSA practice site.
 
+---
+
 ### 🌟 Features
 
 - Practice sheet UI with filter options (difficulty, status, platform, etc.)
@@ -25,6 +27,8 @@ DSAMate Template helps contributors explore the frontend logic, filters, UI comp
 
 Please read the [CONTRIBUTIONS](CONTRIBUTING.md) if you're a contributor.
 
+---
+
 ## 🛠️ Tech Stack
 
 - **Next.js**  
@@ -32,20 +36,22 @@ Please read the [CONTRIBUTIONS](CONTRIBUTING.md) if you're a contributor.
 - **Tailwind CSS**
 - **Framer Motion**
 - **React Icons**
-
+---
 
 ## 🌐 Original DSAMate Website
 
 Looking for the actual live version with the complete list of real DSA questions and features?
 
+---
+
 👉 [**Visit DSAMate Original**](https://dsamate.vercel.app)  
 _(Includes 450+ topic-wise questions with solutions, filters, and daily practice features.)_
 
-
-
+---
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
 
 - [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
 - [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
