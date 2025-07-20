@@ -21,29 +21,9 @@ DSAMate Template helps contributors explore the frontend logic, filters, UI comp
 
 ---
 
-## 🚀 Getting Started
+## 🚀 Open Source Contributions
 
-### 1. Fork the Repository
-Click the `Fork` button in the top right of this page.
-
-### 2. Clone Your Fork
-
-```bash
-git clone https://github.com/your-username/cpp-dsa-sheet-testing.git
-cd cpp-dsa-sheet-testing
-```
-
-### 3. Install Dependencies
-```bash
-npm install
-```
-
-### 4. Run Locally
-```bash
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Please read the [CONTRIBUTIONS](CONTRIBUTING.md) if you're a contributor.
 
 ## 🛠️ Tech Stack
 
