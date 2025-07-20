@@ -30,11 +30,11 @@ npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+> Note : Make sure your code runs on your local machine , only then contribute. 
 
 ---
 > Yaaayyy Contributed!!! We will review the code and merge into our branch 
----
-> Note : Make sure your code runs on your local machine , only then contribute. 
+
 ---
 ## Thank you
 Thanks again for helping improve this project!
