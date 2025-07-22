@@ -12,6 +12,7 @@ type SheetContentProps = {
   revisionFilter: string;
   searchTerm: string;
   platformFilter: string;
+  companyFilter: string;
 };
 
 export default function SheetContent({
@@ -20,6 +21,7 @@ export default function SheetContent({
   revisionFilter,
   searchTerm, 
   platformFilter,
+  companyFilter,
 }: SheetContentProps) {
   const [openTopics, setOpenTopics] = useState<number[]>([]);
 
@@ -90,6 +92,7 @@ export default function SheetContent({
             const availableLinks = Object.keys(q.links || {});
             if (!availableLinks.includes(platformFilter)) return false;
           }
+          if (companyFilter && (!q.companies || !q.companies.includes(companyFilter))) return false;
           return true;
         });
         if (filteredQuestions.length === 0) return null;

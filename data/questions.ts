@@ -14,6 +14,7 @@ export type Question = {
     custom?: string;
   };
   solutionLink?: string;
+  companies?: string[];
 };
 
 export type Topic = {
@@ -40,6 +41,7 @@ export const sampleTopics: Topic[] = [
                     hackerrank: 'https://www.hackerrank.com/challenges/cpp-hello-world/problem?',
                 },
                 solutionLink: 'https://github.com/saumyayadav25/DSA-Supreme-3.0/blob/main/01%20Introduction%20to%20C%2B%2B/NamasteDuniya.cpp',
+                companies: ['WITCH', 'Google', 'Apple'], // sample companies 
             },
             {
                 id: 2,
@@ -276,6 +278,7 @@ export const sampleTopics: Topic[] = [
                     leetcode: 'https://leetcode.com/problems/binary-search/description/',
                 },
                 solutionLink: 'https://github.com/saumyayadav25/DSA-Supreme-3.0/blob/main/05%20Searching%20%26%20Sorting/Searching%20And%20Sorting%20Class-1/binary%20search/binarySearch.cpp',
+                companies: ['WITCH'],
             },
             {
                 id: 6,
