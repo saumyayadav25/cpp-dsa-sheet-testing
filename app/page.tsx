@@ -97,19 +97,21 @@ export default function Home() {
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="px-4 sm:px-10 md:px-14 py-4 sm:py-5 bg-[#10131c] shadow-md flex justify-between items-center relative"
+        className="fixed top-0 left-0 w-full z-50 px-4 sm:px-10 md:px-14 py-4 sm:py-5 bg-[#10131c]/80 backdrop-blur-md shadow-md flex justify-between items-center border-b border-gray-800/50"
       >
         <Link href="/" className="text-2xl font-bold text-white hover:cursor-pointer">
           DSA<span className="text-blue-400">Mate</span> Template
         </Link>
         {/* Desktop Links */}
         <div className="hidden sm:flex gap-6 text-white ">
-          <Link href="/" className="hover:text-blue-400 transition hover:cursor-pointer">Home</Link>
+          <Link href="/" className="text-blue-400 hover:cursor-pointer">Home</Link>
+          <Link href="./notes" className="hover:text-blue-400 transition hover:cursor-pointer">Notes</Link>
           <Link href="/sheet" className="hover:text-blue-400 transition hover:cursor-pointer">Practice Sheet</Link>
         </div>
 
         {/* Mobile links*/}
       <div className="sm:hidden ">
+        <Link href="./notes" className="hover:text-blue-400 transition hover:cursor-pointer">Notes</Link>
         <Link
           href="/sheet"
           className="text-sm text-white px-4 py-2 rounded-md transition hover:cursor-pointer"
@@ -128,7 +130,7 @@ export default function Home() {
             transition: { staggerChildren: 0.2 }
           }
         }}
-        className="flex flex-col items-center justify-center text-center px-6 py-16"
+        className="flex flex-col items-center justify-center text-center px-6 py-16 pt-24"
       >
         <h1 className="text-4xl md:text-5xl font-bold mb-4">DSA<span className="text-blue-400">Mate</span> template</h1>
         <motion.h1
