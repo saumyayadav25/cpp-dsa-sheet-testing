@@ -3,7 +3,7 @@
 🚀 This repository is a **template version** of [DSAMate](https://dsamate.vercel.app) — your all-in-one platform for practicing DSA (Data Structures & Algorithms) questions.  
 This version is open for contributions as a part of **GirlScript Summer of Code (GSSoC) 2025**.
 
-> ⚠️ **Note:** This is **not the original DSAMate sheet**. It is meant to serve as a public base for open-source contributions. You are contributing in **DSAMate template**.
+> ⚠️ **Note:** This is **not the original DSAMate sheet**. It is meant to serve as a public base for open-source contributions.
 
 ---
 
