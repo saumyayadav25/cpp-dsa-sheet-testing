@@ -101,6 +101,20 @@ Be polite and collaborative in your interactions.
 If you're new to open source, don't hesitate to ask for guidance — we're here to help!
 
 
+### 🔄 Sync Your Fork (Avoid Merge Conflicts)
+
+To avoid merge conflicts, keep your fork updated:
+
+- Go to your forked repository on GitHub.
+- If it’s behind the original repo, you’ll see a **“Sync fork”** button.
+
+- Click it → then **“Update branch”**.
+
+✅ That’s it! Your fork is now up to date 🎉
+
+> 🔍 Note: If you don’t see the button, your fork is already updated.
+
+
 ## To run locally
 
 ### 1. Install Dependencies
@@ -119,3 +133,5 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 ---
 ## Thank you
 Thanks again for helping improve this project!
+
+✨ If you are complete beginner, read this: [Kickstart Your Open Source Journey with GSSoC - No Experience Needed](https://medium.com/@saumyayadav213/kickstart-your-open-source-journey-with-gssoc-no-experience-needed-39f5934418a0)
