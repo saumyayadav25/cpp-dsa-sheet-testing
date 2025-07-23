@@ -52,7 +52,7 @@ export default function SheetPage() {
   return (
     <>
       <Navbar searchTerm={searchTerm} setSearchTerm={setSearchTerm} streak={streak} />
-      <main className="min-h-screen bg-[#131313] text-white px-4 md:px-12 py-8">
+      <main className="min-h-screen bg-[#131313] text-white px-4 md:px-12 py-24">
         <ReportIssueButton />
         
         {/* HERO SECTION */}

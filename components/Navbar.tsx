@@ -24,11 +24,11 @@ export default function Navbar({ searchTerm, setSearchTerm, streak }: NavbarProp
   };
 
   return (
-    <nav className="sticky top-0 z-50 bg-[#202226] text-white shadow-md px-4 md:px-20 sm:py-5 py-3">
+    <nav className="fixed top-0 left-0 w-full z-50 bg-[#10131c]/80 backdrop-blur-md shadow-md border-b border-gray-800/50 px-4 sm:px-10 md:px-14 py-4 sm:py-5">
       <div className="flex items-center justify-between gap-4">
         {/* Logo */}
-        <Link href="/" className="text-3xl sm:text-4xl font-bold hover:text-gray-300">
-          DSA<span className="text-blue-400">Mate</span>
+        <Link href="/" className="text-2xl font-bold text-white hover:cursor-pointer">
+          DSA<span className="text-blue-400">Mate</span> Template
         </Link>
 
         {/* Desktop Search */}
@@ -43,15 +43,37 @@ export default function Navbar({ searchTerm, setSearchTerm, streak }: NavbarProp
           />
         </div>
 
-        {/* Right Icons */}
-        <div className="flex items-center gap-4">
+        {/* Desktop Links and Right Icons */}
+        <div className="hidden sm:flex items-center gap-6 text-white">
+          {/* Streak Icon */}
+          <div title={`Streak: ${streak} day${streak === 1 ? '' : 's'}`}>
+            <div
+              className={`flex items-center gap-1 ${
+                streak > 0 ? 'text-orange-500 font-semibold' : 'text-gray-100 opacity-50'
+              }`}
+            >
+              <FaFire className="text-lg" />
+              {streak > 0 && <span className="text-sm">{streak}</span>}
+            </div>
+          </div>
+          <Link href="/" className="hover:text-blue-400 transition hover:cursor-pointer">Home</Link>
+          <Link href="/notes" className="hover:text-blue-400 transition hover:cursor-pointer">Notes</Link>
+          <Link href="/sheet" className="text-blue-400 hover:cursor-pointer">Practice Sheet</Link>
+          
+          
+          {/* Auth Buttons */}
+          <AuthButtons />
+        </div>
 
-          {/* Mobile Search Icon */}
-          <button onClick={toggleMobileSearch} className="md:hidden text-xl">
+        {/* Mobile Search Icon and Menu */}
+        <div className="sm:hidden flex items-center gap-4 text-white ">
+          <button onClick={toggleMobileSearch} className="text-xl text-white">
             <FiSearch />
           </button>
-          <div className="flex gap-6 items-center">
-            {/* Streak Icon */}
+          <Link href="/" className="hover:cursor-pointer">Home</Link>
+          <Link href="/notes" className="hover:cursor-pointer">Notes</Link>
+          <div className="flex items-center gap-2">
+            {/* Mobile Streak Icon */}
             <div title={`Streak: ${streak} day${streak === 1 ? '' : 's'}`}>
               <div
                 className={`flex items-center gap-1 ${
@@ -62,17 +84,15 @@ export default function Navbar({ searchTerm, setSearchTerm, streak }: NavbarProp
                 {streak > 0 && <span className="text-sm">{streak}</span>}
               </div>
             </div>
-            <Link href="/notes" className="hover:text-blue-400 transition hover:cursor-pointer">Notes</Link>
-            {/* Auth Buttons */}
+            {/* Mobile Auth Buttons */}
             <AuthButtons />
           </div>
-
         </div>
       </div>
 
       {/* Mobile Search Bar */}
       {showMobileSearch && (
-        <div className="md:hidden mt-3 flex items-center bg-[#f6f6f6] text-black rounded-full px-4 py-2">
+        <div className="sm:hidden mt-3 flex items-center bg-[#f6f6f6] text-black rounded-full px-4 py-2">
           <FiSearch className="mr-2 text-gray-600" />
           <input
             type="text"

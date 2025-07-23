@@ -53,23 +53,40 @@ export default function NotesPage() {
   return (
     <>
       {/* Navbar*/}
-      <nav className="sticky top-0 z-50 bg-[#141620] text-white shadow-md px-6 md:px-20 py-4 flex justify-between items-center">
-        <Link href="/" className="text-2xl sm:text-3xl font-bold hover:text-gray-300">
-          DSA<span className="text-blue-400">Mate</span>
+      <motion.nav
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="fixed top-0 left-0 w-full z-50 px-4 sm:px-10 md:px-14 py-4 sm:py-5 bg-[#10131c]/80 backdrop-blur-md shadow-md flex justify-between items-center border-b border-gray-800/50"
+      >
+        <Link href="/" className="text-2xl font-bold text-white hover:cursor-pointer">
+          DSA<span className="text-blue-400">Mate</span> Template
         </Link>
-
-        <div className="flex gap-6 text-sm md:text-base">
-          <Link href="/" className="hover:text-blue-400 transition">Home</Link>
-          <Link href="/sheet" className="hover:text-blue-400 transition">Practice Sheet</Link>
+        {/* Desktop Links */}
+        <div className="hidden sm:flex gap-6 text-white ">
+          <Link href="/" className="hover:text-blue-400 transition hover:cursor-pointer">Home</Link>
+          <Link href="./notes" className="text-blue-400 hover:cursor-pointer">Notes</Link>
+          <Link href="/sheet" className="hover:text-blue-400 transition hover:cursor-pointer">Practice Sheet</Link>
         </div>
-      </nav>
+
+        {/* Mobile links*/}
+      <div className="sm:hidden text-white">
+        <Link href="/" className="text-sm text-white px-4 py-2 rounded-md transition hover:cursor-pointer">Home</Link>
+        <Link
+          href="/sheet"
+          className="text-sm text-white px-4 py-2 rounded-md transition hover:cursor-pointer"
+        >
+          Practice Sheet
+        </Link>
+      </div>
+      </motion.nav>
 
       {/* Main notes section */}
       <motion.main
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="min-h-screen bg-[#0d0f16] text-white px-6 md:px-20 py-16"
+        className="min-h-screen bg-[#0d0f16] text-white px-6 md:px-20 py-24"
       >
         <div className="max-w-3xl mx-auto text-center">
           <h1 className="text-3xl md:text-4xl font-bold mb-6">📚 DSA Notes</h1>
