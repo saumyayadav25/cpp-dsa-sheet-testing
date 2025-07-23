@@ -55,3 +55,14 @@ To learn more about Next.js, take a look at the following resources:
 - [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
 - [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 ---
+
+## 👥 Contributors
+
+Thanks to all the amazing people who have contributed! 💖
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [All-Contributors](https://allcontributors.org) specification.  
+Contributions of any kind are welcome!
+
