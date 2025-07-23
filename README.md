@@ -92,10 +92,18 @@ To learn more about Next.js, take a look at the following resources:
 
 Thanks to all the amazing people who have contributed! 💖
 
-<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-<!-- ALL-CONTRIBUTORS-LIST:END -->
+<div align="center">
 
-This project follows the [All-Contributors](https://allcontributors.org) specification.  
+### :sparkles: Our Valuable Contributors 
+
+<a href="https://github.com/saumyayadav25/cpp-dsa-sheet-testing/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=saumyayadav25/cpp-dsa-sheet-testing&max=1000" />
+</a>
+
+![Line](https://user-images.githubusercontent.com/85225156/171937799-8fc9e255-9889-4642-9c92-6df85fb86e82.gif)
+
+</div>
+  
 Contributions of any kind are welcome!
 
 
