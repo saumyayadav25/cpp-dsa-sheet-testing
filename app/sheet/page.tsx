@@ -80,8 +80,8 @@ export default function SheetPage() {
           <select
             value={difficultyFilter}
             onChange={(e) => setDifficultyFilter(e.target.value)}
-            className="bg-white/5 rounded-lg px-3 py-2 md:px-4 backdrop-blur-md border border-white/20 text-white shadow-md hover:bg-white/8 transition duration-200"
-            // className='bg-white rounded px-2 py-1 md:px-4 md:py-2 focus:outline-none'
+            // className="bg-white/5 rounded-lg px-3 py-2 md:px-4 backdrop-blur-md border border-white/20 text-white shadow-md hover:bg-white/8 transition duration-200"
+            className='bg-white text-black relative z-10 rounded px-4 py-2 focus:outline-none'
           >
             <option value="">Difficulties</option>
             <option value="easy">Easy</option>
@@ -93,8 +93,8 @@ export default function SheetPage() {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="bg-white/5 backdrop-blur-md border border-white/20 text-white rounded-lg px-3 py-2 md:px-4 shadow-md hover:bg-white/8 transition duration-200"
-            // className='bg-white rounded px-2 py-1 md:px-4 md:py-2 focus:outline-none'
+            // className="bg-white/5 backdrop-blur-md border border-white/20 text-white rounded-lg px-3 py-2 md:px-4 shadow-md hover:bg-white/8 transition duration-200"
+            className='bg-white text-black relative z-10 rounded px-4 py-2 focus:outline-none'
           >
             <option value="">Solved Status</option>
             <option value="solved">Solved</option>
@@ -105,8 +105,8 @@ export default function SheetPage() {
           <select
             value={revisionFilter}
             onChange={(e) => setRevisionFilter(e.target.value)}
-            className="bg-white/5 backdrop-blur-md border border-white/20 text-white rounded-lg px-3 py-2 md:px-4 shadow-md hover:bg-white/8 transition duration-200"
-            // className='bg-white rounded px-2 py-1 md:px-4 md:py-2 focus:outline-none'
+            // className="bg-white/5 backdrop-blur-md border border-white/20 text-white rounded-lg px-3 py-2 md:px-4 shadow-md hover:bg-white/8 transition duration-200"
+            className='bg-white text-black relative z-10 rounded px-4 py-2 focus:outline-none'
           >
             <option value="">Revision Status</option>
             <option value="marked">Marked for Revision</option>
@@ -117,8 +117,8 @@ export default function SheetPage() {
           <select
             value={platformFilter}
             onChange={(e) => setPlatformFilter(e.target.value)}
-            className="bg-white/5 backdrop-blur-md border border-white/20 text-white rounded-lg px-3 py-2 md:px-4 shadow-md hover:bg-white/8 transition duration-200"
-            // className='bg-white rounded px-2 py-1 md:px-4 md:py-2 focus:outline-none'
+            // className="bg-white/5 backdrop-blur-md border border-white/20 text-white rounded-lg px-3 py-2 md:px-4 shadow-md hover:bg-white/8 transition duration-200"
+            className='bg-white text-black relative z-10 rounded px-4 py-2 focus:outline-none'
           >
             <option value="">Platform</option>
             <option value="leetcode">LeetCode</option>
@@ -133,8 +133,8 @@ export default function SheetPage() {
           <select
             value={companyFilter}
             onChange={(e) => setCompanyFilter(e.target.value)}
-            className="bg-white/5 backdrop-blur-md border border-white/20 text-white rounded-lg px-3 py-2 md:px-4 shadow-md hover:bg-white/8 transition duration-200"
-            // className='bg-white rounded px-2 py-1 md:px-4 md:py-2 focus:outline-none'
+            // className="bg-white/5 backdrop-blur-md border border-white/20 text-white rounded-lg px-3 py-2 md:px-4 shadow-md hover:bg-white/8 transition duration-200"
+            className='bg-white text-black relative z-10 rounded px-4 py-2 focus:outline-none'
           >
             <option value="">All Companies</option>
             <option value="Adobe">Adobe</option>
