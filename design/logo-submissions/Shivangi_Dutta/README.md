@@ -17,4 +17,5 @@ The DSAMATE logo in its dark mode variant features a bold, high-contrast design 
 
 - can be used as a favicon
 - a dark mode variant is created and attached
-- open to feedback and improvements
+- open to feedback and improvements.
+- This could be applied on the top left corner of the website.
