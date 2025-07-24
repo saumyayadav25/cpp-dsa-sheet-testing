@@ -8,7 +8,6 @@ export default function AuthButtons() {
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const menuItems = [
-    { label: "Home", href: "/", icon: "" },
     { label: "Star on GitHub", href: "https://github.com/saumyayadav25/DSA-Supreme-3.0", icon: "⭐" },
     { label: "Give Testimonial", href: "https://forms.gle/8BXQC1o3hsVsEEBp9", icon: "✨" },
     { label: "Provide Feedback", href: "https://forms.gle/bdwBp8oFRWugcrcg9", icon: "💭" },
