@@ -5,7 +5,7 @@ import { FaGithub, FaCode } from 'react-icons/fa';
 import { SiLeetcode, SiHackerrank, SiGeeksforgeeks, SiSpoj, SiCodingninjas } from 'react-icons/si';
 import { sampleTopics, type Question  } from '@/data/questions';
 import { FaStickyNote } from 'react-icons/fa';
-import { Plus, StickyNote } from 'lucide-react';
+import { Plus, StickyNote ,X } from 'lucide-react';
 
 
 type SheetContentProps = {
@@ -206,7 +206,7 @@ export default function SheetContent({
                               type="checkbox"
                               checked={isSolved}
                               onChange={() => toggleCheckbox(uniqueKey, 'isSolved')}
-                              className={`accent-green-500 cursor-pointer`}
+                              className={`accent-green-500 cursor-pointer w-4 h-4`}
                             />
                           </td>
                           <td className="py-2 px-3 text-center">
@@ -214,7 +214,7 @@ export default function SheetContent({
                               type="checkbox"
                               checked={isMarked}
                               onChange={() => toggleCheckbox(uniqueKey, 'isMarkedForRevision')}
-                              className={`accent-red-500 cursor-pointer`}
+                              className={`accent-red-500 cursor-pointer w-4 h-4`}
                             />
                           </td>
                           <td className="py-2 px-3 text-center flex justify-center items-center text-2xl">
@@ -240,34 +240,46 @@ export default function SheetContent({
 </button>
 
 {openNoteId === uniqueKey && (
-  <div className="fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center">
+  <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-md bg-black/40">
     <div className="bg-[#1e1e1e] w-full max-w-3xl h-[80vh] rounded-2xl border border-gray-700 shadow-2xl p-6 relative transform scale-100 transition-all duration-300">
-      <h2 className="text-2xl font-semibold text-white mb-4 text-center">
-        Notes for: {q.title}
-      </h2>
-      <textarea
-        className="w-full h-[calc(100%-100px)] p-4 bg-zinc-900 text-white rounded-md border border-blue-500 resize-none"
-        placeholder="Write your notes..."
-        value={local.note || ''}
-        onChange={(e) =>
-          setProgress((prev) => ({
-            ...prev,
-            [uniqueKey]: {
-              ...prev[uniqueKey],
-              note: e.target.value,
-            },
-          }))
-        }
-      />
-      <div className="flex justify-center mt-4">
-        <button
-          onClick={() => setOpenNoteId(null)}
-          className="px-6 py-2 bg-amber-800 hover:bg-amber-700 text-white rounded-lg"
-        >
-          Close
-        </button>
-      </div>
-    </div>
+
+ <button
+  onClick={() => setOpenNoteId(null)}
+  className="absolute top-4 right-4 text-white hover:text-red-500"
+  title="Close"
+>
+  <X className="w-6 h-6" />
+</button>
+
+  <h2 className="text-2xl font-semibold text-white mb-4 text-center">
+    Notes for: {q.title}
+  </h2>
+
+  <textarea
+    className="w-full h-[calc(100%-100px)] p-4 bg-zinc-900 text-white rounded-md border border-blue-500 resize-none"
+    placeholder="Write your notes..."
+    value={local.note || ''}
+    onChange={(e) =>
+      setProgress((prev) => ({
+        ...prev,
+        [uniqueKey]: {
+          ...prev[uniqueKey],
+          note: e.target.value,
+        },
+      }))
+    }
+  />
+
+  <div className="flex justify-center mt-4">
+    <button
+      onClick={() => setOpenNoteId(null)}
+      className="px-6 py-2 bg-amber-800 hover:bg-amber-700 text-white rounded-lg"
+    >
+      Close
+    </button>
+  </div>
+</div>
+
   </div>
 )}
 
