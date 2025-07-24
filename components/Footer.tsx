@@ -69,7 +69,7 @@ export default function Footer() {
       </div>
       
       {/* Bottom Text */}
-      <p className="text-center text-sm text-gray-400 mt-10">&copy; 2024 DSA Practice. All Rights Reserved.</p>
+      <p className="text-center text-sm text-gray-400 mt-10">&copy; {new Date().getFullYear()} DSA Practice. All Rights Reserved.</p>
     </footer>
   );
 }
