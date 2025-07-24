@@ -41,7 +41,7 @@ export default function Navbar({ searchTerm, setSearchTerm, streak }: NavbarProp
   const navLinks = [
     { href: '/', label: 'Home', isActive: false },
     { href: '/notes', label: 'Notes', isActive: false },
-    { href: '/sheet', label: 'Practice Sheet', isActive: true },
+    { href: '/sheet', label: 'Sheet', isActive: true },
     { href: '/progress', label: 'Progress', isActive: false },
   ];
 
@@ -188,9 +188,9 @@ export default function Navbar({ searchTerm, setSearchTerm, streak }: NavbarProp
             >
               <Link 
                 href={link.href} 
-                className={`relative px-3 py-2  rounded-lg transition-all duration-300 group hover:text-blue-400 hover:cursor-pointer`}
+                className={`relative px-3 py-2  rounded-lg transition-all duration-300 group hover:text-blue-400 hover:cursor-pointer hover:bg-white/5`}
               >
-                <span className={`relative z-10 ${link.label === 'Practice Sheet' ? 'text-blue-400' : 'text-white hover:text-blue-400'}`}>
+                <span className={`relative z-10 ${link.label === 'Sheet' ? 'text-blue-400' : 'text-white hover:text-blue-400'}`}>
                   {link.label}
                 </span>
 

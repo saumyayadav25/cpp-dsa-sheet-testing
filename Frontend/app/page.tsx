@@ -1,16 +1,13 @@
 'use client';
 
 import React from 'react';
-import { useState } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
 import { FaGithub, FaLinkedin, FaTwitter } from 'react-icons/fa';
 import { FaListUl, FaRegCalendarAlt, FaChartBar, FaSearch, FaFire } from "react-icons/fa";
 import { FaStar, FaRegStar, FaUserCircle  } from "react-icons/fa";
 import { FaUserAlt, FaUserSecret, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { BiSliderAlt } from "react-icons/bi";
 import ReportIssueButton from '@/components/ReportIssueButton';
-import { link } from 'fs';
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
@@ -88,7 +85,23 @@ export default function Home() {
     </div>
   );
 }
+    const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
+  // Handle scroll effect
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const navLinks = [
+    { href: '/', label: 'Home', isActive: false },
+    { href: '/notes', label: 'Notes', isActive: false },
+    { href: '/sheet', label: 'Sheet', isActive: true },
+  ];
   return (
     
     <main className="min-h-screen bg-black text-white">
@@ -108,11 +121,10 @@ export default function Home() {
           <Link href="/" className="text-blue-400 hover:cursor-pointer">Home</Link>
           <Link href="./notes" className="hover:text-blue-400 transition hover:cursor-pointer">Notes</Link>
           <Link href="/sheet" className="hover:text-blue-400 transition hover:cursor-pointer">Practice Sheet</Link>
-          <Link href="/progress" className="hover:text-blue-400 transition hover:cursor-pointer">Progress</Link>
         </div>
 
         {/* Mobile links*/}
-      <div className="sm:hidden flex gap-4">
+      <div className="sm:hidden ">
         <Link href="./notes" className="hover:text-blue-400 transition hover:cursor-pointer">Notes</Link>
         <Link
           href="/sheet"
@@ -120,7 +132,6 @@ export default function Home() {
         >
           Practice Sheet
         </Link>
-        <Link href="/progress" className="hover:text-blue-400 transition hover:cursor-pointer">Progress</Link>
       </div>
       </motion.nav>
 
