@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 import { FaGithub, FaCode } from 'react-icons/fa';
 import { SiLeetcode, SiHackerrank, SiGeeksforgeeks, SiSpoj, SiCodingninjas } from 'react-icons/si';
 import { sampleTopics, type Question  } from '@/data/questions';
+import { FaStickyNote } from 'react-icons/fa';
+import { Plus, StickyNote } from 'lucide-react';
 
 
 type SheetContentProps = {
@@ -26,8 +28,10 @@ export default function SheetContent({
   const [openTopics, setOpenTopics] = useState<number[]>([]);
 
   const [progress, setProgress] = useState<{
-    [id: string]: { isSolved: boolean; isMarkedForRevision: boolean };
+    [id: string]: { isSolved: boolean; isMarkedForRevision: boolean; note?:string };
   }>({});
+  const [openNoteId, setOpenNoteId] = useState<string | null>(null);
+
 
   useEffect(() => {
     const storedProgress = localStorage.getItem('dsa-progress');
@@ -138,6 +142,7 @@ export default function SheetContent({
                         <th className="py-2 px-3 w-1/6 text-center">Solved</th>
                         <th className="py-2 px-3 w-1/6 text-center">Revision</th>
                         <th className="py-2 px-3 w-1/6 text-center">Solution</th>
+                        <th className="py-2 px-3 w-1/6 text-center">Notes</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -221,6 +226,54 @@ export default function SheetContent({
                               '-'
                             )}
                           </td>
+                        <td className="py-2 px-3 text-center relative">
+  <button
+  onClick={() => setOpenNoteId(uniqueKey)}
+  className="hover:scale-110 transition-transform duration-150"
+  title={local.note?.trim() === '' ? "Add Note" : "Edit Note"}
+>
+  {(local.note || '').trim() === '' ? (
+    <Plus className="text-white w-6 h-6" />
+  ) : (
+    <StickyNote className="text-amber-400 w-6 h-6" />
+  )}
+</button>
+
+{openNoteId === uniqueKey && (
+  <div className="fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center">
+    <div className="bg-[#1e1e1e] w-full max-w-3xl h-[80vh] rounded-2xl border border-gray-700 shadow-2xl p-6 relative transform scale-100 transition-all duration-300">
+      <h2 className="text-2xl font-semibold text-white mb-4 text-center">
+        Notes for: {q.title}
+      </h2>
+      <textarea
+        className="w-full h-[calc(100%-100px)] p-4 bg-zinc-900 text-white rounded-md border border-blue-500 resize-none"
+        placeholder="Write your notes..."
+        value={local.note || ''}
+        onChange={(e) =>
+          setProgress((prev) => ({
+            ...prev,
+            [uniqueKey]: {
+              ...prev[uniqueKey],
+              note: e.target.value,
+            },
+          }))
+        }
+      />
+      <div className="flex justify-center mt-4">
+        <button
+          onClick={() => setOpenNoteId(null)}
+          className="px-6 py-2 bg-amber-800 hover:bg-amber-700 text-white rounded-lg"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
+
+</td>
+
                       </tr>
                       );
                     })}
