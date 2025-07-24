@@ -1,5 +1,4 @@
 'use client';
-
 import React from 'react';
 import Link from "next/link";
 import { FaGithub, FaLinkedin, FaTwitter } from 'react-icons/fa';
@@ -12,8 +11,9 @@ import Navbar from '@/components/Navbar2';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { AnimatePresence } from 'framer-motion';
-import { Menu, X } from 'lucide-react';
+import { Menu, X } from 'lucide-react'; 
 
+// FADE IN UP ANIMATION 
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
   visible: (i: number) => ({
