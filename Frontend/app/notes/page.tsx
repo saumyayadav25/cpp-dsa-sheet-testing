@@ -17,7 +17,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { AnimatePresence } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
-import Navbar from '@/components/Navbar2';
+import Navbar from '@/components/Navbar';
 
 
 type NoteTopic = {

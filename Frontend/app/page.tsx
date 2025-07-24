@@ -7,6 +7,7 @@ import { FaListUl, FaRegCalendarAlt, FaChartBar, FaSearch, FaFire } from "react-
 import { FaStar, FaRegStar, FaUserCircle } from "react-icons/fa";
 import { BiSliderAlt } from "react-icons/bi";
 import ReportIssueButton from '@/components/ReportIssueButton';
+import Navbar from '@/components/Navbar';
 import { motion } from 'framer-motion';
 
 const fadeInUp = {
@@ -69,6 +70,17 @@ const testimonials: Testimonial[] = [
 ];
 
 export default function Home() {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [streak, setStreak] = useState(0);
+
+  // Initialize streak (you can load from localStorage or API)
+  useEffect(() => {
+    const savedStreak = localStorage.getItem('userStreak');
+    if (savedStreak) {
+      setStreak(parseInt(savedStreak, 10));
+    }
+  }, []);
+
   function FAQItem({ question, answer }: { question: string; answer: string }) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -91,33 +103,11 @@ export default function Home() {
     <main className="min-h-screen bg-black text-white">
       <ReportIssueButton />
       {/* NAVBAR */}
-      <motion.nav
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="fixed top-0 left-0 w-full z-50 px-4 sm:px-10 md:px-14 py-4 sm:py-5 bg-[#10131c]/80 backdrop-blur-md shadow-md flex justify-between items-center border-b border-gray-800/50"
-      >
-        <Link href="/" className="text-2xl font-bold text-white hover:cursor-pointer">
-          DSA<span className="text-blue-400">Mate</span> Template
-        </Link>
-        {/* Desktop Links */}
-        <div className="hidden sm:flex gap-6 text-white ">
-          <Link href="/" className="text-blue-400 hover:cursor-pointer">Home</Link>
-          <Link href="./notes" className="hover:text-blue-400 transition hover:cursor-pointer">Notes</Link>
-          <Link href="/sheet" className="hover:text-blue-400 transition hover:cursor-pointer">Practice Sheet</Link>
-        </div>
-
-        {/* Mobile links*/}
-      <div className="sm:hidden ">
-        <Link href="./notes" className="hover:text-blue-400 transition hover:cursor-pointer">Notes</Link>
-        <Link
-          href="/sheet"
-          className="text-sm text-white px-4 py-2 rounded-md transition hover:cursor-pointer"
-        >
-          Practice Sheet
-        </Link>
-      </div>
-      </motion.nav>
+      <Navbar 
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        streak={streak}
+      />
 
       {/* HERO SECTION */}
       <motion.section
