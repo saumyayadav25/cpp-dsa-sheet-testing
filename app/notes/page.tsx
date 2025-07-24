@@ -22,7 +22,6 @@ type NoteTopic = {
   icon: React.ReactNode;
 };
 
-
 const notesList: NoteTopic[] = [
   { title: 'Basics of Programming', link:'https://topmate.io/saumyayadav/1604053', icon: <FaCode /> },
   { title: 'Patterns', link:'https://topmate.io/saumyayadav/1604073', icon: <BsGrid3X3GapFill /> },
@@ -45,40 +44,37 @@ const notesList: NoteTopic[] = [
   { title: 'Graphs', link: 'https://topmate.io/saumyayadav/1600383', icon: <FaProjectDiagram /> },
   { title: 'Greedy / Sliding Window / Bit Manipulation', link: 'https://topmate.io/saumyayadav/1606846', icon: <FaChartLine /> },
   { title: 'COMPLETE NOTES', link: 'https://topmate.io/saumyayadav/1606989', icon: <CgFileDocument /> },
-  // { title: 'COMPLETE NOTES', link: '', status: 'coming-soon', icon: <CgFileDocument /> },
 ];
-
 
 export default function NotesPage() {
   return (
     <>
-      {/* Navbar*/}
+      {/* Navbar */}
       <motion.nav
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="fixed top-0 left-0 w-full z-50 px-4 sm:px-10 md:px-14 py-4 sm:py-5 bg-[#10131c]/80 backdrop-blur-md shadow-md flex justify-between items-center border-b border-gray-800/50"
+        className="fixed top-0 left-0 w-full z-50 px-4 sm:px-10 md:px-14 py-4 sm:py-5 bg-gradient-to-r from-[#10131c] to-[#1a1e2e] backdrop-blur-md shadow-lg flex justify-between items-center border-b border-gray-800/50"
       >
-        <Link href="/" className="text-2xl font-bold text-white hover:cursor-pointer">
-          DSA<span className="text-blue-400">Mate</span> Template
+        <Link href="/" className="text-2xl font-bold text-white hover:cursor-pointer group">
+          <span className="group-hover:text-blue-400 transition-all duration-300">DSA</span>
+          <span className="text-blue-400 group-hover:text-white transition-all duration-300">Mate</span>
+          <span className="text-sm ml-2 bg-blue-600 px-2 py-1 rounded-full">Template</span>
         </Link>
-        {/* Desktop Links */}
-        <div className="hidden sm:flex gap-6 text-white ">
-          <Link href="/" className="hover:text-blue-400 transition hover:cursor-pointer">Home</Link>
-          <Link href="./notes" className="text-blue-400 hover:cursor-pointer">Notes</Link>
-          <Link href="/sheet" className="hover:text-blue-400 transition hover:cursor-pointer">Practice Sheet</Link>
+        
+        <div className="hidden sm:flex gap-6 text-white">
+          <Link href="/" className="hover:text-blue-400 transition-all duration-300 hover:scale-105 hover:cursor-pointer">Home</Link>
+          <Link href="./notes" className="text-blue-400 font-medium hover:scale-105 transition-all duration-300 hover:cursor-pointer flex items-center gap-1">
+            <span>Notes</span>
+            <span className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></span>
+          </Link>
+          <Link href="/sheet" className="hover:text-blue-400 transition-all duration-300 hover:scale-105 hover:cursor-pointer">Practice Sheet</Link>
         </div>
 
-        {/* Mobile links*/}
-      <div className="sm:hidden text-white">
-        <Link href="/" className="text-sm text-white px-4 py-2 rounded-md transition hover:cursor-pointer">Home</Link>
-        <Link
-          href="/sheet"
-          className="text-sm text-white px-4 py-2 rounded-md transition hover:cursor-pointer"
-        >
-          Practice Sheet
-        </Link>
-      </div>
+        <div className="sm:hidden text-white flex gap-2">
+          <Link href="/" className="text-sm bg-[#1e2130] hover:bg-[#2a2e42] px-3 py-1 rounded-md transition-all hover:cursor-pointer">Home</Link>
+          <Link href="/sheet" className="text-sm bg-[#1e2130] hover:bg-[#2a2e42] px-3 py-1 rounded-md transition-all hover:cursor-pointer">Sheet</Link>
+        </div>
       </motion.nav>
 
       {/* Main notes section */}
@@ -86,111 +82,214 @@ export default function NotesPage() {
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="min-h-screen bg-[#0d0f16] text-white px-6 md:px-20 py-24"
+        className="min-h-screen bg-gradient-to-br from-[#0d0f16] to-[#151925] text-white px-6 md:px-20 py-24"
       >
-        <div className="max-w-3xl mx-auto text-center">
-          <h1 className="text-3xl md:text-4xl font-bold mb-6">📚 DSA Notes</h1>
-          <p className="text-gray-300 mb-8">
-            Struggling to revise everything from lectures? I've compiled handwritten notes from the 
-            <span className="text-blue-400 font-medium"> Supreme 3.0 DSA course</span>. 
-          </p>
-
-          <div className="grid gap-4 sm:grid-cols-2">
-            {notesList.map(({ title, link, status, icon }) => (
-              <div
-                key={title}
-                className="hover:bg-[#131521] bg-[#181b27] border border-gray-700 rounded-lg p-5 text-left shadow-md"
-              >
-                <h2 className="text-lg font-semibold mb-2 flex items-center gap-2">
-                    {icon}
-                    {title}
-                </h2>
-
-
-                {status === 'coming-soon' ? (
-                  <span className="text-yellow-400 text-sm">Coming Soon</span>
-                ) : (
-                  <a
-                    href={link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-block px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded text-white text-sm"
-                  >
-                    View on Topmate →
-                  </a>
-                )}
-              </div>
-            ))}
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <motion.h1 
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent"
+            >
+              Comprehensive DSA Notes
+            </motion.h1>
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.2 }}
+              className="text-lg text-gray-300 max-w-2xl mx-auto"
+            >
+              Handwritten notes from the <span className="font-semibold text-blue-400">Supreme 3.0 DSA course</span> to help you revise concepts quickly and effectively.
+            </motion.p>
           </div>
 
-          <p className="text-xs text-gray-500 mt-8">*No pressure — just here if you need them. Happy learning 💙 All notes are optional.</p>
-        </div>
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3 }}
+            className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+          >
+            {notesList.map(({ title, link, status, icon }) => (
+              <motion.div
+                key={title}
+                whileHover={{ y: -5, boxShadow: "0 10px 25px -5px rgba(59, 130, 246, 0.2)" }}
+                className="hover:bg-[#1a1e2e] bg-[#181b27] border border-gray-800 rounded-xl p-6 text-left shadow-lg transition-all duration-300 group"
+              >
+                <div className="flex items-start gap-4">
+                  <div className="p-3 bg-blue-600/20 rounded-lg text-blue-400 group-hover:bg-blue-600/30 group-hover:scale-110 transition-all duration-300">
+                    {icon}
+                  </div>
+                  <div>
+                    <h2 className="text-lg font-semibold mb-3 text-gray-100 group-hover:text-white">
+                      {title}
+                    </h2>
+                    {status === 'coming-soon' ? (
+                      <span className="inline-block px-3 py-1 bg-yellow-600/20 text-yellow-400 rounded-full text-xs">
+                        Coming Soon
+                      </span>
+                    ) : (
+                      <a
+                        href={link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 rounded-lg text-white text-sm font-medium transition-all duration-300 group-hover:shadow-lg"
+                      >
+                        View Notes
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                        </svg>
+                      </a>
+                    )}
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
 
+          <motion.p 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4 }}
+            className="text-center text-gray-500 mt-12 text-sm"
+          >
+            *These notes are completely optional resources to supplement your learning. Happy coding! 💙
+          </motion.p>
+        </div>
       </motion.main>
 
-        <footer 
-              className="bg-[#141620] px-6 md:px-20 py-10 text-sm text-gray-400">
-                <div className="grid md:grid-cols-4 gap-6">
-                  {/* about us */}
-                  <div>
-                    <h3 className="text-white text-xl font-semibold mb-3">About Us</h3>
-                    <p className="text-sm text-gray-300 mb-4">
-                      DSAMate | DSA Practice is your ultimate destination for all DSA (Data Structures and Algorithms) questions.
-                    </p>
-                    {/* Buy Me a Coffee */}
-                    <a
-                      href="https://www.buymeacoffee.com/saumyayadav"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-block mt-4 bg-yellow-600 text-black font-semibold px-4 py-2 rounded hover:bg-yellow-500 transition"
-                    >☕ Buy me a coffee</a>
-                  </div>
-                  {/* quick links */}
-                  <div className="flex-1">
-                  <h3 className="text-xl font-semibold mb-3 text-white">Quick Links</h3>
-                  <ul className="space-y-2 text-sm">
-                    <li>
-                      <a href="/" className="hover:text-blue-400">Home</a>
-                    </li>
-                    <li>
-                      <a href="/sheet" className="hover:text-blue-400">Practice Problems</a>
-                    </li>
-                    <li>
-                      <a href="https://github.com/saumyayadav25/DSA-Supreme-3.0" target="_blank" rel="noopener noreferrer" className="hover:text-blue-400">
-                        All DSA Codes
-                      </a>
-                    </li>
-                    <li>
-                      <a href="/notes" rel="noopener noreferrer" className="hover:text-blue-400">Notes</a>
-                    </li>
-                    <li>
-                      <a href="https://forms.gle/bdwBp8oFRWugcrcg9" target="_blank" rel="noopener noreferrer" className="hover:text-blue-400">
-                        Feedback Form
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-                  <div>
-                    <h3 className="text-xl font-semibold mb-3 text-white">Follow Us</h3>
-                    <div className="flex space-x-4 text-2xl">
-                      <a href="https://x.com/SaumyaYadav817" target="_blank" rel="noopener noreferrer" className="hover:text-blue-400">
-                        <FaTwitter />
-                      </a>
-                      <a href="https://github.com/saumyayadav25" target="_blank" rel="noopener noreferrer" className="hover:text-blue-400">
-                        <FaGithub />
-                      </a>
-                      <a href="https://www.linkedin.com/in/saumya-yadav-/" target="_blank" rel="noopener noreferrer" className="hover:text-blue-400">
-                        <FaLinkedin />
-                      </a>
-                    </div>
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-semibold mb-3 text-white">Contact</h3>
-                    <p>Email: <a href="mailto:contact.dsapractice@gmail.com" className="text-blue-400">contact.dsapractice@gmail.com</a></p>
-                  </div>
-                </div>
-                <p className="text-center text-sm text-gray-400 mt-10">&copy; 2024 DSA Practice. All Rights Reserved.</p>
-              </footer>
+      {/* Footer */}
+      <footer className="bg-[#141620] px-6 md:px-20 py-12 text-gray-400 border-t border-gray-800/50">
+        <div className="grid md:grid-cols-4 gap-8 max-w-6xl mx-auto">
+          {/* About */}
+          <div>
+            <h3 className="text-white text-xl font-semibold mb-4 flex items-center gap-2">
+              <span className="bg-blue-600 w-2 h-2 rounded-full"></span>
+              About DSAMate
+            </h3>
+            <p className="text-sm text-gray-300 mb-4">
+              Your ultimate destination for mastering Data Structures and Algorithms with comprehensive resources.
+            </p>
+            <a
+              href="https://www.buymeacoffee.com/saumyayadav"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 mt-4 bg-gradient-to-r from-yellow-600 to-yellow-500 text-black font-medium px-4 py-2 rounded-lg hover:shadow-lg transition-all"
+            >
+              ☕ Buy me a coffee
+            </a>
+          </div>
+          
+          {/* Quick Links */}
+          <div>
+            <h3 className="text-xl font-semibold mb-4 text-white flex items-center gap-2">
+              <span className="bg-blue-600 w-2 h-2 rounded-full"></span>
+              Quick Links
+            </h3>
+            <ul className="space-y-3">
+              <li>
+                <Link href="/" className="hover:text-blue-400 flex items-center gap-2 transition-all">
+                  <span className="w-1 h-1 bg-gray-500 rounded-full"></span>
+                  Home
+                </Link>
+              </li>
+              <li>
+                <Link href="/sheet" className="hover:text-blue-400 flex items-center gap-2 transition-all">
+                  <span className="w-1 h-1 bg-gray-500 rounded-full"></span>
+                  Practice Problems
+                </Link>
+              </li>
+              <li>
+                <a href="https://github.com/saumyayadav25/DSA-Supreme-3.0" target="_blank" rel="noopener noreferrer" className="hover:text-blue-400 flex items-center gap-2 transition-all">
+                  <span className="w-1 h-1 bg-gray-500 rounded-full"></span>
+                  All DSA Codes
+                </a>
+              </li>
+              <li>
+                <Link href="/notes" className="hover:text-blue-400 flex items-center gap-2 transition-all">
+                  <span className="w-1 h-1 bg-gray-500 rounded-full"></span>
+                  Notes
+                </Link>
+              </li>
+              <li>
+                <a href="https://forms.gle/bdwBp8oFRWugcrcg9" target="_blank" rel="noopener noreferrer" className="hover:text-blue-400 flex items-center gap-2 transition-all">
+                  <span className="w-1 h-1 bg-gray-500 rounded-full"></span>
+                  Feedback
+                </a>
+              </li>
+            </ul>
+          </div>
+          
+          {/* Follow Us */}
+          <div>
+            <h3 className="text-xl font-semibold mb-4 text-white flex items-center gap-2">
+              <span className="bg-blue-600 w-2 h-2 rounded-full"></span>
+              Connect With Me
+            </h3>
+            <div className="flex gap-4 text-2xl mb-4">
+              <a href="https://x.com/SaumyaYadav817" target="_blank" rel="noopener noreferrer" className="hover:text-blue-400 transition-all hover:scale-110">
+                <FaTwitter />
+              </a>
+              <a href="https://github.com/saumyayadav25" target="_blank" rel="noopener noreferrer" className="hover:text-blue-400 transition-all hover:scale-110">
+                <FaGithub />
+              </a>
+              <a href="https://www.linkedin.com/in/saumya-yadav-/" target="_blank" rel="noopener noreferrer" className="hover:text-blue-400 transition-all hover:scale-110">
+                <FaLinkedin />
+              </a>
+            </div>
+            <div className="mt-6">
+              <h4 className="text-sm font-medium text-gray-300 mb-2">Newsletter</h4>
+              <div className="flex">
+                <input 
+                  type="email" 
+                  placeholder="Your email" 
+                  className="bg-[#1e2130] text-white px-3 py-2 text-sm rounded-l-lg focus:outline-none focus:ring-1 focus:ring-blue-500 w-full"
+                />
+                <button className="bg-blue-600 hover:bg-blue-500 px-4 py-2 text-sm rounded-r-lg transition-all">
+                  Join
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          {/* Contact */}
+          <div>
+            <h3 className="text-xl font-semibold mb-4 text-white flex items-center gap-2">
+              <span className="bg-blue-600 w-2 h-2 rounded-full"></span>
+              Contact Info
+            </h3>
+            <p className="mb-2 flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+              <a href="mailto:contact.dsapractice@gmail.com" className="hover:text-blue-400">contact.dsapractice@gmail.com</a>
+            </p>
+            <div className="mt-6">
+              <h4 className="text-sm font-medium text-gray-300 mb-2">Support This Project</h4>
+              <p className="text-xs text-gray-400 mb-3">
+                If you find these resources helpful, consider supporting to help maintain and improve them.
+              </p>
+              <a 
+                href="https://github.com/sponsors/saumyayadav25" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 bg-[#1e2130] hover:bg-[#2a2e42] px-4 py-2 rounded-lg text-sm transition-all"
+              >
+                <FaGithub /> Sponsor on GitHub
+              </a>
+            </div>
+          </div>
+        </div>
+        
+        <div className="border-t border-gray-800/50 mt-12 pt-8 text-center">
+          <p className="text-sm text-gray-500">
+            &copy; {new Date().getFullYear()} DSA Practice. All Rights Reserved.
+          </p>
+          <p className="text-xs text-gray-600 mt-2">
+            Made with ❤️ by Saumya Yadav
+          </p>
+        </div>
+      </footer>
     </>
   );
 }
