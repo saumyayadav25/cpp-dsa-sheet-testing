@@ -2,16 +2,15 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from "framer-motion";
-
+import Link from 'next/link';
 export default function AuthButtons() {
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const menuItems = [
-    { label: "Star on GitHub", href: "https://github.com/saumyayadav25/DSA-Supreme-3.0", icon: "⭐" },
-    { label: "Give Testimonial", href: "https://forms.gle/8BXQC1o3hsVsEEBp9", icon: "✨" },
-    { label: "Provide Feedback", href: "https://forms.gle/bdwBp8oFRWugcrcg9", icon: "💭" },
-    { label: "Support the project", href: "https://www.buymeacoffee.com/saumyayadav", icon: "🔥" },
+    { href: '/', label: 'Home' },
+    { href: '/notes', label: 'Notes' },
+    { href: '/sheet', label: 'Sheet'},
   ];
 
   // Close dropdown when clicking outside
@@ -125,7 +124,7 @@ export default function AuthButtons() {
   );
 
   return (
-    <div className="relative" ref={dropdownRef}>
+    <div className="relative " ref={dropdownRef}>
       <motion.button
         onClick={() => setShowDropdown((prev) => !prev)}
         className="relative p-3 rounded-xl transition-all duration-300 hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-blue-400/50"
@@ -181,12 +180,9 @@ export default function AuthButtons() {
 
               <div className="relative p-2">
                 {menuItems.map((item, index) => (
-                  <motion.a
-                    key={index}
-                    href={item.href}
-                    target={item.href.startsWith("http") ? "_blank" : "_self"}
-                    rel="noopener noreferrer"
+                  <motion.div
                     variants={itemVariants}
+                    key={index}
                     className="group flex items-center gap-3 px-4 py-3 text-sm text-gray-200 rounded-xl transition-all duration-200 hover:bg-white/10 hover:text-white relative overflow-hidden"
                     whileHover={{ 
                       scale: 1.02,
@@ -194,38 +190,26 @@ export default function AuthButtons() {
                     }}
                     whileTap={{ scale: 0.98 }}
                   >
-                    {/* Hover effect background */}
+                    <Link
+                    href={item.href}
+                    target={item.href.startsWith("http") ? "_blank" : "_self"}
+                    rel="noopener noreferrer">
+
                     <motion.div
                       className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-xl opacity-0 group-hover:opacity-100"
                       initial={{ x: "-100%" }}
                       whileHover={{ x: "0%" }}
                       transition={{ duration: 0.3 }}
-                    />
+                      />
                     
-                    <motion.span 
-                      className="text-lg flex-shrink-0 relative z-10"
-                      whileHover={{ scale: 1.2, rotate: 15 }}
-                      transition={{ type: "spring", stiffness: 400, damping: 10 }}
-                    >
-                      {item.icon}
-                    </motion.span>
+
                     
                     <span className="relative z-10 font-bold text-sm">
                       {item.label}
                     </span>
 
-                    {/* External link indicator */}
-                    {item.href.startsWith("http") && (
-                      <motion.span
-                        className="ml-auto text-xs text-gray-400 opacity-0 group-hover:opacity-100 relative z-10"
-                        initial={{ rotate: -45, scale: 0 }}
-                        whileHover={{ rotate: 0, scale: 1 }}
-                        transition={{ type: "spring", stiffness: 400, damping: 15 }}
-                      >
-                        ↗
-                      </motion.span>
-                    )}
-                  </motion.a>
+                      </Link>
+                  </motion.div>
                 ))}
 
                 {/* Bottom highlight */}

@@ -1,15 +1,18 @@
 'use client';
 
 import React from 'react';
-import { useState } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
 import { FaGithub, FaLinkedin, FaTwitter } from 'react-icons/fa';
 import { FaListUl, FaRegCalendarAlt, FaChartBar, FaSearch, FaFire } from "react-icons/fa";
 import { FaStar, FaRegStar, FaUserCircle  } from "react-icons/fa";
 import { FaUserAlt, FaUserSecret, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { BiSliderAlt } from "react-icons/bi";
 import ReportIssueButton from '@/components/ReportIssueButton';
+import Navbar from '@/components/Navbar2';
+import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
+import { Menu, X } from 'lucide-react';
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
@@ -87,7 +90,23 @@ export default function Home() {
     </div>
   );
 }
+    const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
+  // Handle scroll effect
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const navLinks = [
+    { href: '/', label: 'Home', isActive: false },
+    { href: '/notes', label: 'Notes', isActive: false },
+    { href: '/sheet', label: 'Sheet', isActive: true },
+  ];
   return (
     
     <main className="min-h-screen bg-black text-white">
@@ -97,28 +116,57 @@ export default function Home() {
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="fixed top-0 left-0 w-full z-50 px-4 sm:px-10 md:px-14 py-4 sm:py-5 bg-[#10131c]/80 backdrop-blur-md shadow-md flex justify-between items-center border-b border-gray-800/50"
+        className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
+          isScrolled 
+            ? 'bg-[#10131c]/80 backdrop-blur-xl shadow-2xl border-b border-white/10' 
+            : 'bg-[#10131c]/80 backdrop-blur-md shadow-md border-b border-gray-800/50'
+        } px-4 sm:px-10 md:px-14 py-4 sm:py-5`}
       >
-        <Link href="/" className="text-2xl font-bold text-white hover:cursor-pointer">
-          DSA<span className="text-blue-400">Mate</span> Template
-        </Link>
-        {/* Desktop Links */}
-        <div className="hidden sm:flex gap-6 text-white ">
-          <Link href="/" className="text-blue-400 hover:cursor-pointer">Home</Link>
-          <Link href="./notes" className="hover:text-blue-400 transition hover:cursor-pointer">Notes</Link>
-          <Link href="/sheet" className="hover:text-blue-400 transition hover:cursor-pointer">Practice Sheet</Link>
-        </div>
+        {/* Subtle gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 via-transparent to-purple-500/5 pointer-events-none" />
+        
+        <div className="relative flex items-center justify-between gap-4">
+          {/* Logo */}
+          <motion.div
+            whileHover={{ scale: 1.01 }}
+            whileTap={{ scale: 1.0 }}
+          >
+            <Link href="/" className="group relative text-2xl font-bold text-white hover:cursor-pointer">
+              <span className="relative z-10">
+                DSA<span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-blue-500">Mate</span> Template
+              </span>
+            </Link>
+          </motion.div>
 
-        {/* Mobile links*/}
-      <div className="sm:hidden ">
-        <Link href="./notes" className="hover:text-blue-400 transition hover:cursor-pointer">Notes</Link>
-        <Link
-          href="/sheet"
-          className="text-sm text-white px-4 py-2 rounded-md transition hover:cursor-pointer"
-        >
-          Practice Sheet
-        </Link>
-      </div>
+
+          <div className="hidden md:flex items-center gap-8 text-white">
+            {navLinks.map((link) => (
+              <motion.div
+                key={link.href}
+                whileHover={{ y: -2 }}
+                whileTap={{ y: 0 }}
+              >
+                <Link 
+                  href={link.href} 
+                  className={`relative px-3 py-2 rounded-lg transition-all  duration-300 group hover:text-blue-400 hover:cursor-pointer`}
+                >
+                  <span className={`relative z-10 ${link.label === 'Notes' ? 'text-blue-400' : 'text-white'}`}>
+                    {link.label}
+                  </span>
+
+                  {/* Hover effect */}
+                  <div className="absolute inset-0 bg-white/5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
+                </Link>
+              </motion.div>
+            ))}
+              
+              
+          </div>
+
+         <div className='flex md:hidden'>
+          <Navbar/>
+         </div>
+        </div>
       </motion.nav>
 
       {/* HERO SECTION */}
