@@ -9,7 +9,7 @@ import Footer from '@/components/Footer';
 import { useState, useEffect } from 'react';
 import TestimonialPrompt from '@/components/TestimonialPrompt';
 import ReportIssueButton from '@/components/ReportIssueButton';
-
+import DailyRecommendation from '../../components/DailyRecommendation';
 export default function SheetPage() {
   const [difficultyFilter, setDifficultyFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
@@ -33,10 +33,7 @@ export default function SheetPage() {
     setStreak(updatedStreak);
   };
 
-  useEffect(() => {
-    const potd = getPOTD();
-    setPotd(potd);
-  }, []);
+  
 
   const [searchTerm, setSearchTerm] = useState('');
     
@@ -194,15 +191,18 @@ export default function SheetPage() {
         {/* POTD Section -> moved to potd.tsx*/}
         <POTD potd={potd} updateStreak={updateStreak} />
 
-        {/* SHEET CONTENT */}
-        <SheetContent
-          difficultyFilter={difficultyFilter}
-          statusFilter={statusFilter}
-          revisionFilter={revisionFilter}
-          searchTerm={searchTerm}
-          platformFilter={platformFilter}
-          companyFilter={companyFilter}
-        />
+        {/*  Smart Recommendation Section */}
+<DailyRecommendation />
+{/* SHEET CONTENT */}
+<SheetContent
+  difficultyFilter={difficultyFilter}
+  statusFilter={statusFilter}
+  revisionFilter={revisionFilter}
+  searchTerm={searchTerm}
+  platformFilter={platformFilter}
+  companyFilter={companyFilter}
+/>
+
 
       </main>
 

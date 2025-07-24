@@ -11,6 +11,8 @@ import { FaUserAlt, FaUserSecret, FaChevronLeft, FaChevronRight } from "react-ic
 import { BiSliderAlt } from "react-icons/bi";
 import ReportIssueButton from '@/components/ReportIssueButton';
 
+
+
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
   visible: (i: number) => ({
@@ -92,6 +94,8 @@ export default function Home() {
     
     <main className="min-h-screen bg-black text-white">
       <ReportIssueButton />
+      
+ 
       {/* NAVBAR */}
       <motion.nav
         initial={{ opacity: 0, y: -20 }}

@@ -17,7 +17,7 @@
     "clsx": "^2.1.1",
     "framer-motion": "^12.23.6",
     "lucide-react": "^0.513.0",
-    "next": "15.3.3",
+    "next": "^14.2.30",
     "next-pwa": "^5.6.0",
     "postcss": "^8.5.4",
     "react": "^19.0.0",
@@ -37,3 +37,4 @@
     "typescript": "^5"
   }
 }
+

@@ -3,7 +3,9 @@
 import { useEffect, useState } from 'react';
 import { FaGithub, FaCode } from 'react-icons/fa';
 import { SiLeetcode, SiHackerrank, SiGeeksforgeeks, SiSpoj, SiCodingninjas } from 'react-icons/si';
-import { sampleTopics, type Question  } from '@/data/questions';
+import { sampleTopics, type Question } from '@/data/questions';
+import DailyRecommendation from '@/components/DailyRecommendation';
+
 
 
 type SheetContentProps = {
@@ -19,14 +21,14 @@ export default function SheetContent({
   difficultyFilter,
   statusFilter,
   revisionFilter,
-  searchTerm, 
+  searchTerm,
   platformFilter,
   companyFilter,
 }: SheetContentProps) {
   const [openTopics, setOpenTopics] = useState<number[]>([]);
 
   const [progress, setProgress] = useState<{
-    [id: string]: { isSolved: boolean; isMarkedForRevision: boolean };
+    [id: string]: { isSolved: boolean; isMarkedForRevision: boolean; solvedTime?: number };
   }>({});
 
   useEffect(() => {
@@ -41,13 +43,23 @@ export default function SheetContent({
   }, [progress]);
 
   const toggleCheckbox = (id: string, field: 'isSolved' | 'isMarkedForRevision') => {
-    setProgress((prev) => ({
-      ...prev,
-      [id]: {
-        ...prev[id],
-        [field]: !prev[id]?.[field],
-      },
-    }));
+    setProgress((prev) => {
+      const current = prev[id] || {};
+
+      const updated = {
+        ...current,
+        [field]: !current[field],
+      };
+
+      if (field === 'isSolved' && !current[field]) {
+        updated.solvedTime = Date.now();
+      }
+
+      return {
+        ...prev,
+        [id]: updated,
+      };
+    });
   };
 
   const toggleTopic = (topicId: number) => {
@@ -55,7 +67,6 @@ export default function SheetContent({
       prev.includes(topicId) ? prev.filter((id) => id !== topicId) : [...prev, topicId]
     );
   };
-
 
   const difficultyClasses = {
     easy: 'text-green-500',
@@ -65,6 +76,8 @@ export default function SheetContent({
 
   return (
     <>
+   
+
       {sampleTopics.map((topic) => {
         const totalQuestions = topic.questions.length;
         const solvedQuestions = topic.questions.filter((q) => {
@@ -74,9 +87,7 @@ export default function SheetContent({
         }).length;
         const isCompleted = solvedQuestions === totalQuestions;
 
-        
         const filteredQuestions = topic.questions.filter((q) => {
-          
           const uniqueKey = `${topic.id}-${q.id}`;
           const local = progress[uniqueKey] || {};
           const isSolved = local.isSolved ?? q.isSolved;
@@ -93,8 +104,10 @@ export default function SheetContent({
             if (!availableLinks.includes(platformFilter)) return false;
           }
           if (companyFilter && (!q.companies || !q.companies.includes(companyFilter))) return false;
+
           return true;
         });
+
         if (filteredQuestions.length === 0) return null;
 
         return (
@@ -105,9 +118,9 @@ export default function SheetContent({
             >
               <span>{topic.name}</span>
               <span className="text-sm text-gray-400 font-medium px-2 py-2 ml-auto">
-                {isCompleted ? "🎉 Completed" : `✅ ${solvedQuestions} / ${totalQuestions} solved`}
+                {isCompleted ? '🎉 Completed' : `✅ ${solvedQuestions} / ${totalQuestions} solved`}
               </span>
-              
+
               <svg
                 className={`transform transition-transform duration-200 ${
                   openTopics.includes(topic.id) ? 'rotate-180' : ''
@@ -132,12 +145,12 @@ export default function SheetContent({
                 <table className="min-w-full text-left text-white">
                   <thead>
                     <tr className="border-b border-gray-600">
-                        <th className="py-2 px-3 w-2/5 text-center">Question</th>
-                        <th className="py-2 px-3 w-1/6 text-center">Practice Links</th> 
-                        <th className="py-2 px-3 w-1/6 text-center">Difficulty</th>    
-                        <th className="py-2 px-3 w-1/6 text-center">Solved</th>
-                        <th className="py-2 px-3 w-1/6 text-center">Revision</th>
-                        <th className="py-2 px-3 w-1/6 text-center">Solution</th>
+                      <th className="py-2 px-3 w-2/5 text-center">Question</th>
+                      <th className="py-2 px-3 w-1/6 text-center">Practice Links</th>
+                      <th className="py-2 px-3 w-1/6 text-center">Difficulty</th>
+                      <th className="py-2 px-3 w-1/6 text-center">Solved</th>
+                      <th className="py-2 px-3 w-1/6 text-center">Revision</th>
+                      <th className="py-2 px-3 w-1/6 text-center">Solution</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -153,9 +166,6 @@ export default function SheetContent({
                           className="border-b border-gray-700 hover:bg-[#16171a] transition"
                         >
                           <td className="py-2 px-3">{q.title}</td>
-                          {/* <td className="py-2 px-3 text-center flex justify-center gap-2"> */}
-                              {/* Practice links icons */}
-                          {/* </td> */}
                           <td className="py-2 px-3 text-center flex justify-center gap-2">
                             {q.links.leetcode && (
                               <a href={q.links.leetcode} target="_blank" rel="noopener noreferrer" title="LeetCode">
@@ -221,7 +231,7 @@ export default function SheetContent({
                               '-'
                             )}
                           </td>
-                      </tr>
+                        </tr>
                       );
                     })}
                   </tbody>
