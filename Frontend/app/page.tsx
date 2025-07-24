@@ -1,13 +1,13 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from "next/link";
 import { FaGithub, FaLinkedin, FaTwitter } from 'react-icons/fa';
 import { FaListUl, FaRegCalendarAlt, FaChartBar, FaSearch, FaFire } from "react-icons/fa";
-import { FaStar, FaRegStar, FaUserCircle  } from "react-icons/fa";
-import { FaUserAlt, FaUserSecret, FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { FaStar, FaRegStar, FaUserCircle } from "react-icons/fa";
 import { BiSliderAlt } from "react-icons/bi";
 import ReportIssueButton from '@/components/ReportIssueButton';
+import { motion } from 'framer-motion';
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
@@ -85,23 +85,7 @@ export default function Home() {
     </div>
   );
 }
-    const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-  // Handle scroll effect
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  const navLinks = [
-    { href: '/', label: 'Home', isActive: false },
-    { href: '/notes', label: 'Notes', isActive: false },
-    { href: '/sheet', label: 'Sheet', isActive: true },
-  ];
+  // Removed unused state and variables
   return (
     
     <main className="min-h-screen bg-black text-white">
