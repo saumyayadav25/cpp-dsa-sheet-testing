@@ -9,6 +9,7 @@ import Footer from '@/components/Footer';
 import { useState, useEffect } from 'react';
 import TestimonialPrompt from '@/components/TestimonialPrompt';
 import ReportIssueButton from '@/components/ReportIssueButton';
+import ProgressSummary from '@/components/ProgressSummary';
 
 export default function SheetPage() {
   const [difficultyFilter, setDifficultyFilter] = useState('');
@@ -54,6 +55,9 @@ export default function SheetPage() {
       <Navbar searchTerm={searchTerm} setSearchTerm={setSearchTerm} streak={streak} />
       <main className="min-h-screen bg-[#131313] text-white px-4 md:px-12 py-24">
         <ReportIssueButton />
+        
+        {/* Progress Summary */}
+        <ProgressSummary />
         
         {/* HERO SECTION */}
         <div className="mb-8 text-white text-center">

@@ -35,11 +35,58 @@ DSAMate Template helps contributors explore the frontend logic, filters, UI comp
 
 ### 🌟 Features
 
-- Practice sheet UI with filter options (difficulty, status, platform, etc.)
-- Responsive design with Tailwind CSS
-- Built using **Next.js + TypeScript**
-- Animations via **Framer Motion**
+- **Practice Sheet UI** with advanced filter options (difficulty, status, platform, etc.)
+- **Progress Tracking** with comprehensive analytics and visualizations
+  - Interactive progress charts and difficulty breakdowns
+  - Topic-wise progress tracking with completion percentages
+  - Activity calendar showing daily solving patterns
+  - Streak tracking to maintain consistency
+  - Recent activity feed and performance insights
+- **Responsive Design** optimized for all devices using Tailwind CSS
+- Built using **Next.js + TypeScript** for modern web development
+- Smooth animations via **Framer Motion**
+- **Local Storage** persistence for tracking progress across sessions
 - Starter structure for adding your own question list
+
+---
+
+## 📊 Progress Tracking Features
+
+The template now includes a comprehensive progress tracking system to help users monitor their DSA learning journey:
+
+### 🎯 Key Components
+
+1. **Progress Dashboard** (`/progress`)
+   - Overview cards showing total solved problems, current streak, completion rate, and problems marked for review
+   - Interactive charts displaying difficulty-wise progress breakdown
+   - Performance statistics including daily averages and weekly goals
+
+2. **Topic Progress Visualization**
+   - Progress bars for each topic showing completion percentage
+   - Color-coded indicators for different completion levels
+   - Quick identification of completed topics
+
+3. **Activity Calendar**
+   - GitHub-style activity heatmap showing daily solving patterns
+   - Streak calculation and visualization
+   - Historical activity tracking over the last 12 weeks
+
+4. **Recent Activity Feed**
+   - Chronological list of recently solved problems
+   - Difficulty badges and review status indicators
+   - Notes and timestamps for each solved problem
+
+5. **Progress Summary Widget**
+   - Integrated into the practice sheet page
+   - Quick overview with circular progress indicator
+   - Direct link to detailed progress analytics
+
+### 🔧 Technical Implementation
+
+- **Data Persistence**: Progress data is stored in localStorage for persistence across sessions
+- **Real-time Updates**: Progress updates automatically when problems are marked as solved
+- **Responsive Design**: All progress components are fully responsive and mobile-friendly
+- **Smooth Animations**: Framer Motion animations for engaging user experience
 
 ---
 

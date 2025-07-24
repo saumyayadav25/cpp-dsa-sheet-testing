@@ -45,13 +45,27 @@ export default function SheetContent({
   }, [progress]);
 
   const toggleCheckbox = (id: string, field: 'isSolved' | 'isMarkedForRevision') => {
-    setProgress((prev) => ({
-      ...prev,
-      [id]: {
-        ...prev[id],
-        [field]: !prev[id]?.[field],
-      },
-    }));
+    setProgress((prev) => {
+      const currentState = prev[id]?.[field] || false;
+      const newState = !currentState;
+      
+      // If marking as solved, add timestamp
+      const updates: any = {
+        [field]: newState,
+      };
+      
+      if (field === 'isSolved' && newState) {
+        updates.solvedAt = new Date().toISOString();
+      }
+      
+      return {
+        ...prev,
+        [id]: {
+          ...prev[id],
+          ...updates,
+        },
+      };
+    });
   };
 
   const toggleTopic = (topicId: number) => {

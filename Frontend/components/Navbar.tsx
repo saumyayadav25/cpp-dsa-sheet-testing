@@ -42,6 +42,7 @@ export default function Navbar({ searchTerm, setSearchTerm, streak }: NavbarProp
     { href: '/', label: 'Home', isActive: false },
     { href: '/notes', label: 'Notes', isActive: false },
     { href: '/sheet', label: 'Practice Sheet', isActive: true },
+    { href: '/progress', label: 'Progress', isActive: false },
   ];
 
   const streakVariants = {

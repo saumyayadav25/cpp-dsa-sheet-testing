@@ -10,6 +10,7 @@ import { FaStar, FaRegStar, FaUserCircle  } from "react-icons/fa";
 import { FaUserAlt, FaUserSecret, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { BiSliderAlt } from "react-icons/bi";
 import ReportIssueButton from '@/components/ReportIssueButton';
+import { link } from 'fs';
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
@@ -107,10 +108,11 @@ export default function Home() {
           <Link href="/" className="text-blue-400 hover:cursor-pointer">Home</Link>
           <Link href="./notes" className="hover:text-blue-400 transition hover:cursor-pointer">Notes</Link>
           <Link href="/sheet" className="hover:text-blue-400 transition hover:cursor-pointer">Practice Sheet</Link>
+          <Link href="/progress" className="hover:text-blue-400 transition hover:cursor-pointer">Progress</Link>
         </div>
 
         {/* Mobile links*/}
-      <div className="sm:hidden ">
+      <div className="sm:hidden flex gap-4">
         <Link href="./notes" className="hover:text-blue-400 transition hover:cursor-pointer">Notes</Link>
         <Link
           href="/sheet"
@@ -118,6 +120,7 @@ export default function Home() {
         >
           Practice Sheet
         </Link>
+        <Link href="/progress" className="hover:text-blue-400 transition hover:cursor-pointer">Progress</Link>
       </div>
       </motion.nav>
 
@@ -158,6 +161,13 @@ export default function Home() {
             className="bg-black text-white hover:bg-gray-200 border hover:text-blue-600 font-semibold py-3 px-6 rounded-full transition text-center"
           >
             🚀 Go to Practice Sheet
+          </Link>
+
+          <Link
+            href="/progress"
+            className="bg-gradient-to-r from-green-600 to-blue-600 text-white hover:from-green-700 hover:to-blue-700 font-semibold py-3 px-6 rounded-full transition text-center"
+          >
+            📊 Track Your Progress
           </Link>
 
           <Link
@@ -244,43 +254,49 @@ export default function Home() {
             {
               icon: <FaListUl size={28} className="text-blue-400 mb-3" />,
               title: "Tailored Questions",
-              desc: "Topic-wise DSA problems to ensure complete coverage."
+              desc: "Topic-wise DSA problems to ensure complete coverage.",
+              link: "/sheet",
             },
             {
               icon: <FaRegCalendarAlt size={28} className="text-cyan-200 mb-3" />,
               title: "Daily Problem (POTD)",
-              desc: "Stay consistent by solving one new question daily."
+              desc: "Stay consistent by solving one new question daily.",
+              link: "/sheet#potd",
             },
             {
               icon: <BiSliderAlt size={28} className="text-yellow-400 mb-3" />,
               title: "Smart Filters",
-              desc: "Filter by difficulty, status, revision, and platform."
+              desc: "Filter by difficulty, status, revision, and platform.",
+              link: "/sheet#filters",
             },
             {
               icon: <FaChartBar size={28} className="text-green-400 mb-3" />,
               title: "Track Progress",
-              desc: "See how many questions you've solved per topic."
+              desc: "Comprehensive analytics, streak tracking, and detailed progress insights.",
+              link: "/progress",
             },
             {
               icon: <FaFire size={28} className="text-red-400 mb-3" />,
               title: "Streaks",
-              desc: "Mark POTD as done and maintain your daily solving streak!"
+              desc: "Mark POTD as done and maintain your daily solving streak!",
+              link: "/progress#streaks",
             },
             {
               icon: <FaSearch size={28} className="text-purple-400 mb-3" />,
               title: "Search Questions Quickly",
-              desc: "Instantly locate problems using keywords in the dedicated search bar."
+              desc: "Instantly locate problems using keywords in the dedicated search bar.",
+              link: "/sheet#search",
             }
-          ].map(({ title, desc, icon }) => (
+          ].map(({ title, desc, icon ,link }) => (
             <motion.div
               whileHover={{ scale: 1.03 }}
               transition={{ duration: 0.3 }}
-              className="bg-[#202533] p-6 rounded-xl shadow-md border border-gray-800 hover:bg-[#212638]"
+              className="bg-[#202533] p-6 rounded-xl shadow-md border border-gray-800 hover:bg-[#212638] cursor-pointer"
               key={title}
             >
               {/* <h3 className="text-lg font-semibold mb-2">{title}</h3>
               <p className="text-gray-400 text-sm">{desc}</p> */}
-              <div className="flex flex-col items-start text-white">
+              <div onClick={() => window.location.href = link} className="flex flex-col items-start text-white">
           {icon}
           <h3 className="text-lg font-semibold mb-1">{title}</h3>
           <p className="text-gray-400 text-sm">{desc}</p>
