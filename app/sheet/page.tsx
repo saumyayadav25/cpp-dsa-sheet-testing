@@ -2,7 +2,7 @@
 
 import Navbar from '@/components/Navbar';
 import SheetContent from '@/components/SheetContent';
-import { sampleTopics, type Question } from '@/data/questions';
+import { type Question } from '@/data/questions';
 import POTD from '@/components/POTD';
 import { getPOTD } from '@/utils/getPOTD';
 import Footer from '@/components/Footer';
@@ -23,7 +23,6 @@ export default function SheetPage() {
   useEffect(() => {
     const potd = getPOTD();
     setPotd(potd);
-
     const savedStreak = parseInt(localStorage.getItem('potd_streak') || '0');
     setStreak(savedStreak);
   }, []);
@@ -42,10 +41,10 @@ export default function SheetPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-gray-100">
+    <div className="min-h-screen bg-[#131313] text-gray-100">
       <Navbar searchTerm={searchTerm} setSearchTerm={setSearchTerm} streak={streak} />
       
-      <main className="px-4 md:px-8 lg:px-12 py-8 md:py-12 max-w-7xl mx-auto mt-16"> {/* mt-16 instead of pt-24 */}
+      <main className="mt-20 px-4 md:px-8 lg:px-12 py-8 max-w-7xl mx-auto">
         <ReportIssueButton />
         
         {/* HERO SECTION */}
@@ -58,7 +57,7 @@ export default function SheetPage() {
               Curated collection of data structures and algorithms problems with solutions to help you prepare for technical interviews.
             </p>
             
-            <div className="bg-gray-800/50 border border-gray-700 rounded-xl p-4 mb-6">
+            <div className="bg-[#202226] border border-gray-700 rounded-xl p-4 mb-6">
               <p className="text-gray-400 mb-3">
                 <span className="font-semibold text-blue-400">Note:</span> Questions marked with "(for practice)" include solution approaches rather than exact code.
               </p>
@@ -78,7 +77,7 @@ export default function SheetPage() {
               </div>
             </div>
             
-            <div className="bg-gray-800 border border-amber-500/20 text-amber-100 rounded-xl px-5 py-3 inline-block text-sm mb-6">
+            <div className="bg-[#202226] border border-amber-500/20 text-amber-100 rounded-xl px-5 py-3 inline-block text-sm mb-6">
               <div className="flex items-center">
                 <svg className="w-5 h-5 mr-2 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
@@ -95,7 +94,7 @@ export default function SheetPage() {
         </div>
 
         {/* COMPANY FREQUENCY LEGEND */}
-        <div className="mb-8 bg-gray-800/50 rounded-xl p-4 border border-gray-700">
+        <div className="mb-8 bg-[#202226] rounded-xl p-4 border border-gray-700">
           <h3 className="text-lg font-semibold mb-3 text-gray-300">Company Frequency Legend</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
             <div className="flex items-center">
@@ -123,13 +122,13 @@ export default function SheetPage() {
           <p className="text-xs text-gray-500 mt-2">(Based on data from LeetCode and GeeksforGeeks company tags)</p>
         </div>
 
-        {/* FILTERS */}
+        {/* FILTERS - Improved with consistent dark theme */}
         <div className="mb-8">
           <div className="flex flex-wrap gap-3 items-center mb-4">
             <h3 className="text-lg font-semibold text-gray-300 mr-2">Filter Problems:</h3>
             <button
               onClick={resetFilters}
-              className="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition-all duration-200 flex items-center"
+              className="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition-all duration-200 flex items-center text-gray-200"
             >
               <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -144,7 +143,7 @@ export default function SheetPage() {
               <select
                 value={difficultyFilter}
                 onChange={(e) => setDifficultyFilter(e.target.value)}
-                className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg appearance-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 pr-8"
+                className="w-full px-4 py-2 bg-[#202226] border border-gray-700 rounded-lg appearance-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 pr-8 text-gray-200"
               >
                 <option value="">All Difficulties</option>
                 <option value="easy" className="text-green-400">Easy</option>
@@ -163,9 +162,9 @@ export default function SheetPage() {
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg appearance-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 pr-8"
+                className="w-full px-4 py-2 bg-[#202226] border border-gray-700 rounded-lg appearance-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 pr-8 text-gray-200"
               >
-                <option value="">All Statuses</option>
+                <option value="">All Status</option>
                 <option value="solved" className="text-green-400">Solved</option>
                 <option value="unsolved" className="text-gray-400">Unsolved</option>
               </select>
@@ -181,7 +180,7 @@ export default function SheetPage() {
               <select
                 value={revisionFilter}
                 onChange={(e) => setRevisionFilter(e.target.value)}
-                className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg appearance-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 pr-8"
+                className="w-full px-4 py-2 bg-[#202226] border border-gray-700 rounded-lg appearance-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 pr-8 text-gray-200"
               >
                 <option value="">All Revision</option>
                 <option value="marked" className="text-purple-400">Marked for Revision</option>
@@ -199,7 +198,7 @@ export default function SheetPage() {
               <select
                 value={platformFilter}
                 onChange={(e) => setPlatformFilter(e.target.value)}
-                className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg appearance-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 pr-8"
+                className="w-full px-4 py-2 bg-[#202226] border border-gray-700 rounded-lg appearance-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 pr-8 text-gray-200"
               >
                 <option value="">All Platforms</option>
                 <option value="leetcode" className="text-blue-400">LeetCode</option>
@@ -221,7 +220,7 @@ export default function SheetPage() {
               <select
                 value={companyFilter}
                 onChange={(e) => setCompanyFilter(e.target.value)}
-                className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg appearance-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 pr-8"
+                className="w-full px-4 py-2 bg-[#202226] border border-gray-700 rounded-lg appearance-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 pr-8 text-gray-200"
               >
                 <option value="">All Companies</option>
                 <option value="Adobe">Adobe</option>
@@ -231,7 +230,6 @@ export default function SheetPage() {
                 <option value="Microsoft">Microsoft</option>
                 <option value="Meta">Meta</option>
                 <option value="Uber">Uber</option>
-                {/* Other companies... */}
               </select>
               <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                 <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -246,7 +244,7 @@ export default function SheetPage() {
               href="https://dsamate.vercel.app/sheet"
               target="_blank"
               rel="noopener noreferrer"
-              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition-all duration-200 flex items-center"
+              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition-all duration-200 flex items-center text-white"
             >
               <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
@@ -259,18 +257,21 @@ export default function SheetPage() {
         {/* POTD Section */}
         <POTD potd={potd} updateStreak={updateStreak} />
 
-        {/* SHEET CONTENT */}
-        <SheetContent
-          difficultyFilter={difficultyFilter}
-          statusFilter={statusFilter}
-          revisionFilter={revisionFilter}
-          searchTerm={searchTerm}
-          platformFilter={platformFilter}
-          companyFilter={companyFilter}
-        />
+        {/* SHEET CONTENT - Will inherit its own styling */}
+        <div className="bg-[#131313] rounded-xl overflow-hidden">
+          <SheetContent
+            difficultyFilter={difficultyFilter}
+            statusFilter={statusFilter}
+            revisionFilter={revisionFilter}
+            searchTerm={searchTerm}
+            platformFilter={platformFilter}
+            companyFilter={companyFilter}
+          />
+        </div>
       </main>
 
-      <Footer />
+      {/* SIMPLIFIED FOOTER */}
+      <Footer/>
       <TestimonialPrompt />
     </div>
   );
