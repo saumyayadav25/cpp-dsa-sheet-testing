@@ -1,13 +1,31 @@
 # DSAMate Template – GSSoC '25
 
+<div align="center">
+  <p>
+    <a href="https://www.buymeacoffee.com/saumyayadav">
+      <img src="https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ffdd00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black" />
+    </a>
+  <br /><br />
+    <img src="https://img.shields.io/github/contributors/saumyayadav25/cpp-dsa-sheet-testing" />
+    <img src="https://img.shields.io/github/languages/count/saumyayadav25/cpp-dsa-sheet-testing" />
+    <img src="https://img.shields.io/github/stars/saumyayadav25/cpp-dsa-sheet-testing" />
+    <img src="https://img.shields.io/github/forks/saumyayadav25/cpp-dsa-sheet-testing" />
+    <img src="https://img.shields.io/github/last-commit/saumyayadav25/cpp-dsa-sheet-testing" />
+    <img src="https://img.shields.io/github/license/saumyayadav25/cpp-dsa-sheet-testing" />
+    <br />
+    <img src="https://img.shields.io/github/issues-raw/saumyayadav25/cpp-dsa-sheet-testing" />
+    <img src="https://img.shields.io/github/issues-closed-raw/saumyayadav25/cpp-dsa-sheet-testing" />
+    <img src="https://img.shields.io/github/issues-pr-raw/saumyayadav25/cpp-dsa-sheet-testing" />
+    <img src="https://img.shields.io/github/issues-pr-closed-raw/saumyayadav25/cpp-dsa-sheet-testing" />
+  </p>
+</div>
+
 🚀 This repository is a **template version** of [DSAMate](https://dsamate.vercel.app) — your all-in-one platform for practicing DSA (Data Structures & Algorithms) questions.  
 This version is open for contributions as a part of **GirlScript Summer of Code (GSSoC) 2025**.
 
 > 🚧 **Disclaimer:** This repository is a **template clone** created for open-source learning under GSSoC '25.  
 > It uses only placeholder content and UI logic — **no real DSA questions are included**.  
 > The **real DSAMate site** with full question lists is live at [dsamate.vercel.app](https://dsamate.vercel.app).
-
-
 
 
 ## 🔍 About the Project
