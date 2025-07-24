@@ -18,6 +18,7 @@
     "framer-motion": "^12.23.6",
     "lucide-react": "^0.513.0",
     "next": "15.3.3",
+    "next-pwa": "^5.6.0",
     "postcss": "^8.5.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
@@ -27,6 +28,7 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.8",
+    "@types/next-pwa": "^5.6.9",
     "@types/node": "^20.19.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",

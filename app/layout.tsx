@@ -22,10 +22,14 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "DSAMate",
-  description: "All DSA questions in one place — DSAMate | DSA Practice is your ultimate destination for all DSA(Data Structures and Algorithms) questions with solutions in CPP. Comprehensive DSA Sheet to prepare for coding interviews with 450+ essential coding questions distributed topic-wise. Track your progress, filter by difficulty, status or platform like leetcode, gfg, hackerrank etc, and practice POTD to stay consistent. Perfect for students preparing for coding interviews and placements. Cpp DSA questions, Java DSA questions, Python DSA questions, and more. Join the community of learners and ace your coding interviews with DSAMate | DSA Practice Sheet | Cpp DSA questions | Cpp dsa sheet",
+  description:
+    "All DSA questions in one place — DSAMate | DSA Practice is your ultimate destination for all DSA(Data Structures and Algorithms) questions with solutions in CPP. Comprehensive DSA Sheet to prepare for coding interviews with 450+ essential coding questions distributed topic-wise. Track your progress, filter by difficulty, status or platform like leetcode, gfg, hackerrank etc, and practice POTD to stay consistent. Perfect for students preparing for coding interviews and placements. Cpp DSA questions, Java DSA questions, Python DSA questions, and more. Join the community of learners and ace your coding interviews with DSAMate | DSA Practice Sheet | Cpp DSA questions | Cpp dsa sheet",
   icons: {
-    icon: '/fav.jpg',
+    icon: "/icons/icon-192.png", // Update if your icon is in a different location
+    apple: "/icons/icon-192.png",
   },
+  manifest: "/manifest.json",
+  themeColor: "#0A0A0A",
 };
 
 export default function RootLayout({
