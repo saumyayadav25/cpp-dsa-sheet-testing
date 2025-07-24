@@ -13,6 +13,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { AnimatePresence } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
+
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
   visible: (i: number) => ({
@@ -111,7 +112,7 @@ export default function Home() {
     <main className="min-h-screen bg-black text-white">
       <ReportIssueButton />
       {/* NAVBAR */}
-            <motion.nav
+      <motion.nav
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
@@ -158,17 +159,13 @@ export default function Home() {
                 </Link>
               </motion.div>
             ))}
+              
+              
           </div>
 
-          {/* Mobile Menu Button - Only visible on mobile */}
-          <motion.button 
-            className="md:hidden p-2 rounded-lg text-white hover:bg-white/10 transition-colors"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          >
-            {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </motion.button>
+         <div className='flex md:hidden'>
+          <Navbar/>
+         </div>
         </div>
       </motion.nav>
 

@@ -1,125 +1,229 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Menu, X } from 'lucide-react';
+import { useState, useRef, useEffect } from 'react';
+import { motion, AnimatePresence } from "framer-motion";
 import Link from 'next/link';
-import { motion, AnimatePresence } from 'framer-motion';
+export default function AuthButtons() {
+  const [showDropdown, setShowDropdown] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
-export default function Navbar() {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-  // Handle scroll effect
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  const navLinks = [
-    { href: '/', label: 'Home', isActive: false },
-    { href: '/notes', label: 'Notes', isActive: false },
-    { href: '/sheet', label: 'Sheet', isActive: true },
+  const menuItems = [
+    { href: '/', label: 'Home' },
+    { href: '/notes', label: 'Notes' },
+    { href: '/sheet', label: 'Sheet'},
   ];
 
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setShowDropdown(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const hamburgerVariants = {
+    closed: {
+      rotate: 0,
+      scale: 1,
+    },
+    open: {
+      rotate: 180,
+      scale: 1.1,
+    }
+  };
+
+  const dropdownVariants = {
+    hidden: {
+      opacity: 0,
+      scale: 0.8,
+      y: -20,
+      rotateX: -15,
+    },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      y: 0,
+      rotateX: 0,
+      transition: {
+        type: "spring" as const,
+        damping: 20,
+        stiffness: 300,
+        staggerChildren: 0.08,
+        delayChildren: 0.1,
+      }
+    },
+    exit: {
+      opacity: 0,
+      scale: 0.9,
+      y: -10,
+      rotateX: 15,
+      transition: {
+        duration: 0.2,
+        staggerChildren: 0.05,
+        staggerDirection: -1,
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: {
+      opacity: 0,
+      x: -20,
+      rotateY: -15,
+    },
+    visible: {
+      opacity: 1,
+      x: 0,
+      rotateY: 0,
+      transition: {
+        type: "spring" as "spring",
+        damping: 20,
+        stiffness: 400,
+      }
+    },
+    exit: {
+      opacity: 0,
+      x: 20,
+      rotateY: 15,
+      transition: {
+        duration: 0.15,
+      }
+    }
+  };
+
+  const HamburgerIcon = ({ isOpen }: { isOpen: boolean }) => (
+    <div className="relative w-6 h-6 flex flex-col justify-center items-center">
+      <motion.span
+        animate={{
+          rotate: isOpen ? 45 : 0,
+          y: isOpen ? 0 : -4,
+        }}
+        transition={{ duration: 0.3, ease: "easeInOut" }}
+        className="block w-5 h-0.5 bg-white origin-center absolute"
+      />
+      <motion.span
+        animate={{
+          opacity: isOpen ? 0 : 1,
+          x: isOpen ? -10 : 0,
+        }}
+        transition={{ duration: 0.2, ease: "easeInOut" }}
+        className="block w-5 h-0.5 bg-white origin-center absolute"
+      />
+      <motion.span
+        animate={{
+          rotate: isOpen ? -45 : 0,
+          y: isOpen ? 0 : 4,
+        }}
+        transition={{ duration: 0.3, ease: "easeInOut" }}
+        className="block w-5 h-0.5 bg-white origin-center absolute"
+      />
+    </div>
+  );
+
   return (
-    <>
-      <motion.nav
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
-          isScrolled 
-            ? 'bg-[#10131c]/80 backdrop-blur-xl shadow-2xl border-b border-white/10' 
-            : 'bg-[#10131c]/80 backdrop-blur-md shadow-md border-b border-gray-800/50'
-        } px-4 sm:px-10 md:px-14 py-4 sm:py-5`}
+    <div className="relative " ref={dropdownRef}>
+      <motion.button
+        onClick={() => setShowDropdown((prev) => !prev)}
+        className="relative p-3 rounded-xl transition-all duration-300 hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-blue-400/50"
+        variants={hamburgerVariants}
+        animate={showDropdown ? "open" : "closed"}
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
       >
-        {/* Subtle gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 via-transparent to-purple-500/5 pointer-events-none" />
+        <HamburgerIcon isOpen={showDropdown} />
         
-        <div className="relative flex items-center justify-between gap-4">
-          {/* Logo */}
+        {/* Subtle glow effect */}
+        <motion.div
+          className="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-500/20 to-purple-500/20 blur-lg -z-10"
+          animate={{
+            opacity: showDropdown ? 0.6 : 0,
+            scale: showDropdown ? 1.2 : 0.8,
+          }}
+          transition={{ duration: 0.3 }}
+        />
+      </motion.button>
+
+      <AnimatePresence mode="wait">
+        {showDropdown && (
           <motion.div
-            whileHover={{ scale: 1.01 }}
-            whileTap={{ scale: 1.0 }}
+            variants={dropdownVariants}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            className="absolute right-0 mt-3 w-64 origin-top-right z-50"
+            style={{ perspective: "1000px" }}
           >
-            <Link href="/" className="group relative text-2xl font-bold text-white hover:cursor-pointer">
-              <span className="relative z-10">
-                DSA<span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-blue-500">Mate</span> Template
-              </span>
-            </Link>
-          </motion.div>
-
-
-          <div className="hidden md:flex items-center gap-6 text-white">
-            {navLinks.map((link) => (
+            {/* Glassmorphism backdrop */}
+            <div className="relative backdrop-blur-2xl bg-gradient-to-tl from-blue-950/90 via-neutral-950/90 to-neutral-950/90  drop-shadow-2xl border border-white/10 rounded-2xl shadow-2xl overflow-hidden">
+              {/* Gradient overlay */}
+              <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent pointer-events-none" />
+              
+              {/* Subtle animated border */}
               <motion.div
-                key={link.href}
-                whileHover={{ y: -2 }}
-                whileTap={{ y: 0 }}
-              >
-                <Link 
-                  href={link.href} 
-                  className={`relative px-3 py-2 rounded-lg transition-all duration-300 group hover:text-blue-400 hover:cursor-pointer`}
-                >
-                  <span className={`relative z-10 ${link.isActive ? 'text-blue-400' : ' text-blue-400'}`}>
-                    {link.label}
-                  </span>
+                className="absolute inset-0 rounded-2xl"
+                style={{
+                  background: "linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent)",
+                  backgroundSize: "300% 300%",
+                }}
+                animate={{
+                  backgroundPosition: ["0% 0%", "100% 100%", "0% 0%"],
+                }}
+                transition={{
+                  duration: 3,
+                  repeat: Infinity,
+                  ease: "linear",
+                }}
+              />
 
-                  {/* Hover effect */}
-                  <div className="absolute inset-0 bg-white/5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
-                </Link>
-              </motion.div>
-            ))}
-          </div>
-
-          {/* Mobile Menu Button - Only visible on mobile */}
-          <motion.button 
-            className="md:hidden p-2 rounded-lg text-white hover:bg-white/10 transition-colors"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          >
-            {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </motion.button>
-        </div>
-      </motion.nav>
-
-      {/* Mobile Menu Overlay */}
-      <AnimatePresence>
-        {isMobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.2 }}
-            className="fixed top-0 left-0 w-full h-full bg-[#10131c]/95 backdrop-blur-xl z-40 md:hidden pt-20"
-          >
-            <div className="px-4 py-6 space-y-1">
-              {navLinks.map((link, index) => (
-                <motion.div
-                  key={link.href}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  <Link 
-                    href={link.href}
-                    className={`block px-4 py-3 rounded-lg text-base font-medium transition-all duration-200 cursor-pointer
-                        text-blue-400 bg-blue-500/10 border-l-4 border-blue-400
-                    `}
+              <div className="relative p-2">
+                {menuItems.map((item, index) => (
+                  <motion.div
+                    variants={itemVariants}
+                    key={index}
+                    className="group flex items-center gap-3 px-4 py-3 text-sm text-gray-200 rounded-xl transition-all duration-200 hover:bg-white/10 hover:text-white relative overflow-hidden"
+                    whileHover={{ 
+                      scale: 1.02,
+                      x: 4,
+                    }}
+                    whileTap={{ scale: 0.98 }}
                   >
-                    {link.label}
-                  </Link>
-                </motion.div>
-              ))}
+                    <Link
+                    href={item.href}
+                    target={item.href.startsWith("http") ? "_blank" : "_self"}
+                    rel="noopener noreferrer">
+
+                    <motion.div
+                      className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-xl opacity-0 group-hover:opacity-100"
+                      initial={{ x: "-100%" }}
+                      whileHover={{ x: "0%" }}
+                      transition={{ duration: 0.3 }}
+                      />
+                    
+
+                    
+                    <span className="relative z-10 font-bold text-sm">
+                      {item.label}
+                    </span>
+
+                      </Link>
+                  </motion.div>
+                ))}
+
+                {/* Bottom highlight */}
+                <motion.div
+                  className="h-px bg-gradient-to-r from-transparent via-white/20 to-transparent mt-2"
+                  initial={{ scaleX: 0 }}
+                  animate={{ scaleX: 1 }}
+                  transition={{ delay: 0.5, duration: 0.5 }}
+                />
+              </div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
-    </>
+    </div>
   );
 }

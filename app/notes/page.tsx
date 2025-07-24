@@ -17,6 +17,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { AnimatePresence } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
+import Navbar from '@/components/Navbar2';
 
 
 type NoteTopic = {
@@ -118,53 +119,16 @@ export default function NotesPage() {
                 </Link>
               </motion.div>
             ))}
+              
+              
           </div>
 
-          {/* Mobile Menu Button - Only visible on mobile */}
-          <motion.button 
-            className="md:hidden p-2 rounded-lg text-white hover:bg-white/10 transition-colors"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          >
-            {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </motion.button>
+         <div className='flex md:hidden'>
+          <Navbar/>
+         </div>
         </div>
       </motion.nav>
 
-      {/* Mobile Menu Overlay */}
-      <AnimatePresence>
-        {isMobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.2 }}
-            className="fixed top-0 left-0 w-full h-full bg-[#10131c]/95 backdrop-blur-xl z-40 md:hidden pt-20"
-          >
-            <div className="px-4 py-6 space-y-1">
-              {navLinks.map((link, index) => (
-                <motion.div
-                  key={link.href}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  <Link 
-                    href={link.href}
-                    className={`block px-4 py-3 rounded-lg text-base font-medium transition-all duration-200 cursor-pointer
-                        text-blue-400 bg-blue-500/10 border-l-4 border-blue-400
-                    `}
-                  >
-                    {link.label}
-                  </Link>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       {/* Main notes section */}
       <motion.main
