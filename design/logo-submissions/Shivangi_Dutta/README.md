@@ -21,3 +21,4 @@ The DSAMATE logo in its dark mode variant features a bold, high-contrast design 
 - This could be applied on the top left corner of the website.
 
 - my first ever commit and pr to open source.
+- will fix the submodule entry by creating a new branch
