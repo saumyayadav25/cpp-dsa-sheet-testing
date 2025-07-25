@@ -239,25 +239,6 @@ export default function ProgressPage() {
 
         {/* 🎉 Confetti */}
         {showConfetti && <Confetti width={width} height={height} />}
-
-        {/* 🏅 Badge Section */}
-        <motion.div initial="hidden" animate="visible" custom={7} variants={fadeInUp} className="mt-16">
-          <h2 className="text-2xl font-bold mb-6 text-center bg-gradient-to-r from-yellow-400 to-pink-500 bg-clip-text text-transparent">
-            🏅 Your Badges
-          </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-            {badges.map((badge, i) => (
-              <BadgeCard
-                key={badge.id}
-                name={badge.name}
-                icon={badge.icon}
-                description={badge.description}
-                achieved={badge.achieved}
-                delay={i * 0.05}
-              />
-            ))}
-          </div>
-        </motion.div>
       </main>
       <Footer />
     </>
