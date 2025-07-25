@@ -5,14 +5,13 @@ import Link from "next/link";
 import { FaGithub, FaLinkedin, FaTwitter } from 'react-icons/fa';
 import { FaListUl, FaRegCalendarAlt, FaChartBar, FaSearch, FaFire } from "react-icons/fa";
 import { FaStar, FaRegStar, FaUserCircle  } from "react-icons/fa";
-import { FaUserAlt, FaUserSecret, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { BiSliderAlt } from "react-icons/bi";
 import ReportIssueButton from '@/components/ReportIssueButton';
 import Navbar from '@/components/Navbar2';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { AnimatePresence } from 'framer-motion';
-import { Menu, X } from 'lucide-react';
+
+
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
@@ -463,70 +462,7 @@ export default function Home() {
         </div>
       </motion.section>
       
-      {/* FOOTER */}
-      <footer 
-      className="bg-[#101010] px-6 md:px-20 py-10 text-sm text-gray-400">
-        <div className="grid md:grid-cols-4 gap-6">
-          {/* about us */}
-          <div>
-            <h3 className="text-white text-xl font-semibold mb-3">About Us</h3>
-            <p className="text-sm text-gray-300 mb-4">
-              DSAMate | DSA Practice is your ultimate destination for all DSA (Data Structures and Algorithms) questions.
-            </p>
-            {/* Buy Me a Coffee */}
-            <a
-              href="https://www.buymeacoffee.com/saumyayadav"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block mt-4 bg-yellow-600 text-black font-semibold px-4 py-2 rounded hover:bg-yellow-500 transition"
-            >☕ Buy me a coffee</a>
-          </div>
-          {/* quick links */}
-          <div className="flex-1">
-          <h3 className="text-xl font-semibold mb-3 text-white">Quick Links</h3>
-          <ul className="space-y-2 text-sm">
-            <li>
-              <a href="/" className="hover:text-blue-400">Home</a>
-            </li>
-            <li>
-              <a href="/sheet" className="hover:text-blue-400">Practice Problems</a>
-            </li>
-            <li>
-              <a href="https://github.com/saumyayadav25/DSA-Supreme-3.0" target="_blank" rel="noopener noreferrer" className="hover:text-blue-400">
-                All DSA Codes
-              </a>
-            </li>
-            <li>
-              <a href="/notes" rel="noopener noreferrer" className="hover:text-blue-400">Notes</a>
-            </li>
-            <li>
-              <a href="https://forms.gle/bdwBp8oFRWugcrcg9" target="_blank" rel="noopener noreferrer" className="hover:text-blue-400">
-                Feedback Form
-              </a>
-            </li>
-          </ul>
-        </div>
-          <div>
-            <h3 className="text-xl font-semibold mb-3 text-white">Follow Us</h3>
-            <div className="flex space-x-4 text-2xl">
-              <a href="https://x.com/SaumyaYadav817" target="_blank" rel="noopener noreferrer" className="hover:text-blue-400">
-                <FaTwitter />
-              </a>
-              <a href="https://github.com/saumyayadav25" target="_blank" rel="noopener noreferrer" className="hover:text-blue-400">
-                <FaGithub />
-              </a>
-              <a href="https://www.linkedin.com/in/saumya-yadav-/" target="_blank" rel="noopener noreferrer" className="hover:text-blue-400">
-                <FaLinkedin />
-              </a>
-            </div>
-          </div>
-          <div>
-            <h3 className="text-xl font-semibold mb-3 text-white">Contact</h3>
-            <p>Email: <a href="mailto:contact.dsapractice@gmail.com" className="text-blue-400">contact.dsapractice@gmail.com</a></p>
-          </div>
-        </div>
-        <p className="text-center text-sm text-gray-400 mt-10">&copy; 2024 DSA Practice. All Rights Reserved.</p>
-      </footer>
+
     </main>
   );
 }

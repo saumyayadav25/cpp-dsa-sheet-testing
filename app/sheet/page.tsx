@@ -5,7 +5,6 @@ import SheetContent from '@/components/SheetContent';
 import { sampleTopics, type Question } from '@/data/questions';
 import POTD from '@/components/POTD';
 import { getPOTD } from '@/utils/getPOTD';
-import Footer from '@/components/Footer';
 import { useState, useEffect } from 'react';
 import TestimonialPrompt from '@/components/TestimonialPrompt';
 import ReportIssueButton from '@/components/ReportIssueButton';
@@ -206,8 +205,7 @@ export default function SheetPage() {
 
       </main>
 
-      <Footer />
-      {/* temporary pop up for testimonial form */}
+
       <TestimonialPrompt />
     </>
   );
