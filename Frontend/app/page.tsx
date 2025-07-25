@@ -11,6 +11,8 @@ import { motion } from 'framer-motion';
 
 
 
+
+
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
   visible: (i: number) => ({
@@ -103,6 +105,8 @@ export default function Home() {
     
     <main className="min-h-screen bg-black text-white">
       <ReportIssueButton />
+      
+ 
       {/* NAVBAR */}
       <Navbar 
         streak={streak}
