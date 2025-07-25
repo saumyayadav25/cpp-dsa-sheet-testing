@@ -1,5 +1,5 @@
 'use client';
-
+import React from 'react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
@@ -8,7 +8,7 @@ import { sampleTopics } from '@/data/questions';
 
 type Badge = {
   label: string;
-  icon: JSX.Element;
+  icon: React.ReactElement;
   color: string;
 };
 
