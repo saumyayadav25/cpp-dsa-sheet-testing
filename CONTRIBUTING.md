@@ -98,6 +98,8 @@ Specify if your PR is for frontend or backend in the description.
 
 Submit the PR.
 
+###note - whenever making changes try sharing us the screenshot or the visual proof of before vs after as it will be considered as the positive way of handling and resolving issue.
+
 ### ⏳ 9. Wait for Review
 A project maintainer will review your pull request.
 
