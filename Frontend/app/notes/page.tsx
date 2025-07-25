@@ -1,7 +1,10 @@
 'use client';
 
 import React from 'react';
-import { FaCode, FaRegListAlt, FaSortAlphaDown, FaLink, FaTree, FaProjectDiagram, FaBrain, FaChartLine, FaSitemap } from 'react-icons/fa';
+import {
+  FaCode, FaRegListAlt, FaSortAlphaDown, FaLink, FaTree, FaProjectDiagram,
+  FaBrain, FaChartLine, FaSitemap
+} from 'react-icons/fa';
 import { MdSort, MdOutlineLeaderboard } from "react-icons/md";
 import { GiPathDistance, GiStack, GiCycle } from "react-icons/gi";
 import { BsDiagram3, BsGrid3X3GapFill } from "react-icons/bs";
@@ -13,11 +16,6 @@ import { CgFileDocument } from "react-icons/cg";
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { AnimatePresence } from 'framer-motion';
-import { Menu, X } from 'lucide-react';
-import Navbar from '@/components/Navbar';
-
-
 
 type NoteTopic = {
   title: string;
@@ -52,23 +50,31 @@ const notesList: NoteTopic[] = [
 
 export default function NotesPage() {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const streak = 0;
-  
-  // Handle scroll effect
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+
+ useEffect(() => {
+  let ticking = false;
+
+  const handleScroll = () => {
+    if (!ticking) {
+      ticking = true;
+      requestAnimationFrame(() => {
+        setIsScrolled(window.scrollY > 20);
+        ticking = false;
+      });
+    }
+  };
+
+  window.addEventListener('scroll', handleScroll);
+  return () => window.removeEventListener('scroll', handleScroll);
+}, []);
+
 
   const navLinks = [
     { href: '/', label: 'Home', isActive: false },
     { href: '/notes', label: 'Notes', isActive: false },
     { href: '/sheet', label: 'Sheet', isActive: true },
   ];
+
   return (
     <>
       {/* Navbar */}
@@ -81,15 +87,9 @@ export default function NotesPage() {
             : 'bg-[#10131c]/80 backdrop-blur-md shadow-md border-b border-gray-800/50'
           } px-4 sm:px-10 md:px-14 py-4 sm:py-5`}
       >
-        {/* Subtle gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 via-transparent to-purple-500/5 pointer-events-none" />
-
         <div className="relative flex items-center justify-between gap-4">
-          {/* Logo */}
-          <motion.div
-            whileHover={{ scale: 1.01 }}
-            whileTap={{ scale: 1.0 }}
-          >
+          <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 1.0 }}>
             <Link href="/" className="group relative text-2xl font-bold text-white hover:cursor-pointer">
               <span className="relative z-10">
                 DSA<span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-blue-500">Mate</span> Template
@@ -97,40 +97,25 @@ export default function NotesPage() {
             </Link>
           </motion.div>
 
-
           <div className="hidden md:flex items-center gap-8 text-white">
             {navLinks.map((link) => (
-              <motion.div
-                key={link.href}
-                whileHover={{ y: -2 }}
-                whileTap={{ y: 0 }}
-              >
+              <motion.div key={link.href} whileHover={{ y: -2 }} whileTap={{ y: 0 }}>
                 <Link
                   href={link.href}
-                  className={`relative px-3 py-2 rounded-lg transition-all  duration-300 group hover:text-blue-400 hover:cursor-pointer`}
+                  className={`relative px-3 py-2 rounded-lg transition-all duration-300 group hover:text-blue-400`}
                 >
                   <span className={`relative z-10 ${link.label === 'Notes' ? 'text-blue-400' : 'text-white'}`}>
                     {link.label}
                   </span>
-
-                  {/* Hover effect */}
                   <div className="absolute inset-0 bg-white/5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
                 </Link>
               </motion.div>
             ))}
-
-
-          </div>
-
-          <div className='flex md:hidden'>
-            <Navbar streak={streak}/>
-
           </div>
         </div>
       </motion.nav>
 
-
-      {/* Main notes section */}
+      {/* Main */}
       <motion.main
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
@@ -174,9 +159,7 @@ export default function NotesPage() {
                     {icon}
                   </div>
                   <div>
-                    <h2 className="text-lg font-semibold mb-3 text-gray-100 group-hover:text-white">
-                      {title}
-                    </h2>
+                    <h2 className="text-lg font-semibold mb-3 text-gray-100 group-hover:text-white">{title}</h2>
                     {status === 'coming-soon' ? (
                       <span className="inline-block px-3 py-1 bg-yellow-600/20 text-yellow-400 rounded-full text-xs">
                         Coming Soon
@@ -210,7 +193,6 @@ export default function NotesPage() {
           </motion.p>
         </div>
       </motion.main>
-
     </>
   );
 }

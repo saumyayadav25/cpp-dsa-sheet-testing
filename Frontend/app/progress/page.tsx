@@ -1,10 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { FaChartLine, FaCalendarCheck, FaFire, FaTrophy, FaBullseye, FaBolt, FaCode, FaClock } from 'react-icons/fa';
-import { BiTrendingUp } from 'react-icons/bi';
-import { sampleTopics, type Question, type Topic } from '@/data/questions';
+import { FaTrophy, FaFire, FaBullseye, FaBolt } from 'react-icons/fa';
+import { sampleTopics } from '@/data/questions';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import ProgressChart from '@/components/ProgressChart';
@@ -12,36 +11,70 @@ import ProgressStats from '@/components/ProgressStats';
 import TopicProgress from '@/components/TopicProgress';
 import RecentActivity from '@/components/RecentActivity';
 import StreakCalendar from '@/components/StreakCalendar';
+import BadgeCard from '@/components/BadgeCard';
+import { evaluateBadges, type Badge } from '@/utils/badgeUtils';
+import Confetti from 'react-confetti';
+import { useWindowSize } from 'react-use';
+import EarnedBadges from '@/components/EarnedBadges';
 
 export default function ProgressPage() {
-  const [searchTerm, setSearchTerm] = useState('');
   const [streak, setStreak] = useState(0);
-  const [progress, setProgress] = useState<{
-    [id: string]: { 
-      isSolved: boolean; 
-      isMarkedForRevision: boolean; 
-      note?: string;
-      solvedAt?: string;
-    };
-  }>({});
+  const [progress, setProgress] = useState<Record<string, {
+    isSolved: boolean;
+    isMarkedForRevision: boolean;
+    note?: string;
+    solvedAt?: string;
+  }>>({});
+  const [badges, setBadges] = useState<Badge[]>([]);
+  const [showConfetti, setShowConfetti] = useState(false);
+  const { width, height } = useWindowSize();
 
+  //  Handle Streak Tracking with Break Detection
+  useEffect(() => {
+    const today = new Date();
+    const todayStr = today.toISOString().split('T')[0];
+    const lastVisitStr = localStorage.getItem('last_visit');
+    const savedStreak = parseInt(localStorage.getItem('potd_streak') || '0');
+
+    if (!lastVisitStr) {
+      localStorage.setItem('last_visit', todayStr);
+      localStorage.setItem('potd_streak', '1');
+      setStreak(1);
+      return;
+    }
+
+    const lastVisit = new Date(lastVisitStr);
+    const diffInDays = Math.floor((today.getTime() - lastVisit.getTime()) / (1000 * 60 * 60 * 24));
+
+    if (diffInDays === 1) {
+      const newStreak = savedStreak + 1;
+      localStorage.setItem('potd_streak', newStreak.toString());
+      localStorage.setItem('last_visit', todayStr);
+      setStreak(newStreak);
+    } else if (diffInDays > 1) {
+      localStorage.setItem('potd_streak', '1');
+      localStorage.setItem('last_visit', todayStr);
+      setStreak(1);
+    } else {
+      setStreak(savedStreak); // Already visited today
+    }
+  }, []);
+
+  //  Load Progress
   useEffect(() => {
     const storedProgress = localStorage.getItem('dsa-progress');
     if (storedProgress) {
       setProgress(JSON.parse(storedProgress));
     }
-
-    const savedStreak = parseInt(localStorage.getItem('potd_streak') || '0');
-    setStreak(savedStreak);
   }, []);
 
-  // Calculate progress statistics
-  const calculateStats = () => {
+  //  Compute Stats from Progress
+  const stats = useMemo(() => {
     const allQuestions = sampleTopics.flatMap(topic => topic.questions);
     const totalQuestions = allQuestions.length;
     const solvedQuestions = allQuestions.filter(q => progress[q.id]?.isSolved).length;
     const markedForRevision = allQuestions.filter(q => progress[q.id]?.isMarkedForRevision).length;
-    
+
     const difficultyStats = {
       easy: {
         total: allQuestions.filter(q => q.difficulty === 'easy').length,
@@ -64,10 +97,8 @@ export default function ProgressPage() {
       percentage: Math.round((topic.questions.filter(q => progress[q.id]?.isSolved).length / topic.questions.length) * 100)
     }));
 
-    // Calculate recent activity (last 30 days)
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-    
     const recentActivity = allQuestions
       .filter(q => {
         const solvedAt = progress[q.id]?.solvedAt;
@@ -89,35 +120,48 @@ export default function ProgressPage() {
       topicStats,
       recentActivity
     };
-  };
+  }, [progress]);
 
-  const stats = calculateStats();
+  //  Evaluate Badges
+  useEffect(() => {
+    const topicsCompleted = stats.topicStats
+      .filter(t => t.percentage === 100)
+      .map(t => t.name);
+
+    const badgeList = evaluateBadges({
+      totalSolved: stats.solvedQuestions,
+      hardSolved: stats.difficultyStats.hard.solved,
+      currentStreak: streak,
+      visitedDays: 12,
+      topicsCompleted
+    });
+
+    const previous = JSON.parse(localStorage.getItem('userBadges') || '[]');
+    const newlyEarned = badgeList.filter(b => b.achieved && !previous.includes(b.id));
+    if (newlyEarned.length > 0) {
+      setShowConfetti(true);
+      setTimeout(() => setShowConfetti(false), 4000);
+      localStorage.setItem('userBadges', JSON.stringify(badgeList.filter(b => b.achieved).map(b => b.id)));
+    }
+
+    setBadges(badgeList);
+  }, [stats, streak]);
 
   const fadeInUp = {
     hidden: { opacity: 0, y: 20 },
     visible: (i: number) => ({
       opacity: 1,
       y: 0,
-      transition: {
-        delay: i * 0.1,
-        duration: 0.6,
-      },
+      transition: { delay: i * 0.1, duration: 0.6 },
     }),
   };
 
   return (
     <>
-      <Navbar streak={streak}/>
+      <Navbar streak={streak} />
       <main className="min-h-screen bg-[#131313] text-white px-4 md:px-12 py-24">
-        
-        {/* Header Section */}
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          custom={0}
-          variants={fadeInUp}
-          className="mb-8 text-center"
-        >
+        {/* Header */}
+        <motion.div initial="hidden" animate="visible" custom={0} variants={fadeInUp} className="mb-8 text-center">
           <h1 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
             Track Your Progress
           </h1>
@@ -127,14 +171,8 @@ export default function ProgressPage() {
           </p>
         </motion.div>
 
-        {/* Progress Overview Cards */}
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          custom={1}
-          variants={fadeInUp}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8"
-        >
+        {/* Overview Cards */}
+        <motion.div initial="hidden" animate="visible" custom={1} variants={fadeInUp} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <div className="bg-gradient-to-br from-green-500/20 to-green-600/10 rounded-xl p-6 border border-green-500/20">
             <div className="flex items-center justify-between mb-4">
               <FaTrophy className="text-2xl text-green-400" />
@@ -143,13 +181,9 @@ export default function ProgressPage() {
             <div className="text-3xl font-bold text-white mb-2">{stats.solvedQuestions}</div>
             <div className="text-sm text-gray-400">out of {stats.totalQuestions} questions</div>
             <div className="mt-3 bg-gray-700 rounded-full h-2">
-              <div 
-                className="bg-green-400 h-2 rounded-full transition-all duration-500"
-                style={{ width: `${stats.percentage}%` }}
-              ></div>
+              <div className="bg-green-400 h-2 rounded-full transition-all duration-500" style={{ width: `${stats.percentage}%` }}></div>
             </div>
           </div>
-
           <div className="bg-gradient-to-br from-blue-500/20 to-blue-600/10 rounded-xl p-6 border border-blue-500/20">
             <div className="flex items-center justify-between mb-4">
               <FaFire className="text-2xl text-orange-400" />
@@ -158,7 +192,6 @@ export default function ProgressPage() {
             <div className="text-3xl font-bold text-white mb-2">{streak}</div>
             <div className="text-sm text-gray-400">days in a row</div>
           </div>
-
           <div className="bg-gradient-to-br from-purple-500/20 to-purple-600/10 rounded-xl p-6 border border-purple-500/20">
             <div className="flex items-center justify-between mb-4">
               <FaBullseye className="text-2xl text-purple-400" />
@@ -167,7 +200,6 @@ export default function ProgressPage() {
             <div className="text-3xl font-bold text-white mb-2">{stats.percentage}%</div>
             <div className="text-sm text-gray-400">overall progress</div>
           </div>
-
           <div className="bg-gradient-to-br from-yellow-500/20 to-yellow-600/10 rounded-xl p-6 border border-yellow-500/20">
             <div className="flex items-center justify-between mb-4">
               <FaBolt className="text-2xl text-yellow-400" />
@@ -178,60 +210,58 @@ export default function ProgressPage() {
           </div>
         </motion.div>
 
-        {/* Progress Chart and Stats Row */}
+        {/* Stats */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-          <motion.div
-            initial="hidden"
-            animate="visible"
-            custom={2}
-            variants={fadeInUp}
-          >
+          <motion.div initial="hidden" animate="visible" custom={2} variants={fadeInUp}>
             <ProgressChart difficultyStats={stats.difficultyStats} />
           </motion.div>
-          
-          <motion.div
-            initial="hidden"
-            animate="visible"
-            custom={3}
-            variants={fadeInUp}
-          >
+          <motion.div initial="hidden" animate="visible" custom={3} variants={fadeInUp}>
             <ProgressStats stats={stats} />
           </motion.div>
         </div>
 
-        {/* Topic Progress and Recent Activity Row */}
+        {/* Topic Progress + Activity */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-          <motion.div
-            initial="hidden"
-            animate="visible"
-            custom={4}
-            variants={fadeInUp}
-          >
+          <motion.div initial="hidden" animate="visible" custom={4} variants={fadeInUp}>
             <TopicProgress topicStats={stats.topicStats} />
           </motion.div>
-          
-          <motion.div
-            initial="hidden"
-            animate="visible"
-            custom={5}
-            variants={fadeInUp}
-          >
+          <motion.div initial="hidden" animate="visible" custom={5} variants={fadeInUp}>
             <RecentActivity recentActivity={stats.recentActivity} progress={progress} />
           </motion.div>
         </div>
 
-        {/* Streak Calendar */}
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          custom={6}
-          variants={fadeInUp}
-        >
+        {/* Streak Calendar + Earned Badges */}
+        <motion.div initial="hidden" animate="visible" custom={6} variants={fadeInUp}>
           <StreakCalendar progress={progress} />
         </motion.div>
 
+        <EarnedBadges progress={progress} streak={streak} />
+
+        {/* 🎉 Confetti */}
+        {showConfetti && <Confetti width={width} height={height} />}
+
+        {/* 🏅 Badge Section */}
+        <motion.div initial="hidden" animate="visible" custom={7} variants={fadeInUp} className="mt-16">
+          <h2 className="text-2xl font-bold mb-6 text-center bg-gradient-to-r from-yellow-400 to-pink-500 bg-clip-text text-transparent">
+            🏅 Your Badges
+          </h2>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+            {badges.map((badge, i) => (
+              <BadgeCard
+                key={badge.id}
+                name={badge.name}
+                icon={badge.icon}
+                description={badge.description}
+                achieved={badge.achieved}
+                delay={i * 0.05}
+              />
+            ))}
+          </div>
+        </motion.div>
       </main>
       <Footer />
     </>
   );
 }
+
+
