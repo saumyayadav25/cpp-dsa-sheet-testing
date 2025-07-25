@@ -1,13 +1,31 @@
 # DSAMate Template – GSSoC '25
 
+<div align="center">
+  <p>
+    <a href="https://www.buymeacoffee.com/saumyayadav">
+      <img src="https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ffdd00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black" />
+    </a>
+  <br /><br />
+    <img src="https://img.shields.io/github/contributors/saumyayadav25/cpp-dsa-sheet-testing" />
+    <img src="https://img.shields.io/github/languages/count/saumyayadav25/cpp-dsa-sheet-testing" />
+    <img src="https://img.shields.io/github/stars/saumyayadav25/cpp-dsa-sheet-testing" />
+    <img src="https://img.shields.io/github/forks/saumyayadav25/cpp-dsa-sheet-testing" />
+    <img src="https://img.shields.io/github/last-commit/saumyayadav25/cpp-dsa-sheet-testing" />
+    <img src="https://img.shields.io/github/license/saumyayadav25/cpp-dsa-sheet-testing" />
+    <br />
+    <img src="https://img.shields.io/github/issues-raw/saumyayadav25/cpp-dsa-sheet-testing" />
+    <img src="https://img.shields.io/github/issues-closed-raw/saumyayadav25/cpp-dsa-sheet-testing" />
+    <img src="https://img.shields.io/github/issues-pr-raw/saumyayadav25/cpp-dsa-sheet-testing" />
+    <img src="https://img.shields.io/github/issues-pr-closed-raw/saumyayadav25/cpp-dsa-sheet-testing" />
+  </p>
+</div>
+
 🚀 This repository is a **template version** of [DSAMate](https://dsamate.vercel.app) — your all-in-one platform for practicing DSA (Data Structures & Algorithms) questions.  
 This version is open for contributions as a part of **GirlScript Summer of Code (GSSoC) 2025**.
 
 > 🚧 **Disclaimer:** This repository is a **template clone** created for open-source learning under GSSoC '25.  
 > It uses only placeholder content and UI logic — **no real DSA questions are included**.  
 > The **real DSAMate site** with full question lists is live at [dsamate.vercel.app](https://dsamate.vercel.app).
-
-
 
 
 ## 🔍 About the Project
@@ -17,11 +35,58 @@ DSAMate Template helps contributors explore the frontend logic, filters, UI comp
 
 ### 🌟 Features
 
-- Practice sheet UI with filter options (difficulty, status, platform, etc.)
-- Responsive design with Tailwind CSS
-- Built using **Next.js + TypeScript**
-- Animations via **Framer Motion**
+- **Practice Sheet UI** with advanced filter options (difficulty, status, platform, etc.)
+- **Progress Tracking** with comprehensive analytics and visualizations
+  - Interactive progress charts and difficulty breakdowns
+  - Topic-wise progress tracking with completion percentages
+  - Activity calendar showing daily solving patterns
+  - Streak tracking to maintain consistency
+  - Recent activity feed and performance insights
+- **Responsive Design** optimized for all devices using Tailwind CSS
+- Built using **Next.js + TypeScript** for modern web development
+- Smooth animations via **Framer Motion**
+- **Local Storage** persistence for tracking progress across sessions
 - Starter structure for adding your own question list
+
+---
+
+## 📊 Progress Tracking Features
+
+The template now includes a comprehensive progress tracking system to help users monitor their DSA learning journey:
+
+### 🎯 Key Components
+
+1. **Progress Dashboard** (`/progress`)
+   - Overview cards showing total solved problems, current streak, completion rate, and problems marked for review
+   - Interactive charts displaying difficulty-wise progress breakdown
+   - Performance statistics including daily averages and weekly goals
+
+2. **Topic Progress Visualization**
+   - Progress bars for each topic showing completion percentage
+   - Color-coded indicators for different completion levels
+   - Quick identification of completed topics
+
+3. **Activity Calendar**
+   - GitHub-style activity heatmap showing daily solving patterns
+   - Streak calculation and visualization
+   - Historical activity tracking over the last 12 weeks
+
+4. **Recent Activity Feed**
+   - Chronological list of recently solved problems
+   - Difficulty badges and review status indicators
+   - Notes and timestamps for each solved problem
+
+5. **Progress Summary Widget**
+   - Integrated into the practice sheet page
+   - Quick overview with circular progress indicator
+   - Direct link to detailed progress analytics
+
+### 🔧 Technical Implementation
+
+- **Data Persistence**: Progress data is stored in localStorage for persistence across sessions
+- **Real-time Updates**: Progress updates automatically when problems are marked as solved
+- **Responsive Design**: All progress components are fully responsive and mobile-friendly
+- **Smooth Animations**: Framer Motion animations for engaging user experience
 
 ---
 

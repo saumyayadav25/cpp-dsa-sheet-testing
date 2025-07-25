@@ -1,0 +1,17 @@
+{
+  "app": {
+    "[project]/app/page": [
+      "static/media/or3nQ6H_1_WfwkMZI_qYFrcdmhHkjko-s.p.be19f591.woff2",
+      "static/media/LDIoaomQNQcsA88c7O9yZ4KMCoOg4Ko20yygg_vb-s.p.20b09c80.woff2",
+      "static/media/gyByhwUxId8gMEwcGFWNOITd-s.p.da1ebef7.woff2"
+    ],
+    "[project]/app/sheet/page": [
+      "static/media/or3nQ6H_1_WfwkMZI_qYFrcdmhHkjko-s.p.be19f591.woff2",
+      "static/media/LDIoaomQNQcsA88c7O9yZ4KMCoOg4Ko20yygg_vb-s.p.20b09c80.woff2",
+      "static/media/gyByhwUxId8gMEwcGFWNOITd-s.p.da1ebef7.woff2"
+    ]
+  },
+  "appUsingSizeAdjust": true,
+  "pages": {},
+  "pagesUsingSizeAdjust": false
+}
