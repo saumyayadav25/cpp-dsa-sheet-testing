@@ -13,7 +13,10 @@ import { CgFileDocument } from "react-icons/cg";
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import Navbar from '@/components/Navbar2';
+import { AnimatePresence } from 'framer-motion';
+import { Menu, X } from 'lucide-react';
+import Navbar from '@/components/Navbar';
+
 
 
 type NoteTopic = {

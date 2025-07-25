@@ -1,14 +1,12 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from "next/link";
-import { FaGithub, FaLinkedin, FaTwitter } from 'react-icons/fa';
 import { FaListUl, FaRegCalendarAlt, FaChartBar, FaSearch, FaFire } from "react-icons/fa";
-import { FaStar, FaRegStar, FaUserCircle  } from "react-icons/fa";
+import { FaStar, FaRegStar, FaUserCircle } from "react-icons/fa";
 import { BiSliderAlt } from "react-icons/bi";
 import ReportIssueButton from '@/components/ReportIssueButton';
-import Navbar from '@/components/Navbar2';
-import { useState, useEffect } from 'react';
+import Navbar from '@/components/Navbar';
 import { motion } from 'framer-motion';
 
 
@@ -73,6 +71,17 @@ const testimonials: Testimonial[] = [
 ];
 
 export default function Home() {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [streak, setStreak] = useState(0);
+
+  // Initialize streak (you can load from localStorage or API)
+  useEffect(() => {
+    const savedStreak = localStorage.getItem('userStreak');
+    if (savedStreak) {
+      setStreak(parseInt(savedStreak, 10));
+    }
+  }, []);
+
   function FAQItem({ question, answer }: { question: string; answer: string }) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -89,84 +98,17 @@ export default function Home() {
     </div>
   );
 }
-    const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-  // Handle scroll effect
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  const navLinks = [
-    { href: '/', label: 'Home', isActive: false },
-    { href: '/notes', label: 'Notes', isActive: false },
-    { href: '/sheet', label: 'Sheet', isActive: true },
-  ];
+  // Removed unused state and variables
   return (
     
     <main className="min-h-screen bg-black text-white">
       <ReportIssueButton />
       {/* NAVBAR */}
-      <motion.nav
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
-          isScrolled 
-            ? 'bg-[#10131c]/80 backdrop-blur-xl shadow-2xl border-b border-white/10' 
-            : 'bg-[#10131c]/80 backdrop-blur-md shadow-md border-b border-gray-800/50'
-        } px-4 sm:px-10 md:px-14 py-4 sm:py-5`}
-      >
-        {/* Subtle gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 via-transparent to-purple-500/5 pointer-events-none" />
-        
-        <div className="relative flex items-center justify-between gap-4">
-          {/* Logo */}
-          <motion.div
-            whileHover={{ scale: 1.01 }}
-            whileTap={{ scale: 1.0 }}
-          >
-            <Link href="/" className="group relative text-2xl font-bold text-white hover:cursor-pointer">
-              <span className="relative z-10">
-                DSA<span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-blue-500">Mate</span> Template
-              </span>
-            </Link>
-          </motion.div>
-
-
-          <div className="hidden md:flex items-center gap-8 text-white">
-            {navLinks.map((link) => (
-              <motion.div
-                key={link.href}
-                whileHover={{ y: -2 }}
-                whileTap={{ y: 0 }}
-              >
-                <Link 
-                  href={link.href} 
-                  className={`relative px-3 py-2 rounded-lg transition-all  duration-300 group hover:text-blue-400 hover:cursor-pointer`}
-                >
-                  <span className={`relative z-10 ${link.label === 'Notes' ? 'text-blue-400' : 'text-white'}`}>
-                    {link.label}
-                  </span>
-
-                  {/* Hover effect */}
-                  <div className="absolute inset-0 bg-white/5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
-                </Link>
-              </motion.div>
-            ))}
-              
-              
-          </div>
-
-         <div className='flex md:hidden'>
-          <Navbar/>
-         </div>
-        </div>
-      </motion.nav>
+      <Navbar 
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        streak={streak}
+      />
 
       {/* HERO SECTION */}
       <motion.section
@@ -205,6 +147,13 @@ export default function Home() {
             className="bg-black text-white hover:bg-gray-200 border hover:text-blue-600 font-semibold py-3 px-6 rounded-full transition text-center"
           >
             🚀 Go to Practice Sheet
+          </Link>
+
+          <Link
+            href="/progress"
+            className="bg-gradient-to-r from-green-600 to-blue-600 text-white hover:from-green-700 hover:to-blue-700 font-semibold py-3 px-6 rounded-full transition text-center"
+          >
+            📊 Track Your Progress
           </Link>
 
           <Link
@@ -291,43 +240,49 @@ export default function Home() {
             {
               icon: <FaListUl size={28} className="text-blue-400 mb-3" />,
               title: "Tailored Questions",
-              desc: "Topic-wise DSA problems to ensure complete coverage."
+              desc: "Topic-wise DSA problems to ensure complete coverage.",
+              link: "/sheet",
             },
             {
               icon: <FaRegCalendarAlt size={28} className="text-cyan-200 mb-3" />,
               title: "Daily Problem (POTD)",
-              desc: "Stay consistent by solving one new question daily."
+              desc: "Stay consistent by solving one new question daily.",
+              link: "/sheet#potd",
             },
             {
               icon: <BiSliderAlt size={28} className="text-yellow-400 mb-3" />,
               title: "Smart Filters",
-              desc: "Filter by difficulty, status, revision, and platform."
+              desc: "Filter by difficulty, status, revision, and platform.",
+              link: "/sheet#filters",
             },
             {
               icon: <FaChartBar size={28} className="text-green-400 mb-3" />,
               title: "Track Progress",
-              desc: "See how many questions you've solved per topic."
+              desc: "Comprehensive analytics, streak tracking, and detailed progress insights.",
+              link: "/progress",
             },
             {
               icon: <FaFire size={28} className="text-red-400 mb-3" />,
               title: "Streaks",
-              desc: "Mark POTD as done and maintain your daily solving streak!"
+              desc: "Mark POTD as done and maintain your daily solving streak!",
+              link: "/progress#streaks",
             },
             {
               icon: <FaSearch size={28} className="text-purple-400 mb-3" />,
               title: "Search Questions Quickly",
-              desc: "Instantly locate problems using keywords in the dedicated search bar."
+              desc: "Instantly locate problems using keywords in the dedicated search bar.",
+              link: "/sheet#search",
             }
-          ].map(({ title, desc, icon }) => (
+          ].map(({ title, desc, icon ,link }) => (
             <motion.div
               whileHover={{ scale: 1.03 }}
               transition={{ duration: 0.3 }}
-              className="bg-[#202533] p-6 rounded-xl shadow-md border border-gray-800 hover:bg-[#212638]"
+              className="bg-[#202533] p-6 rounded-xl shadow-md border border-gray-800 hover:bg-[#212638] cursor-pointer"
               key={title}
             >
               {/* <h3 className="text-lg font-semibold mb-2">{title}</h3>
               <p className="text-gray-400 text-sm">{desc}</p> */}
-              <div className="flex flex-col items-start text-white">
+              <div onClick={() => window.location.href = link} className="flex flex-col items-start text-white">
           {icon}
           <h3 className="text-lg font-semibold mb-1">{title}</h3>
           <p className="text-gray-400 text-sm">{desc}</p>

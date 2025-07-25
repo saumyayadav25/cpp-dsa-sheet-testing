@@ -5,6 +5,7 @@ import { FiSearch, FiX } from 'react-icons/fi';
 import { FaFire } from 'react-icons/fa';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
+import { usePathname } from 'next/navigation'; // Add this import
 import AuthButtons from "@/components/AuthButtons";
 
 type NavbarProps = {
@@ -18,13 +19,21 @@ export default function Navbar({ searchTerm, setSearchTerm, streak }: NavbarProp
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const pathname = usePathname(); // Add this line
 
-  // Handle scroll effect
+  // Handle scroll effect with throttling
   useEffect(() => {
+    let ticking = false;
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          setIsScrolled(window.scrollY > 20);
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -38,10 +47,12 @@ export default function Navbar({ searchTerm, setSearchTerm, streak }: NavbarProp
     });
   };
 
+  // Dynamic navigation links based on current pathname
   const navLinks = [
-    { href: '/', label: 'Home', isActive: false },
-    { href: '/notes', label: 'Notes', isActive: false },
-    { href: '/sheet', label: 'Sheet', isActive: true },
+    { href: '/', label: 'Home', isActive: pathname === '/' },
+    { href: '/notes', label: 'Notes', isActive: pathname === '/notes' },
+    { href: '/sheet', label: 'Sheet', isActive: pathname === '/sheet' },
+    { href: '/progress', label: 'Progress', isActive: pathname === '/progress' },
   ];
 
   const streakVariants = {
@@ -178,7 +189,7 @@ export default function Navbar({ searchTerm, setSearchTerm, streak }: NavbarProp
             </div>
           </motion.div>
 
-          {/* Navigation Links */}
+          {/* Navigation Links - Updated to use dynamic active state */}
           {navLinks.map((link, index) => (
             <motion.div
               key={link.href}
@@ -187,12 +198,20 @@ export default function Navbar({ searchTerm, setSearchTerm, streak }: NavbarProp
             >
               <Link 
                 href={link.href} 
-                className={`relative px-3 py-2  rounded-lg transition-all duration-300 group hover:text-blue-400 hover:cursor-pointer hover:bg-white/5`}
+                className={`relative px-3 py-2 rounded-lg transition-all duration-300 group hover:text-blue-400 hover:cursor-pointer hover:bg-white/5`}
               >
-                <span className={`relative z-10 ${link.label === 'Sheet' ? 'text-blue-400' : 'text-white hover:text-blue-400'}`}>
+                <span className={`relative z-10 ${link.isActive ? 'text-blue-400' : 'text-white hover:text-blue-400'}`}>
                   {link.label}
                 </span>
-
+                {/* Add active indicator */}
+                {link.isActive && (
+                  <motion.div
+                    layoutId="activeTab"
+                    className="absolute inset-0 bg-blue-500/10 rounded-lg border border-blue-400/30"
+                    initial={false}
+                    transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                  />
+                )}
               </Link>
             </motion.div>
           ))}
@@ -217,8 +236,8 @@ export default function Navbar({ searchTerm, setSearchTerm, streak }: NavbarProp
             </motion.div>
           </motion.button>
           
-          <Link href="/" className="hover:cursor-pointer hover:text-blue-400 transition-colors text-sm">Home</Link>
-          <Link href="/notes" className="hover:cursor-pointer hover:text-blue-400 transition-colors text-sm">Notes</Link>
+          <Link href="/" className={`hover:cursor-pointer transition-colors text-sm ${pathname === '/' ? 'text-blue-400' : 'hover:text-blue-400'}`}>Home</Link>
+          <Link href="/notes" className={`hover:cursor-pointer transition-colors text-sm ${pathname === '/notes' ? 'text-blue-400' : 'hover:text-blue-400'}`}>Notes</Link>
           
           <div className="flex items-center gap-3">
             {/* Mobile Streak Icon */}
