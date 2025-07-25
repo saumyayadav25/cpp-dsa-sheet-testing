@@ -3,7 +3,7 @@ import { Geist, Geist_Mono} from "next/font/google";
 import Script from 'next/script';
 import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
-
+import Footer from "@/components/Footer";
 const plusJakarta = Plus_Jakarta_Sans({
   variable: "--font-plus-jakarta",
   subsets: ["latin"],
@@ -41,6 +41,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${plusJakarta.variable} font-sans`}>
         {children}
+        <Footer/>
       </body>
     </html>
   );
