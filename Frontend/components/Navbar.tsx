@@ -9,8 +9,8 @@ import { usePathname } from 'next/navigation'; // Add this import
 import AuthButtons from "@/components/AuthButtons";
 
 type NavbarProps = {
-  searchTerm: string;
-  setSearchTerm: (term: string) => void;
+  searchTerm?: string;
+  setSearchTerm?: (term: string) => void;
   streak: number;
 };
 
@@ -132,8 +132,8 @@ export default function Navbar({ searchTerm, setSearchTerm, streak }: NavbarProp
                 <input
                   type="text"
                   placeholder="Search questions..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
+                  value={searchTerm ?? ''}
+                  onChange={(e) => setSearchTerm?.(e.target.value)}
                   onFocus={() => setIsSearchFocused(true)}
                   onBlur={() => setIsSearchFocused(false)}
                   className="bg-transparent focus:outline-none text-sm text-white placeholder-gray-400 w-full font-medium"
@@ -146,7 +146,7 @@ export default function Navbar({ searchTerm, setSearchTerm, streak }: NavbarProp
                       initial={{ opacity: 0, scale: 0 }}
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0 }}
-                      onClick={() => setSearchTerm('')}
+                      onClick={() => setSearchTerm?.('')}
                       className="ml-2 p-1 rounded-full hover:bg-white/20 transition-colors"
                     >
                       <FiX className="text-gray-400 hover:text-white" />
@@ -278,14 +278,15 @@ export default function Navbar({ searchTerm, setSearchTerm, streak }: NavbarProp
                   type="text"
                   placeholder="Search questions..."
                   value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onChange={(e) => setSearchTerm?.(e.target.value)}
+
                   className="bg-transparent focus:outline-none text-sm w-full text-white placeholder-gray-400"
                 />
                 {searchTerm && (
                   <motion.button
                     initial={{ opacity: 0, scale: 0 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    onClick={() => setSearchTerm('')}
+                    onClick={() => setSearchTerm?.('')}
                     className="ml-2 p-1 rounded-full hover:bg-white/20 transition-colors"
                   >
                     <FiX className="text-gray-400" />

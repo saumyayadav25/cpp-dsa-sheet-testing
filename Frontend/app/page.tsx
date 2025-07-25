@@ -105,8 +105,6 @@ export default function Home() {
       <ReportIssueButton />
       {/* NAVBAR */}
       <Navbar 
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
         streak={streak}
       />
 

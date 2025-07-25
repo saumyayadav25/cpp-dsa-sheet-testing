@@ -107,7 +107,7 @@ export default function ProgressPage() {
 
   return (
     <>
-      <Navbar searchTerm={searchTerm} setSearchTerm={setSearchTerm} streak={streak} />
+      <Navbar streak={streak}/>
       <main className="min-h-screen bg-[#131313] text-white px-4 md:px-12 py-24">
         
         {/* Header Section */}

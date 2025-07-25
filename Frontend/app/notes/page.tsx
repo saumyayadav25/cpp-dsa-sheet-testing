@@ -53,7 +53,8 @@ const notesList: NoteTopic[] = [
 export default function NotesPage() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
+  const streak = 0;
+  
   // Handle scroll effect
   useEffect(() => {
     const handleScroll = () => {
@@ -122,7 +123,8 @@ export default function NotesPage() {
           </div>
 
           <div className='flex md:hidden'>
-            <Navbar />
+            <Navbar streak={streak}/>
+
           </div>
         </div>
       </motion.nav>
