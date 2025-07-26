@@ -10,7 +10,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         <div className="flex flex-col items-center text-center space-y-2">
           <Image
             src={"/icons/icon-192.png"}
-            alt="Essentia Logo"
+            alt="DSAMate Logo"
             width={120}
             height={120}
             className="mb-10 w-[180px] h-[100px] shake-hover"
