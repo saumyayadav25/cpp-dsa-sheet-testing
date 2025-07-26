@@ -111,10 +111,14 @@ export default function ContributorsPage() {
       <section aria-labelledby="contributors-heading" className="max-w-7xl mx-auto">
         <h1
           id="contributors-heading"
-          className="text-3xl font-bold mb-8 text-center"
+          className="text-3xl md:text-4xl font-bold mb-4 text-center"
         >
-          ✨ <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">Our Contributors</span>
+           <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">Our Amazing Contributors</span>
         </h1>
+        
+        <p className="text-center text-sm md:text-base text-gray-400 mb-8 max-w-2xl mx-auto">
+          Every line of code, every fix, every idea — it all adds up. Grateful to have you building with us. You all are the heart of this community! 🌟
+        </p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {contributors.map((c, index) => {
