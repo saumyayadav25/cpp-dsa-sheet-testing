@@ -3,6 +3,14 @@
 /** @type {import('next').NextConfig} */
 const baseConfig = {
   reactStrictMode: true,
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'avatars.githubusercontent.com',
+      },
+    ],
+  },
 };
 
 const withPWA = require('next-pwa')({
