@@ -21,7 +21,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
 
         <div className="space-y-6 mt-10">
           <FeatureItem icon={<Zap className="text-black" />} title="Smooth User Expirence" desc="Find your problem to get started with." />
-          <FeatureItem icon={<Brain className="text-black" />} title="" desc="All questions in one place." />
+          <FeatureItem icon={<Brain className="text-black" />} title="Question Index" desc="All questions in one place." />
           <FeatureItem icon={<Star className="text-black" />} title="Smart Insights" desc="AI helps to make your progress better." />
         </div>
       </div>
