@@ -107,13 +107,13 @@ export default function ContributorsPage() {
   return (
     <>
       <Navbar streak={streak} />
-      <main className="min-h-screen py-24 px-4 sm:px-8 lg:px-16 bg-background text-foreground">
+      <main className="min-h-screen py-24 px-4 sm:px-8 lg:px-16 bg-[#131313] text-white">
       <section aria-labelledby="contributors-heading" className="max-w-7xl mx-auto">
         <h1
           id="contributors-heading"
           className="text-3xl font-bold mb-8 text-center"
         >
-          ✨ Our Contributors
+          ✨ <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">Our Contributors</span>
         </h1>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -131,8 +131,8 @@ export default function ContributorsPage() {
               />
               <h2 className="text-lg font-semibold mb-2">{c.login}</h2>
               <p className="text-sm text-muted-foreground mb-4">
-                {c.contributions} commit
-                {c.contributions === 1 ? '' : 's'}
+                <span className="text-yellow-400">{c.contributions} commit
+                {c.contributions === 1 ? '' : 's'}</span>
               </p>
               <Button
                 asChild
