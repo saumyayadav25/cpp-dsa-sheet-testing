@@ -1,4 +1,4 @@
-import { Play, Star, Zap } from "lucide-react";
+import { Brain, Star, Zap } from "lucide-react";
 import Image from "next/image";
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
@@ -15,14 +15,14 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
             height={120}
             className="mb-10 w-[180px] h-[100px] shake-hover"
           />
-          <h1 className="text-3xl lg:text-4xl font-bold leading-tight">Turn PDFs into Stunning Reels</h1>
-          <p className="text-base text-white/90 max-w-sm">Summarize documents into AI-powered visual stories your audience will love.</p>
+          <h1 className="text-3xl lg:text-4xl font-bold leading-tight">Make it to DSA</h1>
+          <p className="text-base text-white/90 max-w-sm">Get all DSA problems here to boost your career.</p>
         </div>
 
         <div className="space-y-6 mt-10">
-          <FeatureItem icon={<Zap className="text-black" />} title="Instant Conversion" desc="Upload any PDF and get summaries in seconds." />
-          <FeatureItem icon={<Play className="text-black" />} title="Reel Format" desc="Swipe through key points like social media stories." />
-          <FeatureItem icon={<Star className="text-black" />} title="Smart Insights" desc="AI extracts the most important ideas for you." />
+          <FeatureItem icon={<Zap className="text-black" />} title="Smooth User Expirence" desc="Find your problem to get started with." />
+          <FeatureItem icon={<Brain className="text-black" />} title="" desc="All questions in one place." />
+          <FeatureItem icon={<Star className="text-black" />} title="Smart Insights" desc="AI helps to make your progress better." />
         </div>
       </div>
 
