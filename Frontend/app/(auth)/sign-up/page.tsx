@@ -115,7 +115,7 @@ export default function SignupPage() {
           Create your account
         </h2>
         <p className="text-sm text-gray-500">
-          Join Essentia.ai and summarize your PDFs smarter.
+          Join DSAMate and boost your DSA Skills.
         </p>
       </div>
 

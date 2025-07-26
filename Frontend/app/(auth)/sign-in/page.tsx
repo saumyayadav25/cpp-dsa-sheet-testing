@@ -79,7 +79,7 @@ export default function SigninPage() {
           Login to your account
         </h2>
         <p className="text-sm text-gray-500">
-          Explore Essentia.ai and summarize your PDFs smarter.
+          Explore DSAMate to enter the world of problem solving.
         </p>
       </div>
 
