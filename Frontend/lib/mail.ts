@@ -19,7 +19,7 @@ export const sendEmail = async ({
 }) => {
   try {
     await transporter.sendMail({
-      from: `"Essentia.ai" <${process.env.GOOGLE_APP_USER}>`,
+      from: `"DSAMate" <${process.env.GOOGLE_APP_USER}>`,
       to,
       subject,
       html,
