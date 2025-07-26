@@ -133,6 +133,17 @@ export default function ContributorsPage() {
               }
             };
 
+            // Create reverse gradient for button
+            const getButtonGradient = (ratio: number) => {
+              if (ratio <= 0.33) {
+                return "bg-gradient-to-br from-blue-500/30 to-blue-600/20 hover:from-blue-500/40 hover:to-blue-600/30 border-blue-500/30";
+              } else if (ratio <= 0.66) {
+                return "bg-gradient-to-br from-blue-400/25 via-indigo-500/25 to-purple-500/25 hover:from-blue-400/35 hover:via-indigo-500/35 hover:to-purple-500/35 border-indigo-500/30";
+              } else {
+                return "bg-gradient-to-br from-purple-500/30 to-purple-600/20 hover:from-purple-500/40 hover:to-purple-600/30 border-purple-500/30";
+              }
+            };
+
             return (
             <div
               key={c.login}
@@ -154,7 +165,7 @@ export default function ContributorsPage() {
                 asChild
                 variant="outline"
                 size="sm"
-                className="w-full"
+                className={`w-full ${getButtonGradient(ratio)} text-white border transition-all duration-300`}
               >
                 <Link href={c.html_url} target="_blank">
                   View Profile
