@@ -117,10 +117,26 @@ export default function ContributorsPage() {
         </h1>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {contributors.map((c) => (
+          {contributors.map((c, index) => {
+            // Calculate gradient based on position
+            const totalContributors = contributors.length;
+            const ratio = index / Math.max(1, totalContributors - 1);
+            
+            // Create gradient from purple to blue based on position
+            const getGradient = (ratio: number) => {
+              if (ratio <= 0.33) {
+                return "bg-gradient-to-br from-purple-500/20 to-purple-600/10 border-purple-500/20";
+              } else if (ratio <= 0.66) {
+                return "bg-gradient-to-br from-purple-400/15 via-indigo-500/15 to-blue-500/15 border-indigo-500/20";
+              } else {
+                return "bg-gradient-to-br from-blue-500/20 to-blue-600/10 border-blue-500/20";
+              }
+            };
+
+            return (
             <div
               key={c.login}
-              className="bg-card border border-border rounded-xl p-6 flex flex-col items-center text-center shadow-sm"
+              className={`${getGradient(ratio)} rounded-xl p-6 flex flex-col items-center text-center shadow-sm border`}
             >
               <Image
                 src={c.avatar_url}
@@ -145,7 +161,7 @@ export default function ContributorsPage() {
                 </Link>
               </Button>
             </div>
-          ))}
+          )})}
         </div>
       </section>
     </main>
