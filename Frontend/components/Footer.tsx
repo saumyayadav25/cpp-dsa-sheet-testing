@@ -57,6 +57,12 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/contributors" className="hover:text-blue-400 flex items-center gap-2 transition-all  hover:-translate-y-0.5 duration-300">
+                  <span className="w-1 h-1 bg-gray-500 rounded-full"></span>
+                  Contributors
+                </Link>
+              </li>
+              <li>
                 <a href="https://forms.gle/bdwBp8oFRWugcrcg9" target="_blank" rel="noopener noreferrer" className="hover:text-blue-400 flex items-center gap-2 transition-all  hover:-translate-y-0.5 duration-300">
                   <span className="w-1 h-1 bg-gray-500 rounded-full"></span>
                   Feedback

@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono} from "next/font/google";
 import Script from 'next/script';
 import { Plus_Jakarta_Sans } from "next/font/google";
@@ -29,6 +29,9 @@ export const metadata: Metadata = {
     apple: "/icons/icon-192.png",
   },
   manifest: "/manifest.json",
+};
+
+export const viewport: Viewport = {
   themeColor: "#0A0A0A",
 };
 
@@ -38,7 +41,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="dark">
       <body className={`${plusJakarta.variable} font-sans`}>
         {children}
         <Footer/>
