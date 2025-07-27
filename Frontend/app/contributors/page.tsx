@@ -295,14 +295,14 @@ export default function ContributorsPage() {
           <div className="text-center mb-12">
             <h1
               id="contributors-heading"
-              className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6"
+              className="text-3xl md:text-4xl font-bold mb-4"
             >
               <span className="bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
                 Our Amazing Contributors
               </span>
             </h1>
             
-            <p className="text-lg md:text-xl text-gray-300 mb-6 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-sm md:text-base text-gray-300 max-w-2xl mx-auto">
               Every line of code, every fix, every idea — it all adds up. 
               <br />
               <span className="text-yellow-400 font-medium">
@@ -312,7 +312,7 @@ export default function ContributorsPage() {
               You all are the heart of this community! 🌟
             </p>
 
-            <div className="flex flex-wrap justify-center gap-4 text-sm md:text-base text-gray-400">
+            <div className="flex flex-wrap justify-center gap-4 text-sm md:text-base text-gray-400 mt-6">
               <div className="bg-purple-500/10 px-4 py-2 rounded-full border border-purple-500/20">
                 <span className="text-purple-400 font-semibold">{contributors.length}</span> Contributors
               </div>
@@ -329,7 +329,7 @@ export default function ContributorsPage() {
               <p className="text-gray-400 text-lg">No contributors found.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {contributors.map((contributor, index) => (
                 <ContributorCard
                   key={contributor.login}

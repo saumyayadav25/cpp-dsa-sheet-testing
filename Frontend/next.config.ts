@@ -1,21 +1,22 @@
-// @ts-check
+import type { NextConfig } from "next";
 
-/** @type {import('next').NextConfig} */
-const baseConfig = {
-  reactStrictMode: true,
+const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
         protocol: 'https',
+        hostname: 'lh3.googleusercontent.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
         hostname: 'avatars.githubusercontent.com',
+        port: '',
+        pathname: '/**',
       },
     ],
   },
 };
 
-const withPWA = require('next-pwa')({
-  dest: 'public',
-  disable: process.env.NODE_ENV === 'development',
-});
-
-module.exports = withPWA(baseConfig);
+export default nextConfig;
