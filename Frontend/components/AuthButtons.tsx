@@ -1,75 +1,86 @@
-'use client';
+"use client";
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import axios from "axios";
+import Image from "next/image";
+import { Button } from "./ui/button";
+import { LogOut } from "lucide-react";
+import { toast } from "sonner";
 
 interface User {
   _id: string;
-  username: string;
+  full_name: string;
   email: string;
-  createdAt: string;
+  avatar: string;
 }
 
 export default function AuthButtons() {
   const [showDropdown, setShowDropdown] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const menuItems = [
-    { label: "Star on GitHub", href: "https://github.com/saumyayadav25/DSA-Supreme-3.0", icon: "⭐" },
-    { label: "Give Testimonial", href: "https://forms.gle/8BXQC1o3hsVsEEBp9", icon: "✨" },
-    { label: "Provide Feedback", href: "https://forms.gle/bdwBp8oFRWugcrcg9", icon: "💭" },
-    { label: "Support the project", href: "https://www.buymeacoffee.com/saumyayadav", icon: "🔥" },
+    {
+      label: "Star on GitHub",
+      href: "https://github.com/saumyayadav25/DSA-Supreme-3.0",
+      icon: "⭐",
+    },
+    {
+      label: "Give Testimonial",
+      href: "https://forms.gle/8BXQC1o3hsVsEEBp9",
+      icon: "✨",
+    },
+    {
+      label: "Provide Feedback",
+      href: "https://forms.gle/bdwBp8oFRWugcrcg9",
+      icon: "💭",
+    },
+    {
+      label: "Support the project",
+      href: "https://www.buymeacoffee.com/saumyayadav",
+      icon: "🔥",
+    },
   ];
 
   // Check if user is logged in
   useEffect(() => {
     const checkAuth = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        if (!token) {
-          setLoading(false);
-          return;
-        }
-
-        const response = await fetch('/api/auth/me', {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          },
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          setUser(data.user);
-        } else {
-          // Token is invalid, remove it
-          localStorage.removeItem('token');
-        }
-      } catch (error) {
-        console.error('Auth check failed:', error);
-        localStorage.removeItem('token');
-      } finally {
-        setLoading(false);
+      const res = await axios.get("/api/check-auth");
+      if (res.status === 200) {
+        setIsLoggedIn(true);
+        setUser(res.data?.user);
       }
     };
 
     checkAuth();
-  }, []);
+  }, [isLoggedIn]);
 
+  const handleLogOut = async () => {
+    const res = await axios.post("/api/logout");
+
+    if (res.status === 200) {
+      toast("User Logged Out Successfully!");
+      setIsLoggedIn(false);
+    }
+  };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setShowDropdown(false);
       }
     };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
+    localStorage.removeItem("token");
     setUser(null);
     setShowDropdown(false);
   };
@@ -82,7 +93,7 @@ export default function AuthButtons() {
     open: {
       rotate: 180,
       scale: 1.1,
-    }
+    },
   };
 
   const dropdownVariants = {
@@ -103,7 +114,7 @@ export default function AuthButtons() {
         stiffness: 300,
         staggerChildren: 0.08,
         delayChildren: 0.1,
-      }
+      },
     },
     exit: {
       opacity: 0,
@@ -114,8 +125,8 @@ export default function AuthButtons() {
         duration: 0.2,
         staggerChildren: 0.05,
         staggerDirection: -1,
-      }
-    }
+      },
+    },
   };
 
   const itemVariants = {
@@ -132,7 +143,7 @@ export default function AuthButtons() {
         type: "spring" as "spring",
         damping: 20,
         stiffness: 400,
-      }
+      },
     },
     exit: {
       opacity: 0,
@@ -140,8 +151,8 @@ export default function AuthButtons() {
       rotateY: 15,
       transition: {
         duration: 0.15,
-      }
-    }
+      },
+    },
   };
 
   const HamburgerIcon = ({ isOpen }: { isOpen: boolean }) => (
@@ -173,22 +184,12 @@ export default function AuthButtons() {
     </div>
   );
 
-  if (loading) {
-    return (
-      <div className="relative">
-        <div className="p-3 rounded-xl">
-          <div className="w-6 h-6 border-2 border-white/20 border-t-white rounded-full animate-spin" />
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="flex items-center gap-3">
       {/* Login/Sign In Button or User Profile */}
-      {!user ? (
+      {!isLoggedIn ? (
         <motion.a
-          href="/login"
+          href="/sign-in"
           className="px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-sm font-semibold rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl"
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
@@ -203,9 +204,15 @@ export default function AuthButtons() {
           whileTap={{ scale: 0.95 }}
         >
           <div className="w-6 h-6 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-xs font-bold">
-            {user.username.charAt(0).toUpperCase()}
+            {user?.avatar ? (
+              <Image src={user.avatar} alt="U" width={25} height={25} />
+            ) : (
+              `${user?.full_name?.split(" ")[0]?.charAt(0) ?? "U"}${
+                user?.full_name?.split(" ")[1]?.charAt(0) ?? ""
+              }`.toUpperCase()
+            )}
           </div>
-          <span className="max-w-20 truncate">{user.username}</span>
+          <span className="max-w-20 truncate">{user?.full_name}</span>
         </motion.a>
       )}
 
@@ -220,7 +227,7 @@ export default function AuthButtons() {
           whileTap={{ scale: 0.95 }}
         >
           <HamburgerIcon isOpen={showDropdown} />
-          
+
           {/* Subtle glow effect */}
           <motion.div
             className="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-500/20 to-purple-500/20 blur-lg -z-10"
@@ -246,12 +253,13 @@ export default function AuthButtons() {
               <div className="relative backdrop-blur-2xl bg-gradient-to-tl from-blue-950/90 via-neutral-950/90 to-neutral-950/90  drop-shadow-2xl border border-white/10 rounded-2xl shadow-2xl overflow-hidden">
                 {/* Gradient overlay */}
                 <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent pointer-events-none" />
-                
+
                 {/* Subtle animated border */}
                 <motion.div
                   className="absolute inset-0 rounded-2xl"
                   style={{
-                    background: "linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent)",
+                    background:
+                      "linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent)",
                     backgroundSize: "300% 300%",
                   }}
                   animate={{
@@ -316,7 +324,7 @@ export default function AuthButtons() {
                       rel="noopener noreferrer"
                       variants={itemVariants}
                       className="group flex items-center gap-3 px-4 py-3 text-sm text-gray-200 rounded-xl transition-all duration-200 hover:bg-white/10 hover:text-white relative overflow-hidden"
-                      whileHover={{ 
+                      whileHover={{
                         scale: 1.02,
                         x: 4,
                       }}
@@ -329,15 +337,19 @@ export default function AuthButtons() {
                         whileHover={{ x: "0%" }}
                         transition={{ duration: 0.3 }}
                       />
-                      
-                      <motion.span 
+
+                      <motion.span
                         className="text-lg flex-shrink-0 relative z-10"
                         whileHover={{ scale: 1.2, rotate: 15 }}
-                        transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                        transition={{
+                          type: "spring",
+                          stiffness: 400,
+                          damping: 10,
+                        }}
                       >
                         {item.icon}
                       </motion.span>
-                      
+
                       <span className="relative z-10 font-bold text-sm">
                         {item.label}
                       </span>
@@ -348,7 +360,11 @@ export default function AuthButtons() {
                           className="ml-auto text-xs text-gray-400 opacity-0 group-hover:opacity-100 relative z-10"
                           initial={{ rotate: -45, scale: 0 }}
                           whileHover={{ rotate: 0, scale: 1 }}
-                          transition={{ type: "spring", stiffness: 400, damping: 15 }}
+                          transition={{
+                            type: "spring",
+                            stiffness: 400,
+                            damping: 15,
+                          }}
                         >
                           ↗
                         </motion.span>
@@ -357,7 +373,7 @@ export default function AuthButtons() {
                   ))}
 
                   {/* Logout button for logged-in users */}
-                  {user && (
+                  {isLoggedIn && (
                     <>
                       <motion.div
                         className="h-px bg-gradient-to-r from-transparent via-white/20 to-transparent my-2"
@@ -370,7 +386,7 @@ export default function AuthButtons() {
                         onClick={handleLogout}
                         variants={itemVariants}
                         className="group flex items-center gap-3 px-4 py-3 text-sm text-red-300 rounded-xl transition-all duration-200 hover:bg-red-500/10 hover:text-red-200 relative overflow-hidden w-full"
-                        whileHover={{ 
+                        whileHover={{
                           scale: 1.02,
                           x: 4,
                         }}
@@ -382,17 +398,23 @@ export default function AuthButtons() {
                           whileHover={{ x: "0%" }}
                           transition={{ duration: 0.3 }}
                         />
-                        
-                        <motion.span 
+
+                        <motion.span
                           className="text-lg flex-shrink-0 relative z-10"
                           whileHover={{ scale: 1.2, rotate: 15 }}
-                          transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                          transition={{
+                            type: "spring",
+                            stiffness: 400,
+                            damping: 10,
+                          }}
+                        ></motion.span>
+
+                        <Button
+                          onClick={handleLogOut}
+                          className="relative z-10 font-bold text-sm"
                         >
-                        </motion.span>
-                        
-                        <span className="relative z-10 font-bold text-sm">
-                          Logout
-                        </span>
+                          <LogOut /> LogOut
+                        </Button>
                       </motion.button>
                     </>
                   )}
