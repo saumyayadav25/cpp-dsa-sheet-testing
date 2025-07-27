@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Test POTD Sync</title>
+  </head>
+  <body>
+    <h1>Test POTD Sync Functionality</h1>
+    <p>This is a simple test to verify that the POTD sync works correctly.</p>
+
+    <div id="test-results">
+      <h2>Test Instructions:</h2>
+      <ol>
+        <li>Go to the DSA sheet page (http://localhost:3000/sheet)</li>
+        <li>
+          Note the current POTD question and check if it's marked as solved in
+          the DSA list
+        </li>
+        <li>Click "Mark as Done" on the POTD</li>
+        <li>
+          Verify that the corresponding question in the DSA list is now checked
+        </li>
+        <li>Refresh the page and verify the sync persists</li>
+        <li>
+          Verify that checking a DSA question directly does NOT affect the POTD
+          status
+        </li>
+      </ol>
+
+      <h2>Expected Behavior:</h2>
+      <ul>
+        <li>
+          ✅ Marking POTD as done should check the corresponding DSA list
+          question
+        </li>
+        <li>
+          ✅ If the same question appears again as POTD on another day, it
+          should NOT be auto-marked
+        </li>
+        <li>
+          ✅ Checking a DSA list question directly should NOT affect POTD status
+        </li>
+        <li>✅ Changes should persist after page refresh</li>
+      </ul>
+
+      <h2>Test Data Storage:</h2>
+      <p>Open browser DevTools -> Application -> Local Storage to see:</p>
+      <ul>
+        <li>
+          <code>potd_last_done</code> - stores when POTD was last completed
+        </li>
+        <li><code>potd_streak</code> - stores current streak</li>
+        <li>
+          <code>dsa-progress</code> - stores DSA question progress with keys
+          like "3-7" (topicId-questionId)
+        </li>
+      </ul>
+    </div>
+
+    <script>
+      // Simple JavaScript to help with testing
+      console.log("POTD Sync Test Page Loaded");
+      console.log("Check localStorage for progress data:");
+      console.log("POTD last done:", localStorage.getItem("potd_last_done"));
+      console.log("POTD streak:", localStorage.getItem("potd_streak"));
+      console.log("DSA progress:", localStorage.getItem("dsa-progress"));
+    </script>
+  </body>
+</html>
