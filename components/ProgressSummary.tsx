@@ -24,9 +24,11 @@ export default function ProgressSummary() {
   }, []);
 
   // Calculate stats
-  const allQuestions = sampleTopics.flatMap(topic => topic.questions);
+  const allQuestions = sampleTopics.flatMap(topic => 
+    topic.questions.map(q => ({ ...q, topicId: topic.id }))
+  );
   const totalQuestions = allQuestions.length;
-  const solvedQuestions = allQuestions.filter(q => progress[q.id]?.isSolved).length;
+  const solvedQuestions = allQuestions.filter(q => progress[`${q.topicId}-${q.id}`]?.isSolved).length;
   const percentage = totalQuestions > 0 ? Math.round((solvedQuestions / totalQuestions) * 100) : 0;
 
   return (

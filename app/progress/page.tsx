@@ -37,31 +37,33 @@ export default function ProgressPage() {
 
   // Calculate progress statistics
   const calculateStats = () => {
-    const allQuestions = sampleTopics.flatMap(topic => topic.questions);
+    const allQuestions = sampleTopics.flatMap(topic => 
+      topic.questions.map(q => ({ ...q, topicId: topic.id }))
+    );
     const totalQuestions = allQuestions.length;
-    const solvedQuestions = allQuestions.filter(q => progress[q.id]?.isSolved).length;
-    const markedForRevision = allQuestions.filter(q => progress[q.id]?.isMarkedForRevision).length;
+    const solvedQuestions = allQuestions.filter(q => progress[`${q.topicId}-${q.id}`]?.isSolved).length;
+    const markedForRevision = allQuestions.filter(q => progress[`${q.topicId}-${q.id}`]?.isMarkedForRevision).length;
     
     const difficultyStats = {
       easy: {
         total: allQuestions.filter(q => q.difficulty === 'easy').length,
-        solved: allQuestions.filter(q => q.difficulty === 'easy' && progress[q.id]?.isSolved).length
+        solved: allQuestions.filter(q => q.difficulty === 'easy' && progress[`${q.topicId}-${q.id}`]?.isSolved).length
       },
       medium: {
         total: allQuestions.filter(q => q.difficulty === 'medium').length,
-        solved: allQuestions.filter(q => q.difficulty === 'medium' && progress[q.id]?.isSolved).length
+        solved: allQuestions.filter(q => q.difficulty === 'medium' && progress[`${q.topicId}-${q.id}`]?.isSolved).length
       },
       hard: {
         total: allQuestions.filter(q => q.difficulty === 'hard').length,
-        solved: allQuestions.filter(q => q.difficulty === 'hard' && progress[q.id]?.isSolved).length
+        solved: allQuestions.filter(q => q.difficulty === 'hard' && progress[`${q.topicId}-${q.id}`]?.isSolved).length
       }
     };
 
     const topicStats = sampleTopics.map(topic => ({
       name: topic.name,
       total: topic.questions.length,
-      solved: topic.questions.filter(q => progress[q.id]?.isSolved).length,
-      percentage: Math.round((topic.questions.filter(q => progress[q.id]?.isSolved).length / topic.questions.length) * 100)
+      solved: topic.questions.filter(q => progress[`${topic.id}-${q.id}`]?.isSolved).length,
+      percentage: Math.round((topic.questions.filter(q => progress[`${topic.id}-${q.id}`]?.isSolved).length / topic.questions.length) * 100)
     }));
 
     // Calculate recent activity (last 30 days)
@@ -70,12 +72,12 @@ export default function ProgressPage() {
     
     const recentActivity = allQuestions
       .filter(q => {
-        const solvedAt = progress[q.id]?.solvedAt;
+        const solvedAt = progress[`${q.topicId}-${q.id}`]?.solvedAt;
         return solvedAt && new Date(solvedAt) >= thirtyDaysAgo;
       })
       .sort((a, b) => {
-        const dateA = new Date(progress[a.id]?.solvedAt || 0);
-        const dateB = new Date(progress[b.id]?.solvedAt || 0);
+        const dateA = new Date(progress[`${a.topicId}-${a.id}`]?.solvedAt || 0);
+        const dateB = new Date(progress[`${b.topicId}-${b.id}`]?.solvedAt || 0);
         return dateB.getTime() - dateA.getTime();
       })
       .slice(0, 10);

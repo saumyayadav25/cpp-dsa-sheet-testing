@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Question } from '@/data/questions';
+import { syncPOTDToDSAProgress } from '@/utils/potdSync';
 import Link from 'next/link';
 
 type POTDProps = {
@@ -11,6 +12,7 @@ type POTDProps = {
 
 export default function POTD({ potd, updateStreak }: POTDProps) {
   const [isSolved, setIsSolved] = useState(false);
+  const [showSyncNotification, setShowSyncNotification] = useState(false);
 
   useEffect(() => {
     const today = new Date().toDateString();
@@ -30,6 +32,7 @@ export default function POTD({ potd, updateStreak }: POTDProps) {
     const lastDone = localStorage.getItem('potd_last_done');
     const savedStreak = parseInt(localStorage.getItem('potd_streak') || '0');
 
+    // Update POTD streak
     if (lastDone === new Date(Date.now() - 86400000).toDateString()) {
       const newStreak = savedStreak + 1;
       localStorage.setItem('potd_streak', newStreak.toString());
@@ -40,6 +43,16 @@ export default function POTD({ potd, updateStreak }: POTDProps) {
     localStorage.setItem('potd_last_done', today);
     setIsSolved(true);
     updateStreak(); // notify parent to update Navbar
+
+    // ONE-WAY SYNC: Mark corresponding DSA question as solved
+    if (potd) {
+      const syncSuccess = syncPOTDToDSAProgress(potd);
+      if (syncSuccess) {
+        setShowSyncNotification(true);
+        // Hide notification after 3 seconds
+        setTimeout(() => setShowSyncNotification(false), 3000);
+      }
+    }
   };
 
   if (!potd) return null;
@@ -120,7 +133,14 @@ export default function POTD({ potd, updateStreak }: POTDProps) {
           Mark as Done
         </button>
       ) : (
-        <span className="text-green-400 font-medium text-sm">✅ Today's POTD Completed!</span>
+        <div className="flex flex-col items-end gap-1">
+          <span className="text-green-400 font-medium text-sm">✅ Today's POTD Completed!</span>
+          {showSyncNotification && (
+            <span className="text-blue-400 text-xs animate-fade-in">
+              📋 Also marked in DSA list
+            </span>
+          )}
+        </div>
       )}
     </div>
   );
