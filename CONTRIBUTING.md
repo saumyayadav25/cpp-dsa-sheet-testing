@@ -27,7 +27,7 @@ Thank you for your interest in contributing to this project! Follow the steps be
 Clone the forked repository to your local machine:
 
 ```bash
-git clone https://github.com/saumyayadav25/cpp-dsa-sheet-testing.git
+git clone https://github.com/user-name/cpp-dsa-sheet-testing.git
 cd cpp-dsa-sheet-testing
 
 ### 🌱 4. Create a New Branch
