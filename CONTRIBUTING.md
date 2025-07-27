@@ -1,4 +1,5 @@
-## Contributing Guidelines 
+## Contributing Guidelines
+
 🎉 Whether it's fixing a bug, adding a feature, or improving documentation — every contribution matters.
 
 ## 🛠️ How to Contribute
@@ -7,7 +8,7 @@ Thank you for your interest in contributing to this project! Follow the steps be
 
 ### ⭐ 1. Star and Fork the Repository
 
-- **Star** this repository to show your support!  
+- **Star** this repository to show your support!
 - Click on the **Fork** button at the top-right corner of the repository page. This will create a copy of the repository under your GitHub account.
 
 ### 🐛 2. Create or Claim an Issue
@@ -30,6 +31,7 @@ cd cpp-dsa-sheet-testing
 ### 🌱 4. Create a New Branch
 
 Always create a new branch before making changes:
+
 ```bash
 git checkout -b feature/your-branch-name
 ```
@@ -101,6 +103,7 @@ Submit the PR.
 ### note - whenever making changes try sharing us the screenshot or the visual proof of before vs after as it will be considered as the positive way of handling and resolving issue.
 
 ### ⏳ 9. Wait for Review
+
 A project maintainer will review your pull request.
 
 You may be asked to make changes — don’t worry, that’s part of the collaborative process.
@@ -108,6 +111,7 @@ You may be asked to make changes — don’t worry, that’s part of the collabo
 Once approved, your code will be merged into the main branch.
 
 ### 💡 Additional Tips
+
 Always sync your fork with the upstream repository to stay updated.
 
 Be polite and collaborative in your interactions.
@@ -130,20 +134,25 @@ To avoid merge conflicts, keep your fork updated:
 ## To run locally
 
 ### 1. Install Dependencies
+
 ```bash
 npm install
 ```
 
 ### 2. Run Locally
+
 ```bash
 npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-> Note : Make sure your code runs on your local machine , only then contribute. 
+
+> Note : Make sure your code runs on your local machine , only then contribute.
 
 ---
+
 ## Thank you
+
 Thanks again for helping improve this project!
 
 ✨ If you are complete beginner, read this: [Kickstart Your Open Source Journey with GSSoC - No Experience Needed](https://medium.com/@saumyayadav213/kickstart-your-open-source-journey-with-gssoc-no-experience-needed-39f5934418a0)
