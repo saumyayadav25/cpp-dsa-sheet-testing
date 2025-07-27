@@ -28,7 +28,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
 
       {/* Right Side: Auth Form */}
       <div className="flex flex-col w-full md:w-1/2 justify-center items-center p-6 sm:p-8 bg-slate-300/30 md:h-screen">
-        <Image src={"/assets/logo.png"} alt="Essentia logo" width={100} height={100} className="block md:hidden m-5 w-[100px] h-[100px]"/>
+        <Image src={"/icons/icon-192.png"} alt="DSAMate logo" width={100} height={100} className="block md:hidden m-5 w-[100px] h-[100px]"/>
         <div className="w-full max-w-md">
           {children}
         </div>
