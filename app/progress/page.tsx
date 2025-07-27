@@ -1,77 +1,110 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { FaChartLine, FaCalendarCheck, FaFire, FaTrophy, FaBullseye, FaBolt, FaCode, FaClock } from 'react-icons/fa';
-import { BiTrendingUp } from 'react-icons/bi';
-import { sampleTopics, type Question, type Topic } from '@/data/questions';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
-import ProgressChart from '@/components/ProgressChart';
-import ProgressStats from '@/components/ProgressStats';
-import TopicProgress from '@/components/TopicProgress';
-import RecentActivity from '@/components/RecentActivity';
-import StreakCalendar from '@/components/StreakCalendar';
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import {
+  FaChartLine,
+  FaCalendarCheck,
+  FaFire,
+  FaTrophy,
+  FaBullseye,
+  FaBolt,
+  FaCode,
+  FaClock,
+} from "react-icons/fa";
+import { BiTrendingUp } from "react-icons/bi";
+import { sampleTopics, type Question, type Topic } from "@/data/questions";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import ProgressChart from "@/components/ProgressChart";
+import ProgressStats from "@/components/ProgressStats";
+import TopicProgress from "@/components/TopicProgress";
+import RecentActivity from "@/components/RecentActivity";
+import StreakCalendar from "@/components/StreakCalendar";
 
 export default function ProgressPage() {
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [streak, setStreak] = useState(0);
   const [progress, setProgress] = useState<{
-    [id: string]: { 
-      isSolved: boolean; 
-      isMarkedForRevision: boolean; 
+    [id: string]: {
+      isSolved: boolean;
+      isMarkedForRevision: boolean;
       note?: string;
       solvedAt?: string;
     };
   }>({});
 
   useEffect(() => {
-    const storedProgress = localStorage.getItem('dsa-progress');
+    const storedProgress = localStorage.getItem("dsa-progress");
     if (storedProgress) {
       setProgress(JSON.parse(storedProgress));
     }
 
-    const savedStreak = parseInt(localStorage.getItem('potd_streak') || '0');
+    const savedStreak = parseInt(localStorage.getItem("potd_streak") || "0");
     setStreak(savedStreak);
   }, []);
 
   // Calculate progress statistics
   const calculateStats = () => {
-    const allQuestions = sampleTopics.flatMap(topic => 
-      topic.questions.map(q => ({ ...q, topicId: topic.id }))
+    const allQuestions = sampleTopics.flatMap((topic) =>
+      topic.questions.map((q) => ({ ...q, topicId: topic.id }))
     );
     const totalQuestions = allQuestions.length;
-    const solvedQuestions = allQuestions.filter(q => progress[`${q.topicId}-${q.id}`]?.isSolved).length;
-    const markedForRevision = allQuestions.filter(q => progress[`${q.topicId}-${q.id}`]?.isMarkedForRevision).length;
-    
+    const solvedQuestions = allQuestions.filter(
+      (q) => progress[`${q.topicId}-${q.id}`]?.isSolved
+    ).length;
+    const markedForRevision = allQuestions.filter(
+      (q) => progress[`${q.topicId}-${q.id}`]?.isMarkedForRevision
+    ).length;
+
     const difficultyStats = {
       easy: {
-        total: allQuestions.filter(q => q.difficulty === 'easy').length,
-        solved: allQuestions.filter(q => q.difficulty === 'easy' && progress[`${q.topicId}-${q.id}`]?.isSolved).length
+        total: allQuestions.filter((q) => q.difficulty === "easy").length,
+        solved: allQuestions.filter(
+          (q) =>
+            q.difficulty === "easy" &&
+            progress[`${q.topicId}-${q.id}`]?.isSolved
+        ).length,
       },
       medium: {
-        total: allQuestions.filter(q => q.difficulty === 'medium').length,
-        solved: allQuestions.filter(q => q.difficulty === 'medium' && progress[`${q.topicId}-${q.id}`]?.isSolved).length
+        total: allQuestions.filter((q) => q.difficulty === "medium").length,
+        solved: allQuestions.filter(
+          (q) =>
+            q.difficulty === "medium" &&
+            progress[`${q.topicId}-${q.id}`]?.isSolved
+        ).length,
       },
       hard: {
-        total: allQuestions.filter(q => q.difficulty === 'hard').length,
-        solved: allQuestions.filter(q => q.difficulty === 'hard' && progress[`${q.topicId}-${q.id}`]?.isSolved).length
-      }
+        total: allQuestions.filter((q) => q.difficulty === "hard").length,
+        solved: allQuestions.filter(
+          (q) =>
+            q.difficulty === "hard" &&
+            progress[`${q.topicId}-${q.id}`]?.isSolved
+        ).length,
+      },
     };
 
-    const topicStats = sampleTopics.map(topic => ({
+    const topicStats = sampleTopics.map((topic) => ({
       name: topic.name,
       total: topic.questions.length,
-      solved: topic.questions.filter(q => progress[`${topic.id}-${q.id}`]?.isSolved).length,
-      percentage: Math.round((topic.questions.filter(q => progress[`${topic.id}-${q.id}`]?.isSolved).length / topic.questions.length) * 100)
+      solved: topic.questions.filter(
+        (q) => progress[`${topic.id}-${q.id}`]?.isSolved
+      ).length,
+      percentage: Math.round(
+        (topic.questions.filter(
+          (q) => progress[`${topic.id}-${q.id}`]?.isSolved
+        ).length /
+          topic.questions.length) *
+          100
+      ),
     }));
 
     // Calculate recent activity (last 30 days)
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-    
+
     const recentActivity = allQuestions
-      .filter(q => {
+      .filter((q) => {
         const solvedAt = progress[`${q.topicId}-${q.id}`]?.solvedAt;
         return solvedAt && new Date(solvedAt) >= thirtyDaysAgo;
       })
@@ -89,7 +122,7 @@ export default function ProgressPage() {
       percentage: Math.round((solvedQuestions / totalQuestions) * 100),
       difficultyStats,
       topicStats,
-      recentActivity
+      recentActivity,
     };
   };
 
@@ -109,9 +142,8 @@ export default function ProgressPage() {
 
   return (
     <>
-      <Navbar streak={streak}/>
+      <Navbar streak={streak} />
       <main className="min-h-screen bg-[#131313] text-white px-4 md:px-12 py-24">
-        
         {/* Header Section */}
         <motion.div
           initial="hidden"
@@ -124,8 +156,8 @@ export default function ProgressPage() {
             Track Your Progress
           </h1>
           <p className="text-sm md:text-base text-gray-400 max-w-2xl mx-auto">
-            Monitor your DSA journey with detailed analytics, track your solving patterns, 
-            and celebrate your achievements along the way.
+            Monitor your DSA journey with detailed analytics, track your solving
+            patterns, and celebrate your achievements along the way.
           </p>
         </motion.div>
 
@@ -142,10 +174,14 @@ export default function ProgressPage() {
               <FaTrophy className="text-2xl text-green-400" />
               <span className="text-sm text-green-300">Total Solved</span>
             </div>
-            <div className="text-3xl font-bold text-white mb-2">{stats.solvedQuestions}</div>
-            <div className="text-sm text-gray-400">out of {stats.totalQuestions} questions</div>
+            <div className="text-3xl font-bold text-white mb-2">
+              {stats.solvedQuestions}
+            </div>
+            <div className="text-sm text-gray-400">
+              out of {stats.totalQuestions} questions
+            </div>
             <div className="mt-3 bg-gray-700 rounded-full h-2">
-              <div 
+              <div
                 className="bg-green-400 h-2 rounded-full transition-all duration-500"
                 style={{ width: `${stats.percentage}%` }}
               ></div>
@@ -166,7 +202,9 @@ export default function ProgressPage() {
               <FaBullseye className="text-2xl text-purple-400" />
               <span className="text-sm text-purple-300">Completion Rate</span>
             </div>
-            <div className="text-3xl font-bold text-white mb-2">{stats.percentage}%</div>
+            <div className="text-3xl font-bold text-white mb-2">
+              {stats.percentage}%
+            </div>
             <div className="text-sm text-gray-400">overall progress</div>
           </div>
 
@@ -175,7 +213,9 @@ export default function ProgressPage() {
               <FaBolt className="text-2xl text-yellow-400" />
               <span className="text-sm text-yellow-300">For Review</span>
             </div>
-            <div className="text-3xl font-bold text-white mb-2">{stats.markedForRevision}</div>
+            <div className="text-3xl font-bold text-white mb-2">
+              {stats.markedForRevision}
+            </div>
             <div className="text-sm text-gray-400">questions marked</div>
           </div>
         </motion.div>
@@ -190,7 +230,7 @@ export default function ProgressPage() {
           >
             <ProgressChart difficultyStats={stats.difficultyStats} />
           </motion.div>
-          
+
           <motion.div
             initial="hidden"
             animate="visible"
@@ -211,14 +251,17 @@ export default function ProgressPage() {
           >
             <TopicProgress topicStats={stats.topicStats} />
           </motion.div>
-          
+
           <motion.div
             initial="hidden"
             animate="visible"
             custom={5}
             variants={fadeInUp}
           >
-            <RecentActivity recentActivity={stats.recentActivity} progress={progress} />
+            <RecentActivity
+              recentActivity={stats.recentActivity}
+              progress={progress}
+            />
           </motion.div>
         </div>
 
@@ -231,7 +274,6 @@ export default function ProgressPage() {
         >
           <StreakCalendar progress={progress} />
         </motion.div>
-
       </main>
     </>
   );

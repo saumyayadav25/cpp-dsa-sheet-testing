@@ -1,8 +1,8 @@
-import { Question, sampleTopics } from '@/data/questions';
+import { Question, sampleTopics } from "@/data/questions";
 
 /**
  * Utility functions for POTD and DSA progress synchronization
- * 
+ *
  * This implements one-way sync: POTD completion → DSA list marking
  * DSA list completion does NOT affect POTD status (as per requirements)
  */
@@ -15,43 +15,47 @@ import { Question, sampleTopics } from '@/data/questions';
  */
 export function findCorrespondingDSAQuestion(potdQuestion: Question) {
   for (const topic of sampleTopics) {
-    const questionMatch = topic.questions.find(q => {
+    const questionMatch = topic.questions.find((q) => {
       // Primary matching criteria
       const titleMatch = q.title === potdQuestion.title;
       const difficultyMatch = q.difficulty === potdQuestion.difficulty;
-      
+
       // Secondary matching criteria (for better accuracy)
-      const linksMatch = JSON.stringify(q.links) === JSON.stringify(potdQuestion.links);
-      
+      const linksMatch =
+        JSON.stringify(q.links) === JSON.stringify(potdQuestion.links);
+
       return titleMatch && difficultyMatch && linksMatch;
     });
-    
+
     if (questionMatch) {
       return {
         topic,
         question: questionMatch,
-        uniqueKey: `${topic.id}-${questionMatch.id}`
+        uniqueKey: `${topic.id}-${questionMatch.id}`,
       };
     }
   }
-  
+
   // Fallback: Try with just title and difficulty if links don't match
   for (const topic of sampleTopics) {
-    const questionMatch = topic.questions.find(q => 
-      q.title === potdQuestion.title && 
-      q.difficulty === potdQuestion.difficulty
+    const questionMatch = topic.questions.find(
+      (q) =>
+        q.title === potdQuestion.title &&
+        q.difficulty === potdQuestion.difficulty
     );
-    
+
     if (questionMatch) {
-      console.warn(`POTD Sync: Found match with different links for "${potdQuestion.title}"`);
+      console.warn(
+        `POTD Sync: Found match with different links for "${potdQuestion.title}"`
+      );
       return {
         topic,
         question: questionMatch,
-        uniqueKey: `${topic.id}-${questionMatch.id}`
+        uniqueKey: `${topic.id}-${questionMatch.id}`,
       };
     }
   }
-  
+
   return null;
 }
 
@@ -65,25 +69,30 @@ export function findCorrespondingDSAQuestion(potdQuestion: Question) {
 export function syncPOTDToDSAProgress(potdQuestion: Question): boolean {
   try {
     const match = findCorrespondingDSAQuestion(potdQuestion);
-    
+
     if (!match) {
-      console.warn('POTD Sync: Could not find corresponding DSA question for:', {
-        title: potdQuestion.title,
-        difficulty: potdQuestion.difficulty
-      });
+      console.warn(
+        "POTD Sync: Could not find corresponding DSA question for:",
+        {
+          title: potdQuestion.title,
+          difficulty: potdQuestion.difficulty,
+        }
+      );
       return false;
     }
-    
+
     // Get current DSA progress
-    const storedProgress = localStorage.getItem('dsa-progress');
+    const storedProgress = localStorage.getItem("dsa-progress");
     const progress = storedProgress ? JSON.parse(storedProgress) : {};
-    
+
     // Check if already solved to avoid unnecessary updates
     if (progress[match.uniqueKey]?.isSolved) {
-      console.log(`POTD Sync: Question "${potdQuestion.title}" already marked as solved in DSA progress`);
+      console.log(
+        `POTD Sync: Question "${potdQuestion.title}" already marked as solved in DSA progress`
+      );
       return true;
     }
-    
+
     // Update the DSA progress to mark this question as solved
     const updatedProgress = {
       ...progress,
@@ -92,19 +101,21 @@ export function syncPOTDToDSAProgress(potdQuestion: Question): boolean {
         isSolved: true,
         solvedAt: new Date().toISOString(),
         // Preserve other properties like notes and revision status
-        isMarkedForRevision: progress[match.uniqueKey]?.isMarkedForRevision || false,
-        note: progress[match.uniqueKey]?.note || '',
+        isMarkedForRevision:
+          progress[match.uniqueKey]?.isMarkedForRevision || false,
+        note: progress[match.uniqueKey]?.note || "",
       },
     };
-    
+
     // Save updated progress back to localStorage
-    localStorage.setItem('dsa-progress', JSON.stringify(updatedProgress));
-    
-    console.log(`POTD Sync: Successfully marked "${potdQuestion.title}" as solved in DSA progress (${match.uniqueKey})`);
+    localStorage.setItem("dsa-progress", JSON.stringify(updatedProgress));
+
+    console.log(
+      `POTD Sync: Successfully marked "${potdQuestion.title}" as solved in DSA progress (${match.uniqueKey})`
+    );
     return true;
-    
   } catch (error) {
-    console.error('POTD Sync: Error occurred during sync:', error);
+    console.error("POTD Sync: Error occurred during sync:", error);
     return false;
   }
 }
@@ -117,7 +128,7 @@ export function syncPOTDToDSAProgress(potdQuestion: Question): boolean {
  */
 export function getPOTDStatus(): boolean {
   const today = new Date().toDateString();
-  const lastDone = localStorage.getItem('potd_last_done');
+  const lastDone = localStorage.getItem("potd_last_done");
   return today === lastDone;
 }
 
@@ -127,8 +138,11 @@ export function getPOTDStatus(): boolean {
  * @param questionId - The question ID
  * @returns boolean indicating if the question is marked as solved
  */
-export function isDSAQuestionSolved(topicId: number, questionId: number): boolean {
-  const storedProgress = localStorage.getItem('dsa-progress');
+export function isDSAQuestionSolved(
+  topicId: number,
+  questionId: number
+): boolean {
+  const storedProgress = localStorage.getItem("dsa-progress");
   const progress = storedProgress ? JSON.parse(storedProgress) : {};
   const uniqueKey = `${topicId}-${questionId}`;
   return progress[uniqueKey]?.isSolved || false;
@@ -139,20 +153,22 @@ export function isDSAQuestionSolved(topicId: number, questionId: number): boolea
  * Useful for development and troubleshooting
  */
 export function debugSyncStatus(): void {
-  console.log('=== POTD Sync Debug Info ===');
-  console.log('POTD Status:', {
-    lastDone: localStorage.getItem('potd_last_done'),
-    streak: localStorage.getItem('potd_streak'),
-    isCompletedToday: getPOTDStatus()
+  console.log("=== POTD Sync Debug Info ===");
+  console.log("POTD Status:", {
+    lastDone: localStorage.getItem("potd_last_done"),
+    streak: localStorage.getItem("potd_streak"),
+    isCompletedToday: getPOTDStatus(),
   });
-  
-  const progress = JSON.parse(localStorage.getItem('dsa-progress') || '{}');
-  const solvedCount = Object.values(progress).filter((p: any) => p?.isSolved).length;
-  
-  console.log('DSA Progress:', {
+
+  const progress = JSON.parse(localStorage.getItem("dsa-progress") || "{}");
+  const solvedCount = Object.values(progress).filter(
+    (p: any) => p?.isSolved
+  ).length;
+
+  console.log("DSA Progress:", {
     totalEntries: Object.keys(progress).length,
     solvedQuestions: solvedCount,
-    sampleEntries: Object.entries(progress).slice(0, 3)
+    sampleEntries: Object.entries(progress).slice(0, 3),
   });
-  console.log('========================');
+  console.log("========================");
 }

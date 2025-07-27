@@ -1,35 +1,40 @@
-'use client';
+"use client";
 
-import { motion } from 'framer-motion';
-import { FaTrophy, FaFire, FaChartLine } from 'react-icons/fa';
-import Link from 'next/link';
-import { sampleTopics } from '@/data/questions';
-import { useEffect, useState } from 'react';
+import { motion } from "framer-motion";
+import { FaTrophy, FaFire, FaChartLine } from "react-icons/fa";
+import Link from "next/link";
+import { sampleTopics } from "@/data/questions";
+import { useEffect, useState } from "react";
 
 export default function ProgressSummary() {
   const [progress, setProgress] = useState<{
-    [id: string]: { 
-      isSolved: boolean; 
-      isMarkedForRevision: boolean; 
+    [id: string]: {
+      isSolved: boolean;
+      isMarkedForRevision: boolean;
       note?: string;
       solvedAt?: string;
     };
   }>({});
 
   useEffect(() => {
-    const storedProgress = localStorage.getItem('dsa-progress');
+    const storedProgress = localStorage.getItem("dsa-progress");
     if (storedProgress) {
       setProgress(JSON.parse(storedProgress));
     }
   }, []);
 
   // Calculate stats
-  const allQuestions = sampleTopics.flatMap(topic => 
-    topic.questions.map(q => ({ ...q, topicId: topic.id }))
+  const allQuestions = sampleTopics.flatMap((topic) =>
+    topic.questions.map((q) => ({ ...q, topicId: topic.id }))
   );
   const totalQuestions = allQuestions.length;
-  const solvedQuestions = allQuestions.filter(q => progress[`${q.topicId}-${q.id}`]?.isSolved).length;
-  const percentage = totalQuestions > 0 ? Math.round((solvedQuestions / totalQuestions) * 100) : 0;
+  const solvedQuestions = allQuestions.filter(
+    (q) => progress[`${q.topicId}-${q.id}`]?.isSolved
+  ).length;
+  const percentage =
+    totalQuestions > 0
+      ? Math.round((solvedQuestions / totalQuestions) * 100)
+      : 0;
 
   return (
     <motion.div
@@ -44,7 +49,9 @@ export default function ProgressSummary() {
             <FaTrophy className="text-2xl text-blue-400" />
           </div>
           <div>
-            <h3 className="text-xl font-semibold text-white mb-1">Your Progress</h3>
+            <h3 className="text-xl font-semibold text-white mb-1">
+              Your Progress
+            </h3>
             <p className="text-gray-400 text-sm">
               {solvedQuestions} out of {totalQuestions} problems solved
             </p>
@@ -73,7 +80,9 @@ export default function ProgressSummary() {
               />
             </svg>
             <div className="absolute inset-0 flex items-center justify-center">
-              <span className="text-sm font-bold text-white">{percentage}%</span>
+              <span className="text-sm font-bold text-white">
+                {percentage}%
+              </span>
             </div>
           </div>
 
