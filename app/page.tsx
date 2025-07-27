@@ -7,6 +7,8 @@ import { FaStar, FaRegStar, FaUserCircle } from "react-icons/fa";
 import { BiSliderAlt } from "react-icons/bi";
 import ReportIssueButton from '@/components/ReportIssueButton';
 import Navbar from '@/components/Navbar';
+import { BackgroundPattern } from '@/components/BackgroundPattern';
+import { EnhancedCard } from '@/components/EnhancedCard';
 import { motion } from 'framer-motion';
 
 
@@ -83,25 +85,25 @@ export default function Home() {
   }, []);
 
   function FAQItem({ question, answer }: { question: string; answer: string }) {
-  const [isOpen, setIsOpen] = useState(false);
-
-  return (
-    <div
-      className="bg-[#1a1e2a] p-5 rounded-xl border border-gray-800 cursor-pointer"
-      onClick={() => setIsOpen(!isOpen)}
-    >
-      <div className="flex justify-between items-center">
-        <h4 className="text-white font-semibold">{question}</h4>
-        <span className="text-gray-400 text-xl">{isOpen ? "−" : "+"}</span>
+    const [isOpen, setIsOpen] = useState(false);
+    return (
+      <div
+        className="bg-card border border-border p-5 rounded-xl cursor-pointer hover:bg-muted/50 transition-colors duration-200"
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        <div className="flex justify-between items-center">
+          <h4 className="text-card-foreground font-semibold">{question}</h4>
+          <span className="text-muted-foreground text-xl">{isOpen ? "−" : "+"}</span>
+        </div>
+        {isOpen && <p className="text-muted-foreground text-sm mt-2">{answer}</p>}
       </div>
-      {isOpen && <p className="text-gray-400 text-sm mt-2">{answer}</p>}
-    </div>
-  );
-}
+    );
+  }
   // Removed unused state and variables
   return (
     
-    <main className="min-h-screen bg-black text-white">
+    <main className="min-h-screen bg-background text-foreground transition-colors duration-300 relative overflow-hidden">
+      <BackgroundPattern />
       <ReportIssueButton />
       {/* NAVBAR */}
       <Navbar 
@@ -117,51 +119,83 @@ export default function Home() {
             transition: { staggerChildren: 0.2 }
           }
         }}
-        className="flex flex-col items-center justify-center text-center px-6 py-16 pt-24"
+        className="flex flex-col items-center justify-center text-center px-6 py-20 pt-32 relative z-10"
       >
-        <h1 className="text-4xl md:text-5xl font-bold mb-4">DSA<span className="text-blue-400">Mate</span> template</h1>
-        <motion.h1
+        {/* Enhanced hero badge */}
+        <motion.div
           variants={fadeInUp}
           custom={0}
-          className="text-4xl md:text-5xl font-bold mb-4"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium mb-6 backdrop-blur-sm"
         >
-          Your daily dose for DSA practice
-        </motion.h1>
-        <motion.p
+          <span className="w-2 h-2 bg-primary rounded-full animate-pulse"></span>
+          Open Source DSA Practice Platform
+        </motion.div>
+        
+        <motion.h1
           variants={fadeInUp}
           custom={1}
-          className="text-lg text-gray-300 max-w-xl mb-6"
+          className="text-5xl md:text-7xl font-black mb-6 tracking-tight"
+        >
+          <span className="gradient-text-light">DSA</span>
+          <span className="text-primary">Mate</span>
+          <span className="text-muted-foreground block text-3xl md:text-4xl font-medium mt-2">Template</span>
+        </motion.h1>
+        
+        <motion.h2
+          variants={fadeInUp}
+          custom={2}
+          className="text-xl md:text-2xl font-semibold mb-4 text-foreground/90"
+        >
+          Your daily dose for DSA practice
+        </motion.h2>
+        
+        <motion.p
+          variants={fadeInUp}
+          custom={3}
+          className="text-lg text-muted-foreground max-w-2xl mb-8 leading-relaxed"
         >
           Solve better, revise smarter, and stay consistent with your preparation journey.
-          ⚠️ This is just a <span className="font-medium">template version</span> of DSAMate.
+          <br className="hidden sm:block" />
+          <span className="inline-flex items-center gap-2 mt-2 px-3 py-1 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 text-sm font-medium">
+            ⚠️ This is just a template version of DSAMate
+          </span>
         </motion.p>
         <motion.div
           variants={fadeInUp}
-          custom={2}
-          className="flex flex-col sm:flex-row gap-4 mt-6"
+          custom={4}
+          className="flex flex-col sm:flex-row gap-4 mt-8"
         >
-          <Link
-            href="/sheet"
-            className="bg-black text-white hover:bg-gray-200 border hover:text-blue-600 font-semibold py-3 px-6 rounded-full transition text-center"
-          >
-            🚀 Go to Practice Sheet
-          </Link>
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+            <Link
+              href="/sheet"
+              className="inline-flex items-center gap-2 bg-gradient-to-br from-blue-500 to-teal-500 text-white hover:from-blue-600 hover:to-teal-600 font-semibold py-4 px-8 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-2xl focus-ring group"
+            >
+              <span className="group-hover:animate-bounce">🚀</span>
+              Go to Practice Sheet
+            </Link>
+          </motion.div>
 
-          <Link
-            href="/progress"
-            className="bg-gradient-to-r from-green-600 to-blue-600 text-white hover:from-green-700 hover:to-blue-700 font-semibold py-3 px-6 rounded-full transition text-center"
-          >
-            📊 Track Your Progress
-          </Link>
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+            <Link
+              href="/progress"
+              className="inline-flex items-center gap-2 bg-gradient-to-br from-green-600 to-lime-600 text-white hover:from-green-500 hover:to-lime-500 font-semibold py-4 px-8 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-2xl focus-ring group"
+            >
+              <span className="group-hover:animate-pulse">📊</span>
+              Track Your Progress
+            </Link>
+          </motion.div>
 
-          <Link
-            href="https://dsamate.vercel.app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="bg-gray-200 text-blue-600 hover:text-white hover:bg-black border border-blue-600 font-semibold py-3 px-6 rounded-full transition text-center"
-          >
-            🔗 Visit Original DSAMate
-          </Link>
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+            <Link
+              href="https://dsamate.vercel.app"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 bg-card border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground font-semibold py-4 px-8 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-2xl focus-ring group"
+            >
+              <span className="group-hover:animate-spin">🔗</span>
+              Visit Original DSAMate
+            </Link>
+          </motion.div>
         </motion.div>
 
       </motion.section>
@@ -179,23 +213,35 @@ export default function Home() {
           <motion.div 
           variants={fadeInUp}
           custom={0}
-          className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center px-4 sm:px-32">
-            <div className="bg-[#141720] border border-gray-700 py-4 px-4 rounded-md">
-              <h2 className="text-m text-gray-300">Total Users</h2>
-              <h3 className="text-2xl font-bold text-blue-400">2100+</h3>
-            </div>
-            <div className="bg-[#141720] border border-gray-700 py-4 px-4 rounded-md">
-              <h2 className="text-m text-gray-300">Daily users</h2>
-              <h3 className="text-2xl font-bold text-yellow-400">30+</h3>
-            </div>
-            <div className="bg-[#141720] border border-gray-700 py-4 px-4 rounded-md">
-              <h2 className="text-m text-gray-300">DSA Problems</h2>
-              <h3 className="text-2xl font-bold text-green-400">450+</h3>
-            </div>
-            <div className="bg-[#141720] border border-gray-700 py-4 px-4 rounded-md">
-              <h2 className="text-m text-gray-300">Testimonials received</h2>
-              <h3 className="text-2xl font-bold text-pink-400">10+</h3>
-            </div>
+          className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center px-4 sm:px-16">
+            {[
+              { label: "Total Users", value: "2100+", gradient: "blue" as const, color: "text-blue-500" },
+              { label: "Daily Users", value: "30+", gradient: "orange" as const, color: "text-yellow-500" },
+              { label: "DSA Problems", value: "450+", gradient: "green" as const, color: "text-green-500" },
+              { label: "Testimonials", value: "10+", gradient: "pink" as const, color: "text-pink-500" },
+            ].map(({ label, value, gradient, color }, index) => (
+              <motion.div
+                key={label}
+                initial={{ opacity: 0, scale: 0.8 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ delay: index * 0.1, duration: 0.5 }}
+                viewport={{ once: true }}
+              >
+                <EnhancedCard gradient={gradient} className="text-center py-8">
+                  <h2 className="text-sm text-muted-foreground mb-2 font-medium">{label}</h2>
+                  <motion.h3 
+                    className={`text-4xl font-black ${color} mb-2`}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ delay: (index * 0.1) + 0.2, duration: 0.5 }}
+                    viewport={{ once: true }}
+                  >
+                    {value}
+                  </motion.h3>
+                  <div className={`w-12 h-1 ${color.replace('text-', 'bg-')} rounded-full mx-auto opacity-50`} />
+                </EnhancedCard>
+              </motion.div>
+            ))}
           </motion.div>
         </motion.section>
         
@@ -229,74 +275,94 @@ export default function Home() {
   whileInView={{ opacity: 1, y: 0 }}
   transition={{ duration: 0.5 }}
   viewport={{ once: true }}
-      className="px-6 md:px-20 py-10 bg-[#0d0f16]">
+      className="px-6 md:px-20 py-10 bg-muted/20">
         <h2 className="text-2xl md:text-4xl font-semibold text-center mb-8">
           Key Features
         </h2>
-        <div className="px-2 sm:px-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="px-2 sm:px-10 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           {[
             {
-              icon: <FaListUl size={28} className="text-blue-400 mb-3" />,
+              icon: <FaListUl size={32} className="text-blue-500 mb-4" />,
               title: "Tailored Questions",
-              desc: "Topic-wise DSA problems to ensure complete coverage.",
+              desc: "Topic-wise DSA problems to ensure complete coverage and systematic learning.",
               link: "/sheet",
+              gradient: "blue" as const,
             },
             {
-              icon: <FaRegCalendarAlt size={28} className="text-cyan-200 mb-3" />,
+              icon: <FaRegCalendarAlt size={32} className="text-cyan-500 mb-4" />,
               title: "Daily Problem (POTD)",
-              desc: "Stay consistent by solving one new question daily.",
+              desc: "Stay consistent by solving one new question daily and build momentum.",
               link: "/sheet#potd",
+              gradient: "blue" as const,
             },
             {
-              icon: <BiSliderAlt size={28} className="text-yellow-400 mb-3" />,
+              icon: <BiSliderAlt size={32} className="text-yellow-500 mb-4" />,
               title: "Smart Filters",
-              desc: "Filter by difficulty, status, revision, and platform.",
+              desc: "Filter by difficulty, status, revision, and platform for targeted practice.",
               link: "/sheet#filters",
+              gradient: "orange" as const,
             },
             {
-              icon: <FaChartBar size={28} className="text-green-400 mb-3" />,
+              icon: <FaChartBar size={32} className="text-green-500 mb-4" />,
               title: "Track Progress",
               desc: "Comprehensive analytics, streak tracking, and detailed progress insights.",
               link: "/progress",
+              gradient: "green" as const,
             },
             {
-              icon: <FaFire size={28} className="text-red-400 mb-3" />,
+              icon: <FaFire size={32} className="text-red-500 mb-4" />,
               title: "Streaks",
-              desc: "Mark POTD as done and maintain your daily solving streak!",
+              desc: "Mark POTD as done and maintain your daily solving streak for consistency!",
               link: "/progress#streaks",
+              gradient: "orange" as const,
             },
             {
-              icon: <FaSearch size={28} className="text-purple-400 mb-3" />,
-              title: "Search Questions Quickly",
+              icon: <FaSearch size={32} className="text-purple-500 mb-4" />,
+              title: "Quick Search",
               desc: "Instantly locate problems using keywords in the dedicated search bar.",
               link: "/sheet#search",
+              gradient: "purple" as const,
             }
-          ].map(({ title, desc, icon ,link }) => (
+          ].map(({ title, desc, icon, link, gradient }, index) => (
             <motion.div
-              whileHover={{ scale: 1.03 }}
-              transition={{ duration: 0.3 }}
-              className="bg-[#202533] p-6 rounded-xl shadow-md border border-gray-800 hover:bg-[#212638] cursor-pointer"
               key={title}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1, duration: 0.5 }}
+              viewport={{ once: true }}
             >
-              {/* <h3 className="text-lg font-semibold mb-2">{title}</h3>
-              <p className="text-gray-400 text-sm">{desc}</p> */}
-              <div onClick={() => window.location.href = link} className="flex flex-col items-start text-white">
-          {icon}
-          <h3 className="text-lg font-semibold mb-1">{title}</h3>
-          <p className="text-gray-400 text-sm">{desc}</p>
-        </div>
+              <EnhancedCard 
+                gradient={gradient}
+                onClick={() => window.location.href = link}
+                className="h-full"
+              >
+                <div className="flex flex-col items-start text-card-foreground h-full">
+                  <div className="mb-4 p-3 rounded-2xl bg-gradient-to-br from-primary/10 to-primary/5">
+                    {icon}
+                  </div>
+                  <h3 className="text-xl font-bold mb-3 text-foreground">{title}</h3>
+                  <p className="text-muted-foreground text-sm leading-relaxed flex-grow">{desc}</p>
+                  <div className="mt-4 text-primary text-sm font-medium flex items-center gap-2 group-hover:gap-3 transition-all duration-300">
+                    Learn more 
+                    <span className="group-hover:translate-x-1 transition-transform duration-300">→</span>
+                  </div>
+                </div>
+              </EnhancedCard>
             </motion.div>
           ))}
+
+
         </div>
       </motion.section>
 
       {/* WHY DSA MATE SECTION */}
       <motion.section
-      initial={{ opacity: 0, y: 30 }}
-  whileInView={{ opacity: 1, y: 0 }}
-  transition={{ duration: 0.5 }}
-  viewport={{ once: true }}
-      className="px-6 md:px-20 py-14 text-center">
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        viewport={{ once: true }}
+        className="px-6 md:px-20 py-14 text-center"
+      >
         <h2 className="text-2xl md:text-4xl font-semibold mb-4">DSA<span className="text-blue-400">Mate</span></h2>
         <p className="text-gray-300 max-w-3xl mx-auto text-md md:text-lg">
           It's not just another practice sheet — it's your all-in-one platform to solve topic-wise problems, apply smart filters, and track your daily progress with the new streak feature. Whether you're revising for interviews, trying to stay consistent, or looking to master DSA with purpose — DSAMate helps you do it better.
@@ -310,7 +376,7 @@ export default function Home() {
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
         viewport={{ once: true }}
-        className="bg-[#0d0f16] px-6 md:px-20 py-12 text-center"
+        className="bg-muted/20 px-6 md:px-20 py-12 text-center"
       >
         <h2 className="text-2xl font-semibold mb-4">💬 Loved using DSAMate? Share your thoughts!</h2>
         <p className="text-gray-300 mb-6">
@@ -337,7 +403,7 @@ export default function Home() {
 
 
         {/* Testimonials List */}
-        <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-5 mt-12 text-left">
+        <div className="grid gap-8 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 mt-12 text-left">
           {testimonials.map(({ name, designation, rating, text, visibility }, idx) => {
             const displayName =
               visibility === "anonymous" ? "Anonymous User" : name;
@@ -346,29 +412,45 @@ export default function Home() {
             return (
               <motion.div
                 key={idx}
-                whileHover={{ scale: 1.03 }}
-                className="bg-[#202533] p-6 rounded-xl shadow-md border border-gray-800 hover:bg-[#212638]"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: idx * 0.1, duration: 0.5 }}
+                viewport={{ once: true }}
               >
-                {/* User Details */}
-                <div className="flex items-center gap-3 mb-4 text-white">
-                  <FaUserCircle className="text-2xl text-gray-400" />
-                  <div>
-                    <p className="font-semibold">{displayName}</p>
-                    {showDesignation && (
-                      <p className="text-xs text-gray-400">{designation}</p>
+                <EnhancedCard gradient="purple" className="h-full">
+                  {/* User Details */}
+                  <div className="flex items-center gap-3 mb-4 text-card-foreground">
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center">
+                      <FaUserCircle className="text-2xl text-primary" />
+                    </div>
+                    <div>
+                      <p className="font-semibold text-foreground">{displayName}</p>
+                      {showDesignation && (
+                        <p className="text-xs text-muted-foreground">{designation}</p>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Testimonial Text */}
+                  <p className="text-muted-foreground text-sm mb-6 leading-relaxed italic line-clamp-4">
+                    "{text}"
+                  </p>
+
+                  {/* Rating */}
+                  <div className="flex items-center gap-1 text-yellow-400">
+                    {Array.from({ length: 5 }).map((_, i) =>
+                      <motion.div
+                        key={i}
+                        initial={{ opacity: 0, scale: 0 }}
+                        whileInView={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: (idx * 0.1) + (i * 0.05), duration: 0.3 }}
+                        viewport={{ once: true }}
+                      >
+                        {i < rating ? <FaStar className="text-lg" /> : <FaRegStar className="text-lg" />}
+                      </motion.div>
                     )}
                   </div>
-                </div>
-
-                {/* Testimonial Text */}
-                <p className="text-gray-300 text-sm mb-4 italic">"{text}"</p>
-
-                {/* Rating */}
-                <div className="flex items-center text-yellow-400">
-                  {Array.from({ length: 5 }).map((_, i) =>
-                    i < rating ? <FaStar key={i} /> : <FaRegStar key={i} />
-                  )}
-                </div>
+                </EnhancedCard>
               </motion.div>
             );
           })}
@@ -415,7 +497,6 @@ export default function Home() {
         </div>
       </motion.section>
       
-
     </main>
   );
 }

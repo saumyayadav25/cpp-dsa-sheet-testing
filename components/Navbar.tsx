@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { usePathname } from 'next/navigation'; // Add this import
 import AuthButtons from "@/components/AuthButtons";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 type NavbarProps = {
   searchTerm?: string;
@@ -68,8 +69,8 @@ export default function Navbar({ searchTerm, setSearchTerm, streak }: NavbarProp
         transition={{ duration: 0.6 }}
        className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
         isScrolled 
-          ? 'bg-[#10131c]/80 backdrop-blur-xl shadow-2xl border-b border-white/10' 
-          : 'bg-[#10131c]/80 backdrop-blur-md shadow-md border-b border-gray-800/50'
+          ? 'bg-background/80 backdrop-blur-xl shadow-2xl border-b border-border/50' 
+          : 'bg-background/80 backdrop-blur-md shadow-md border-b border-border/30'
       } px-4 sm:px-10 md:px-14 py-4 sm:py-5`}
     >
       {/* Subtle gradient overlay */}
@@ -81,9 +82,11 @@ export default function Navbar({ searchTerm, setSearchTerm, streak }: NavbarProp
           whileHover={{ scale: 1.01 }}
           whileTap={{ scale: 1.0 }}
         >
-          <Link href="/" className="group relative text-2xl font-bold text-white hover:cursor-pointer">
+          <Link href="/" className="group relative text-2xl font-black tracking-tight hover:cursor-pointer transition-all duration-300 hover:scale-105">
             <span className="relative z-10">
-              DSA<span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-blue-500">Mate</span> Template
+              <span className="gradient-text-light">DSA</span>
+              <span className="text-primary">Mate</span>
+              <span className="text-muted-foreground ml-1 text-lg font-medium">Template</span>
             </span>
           </Link>
         </motion.div>
@@ -161,7 +164,7 @@ export default function Navbar({ searchTerm, setSearchTerm, streak }: NavbarProp
         </motion.div>
 
         {/* Desktop Links and Right Icons */}
-        <div className="hidden sm:flex items-center gap-6 text-white">
+        <div className="hidden sm:flex items-center gap-6 text-foreground">
           {/* Streak Icon */}
           <motion.div 
             title={`Streak: ${streak} day${streak === 1 ? '' : 's'}`}
@@ -201,7 +204,7 @@ export default function Navbar({ searchTerm, setSearchTerm, streak }: NavbarProp
                 href={link.href} 
                 className={`relative px-3 py-2 rounded-lg transition-all duration-300 group hover:text-blue-400 hover:cursor-pointer hover:bg-white/5`}
               >
-                <span className={`relative z-10 ${link.isActive ? 'text-blue-400' : 'text-white hover:text-blue-400'}`}>
+                <span className={`relative z-10 ${link.isActive ? 'text-blue-400' : 'text-foreground hover:text-blue-400'}`}>
                   {link.label}
                 </span>
                 {/* Add active indicator */}
@@ -217,12 +220,15 @@ export default function Navbar({ searchTerm, setSearchTerm, streak }: NavbarProp
             </motion.div>
           ))}
           
+          {/* Theme Toggle */}
+          <ThemeToggle />
+          
           {/* Auth Buttons */}
           <AuthButtons />
         </div>
 
         {/* Mobile Right Section */}
-        <div className="sm:hidden flex items-center gap-3 text-white">
+        <div className="sm:hidden flex items-center gap-3 text-foreground">
           <motion.button 
             onClick={toggleMobileSearch} 
             className="p-2 rounded-xl hover:bg-white/10 transition-colors"
@@ -254,6 +260,9 @@ export default function Navbar({ searchTerm, setSearchTerm, streak }: NavbarProp
                 {streak > 0 && <span className="text-sm font-bold">{streak}</span>}
               </div>
             </motion.div>
+            
+            {/* Mobile Theme Toggle */}
+            <ThemeToggle />
             
             {/* Mobile Auth Buttons */}
             <AuthButtons />
