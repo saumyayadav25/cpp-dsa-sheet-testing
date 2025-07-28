@@ -4,6 +4,7 @@ import Script from 'next/script';
 import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import Footer from "@/components/Footer";
+import BotWidget from "@/components/BotWidget";
 const plusJakarta = Plus_Jakarta_Sans({
   variable: "--font-plus-jakarta",
   subsets: ["latin"],
@@ -44,6 +45,7 @@ export default function RootLayout({
     <html lang="en" className="dark">
       <body className={`${plusJakarta.variable} font-sans`}>
         {children}
+        <BotWidget />
         <Footer/>
       </body>
     </html>
