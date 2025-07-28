@@ -137,8 +137,7 @@ If you have any doubts or questions regarding the issues or pull requests, feel 
 
 👩‍💻 **Mentors**  
 - [Yash](https://github.com/yashjscoder)
-- [Krish Chothani](https://github.com/KrishChothani)  
-- [Mohitjadaun2026](https://github.com/Mohitjadaun2026)
+- [Sumit Sagar](https://github.com/mostpalon3)  
 
 We’re here to guide you — don’t hesitate to ask in the Discord group or comment directly on the GitHub issue!
 
