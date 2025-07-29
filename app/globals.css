@@ -112,12 +112,12 @@
   --sidebar-ring: oklch(0.551 0.027 264.364);
 }
 
-@layer utilities{
-  button{
+@layer utilities {
+  button {
     cursor: pointer;
   }
 
-  button:hover{
+  button:hover {
     cursor: pointer;
   }
 }
@@ -129,4 +129,20 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Custom animations for POTD sync feature */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-in-out;
 }
