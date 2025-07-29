@@ -213,4 +213,32 @@
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
+  
+  /* Custom smooth hover effects */
+  .hover\:drop-shadow-glow:hover {
+    filter: drop-shadow(0 0 8px currentColor);
+  }
+  
+  .smooth-hover {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
+  
+  .smooth-hover:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Hardware acceleration for smooth animations */
+  .transform-gpu {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+  }
+  
+  /* Custom easing functions */
+  .ease-bounce {
+    transition-timing-function: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  }
 }
