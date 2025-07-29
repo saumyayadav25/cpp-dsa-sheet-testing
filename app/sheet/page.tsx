@@ -1,6 +1,6 @@
 'use client';
 
-import Navbar from '@/components/Navbar';
+import Navbar from '@/components/NavbarSheet';
 import SheetContent from '@/components/SheetContent';
 import { sampleTopics, type Question } from '@/data/questions';
 import POTD from '@/components/POTD';
