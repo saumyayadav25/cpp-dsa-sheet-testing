@@ -256,7 +256,7 @@ export default function Home() {
           <h2 className="text-2xl md:text-3xl font-semibold mb-4">
             Want Company-wise Question Lists?
           </h2>
-          <p className="text-gray-300 max-w-2xl mx-auto mb-6 text-md md:text-lg">
+          <p className="text-gray-500 max-w-2xl mx-auto mb-6 text-md md:text-lg">
             We’re planning to launch a company-specific DSA sheet! Fill this quick form to let us know you're interested and stay in the loop.
           </p>
           <a
@@ -364,7 +364,7 @@ export default function Home() {
         className="px-6 md:px-20 py-14 text-center"
       >
         <h2 className="text-2xl md:text-4xl font-semibold mb-4">DSA<span className="text-blue-400">Mate</span></h2>
-        <p className="text-gray-300 max-w-3xl mx-auto text-md md:text-lg">
+        <p className="text-gray-500 max-w-3xl mx-auto text-md md:text-lg">
           It's not just another practice sheet — it's your all-in-one platform to solve topic-wise problems, apply smart filters, and track your daily progress with the new streak feature. Whether you're revising for interviews, trying to stay consistent, or looking to master DSA with purpose — DSAMate helps you do it better.
           Mark questions, revisit tough ones, solve a new problem every day, and keep your streak alive.
         </p>
@@ -379,7 +379,7 @@ export default function Home() {
         className="bg-muted/20 px-6 md:px-20 py-12 text-center"
       >
         <h2 className="text-2xl font-semibold mb-4">💬 Loved using DSAMate? Share your thoughts!</h2>
-        <p className="text-gray-300 mb-6">
+        <p className="text-gray-500 mb-6">
           Provide your testimonial to share your experience with others.
         </p>
         <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mb-6">
