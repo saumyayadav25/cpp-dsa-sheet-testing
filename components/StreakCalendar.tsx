@@ -66,11 +66,11 @@ export default function StreakCalendar({ progress }: StreakCalendarProps) {
   const weeks = generateCalendarData();
 
   const getActivityColor = (activity: number) => {
-    if (activity === 0) return 'bg-gray-700';
-    if (activity === 1) return 'bg-green-700';
-    if (activity === 2) return 'bg-green-600';
-    if (activity >= 3) return 'bg-green-500';
-    return 'bg-gray-700';
+    if (activity === 0) return 'bg-gray-200 dark:bg-gray-700';
+    if (activity === 1) return 'bg-green-200 dark:bg-green-700';
+    if (activity === 2) return 'bg-green-400 dark:bg-green-600';
+    if (activity >= 3) return 'bg-green-600 dark:bg-green-500';
+    return 'bg-gray-200 dark:bg-gray-700';
   };
 
   const getActivityLevel = (activity: number) => {
@@ -108,25 +108,25 @@ export default function StreakCalendar({ progress }: StreakCalendarProps) {
                      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
   return (
-    <div className="bg-[#1a1a1a] rounded-xl p-6 border border-gray-700">
+    <div className="bg-white dark:bg-zinc-900 rounded-xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-lg transition-all duration-300">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
-          <FaCalendarAlt className="text-xl text-blue-400" />
-          <h3 className="text-xl font-semibold text-white">Activity Calendar</h3>
+          <FaCalendarAlt className="text-xl text-blue-600 dark:text-blue-400" />
+          <h3 className="text-xl font-semibold text-gray-900 dark:text-white">Activity Calendar</h3>
         </div>
         
         <div className="flex items-center gap-4">
           <div className="text-center">
             <div className="flex items-center gap-1">
-              <FaFire className="text-orange-400" />
-              <span className="text-lg font-bold text-white">{currentStreak}</span>
+              <FaFire className="text-orange-600 dark:text-orange-400" />
+              <span className="text-lg font-bold text-gray-900 dark:text-white">{currentStreak}</span>
             </div>
-            <div className="text-xs text-gray-400">Day streak</div>
+            <div className="text-xs text-gray-600 dark:text-gray-400">Day streak</div>
           </div>
           
           <div className="text-center">
-            <div className="text-lg font-bold text-blue-400">{totalActivity}</div>
-            <div className="text-xs text-gray-400">Total solved</div>
+            <div className="text-lg font-bold text-blue-600 dark:text-blue-400">{totalActivity}</div>
+            <div className="text-xs text-gray-600 dark:text-gray-400">Total solved</div>
           </div>
         </div>
       </div>
@@ -134,7 +134,7 @@ export default function StreakCalendar({ progress }: StreakCalendarProps) {
       {/* Calendar Grid */}
       <div className="mb-4">
         {/* Month labels */}
-        <div className="flex justify-between mb-2 text-xs text-gray-400">
+        <div className="flex justify-between mb-2 text-xs text-gray-600 dark:text-gray-400">
           {weeks[0] && weeks.length >= 4 && (
             <>
               <span>{monthNames[weeks[0][0].date.getMonth()]}</span>
@@ -157,8 +157,8 @@ export default function StreakCalendar({ progress }: StreakCalendarProps) {
                   className={`
                     w-3 h-3 rounded-sm cursor-pointer transition-all duration-200
                     ${getActivityColor(day.activity)}
-                    ${day.isToday ? 'ring-2 ring-blue-400' : ''}
-                    ${day.isFuture ? 'opacity-30' : 'hover:ring-1 hover:ring-white/50'}
+                    ${day.isToday ? 'ring-2 ring-blue-600 dark:ring-blue-400' : ''}
+                    ${day.isFuture ? 'opacity-30' : 'hover:ring-1 hover:ring-gray-400 dark:hover:ring-white/50'}
                   `}
                   title={`${day.date.toDateString()}: ${getActivityLevel(day.activity)}`}
                 />
@@ -168,7 +168,7 @@ export default function StreakCalendar({ progress }: StreakCalendarProps) {
         </div>
         
         {/* Day labels */}
-        <div className="flex flex-col gap-1 mt-2 text-xs text-gray-400">
+        <div className="flex flex-col gap-1 mt-2 text-xs text-gray-600 dark:text-gray-400">
           <div className="h-3 flex items-center">Mon</div>
           <div className="h-3"></div>
           <div className="h-3 flex items-center">Wed</div>
@@ -181,18 +181,18 @@ export default function StreakCalendar({ progress }: StreakCalendarProps) {
       
       {/* Legend */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2 text-xs text-gray-400">
+        <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400">
           <span>Less</span>
           <div className="flex gap-1">
-            <div className="w-3 h-3 bg-gray-700 rounded-sm"></div>
-            <div className="w-3 h-3 bg-green-700 rounded-sm"></div>
-            <div className="w-3 h-3 bg-green-600 rounded-sm"></div>
-            <div className="w-3 h-3 bg-green-500 rounded-sm"></div>
+            <div className="w-3 h-3 bg-gray-200 dark:bg-gray-700 rounded-sm"></div>
+            <div className="w-3 h-3 bg-green-200 dark:bg-green-700 rounded-sm"></div>
+            <div className="w-3 h-3 bg-green-400 dark:bg-green-600 rounded-sm"></div>
+            <div className="w-3 h-3 bg-green-600 dark:bg-green-500 rounded-sm"></div>
           </div>
           <span>More</span>
         </div>
         
-        <div className="text-xs text-gray-400">
+        <div className="text-xs text-gray-600 dark:text-gray-400">
           Last 12 weeks
         </div>
       </div>

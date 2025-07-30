@@ -4,20 +4,18 @@ import { useState, useEffect, useRef } from "react";
 import { FiSearch, FiX } from "react-icons/fi";
 import { FaFire } from "react-icons/fa";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
-import { usePathname } from "next/navigation"; // Add this import
+import { motion } from "framer-motion";
+import { usePathname } from "next/navigation";
 import AuthButtons from "@/components/AuthButtons";
+import { ModeToggle } from "./mode-toggle";
 
 type NavbarProps = {
   streak: number;
 };
 
 export default function Navbar({ streak }: NavbarProps) {
-  const [showMobileSearch, setShowMobileSearch] = useState(false);
-  const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const searchInputRef = useRef<HTMLInputElement>(null);
-  const pathname = usePathname(); 
+  const pathname = usePathname();
 
   // Handle scroll effect with throttling
   useEffect(() => {
@@ -35,7 +33,7 @@ export default function Navbar({ streak }: NavbarProps) {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Dynamic navigation links based on current pathname
+  // Navigation Links
   const navLinks = [
     { href: "/", label: "Home", isActive: pathname === "/" },
     { href: "/notes", label: "Notes", isActive: pathname === "/notes" },
@@ -62,21 +60,17 @@ export default function Navbar({ streak }: NavbarProps) {
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
-      className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
-        isScrolled
-          ? "bg-[#10131c]/80 backdrop-blur-xl shadow-2xl border-b border-white/10"
-          : "bg-[#10131c]/80 backdrop-blur-md shadow-md border-b border-gray-800/50"
-      } px-4 sm:px-10 md:px-14 py-4 sm:py-5`}
+      className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 border-b ${
+        isScrolled ? "border-white/10" : "border-gray-800/50"
+      } px-4 sm:px-10 md:px-14 py-4 sm:py-5 bg-background`}
+      // bg-background uses your CSS variable, no hard-coded background!
     >
-      {/* Subtle gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 via-transparent to-purple-500/5 pointer-events-none" />
-
       <div className="relative flex items-center justify-between gap-4">
         {/* Logo */}
         <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 1.0 }}>
           <Link
             href="/"
-            className="group relative text-2xl font-bold text-white hover:cursor-pointer"
+            className="group relative text-2xl font-bold text-foreground hover:cursor-pointer"
           >
             <span className="relative z-10">
               DSA
@@ -89,7 +83,7 @@ export default function Navbar({ streak }: NavbarProps) {
         </motion.div>
 
         {/* Desktop Links and Right Icons */}
-        <div className="hidden sm:flex items-center gap-6 text-white">
+        <div className="hidden sm:flex items-center gap-6 text-foreground">
           {/* Streak Icon */}
           <motion.div
             title={`Streak: ${streak} day${streak === 1 ? "" : "s"}`}
@@ -106,7 +100,7 @@ export default function Navbar({ streak }: NavbarProps) {
             <div
               className={`flex items-center gap-2 px-3 py-2 rounded-xl transition-all duration-300 ${
                 streak > 0
-                  ? "text-orange-400 bg-orange-500/10 shadow-lg shadow-orange-500/20"
+                  ? "text-orange-400"
                   : "text-gray-400 opacity-50 hover:opacity-75"
               }`}
             >
@@ -124,8 +118,8 @@ export default function Navbar({ streak }: NavbarProps) {
             </div>
           </motion.div>
 
-          {/* Navigation Links - Updated to use dynamic active state */}
-          {navLinks.map((link, index) => (
+          {/* Navigation Links */}
+          {navLinks.map((link) => (
             <motion.div
               key={link.href}
               whileHover={{ y: -2 }}
@@ -133,18 +127,18 @@ export default function Navbar({ streak }: NavbarProps) {
             >
               <Link
                 href={link.href}
-                className={`relative px-3 py-2 rounded-lg transition-all duration-300 group hover:text-blue-400 hover:cursor-pointer hover:bg-white/5`}
+                className={`relative px-3 py-2 rounded-lg transition-all duration-300 group hover:text-blue-400 hover:cursor-pointer`}
               >
                 <span
                   className={`relative z-10 ${
                     link.isActive
                       ? "text-blue-400"
-                      : "text-white hover:text-blue-400"
+                      : "text-foreground hover:text-blue-400"
                   }`}
                 >
                   {link.label}
                 </span>
-                {/* Add active indicator */}
+                {/* Active indicator */}
                 {link.isActive && (
                   <motion.div
                     layoutId="activeTab"
@@ -157,11 +151,13 @@ export default function Navbar({ streak }: NavbarProps) {
             </motion.div>
           ))}
 
-          {/* Auth Buttons */}
           <AuthButtons />
+          <ModeToggle />
         </div>
-        <div className="sm:hidden flex items-center gap-3 text-white">
-                      <div className="flex items-center gap-3">
+
+        {/* Mobile Right Section */}
+        <div className="sm:hidden flex items-center gap-3 text-foreground">
+          <div className="flex items-center gap-3">
             {/* Mobile Streak Icon */}
             <motion.div
               title={`Streak: ${streak} day${streak === 1 ? "" : "s"}`}
@@ -179,9 +175,9 @@ export default function Navbar({ streak }: NavbarProps) {
                 )}
               </div>
             </motion.div>
-            </div>
-            {/* Mobile Auth Buttons */}
-            <AuthButtons />
+          </div>
+          <ModeToggle />
+          <AuthButtons />
         </div>
       </div>
     </motion.nav>

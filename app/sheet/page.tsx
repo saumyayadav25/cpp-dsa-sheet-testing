@@ -33,13 +33,8 @@ export default function SheetPage() {
     setStreak(updatedStreak);
   };
 
-  useEffect(() => {
-    const potd = getPOTD();
-    setPotd(potd);
-  }, []);
-
   const [searchTerm, setSearchTerm] = useState('');
-    
+
   const resetFilters = () => {
     setDifficultyFilter('');
     setStatusFilter('');
@@ -48,43 +43,52 @@ export default function SheetPage() {
     setCompanyFilter('');
   };
 
-
   return (
     <>
       <Navbar searchTerm={searchTerm} setSearchTerm={setSearchTerm} streak={streak} />
-      <main className="min-h-screen bg-[#131313] text-white px-4 md:px-12 py-24">
+      <main className="min-h-screen bg-white dark:bg-background text-gray-900 dark:text-white px-4 md:px-12 py-24 transition-colors duration-300">
         <ReportIssueButton />
-        
+
         {/* Progress Summary */}
         <ProgressSummary />
-        
+
         {/* HERO SECTION */}
-        <div className="mb-8 text-white text-center">
-          <h1 className="text-3xl md:text-4xl font-bold mb-4 ">DSA Practice Problems</h1>
-          <p className="text-sm md:text-base text-gray-400">
-            <strong>Note:</strong> Questions marked with the (for practice) tag do not include the exact solutions.
-            The provided code solutions in this section serve as hints or are solutions to similar problems from platforms
-            like <span className="text-blue-400">LeetCode</span>, <span className="text-green-400">GeeksforGeeks</span>, or <span className="text-yellow-400">HackerRank</span> ...
+        <div className="mb-8 text-center">
+          <h1 className="text-3xl md:text-4xl font-bold mb-4">DSA Practice Problems</h1>
+          <p className="text-sm md:text-base text-gray-600 dark:text-gray-400">
+            <strong>Note:</strong> Questions marked with the (for practice) tag do not include the exact solutions. The provided code solutions in this section serve as hints or are solutions to similar problems from platforms like{' '}
+            <span className="text-blue-600 dark:text-blue-400">LeetCode</span>,{' '}
+            <span className="text-green-600 dark:text-green-400">GeeksforGeeks</span>, or{' '}
+            <span className="text-yellow-500 dark:text-yellow-400">HackerRank</span> ...
           </p>
-          <div className="mt-4 bg-[#202226] border border-gray-500 text-gray-300 rounded-lg px-4 py-3 inline-block text-sm md:text-base">
-            ⚠️ Company-wise filtering is currently in progress. You might see incomplete or missing tags.
-            Contribute company-specific questions via <a href="https://forms.gle/8WccErg3TBFTMPkj9" className="underline text-gray-200 hover:text-gray-100" target="_blank" rel="noopener noreferrer">this form</a>.
+          <div className="mt-4 bg-gray-200 dark:bg-gray-800 border border-gray-400 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg px-4 py-3 inline-block text-sm md:text-base transition-colors duration-300">
+            ⚠️ Company-wise filtering is currently in progress. You might see incomplete or missing tags. Contribute company-specific questions via{' '}
+            <a
+              href="https://forms.gle/8WccErg3TBFTMPkj9"
+              className="underline text-gray-900 dark:text-gray-100 hover:text-gray-700 dark:hover:text-gray-300 transition-colors duration-200"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              this form
+            </a>
+            .
           </div>
         </div>
-        <ul className='text-sm md:text-base text-gray-300 mb-6'>
-          <li className="text-sm md:text-base text-gray-300 mt-2">⚡: asked in 20+ companies</li>
-          <li className="text-sm md:text-base text-gray-300 mt-1">⚡🔥: asked in 50+ companies</li>
-          <li className="text-sm md:text-base text-gray-300 mt-1">⚡🔥🏆: asked in 80+ companies</li>
-          <li className="text-sm md:text-base text-gray-300">(Based on data from LeetCode and GeeksforGeeks company tags)</li>
+
+        <ul className="text-sm md:text-base text-gray-600 dark:text-gray-400 mb-6">
+          <li className="mt-2">⚡: asked in 20+ companies</li>
+          <li className="mt-1">⚡🔥: asked in 50+ companies</li>
+          <li className="mt-1">⚡🔥🏆: asked in 80+ companies</li>
+          <li>(Based on data from LeetCode and GeeksforGeeks company tags)</li>
         </ul>
+
         {/* FILTERS */}
-        <div className="mb-6 flex flex-wrap md:flex-row gap-4 md:items-center text-black">
+        <div className="mb-6 flex flex-wrap md:flex-row gap-4 md:items-center">
           {/* Difficulty Filter */}
           <select
             value={difficultyFilter}
             onChange={(e) => setDifficultyFilter(e.target.value)}
-            // className="bg-white/5 rounded-lg px-3 py-2 md:px-4 backdrop-blur-md border border-white/20 text-white shadow-md hover:bg-white/8 transition duration-200"
-            className='bg-white text-black relative z-10 rounded px-4 py-2 focus:outline-none'
+            className="bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded px-4 py-2 focus:outline-none transition-colors duration-300"
           >
             <option value="">Difficulties</option>
             <option value="easy">Easy</option>
@@ -96,8 +100,7 @@ export default function SheetPage() {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            // className="bg-white/5 backdrop-blur-md border border-white/20 text-white rounded-lg px-3 py-2 md:px-4 shadow-md hover:bg-white/8 transition duration-200"
-            className='bg-white text-black relative z-10 rounded px-4 py-2 focus:outline-none'
+            className="bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded px-4 py-2 focus:outline-none transition-colors duration-300"
           >
             <option value="">Solved Status</option>
             <option value="solved">Solved</option>
@@ -108,20 +111,18 @@ export default function SheetPage() {
           <select
             value={revisionFilter}
             onChange={(e) => setRevisionFilter(e.target.value)}
-            // className="bg-white/5 backdrop-blur-md border border-white/20 text-white rounded-lg px-3 py-2 md:px-4 shadow-md hover:bg-white/8 transition duration-200"
-            className='bg-white text-black relative z-10 rounded px-4 py-2 focus:outline-none'
+            className="bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded px-4 py-2 focus:outline-none transition-colors duration-300"
           >
             <option value="">Revision Status</option>
             <option value="marked">Marked for Revision</option>
             <option value="unmarked">Not Marked</option>
           </select>
-          
+
           {/* Platform Filter */}
           <select
             value={platformFilter}
             onChange={(e) => setPlatformFilter(e.target.value)}
-            // className="bg-white/5 backdrop-blur-md border border-white/20 text-white rounded-lg px-3 py-2 md:px-4 shadow-md hover:bg-white/8 transition duration-200"
-            className='bg-white text-black relative z-10 rounded px-4 py-2 focus:outline-none'
+            className="bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded px-4 py-2 focus:outline-none transition-colors duration-300"
           >
             <option value="">Platform</option>
             <option value="leetcode">LeetCode</option>
@@ -136,8 +137,7 @@ export default function SheetPage() {
           <select
             value={companyFilter}
             onChange={(e) => setCompanyFilter(e.target.value)}
-            // className="bg-white/5 backdrop-blur-md border border-white/20 text-white rounded-lg px-3 py-2 md:px-4 shadow-md hover:bg-white/8 transition duration-200"
-            className='bg-white text-black relative z-10 rounded px-4 py-2 focus:outline-none'
+            className="bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded px-4 py-2 focus:outline-none transition-colors duration-300"
           >
             <option value="">All Companies</option>
             <option value="Adobe">Adobe</option>
@@ -169,16 +169,10 @@ export default function SheetPage() {
             {/* Add more as needed */}
           </select>
 
-
           {/* Reset Button */}
-          {/* <button
-            onClick={resetFilters}
-            className="bg-red-500/10 backdrop-blur-md border border-red-500/30 text-red-300 rounded-lg px-4 py-2 shadow-md hover:bg-red-500/20 transition duration-200"
-          > */}
           <button
             onClick={resetFilters}
-            className="bg-red-500/10 backdrop-blur-md border border-red-500/30 text-red-300 rounded-lg px-4 py-2 shadow-md hover:bg-red-500/20 transition duration-200"
-            // className="bg-red-500 text-white rounded px-4 py-2 hover:bg-red-600 "
+            className="bg-red-500/10 border border-red-500/30 text-red-600 dark:text-red-400 rounded px-4 py-2 shadow-md hover:bg-red-500/20 transition-colors duration-300"
           >
             Reset Filters
           </button>
@@ -187,14 +181,13 @@ export default function SheetPage() {
             href="https://dsamate.vercel.app/sheet"
             target="_blank"
             rel="noopener noreferrer"
-            className="bg-[#131313] border text-white rounded px-4 py-2 hover:bg-gray-200 hover:text-[#131313] w-auto md:w-fit"
+            className="bg-gray-800 dark:bg-gray-300 text-white dark:text-gray-900 rounded px-4 py-2 hover:bg-gray-700 dark:hover:bg-gray-400 transition-colors duration-300"
           >
             🔗 View Full List
           </a>
-        
         </div>
 
-        {/* POTD Section -> moved to potd.tsx*/}
+        {/* POTD Section */}
         <POTD potd={potd} updateStreak={updateStreak} />
 
         {/* SHEET CONTENT */}
@@ -206,9 +199,7 @@ export default function SheetPage() {
           platformFilter={platformFilter}
           companyFilter={companyFilter}
         />
-
       </main>
-
 
       <TestimonialPrompt />
     </>

@@ -173,34 +173,35 @@ export default function AuthButtons() {
     },
   };
 
-  const HamburgerIcon = ({ isOpen }: { isOpen: boolean }) => (
-    <div className="relative w-6 h-6 flex flex-col justify-center items-center">
-      <motion.span
-        animate={{
-          rotate: isOpen ? 45 : 0,
-          y: isOpen ? 0 : -4,
-        }}
-        transition={{ duration: 0.3, ease: "easeInOut" }}
-        className="block w-5 h-0.5 bg-white origin-center absolute"
-      />
-      <motion.span
-        animate={{
-          opacity: isOpen ? 0 : 1,
-          x: isOpen ? -10 : 0,
-        }}
-        transition={{ duration: 0.2, ease: "easeInOut" }}
-        className="block w-5 h-0.5 bg-white origin-center absolute"
-      />
-      <motion.span
-        animate={{
-          rotate: isOpen ? -45 : 0,
-          y: isOpen ? 0 : 4,
-        }}
-        transition={{ duration: 0.3, ease: "easeInOut" }}
-        className="block w-5 h-0.5 bg-white origin-center absolute"
-      />
-    </div>
-  );
+ const HamburgerIcon = ({ isOpen }: { isOpen: boolean }) => (
+  <div className="relative w-6 h-6 flex flex-col justify-center items-center">
+    <motion.span
+      animate={{
+        rotate: isOpen ? 45 : 0,
+        y: isOpen ? 0 : -4,
+      }}
+      transition={{ duration: 0.3, ease: "easeInOut" }}
+      className="block w-5 h-0.5 bg-foreground origin-center absolute"
+    />
+    <motion.span
+      animate={{
+        opacity: isOpen ? 0 : 1,
+        x: isOpen ? -10 : 0,
+      }}
+      transition={{ duration: 0.2, ease: "easeInOut" }}
+      className="block w-5 h-0.5 bg-foreground origin-center absolute"
+    />
+    <motion.span
+      animate={{
+        rotate: isOpen ? -45 : 0,
+        y: isOpen ? 0 : 4,
+      }}
+      transition={{ duration: 0.3, ease: "easeInOut" }}
+      className="block w-5 h-0.5 bg-foreground origin-center absolute"
+    />
+  </div>
+);
+
 
   return (
     <div className="flex items-center gap-3">
