@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@auth/supabase-adapter": "^1.9.1",
+    "@google/genai": "^1.11.0",
     "@next-auth/supabase-adapter": "^0.2.1",
     "@radix-ui/react-dialog": "^1.1.14",
     "@radix-ui/react-slot": "^1.2.3",

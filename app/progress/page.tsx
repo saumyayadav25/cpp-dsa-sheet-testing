@@ -3,10 +3,8 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FaChartLine, FaCalendarCheck, FaFire, FaTrophy, FaBullseye, FaBolt, FaCode, FaClock } from 'react-icons/fa';
-import { BiTrendingUp } from 'react-icons/bi';
 import { sampleTopics, type Question, type Topic } from '@/data/questions';
 import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
 import ProgressChart from '@/components/ProgressChart';
 import ProgressStats from '@/components/ProgressStats';
 import TopicProgress from '@/components/TopicProgress';
