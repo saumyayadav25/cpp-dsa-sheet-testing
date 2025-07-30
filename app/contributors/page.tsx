@@ -144,21 +144,24 @@ const ContributorCard: React.FC<ContributorCardProps> = ({ contributor, index, t
         key={contributor.login}
       >
         {/* Hover overlay */}
-        <div className="absolute inset-0 bg-white/10 backdrop-blur-sm rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center z-10">
-          <div className="relative mb-2">
+        <div className="absolute inset-0 bg-white/10 backdrop-blur-sm rounded-xl opacity-0 group-hover:opacity-100 transition-all duration-500 ease-in-out flex flex-col items-center justify-center z-10">
+          <div className="relative mb-3">
             <Image
               src={contributor.avatar_url}
               alt={`${contributor.login}'s avatar`}
               width={64}
               height={64}
-              className="rounded-full border-2 border-white/20"
+              className="rounded-full border-2 border-white/40"
               loading="lazy"
             />
+          </div>
+          <div className="text-yellow-400 font-medium text-sm mb-2 text-center px-2">
+            {contributor.login}
           </div>
           <div className="text-white font-semibold text-sm">Click To Visit Profile</div>
         </div>
 
-        <div className="relative mb-4 group-hover:opacity-0 transition-opacity duration-300">
+        <div className="relative mb-4 group-hover:opacity-0 transition-opacity duration-500 ease-in-out">
           <Image
             src={contributor.avatar_url}
             alt={`${contributor.login}'s avatar`}
@@ -169,10 +172,9 @@ const ContributorCard: React.FC<ContributorCardProps> = ({ contributor, index, t
           />
         </div>
 
-        <h2 className="text-lg font-semibold mb-2 text-foreground group-hover:opacity-0 transition-opacity duration-300">{contributor.login}</h2>
+        <h2 className="text-lg font-semibold mb-2 text-foreground group-hover:opacity-0 transition-opacity duration-500 ease-in-out">{contributor.login}</h2>
 
-        <div className="text-sm text-foreground mb-4 space-y-1 flex-grow flex flex-col justify-start group-hover:opacity-0 transition-opacity duration-300">
-          {isProjectOwner ? (
+        <div className="text-sm text-foreground mb-4 space-y-1 flex-grow flex flex-col justify-start group-hover:opacity-0 transition-opacity duration-500 ease-in-out">{isProjectOwner ? (
             <>
               <div className="text-transparent bg-gradient-to-r from-emerald-400 to-yellow-400 bg-clip-text font-bold text-lg">
                 👑 Project Admin
@@ -219,7 +221,7 @@ const ContributorCard: React.FC<ContributorCardProps> = ({ contributor, index, t
                 {contributor.contributions.toLocaleString()} commit{contributor.contributions === 1 ? '' : 's'}
               </div>
               <div className="text-xs text-gray-500 mt-1">
-                No eligible PRs found
+                Community Contributor
               </div>
             </div>
           )}
@@ -350,7 +352,10 @@ export default function ContributorsPage() {
             <p className="text-sm md:text-base text-foreground max-w-2xl mx-auto">
               Every line of code, every fix, every idea — it all adds up. <br />
               <span className="text-yellow-400 font-medium">Grateful to have you building with us.</span> <br />
-              You all are the heart of this community! 🌟
+              You all are the heart of this community! 🌟 <br />
+              <span className="text-xs text-gray-400 mt-2 block">
+                Displaying all contributors: GSSoC'25 participants with points shown first, followed by all other contributors sorted by commits.
+              </span>
             </p>
 
             <div className="flex flex-wrap justify-center gap-4 text-sm md:text-base text-gray-400 mt-6">
@@ -384,8 +389,8 @@ export default function ContributorsPage() {
             {stats?.totalPoints === 0 && (
               <div className="mt-6 bg-amber-500/10 border border-amber-500/20 rounded-lg p-4 max-w-2xl mx-auto">
                 <p className="text-amber-400 text-sm">
-                  <strong>Note:</strong> No eligible PRs found with required labels (gssoc25 + level-1/2/3). 
-                  Currently showing commit-based data as fallback.
+                  <strong>Note:</strong> No GSSoC'25 eligible PRs found with required labels (gssoc25 + level-1/2/3). 
+                  Showing all contributors sorted by commits as fallback.
                 </p>
               </div>
             )}

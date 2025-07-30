@@ -125,10 +125,10 @@ export async function GET() {
     }
 
     // Convert to array and sort by points
-    const contributors = Array.from(contributorMap.values())
+    let contributors = Array.from(contributorMap.values())
       .sort((a, b) => b.points - a.points);
 
-    // Also fetch commit data to fill in contributions count
+    // Also fetch commit data to fill in contributions count AND get all contributors (including non-GSSoC)
     try {
       const statsRes = await fetch(
         `https://api.github.com/repos/${owner}/${repo}/stats/contributors`,
@@ -138,21 +138,96 @@ export async function GET() {
       if (statsRes.ok) {
         const stats: Array<{
           total: number;
-          author: { login: string };
+          author: { login: string; html_url: string; avatar_url: string };
         }> = await statsRes.json();
 
         const commitMap = new Map(stats.map(s => [s.author.login, s.total]));
+        const existingContributors = new Set(contributors.map(c => c.login));
         
+        // Update existing contributors with commit counts
         contributors.forEach(contributor => {
           contributor.contributions = commitMap.get(contributor.login) || 0;
         });
+
+        // Add contributors who don't have GSSoC PRs but have commits
+        stats.forEach(stat => {
+          if (!existingContributors.has(stat.author.login)) {
+            contributors.push({
+              login: stat.author.login,
+              html_url: stat.author.html_url,
+              avatar_url: stat.author.avatar_url,
+              contributions: stat.total,
+              points: 0,
+              prCount: 0,
+              levelBreakdown: {
+                level1: 0,
+                level2: 0,
+                level3: 0,
+              },
+            });
+          }
+        });
+      } else {
+        // If stats API fails, fallback to contributors list API
+        console.warn('[contributors-points API] Stats API failed, trying contributors list API');
+        const contributorsRes = await fetch(
+          `https://api.github.com/repos/${owner}/${repo}/contributors?per_page=100`,
+          { headers, next: { revalidate: 86400 } }
+        );
+
+        if (contributorsRes.ok) {
+          const allContributorsList: Array<{
+            login: string;
+            html_url: string;
+            avatar_url: string;
+            contributions: number;
+          }> = await contributorsRes.json();
+
+          const existingContributors = new Set(contributors.map(c => c.login));
+          
+          // Update existing contributors with commit counts
+          allContributorsList.forEach(contributor => {
+            const existing = contributors.find(c => c.login === contributor.login);
+            if (existing) {
+              existing.contributions = contributor.contributions;
+            } else if (!existingContributors.has(contributor.login)) {
+              // Add new contributors who don't have GSSoC PRs
+              contributors.push({
+                login: contributor.login,
+                html_url: contributor.html_url,
+                avatar_url: contributor.avatar_url,
+                contributions: contributor.contributions,
+                points: 0,
+                prCount: 0,
+                levelBreakdown: {
+                  level1: 0,
+                  level2: 0,
+                  level3: 0,
+                },
+              });
+            }
+          });
+        }
       }
     } catch (error) {
       console.warn('[contributors-points API] Failed to fetch commit stats:', error);
     }
 
+    // Sort contributors: first by points (descending), then by commits (descending) for those with same points
+    contributors = contributors.sort((a, b) => {
+      if (b.points !== a.points) {
+        return b.points - a.points;
+      }
+      return b.contributions - a.contributions;
+    });
+
     const totalPoints = contributors.reduce((sum, c) => sum + c.points, 0);
     const totalPRs = contributors.reduce((sum, c) => sum + c.prCount, 0);
+    const totalCommits = contributors.reduce((sum, c) => sum + c.contributions, 0);
+
+    console.log(`[contributors-points API] Returning ${contributors.length} total contributors`);
+    console.log(`[contributors-points API] GSSoC contributors: ${contributors.filter(c => c.points > 0).length}`);
+    console.log(`[contributors-points API] Non-GSSoC contributors: ${contributors.filter(c => c.points === 0).length}`);
 
     return NextResponse.json({
       contributors,
@@ -160,7 +235,7 @@ export async function GET() {
         totalContributors: contributors.length,
         totalPoints,
         totalPRs,
-        totalCommits: contributors.reduce((sum, c) => sum + c.contributions, 0),
+        totalCommits,
       }
     });
 
