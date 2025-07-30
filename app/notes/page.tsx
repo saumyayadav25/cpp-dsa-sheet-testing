@@ -72,62 +72,8 @@ export default function NotesPage() {
   return (
     <>
       {/* Navbar */}
-      <motion.nav
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${isScrolled
-            ? 'bg-[#10131c]/80 backdrop-blur-xl shadow-2xl border-b border-white/10'
-            : 'bg-[#10131c]/80 backdrop-blur-md shadow-md border-b border-gray-800/50'
-          } px-4 sm:px-10 md:px-14 py-4 sm:py-5`}
-      >
-        {/* Subtle gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 via-transparent to-purple-500/5 pointer-events-none" />
+      <Navbar streak={streak} />
 
-        <div className="relative flex items-center justify-between gap-4">
-          {/* Logo */}
-          <motion.div
-            whileHover={{ scale: 1.01 }}
-            whileTap={{ scale: 1.0 }}
-          >
-            <Link href="/" className="group relative text-2xl font-bold text-white hover:cursor-pointer">
-              <span className="relative z-10">
-                DSA<span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-blue-500">Mate</span> Template
-              </span>
-            </Link>
-          </motion.div>
-
-
-          <div className="hidden md:flex items-center gap-8 text-white">
-            {navLinks.map((link) => (
-              <motion.div
-                key={link.href}
-                whileHover={{ y: -2 }}
-                whileTap={{ y: 0 }}
-              >
-                <Link
-                  href={link.href}
-                  className={`relative px-3 py-2 rounded-lg transition-all  duration-300 group hover:text-blue-400 hover:cursor-pointer`}
-                >
-                  <span className={`relative z-10 ${link.label === 'Notes' ? 'text-blue-400' : 'text-white'}`}>
-                    {link.label}
-                  </span>
-
-                  {/* Hover effect */}
-                  <div className="absolute inset-0 bg-white/5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
-                </Link>
-              </motion.div>
-            ))}
-
-
-          </div>
-
-          <div className='flex md:hidden'>
-            <Navbar streak={streak}/>
-
-          </div>
-        </div>
-      </motion.nav>
 
 
       {/* Main notes section */}
@@ -157,48 +103,94 @@ export default function NotesPage() {
             </motion.p>
           </div>
 
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.3 }}
-            className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+<motion.div
+  initial={{ opacity: 0 }}
+  animate={{ opacity: 1 }}
+  transition={{ delay: 0.3 }}
+  className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3"
+>
+  {notesList.map(({ title, link, status, icon }, index) => (
+    <motion.div
+      key={title}
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: index * 0.1 + 0.4 }}
+      whileHover={{ 
+        y: -8, 
+        scale: 1.02,
+        transition: { duration: 0.3, ease: "easeOut" }
+      }}
+      className="relative group cursor-pointer"
+    >
+      {/* Animated border gradient */}
+      <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-blue-500/20 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm"></div>
+      <div className="absolute inset-0 bg-gradient-to-r from-blue-500/40 via-purple-500/40 to-blue-500/40 rounded-2xl opacity-0 group-hover:opacity-50 transition-opacity duration-500 animate-pulse"></div>
+      
+      {/* Main card */}
+      <div className="relative bg-[#181b27] h-52 border border-gray-800/50 group-hover:border-gray-700/80 rounded-2xl p-7 shadow-xl group-hover:shadow-2xl group-hover:shadow-blue-500/10 transition-all duration-500 overflow-hidden">
+        
+        {/* Background glow effect */}
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-500/50 to-transparent opacity-10 group-hover:opacity-100 transition-opacity duration-500"></div>
+        
+        {/* Icon container with enhanced styling */}
+        <div className="flex items-start gap-5 mb-6 ">
+          <motion.div 
+            whileHover={{ rotate: 5, scale: 1.1 }}
+            transition={{ type: "spring", stiffness: 300, damping: 20 }}
+            className="relative p-4 bg-gradient-to-br from-blue-600/20 to-blue-500/10 rounded-xl text-blue-400 group-hover:from-blue-600/30 group-hover:to-blue-500/20 group-hover:text-blue-300 transition-all duration-300 border border-blue-600/20 group-hover:border-blue-500/40"
           >
-            {notesList.map(({ title, link, status, icon }) => (
-              <motion.div
-                key={title}
-                whileHover={{ y: -5, boxShadow: "0 10px 25px -5px rgba(59, 130, 246, 0.2)" }}
-                className="hover:bg-[#1a1e2e] bg-[#181b27] border border-gray-800 rounded-xl p-6 text-left shadow-lg transition-all duration-300 group"
-              >
-                <div className="flex items-start gap-4">
-                  <div className="p-3 bg-blue-600/20 rounded-lg text-blue-400 group-hover:bg-blue-600/30 group-hover:scale-110 transition-all duration-300">
-                    {icon}
-                  </div>
-                  <div>
-                    <h2 className="text-lg font-semibold mb-3 text-gray-100 group-hover:text-white">
-                      {title}
-                    </h2>
-                    {status === 'coming-soon' ? (
-                      <span className="inline-block px-3 py-1 bg-yellow-600/20 text-yellow-400 rounded-full text-xs">
-                        Coming Soon
-                      </span>
-                    ) : (
-                      <a
-                        href={link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 rounded-lg text-white text-sm font-medium transition-all duration-300 group-hover:shadow-lg"
-                      >
-                        View Notes
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                        </svg>
-                      </a>
-                    )}
-                  </div>
-                </div>
-              </motion.div>
-            ))}
+            {/* Icon glow effect */}
+            <div className="absolute inset-0 bg-blue-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-md"></div>
+            <div className="relative z-10">
+              {icon}
+            </div>
           </motion.div>
+          
+          <div className="flex-1">
+            <h2 className="text-xl font-bold mb-4 text-gray-100 group-hover:text-white transition-colors duration-300 leading-tight">
+              {title}
+            </h2>
+          </div>
+        </div>
+        
+        {/* Status or Link */}
+        <div className="mt-auto">
+          {status === 'coming-soon' ? (
+            <div className="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-yellow-600/20 to-orange-600/20 text-yellow-400 rounded-xl text-sm font-medium border border-yellow-600/30">
+              <div className="w-2 h-2 bg-yellow-400 rounded-full animate-pulse"></div>
+              Coming Soon
+            </div>
+          ) : (
+            <motion.a
+              href={link}
+              target="_blank"
+              rel="noopener noreferrer"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.98 }}
+              className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 rounded-xl text-white text-sm font-semibold transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-blue-500/25 group/btn"
+            >
+              <span>View Notes</span>
+              <motion.svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                className="h-4 w-4 transition-transform group-hover/btn:translate-x-1" 
+                fill="none" 
+                viewBox="0 0 24 24" 
+                stroke="currentColor"
+                whileHover={{ x: 2 }}
+                transition={{ type: "spring", stiffness: 400, damping: 25 }}
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+              </motion.svg>
+            </motion.a>
+          )}
+        </div>
+        
+        {/* Subtle corner decoration */}
+        <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-blue-500/5 group-hover:from-blue-500/10 to-transparent rounded-bl-full opacity-80 group-hover:opacity-100 transition-opacity duration-500"></div>
+      </div>
+    </motion.div>
+  ))}
+</motion.div>
 
           <motion.p
             initial={{ opacity: 0 }}

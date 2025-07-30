@@ -7,7 +7,10 @@ import Image from "next/image";
 import { Button } from "./ui/button";
 import { LogOut } from "lucide-react";
 import { toast } from "sonner";
-
+import { FiSearch, FiX } from "react-icons/fi";
+import { FaFire } from "react-icons/fa";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 interface User {
   _id: string;
   full_name: string;
@@ -16,6 +19,7 @@ interface User {
 }
 
 export default function AuthButtons() {
+  const pathname = usePathname();
   const [showDropdown, setShowDropdown] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState<User | null>(null);
@@ -78,7 +82,21 @@ export default function AuthButtons() {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-
+  const navLinks = [
+    { href: "/", label: "Home", isActive: pathname === "/" },
+    { href: "/notes", label: "Notes", isActive: pathname === "/notes" },
+    { href: "/sheet", label: "Sheet", isActive: pathname === "/sheet" },
+    {
+      href: "/progress",
+      label: "Progress",
+      isActive: pathname === "/progress",
+    },
+    {
+      href: "/contributors",
+      label: "Contributors",
+      isActive: pathname === "/contributors",
+    },
+  ];
   const handleLogout = () => {
     localStorage.removeItem("token");
     setUser(null);
@@ -190,7 +208,7 @@ export default function AuthButtons() {
       {!isLoggedIn ? (
         <motion.a
           href="/sign-in"
-          className="px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-sm font-semibold rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl"
+          className="px-4 w-20 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-sm font-semibold rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl"
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
         >
@@ -314,6 +332,50 @@ export default function AuthButtons() {
                       />
                     </>
                   )} */}
+                  <div className="md:hidden flex flex-wrap m-2 gap-3 justify-center items-center py-3 ">
+                    {navLinks.map((link, index) => (
+                      <motion.div
+                        key={link.href}
+                        whileHover={{ y: -2 }}
+                        whileTap={{ y: 0 }}
+                      >
+                        <Link
+                          href={link.href}
+                          className={`relative px-3 py-2 rounded-lg transition-all duration-300 group hover:text-blue-400 hover:cursor-pointer hover:bg-white/5`}
+                        >
+                          <span
+                            className={`relative z-10 ${
+                              link.isActive
+                                ? "text-blue-400"
+                                : "text-white hover:text-blue-400"
+                            }`}
+                          >
+                            {link.label}
+                          </span>
+                          {/* Add active indicator */}
+                          {link.isActive && (
+                            <motion.div
+                              layoutId="activeTab"
+                              className="absolute inset-0 bg-blue-500/10 rounded-lg border border-blue-400/30"
+                              initial={false}
+                              transition={{
+                                type: "spring",
+                                stiffness: 500,
+                                damping: 30,
+                              }}
+                            />
+                          )}
+                        </Link>
+                      </motion.div>
+                    ))}
+                  </div>
+                  {/* Bottom highlight */}
+                  <motion.div
+                    className="h-px bg-gradient-to-r from-transparent via-white/20 to-transparent mt-2"
+                    initial={{ scaleX: 0 }}
+                    animate={{ scaleX: 1 }}
+                    transition={{ delay: 0.5, duration: 0.5 }}
+                  />
 
                   {/* Original menu items */}
                   {menuItems.map((item, index) => (
