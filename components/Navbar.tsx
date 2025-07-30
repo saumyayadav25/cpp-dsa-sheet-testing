@@ -59,13 +59,13 @@ export default function Navbar({ streak }: NavbarProps) {
 
   return (
     <motion.nav
-      initial={{ opacity: 0, y: -20 }}
+    initial={{ opacity: 0, y: 0 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6 }}
-      className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
-        isScrolled
-          ? "bg-[#10131c]/80 backdrop-blur-xl shadow-2xl border-b border-white/10"
-          : "bg-[#10131c]/80 backdrop-blur-md shadow-md border-b border-gray-800/50"
+      transition={{ duration: 0.4, ease: "easeInOut" }}
+       className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
+        isScrolled 
+          ? 'bg-[#10131c]/80 backdrop-blur-xl shadow-2xl border-b border-white/10' 
+          : 'bg-[#10131c]/80 backdrop-blur-md shadow-md border-b border-gray-800/50'
       } px-4 sm:px-10 md:px-14 py-4 sm:py-5`}
     >
       {/* Subtle gradient overlay */}
