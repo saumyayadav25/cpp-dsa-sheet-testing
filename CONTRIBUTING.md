@@ -127,6 +127,18 @@ To avoid merge conflicts, keep your fork updated:
 
 > 🔍 Note: If you don’t see the button, your fork is already updated.
 
+### 🔖 GSSoC'25 Labels & Points
+
+If your Pull Request (PR) gets merged, please make sure it has the following labels:
+
+- `gssoc25`
+- Appropriate `level` label (`level1`, `level2`, `level3`)
+
+Sometimes, the admin or mentor might forget to add these labels. You are encouraged to **politely remind them** in the PR comments.
+
+🧮 You can check your points in the `contributors-data.md` file — it is updated **once a day only**.
+
+
 ## To run locally
 
 ### 1. Install Dependencies

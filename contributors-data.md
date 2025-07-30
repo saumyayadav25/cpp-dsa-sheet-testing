@@ -45,4 +45,13 @@ _Updated at the end of day by mentor or PA only_
 | 23   | [@myselfsneha](https://github.com/myselfsneha)         | 3      | [#77](https://github.com/saumyayadav25/cpp-dsa-sheet-testing/pull/77) | Logo submission                                |
 | 24   | [@NiteshCodes7](https://github.com/NiteshCodes7)       | 3      | [#76](https://github.com/saumyayadav25/cpp-dsa-sheet-testing/pull/76) | Update contributing.md                         |
 | 25   | [@siddhikasavant](https://github.com/siddhikasavant)   | 3      | [#61](https://github.com/saumyayadav25/cpp-dsa-sheet-testing/pull/61) | Logo submission                                |
-
+| 26   | [@IkshithaPrem](https://github.com/IkshithaPrem)       | 3      | [#80](https://github.com/saumyayadav25/cpp-dsa-sheet-testing/pull/80) | Logo submission                                |
+| 27   | [@aigle-levant](https://github.com/aigle-levant)       | 3      | [#81](https://github.com/saumyayadav25/cpp-dsa-sheet-testing/pull/81) | Logo submission                                |
+| 28   | [@sourashmi23](https://github.com/sourashmi23)         | 10     | [#83](https://github.com/saumyayadav25/cpp-dsa-sheet-testing/pull/83) | Chatbot                                        |
+| 29   | [@tannmayygupta](https://github.com/tannmayygupta)     | 3      | [#84](https://github.com/saumyayadav25/cpp-dsa-sheet-testing/pull/84) | Logo submission                                |
+| 30   | [@sanjj17](http://github.com/sanjj17)                  | 3      | [#91](https://github.com/saumyayadav25/cpp-dsa-sheet-testing/pull/91) | Logo submission                                |
+| 31   | [@SaiSruthisri](https://github.com/SaiSruthisri)       | 3      | [#92](https://github.com/saumyayadav25/cpp-dsa-sheet-testing/pull/92) | Sign in input visibility                       |
+| 32   | [@gunjanghate](https://github.com/gunjanghate)         | 5      | [#96](https://github.com/saumyayadav25/cpp-dsa-sheet-testing/pull/96) | Navbar enhancement                             |
+| 33   | [@viraj-ap](https://github.com/viraj-ap)               | 10     | [#99](https://github.com/saumyayadav25/cpp-dsa-sheet-testing/pull/99) | Light and dark mode toggle                     |
+| 34   | [@Shreyas-TP](https://github.com/Shreyas-TP)           | 3      | [#100](https://github.com/saumyayadav25/cpp-dsa-sheet-testing/pull/100) | Bot msg send on enter                              |
+| 35   | [@Aman-agraw-35](https://github.com/Aman-agraw-35)     | 5      | [#102](https://github.com/saumyayadav25/cpp-dsa-sheet-testing/pull/102) | No content found if no such ques              |
