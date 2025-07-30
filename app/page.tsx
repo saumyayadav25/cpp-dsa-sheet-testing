@@ -9,8 +9,6 @@ import ReportIssueButton from '@/components/ReportIssueButton';
 import Navbar from '@/components/Navbar';
 import { motion } from 'framer-motion';
 
-
-
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
   visible: (i: number) => ({
@@ -23,7 +21,6 @@ const fadeInUp = {
   }),
 };
 
-// testimonial
 type Testimonial = {
   name: string;
   designation?: string;
@@ -32,7 +29,6 @@ type Testimonial = {
   visibility: "full" | "nameOnly" | "anonymous";
 };
 
-// testimonials -> need to add it to data when more testimonials are received
 const testimonials: Testimonial[] = [
   {
     name: "Prakhar Sinha",
@@ -74,7 +70,6 @@ export default function Home() {
   const [searchTerm, setSearchTerm] = useState('');
   const [streak, setStreak] = useState(0);
 
-  // Initialize streak (you can load from localStorage or API)
   useEffect(() => {
     const savedStreak = localStorage.getItem('userStreak');
     if (savedStreak) {
@@ -83,43 +78,36 @@ export default function Home() {
   }, []);
 
   function FAQItem({ question, answer }: { question: string; answer: string }) {
-  const [isOpen, setIsOpen] = useState(false);
+    const [isOpen, setIsOpen] = useState(false);
+    return (
+      <div
+        className="bg-white dark:bg-[#1a1e2a] p-5 rounded-xl border border-gray-300 dark:border-gray-800 cursor-pointer transition-colors duration-300"
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        <div className="flex justify-between items-center">
+          <h4 className="text-gray-900 dark:text-white font-semibold">{question}</h4>
+          <span className="text-gray-500 dark:text-gray-400 text-xl">{isOpen ? "−" : "+"}</span>
+        </div>
+        {isOpen && <p className="text-gray-700 dark:text-gray-400 text-sm mt-2">{answer}</p>}
+      </div>
+    );
+  }
 
   return (
-    <div
-      className="bg-[#1a1e2a] p-5 rounded-xl border border-gray-800 cursor-pointer"
-      onClick={() => setIsOpen(!isOpen)}
-    >
-      <div className="flex justify-between items-center">
-        <h4 className="text-white font-semibold">{question}</h4>
-        <span className="text-gray-400 text-xl">{isOpen ? "−" : "+"}</span>
-      </div>
-      {isOpen && <p className="text-gray-400 text-sm mt-2">{answer}</p>}
-    </div>
-  );
-}
-  // Removed unused state and variables
-  return (
-    
-    <main className="min-h-screen bg-black text-white">
+    <main className="min-h-screen bg-white dark:bg-black text-gray-900 dark:text-white transition-colors duration-500">
       <ReportIssueButton />
-      {/* NAVBAR */}
-      <Navbar 
-        streak={streak}
-      />
+      <Navbar streak={streak} />
 
       {/* HERO SECTION */}
       <motion.section
         initial="hidden"
         animate="visible"
-        variants={{
-          visible: {
-            transition: { staggerChildren: 0.2 }
-          }
-        }}
+        variants={{ visible: { transition: { staggerChildren: 0.2 } } }}
         className="flex flex-col items-center justify-center text-center px-6 py-16 pt-24"
       >
-        <h1 className="text-4xl md:text-5xl font-bold mb-4">DSA<span className="text-blue-400">Mate</span> template</h1>
+        <h1 className="text-4xl md:text-5xl font-bold mb-4">
+          DSA<span className="text-blue-500 dark:text-blue-400">Mate</span> template
+        </h1>
         <motion.h1
           variants={fadeInUp}
           custom={0}
@@ -130,7 +118,7 @@ export default function Home() {
         <motion.p
           variants={fadeInUp}
           custom={1}
-          className="text-lg text-gray-300 max-w-xl mb-6"
+          className="text-lg text-gray-700 dark:text-gray-300 max-w-xl mb-6"
         >
           Solve better, revise smarter, and stay consistent with your preparation journey.
           ⚠️ This is just a <span className="font-medium">template version</span> of DSAMate.
@@ -142,149 +130,157 @@ export default function Home() {
         >
           <Link
             href="/sheet"
-            className="bg-black text-white hover:bg-gray-200 border hover:text-blue-600 font-semibold py-3 px-6 rounded-full transition text-center"
+            className="bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 hover:bg-gray-700 dark:hover:bg-gray-300 border border-gray-700 dark:border-gray-300 font-semibold py-3 px-6 rounded-full transition"
           >
             🚀 Go to Practice Sheet
           </Link>
-
           <Link
             href="/progress"
-            className="bg-gradient-to-r from-green-600 to-blue-600 text-white hover:from-green-700 hover:to-blue-700 font-semibold py-3 px-6 rounded-full transition text-center"
+            className="bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white font-semibold py-3 px-6 rounded-full transition"
           >
             📊 Track Your Progress
           </Link>
-
           <Link
             href="https://dsamate.vercel.app"
             target="_blank"
             rel="noopener noreferrer"
-            className="bg-gray-200 text-blue-600 hover:text-white hover:bg-black border border-blue-600 font-semibold py-3 px-6 rounded-full transition text-center"
+            className="bg-gray-200 dark:bg-gray-800 text-blue-600 dark:text-blue-400 hover:text-white hover:bg-black dark:hover:bg-blue-600 border border-blue-600 dark:border-blue-400 font-semibold py-3 px-6 rounded-full transition"
           >
             🔗 Visit Original DSAMate
           </Link>
         </motion.div>
-
       </motion.section>
 
       {/* STATISTICS SECTION */}
-        <motion.section
+      <motion.section
         initial="hidden"
         animate="visible"
-        variants={{
-          visible: {
-            transition: { staggerChildren: 0.2 }
-          }
-        }}
-         className="text-white px-6 md:px-20 py-10">
-          <motion.div 
+        variants={{ visible: { transition: { staggerChildren: 0.2 } } }}
+        className="px-6 md:px-20 py-10"
+      >
+        <motion.div
           variants={fadeInUp}
           custom={0}
-          className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center px-4 sm:px-32">
-            <div className="bg-[#141720] border border-gray-700 py-4 px-4 rounded-md">
-              <h2 className="text-m text-gray-300">Total Users</h2>
-              <h3 className="text-2xl font-bold text-blue-400">2100+</h3>
-            </div>
-            <div className="bg-[#141720] border border-gray-700 py-4 px-4 rounded-md">
-              <h2 className="text-m text-gray-300">Daily users</h2>
-              <h3 className="text-2xl font-bold text-yellow-400">30+</h3>
-            </div>
-            <div className="bg-[#141720] border border-gray-700 py-4 px-4 rounded-md">
-              <h2 className="text-m text-gray-300">DSA Problems</h2>
-              <h3 className="text-2xl font-bold text-green-400">450+</h3>
-            </div>
-            <div className="bg-[#141720] border border-gray-700 py-4 px-4 rounded-md">
-              <h2 className="text-m text-gray-300">Testimonials received</h2>
-              <h3 className="text-2xl font-bold text-pink-400">10+</h3>
-            </div>
-          </motion.div>
-        </motion.section>
-        
-        {/* COMPANY-WISE INTEREST SECTION */}
-        <motion.section
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          viewport={{ once: true }}
-          className="px-6 md:px-20 py-14 text-center"
+          className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center px-4 sm:px-32"
         >
-          <h2 className="text-2xl md:text-3xl font-semibold mb-4">
-            Want Company-wise Question Lists?
-          </h2>
-          <p className="text-gray-300 max-w-2xl mx-auto mb-6 text-md md:text-lg">
-            We’re planning to launch a company-specific DSA sheet! Fill this quick form to let us know you're interested and stay in the loop.
-          </p>
-          <a
-            href="https://forms.gle/z1sRLUGRvtfKrGcp7"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-full transition"
-          >
-            📩 I'm Interested
-          </a>
-        </motion.section>
+          {[
+            {
+              title: "Total Users",
+              value: "2100+",
+              valueColor: "text-blue-600 dark:text-blue-400",
+            },
+            {
+              title: "Daily users",
+              value: "30+",
+              valueColor: "text-yellow-500 dark:text-yellow-400",
+            },
+            {
+              title: "DSA Problems",
+              value: "450+",
+              valueColor: "text-green-600 dark:text-green-400",
+            },
+            {
+              title: "Testimonials received",
+              value: "10+",
+              valueColor: "text-pink-500 dark:text-pink-400",
+            },
+          ].map(({ title, value, valueColor }) => (
+            <div
+              key={title}
+              className="bg-gray-100 dark:bg-[#141720] border border-gray-300 dark:border-gray-700 py-4 px-4 rounded-md transition-colors duration-300"
+            >
+              <h2 className="text-m text-gray-700 dark:text-gray-300">{title}</h2>
+              <h3 className={`text-2xl font-bold ${valueColor}`}>{value}</h3>
+            </div>
+          ))}
+        </motion.div>
+      </motion.section>
+
+      {/* COMPANY-WISE INTEREST SECTION */}
+      <motion.section
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        viewport={{ once: true }}
+        className="px-6 md:px-20 py-14 text-center"
+      >
+        <h2 className="text-2xl md:text-3xl font-semibold mb-4 text-gray-900 dark:text-white">
+          Want Company-wise Question Lists?
+        </h2>
+        <p className="text-gray-700 dark:text-gray-300 max-w-2xl mx-auto mb-6 text-md md:text-lg">
+          We’re planning to launch a company-specific DSA sheet! Fill this quick form to let us know you're interested and stay in the loop.
+        </p>
+        <a
+          href="https://forms.gle/z1sRLUGRvtfKrGcp7"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-full transition"
+        >
+          📩 I'm Interested
+        </a>
+      </motion.section>
 
       {/* FEATURES SECTION */}
-      <motion.section 
-      initial={{ opacity: 0, y: 30 }}
-  whileInView={{ opacity: 1, y: 0 }}
-  transition={{ duration: 0.5 }}
-  viewport={{ once: true }}
-      className="px-6 md:px-20 py-10 bg-[#0d0f16]">
-        <h2 className="text-2xl md:text-4xl font-semibold text-center mb-8">
+      <motion.section
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        viewport={{ once: true }}
+        className="px-6 md:px-20 py-10 bg-gray-100 dark:bg-[#0d0f16] transition-colors duration-300"
+      >
+        <h2 className="text-2xl md:text-4xl font-semibold text-center mb-8 text-gray-900 dark:text-white">
           Key Features
         </h2>
         <div className="px-2 sm:px-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {[
             {
-              icon: <FaListUl size={28} className="text-blue-400 mb-3" />,
+              icon: <FaListUl size={28} className="text-blue-600 dark:text-blue-400 mb-3" />,
               title: "Tailored Questions",
               desc: "Topic-wise DSA problems to ensure complete coverage.",
               link: "/sheet",
             },
             {
-              icon: <FaRegCalendarAlt size={28} className="text-cyan-200 mb-3" />,
+              icon: <FaRegCalendarAlt size={28} className="text-cyan-600 dark:text-cyan-400 mb-3" />,
               title: "Daily Problem (POTD)",
               desc: "Stay consistent by solving one new question daily.",
               link: "/sheet#potd",
             },
             {
-              icon: <BiSliderAlt size={28} className="text-yellow-400 mb-3" />,
+              icon: <BiSliderAlt size={28} className="text-yellow-600 dark:text-yellow-400 mb-3" />,
               title: "Smart Filters",
               desc: "Filter by difficulty, status, revision, and platform.",
               link: "/sheet#filters",
             },
             {
-              icon: <FaChartBar size={28} className="text-green-400 mb-3" />,
+              icon: <FaChartBar size={28} className="text-green-600 dark:text-green-400 mb-3" />,
               title: "Track Progress",
               desc: "Comprehensive analytics, streak tracking, and detailed progress insights.",
               link: "/progress",
             },
             {
-              icon: <FaFire size={28} className="text-red-400 mb-3" />,
+              icon: <FaFire size={28} className="text-red-600 dark:text-red-400 mb-3" />,
               title: "Streaks",
               desc: "Mark POTD as done and maintain your daily solving streak!",
               link: "/progress#streaks",
             },
             {
-              icon: <FaSearch size={28} className="text-purple-400 mb-3" />,
+              icon: <FaSearch size={28} className="text-purple-600 dark:text-purple-400 mb-3" />,
               title: "Search Questions Quickly",
               desc: "Instantly locate problems using keywords in the dedicated search bar.",
               link: "/sheet#search",
-            }
-          ].map(({ title, desc, icon ,link }) => (
+            },
+          ].map(({ title, desc, icon, link }) => (
             <motion.div
               whileHover={{ scale: 1.03 }}
               transition={{ duration: 0.3 }}
-              className="bg-[#202533] p-6 rounded-xl shadow-md border border-gray-800 hover:bg-[#212638] cursor-pointer"
+              className="bg-white dark:bg-[#202533] p-6 rounded-xl shadow-md border border-gray-300 dark:border-gray-800 hover:bg-gray-100 dark:hover:bg-[#212638] cursor-pointer transition-colors duration-300"
               key={title}
             >
-              {/* <h3 className="text-lg font-semibold mb-2">{title}</h3>
-              <p className="text-gray-400 text-sm">{desc}</p> */}
-              <div onClick={() => window.location.href = link} className="flex flex-col items-start text-white">
-          {icon}
-          <h3 className="text-lg font-semibold mb-1">{title}</h3>
-          <p className="text-gray-400 text-sm">{desc}</p>
-        </div>
+              <div onClick={() => window.location.href = link} className="flex flex-col items-start text-gray-900 dark:text-white">
+                {icon}
+                <h3 className="text-lg font-semibold mb-1">{title}</h3>
+                <p className="text-gray-700 dark:text-gray-400 text-sm">{desc}</p>
+              </div>
             </motion.div>
           ))}
         </div>
@@ -292,13 +288,16 @@ export default function Home() {
 
       {/* WHY DSA MATE SECTION */}
       <motion.section
-      initial={{ opacity: 0, y: 30 }}
-  whileInView={{ opacity: 1, y: 0 }}
-  transition={{ duration: 0.5 }}
-  viewport={{ once: true }}
-      className="px-6 md:px-20 py-14 text-center">
-        <h2 className="text-2xl md:text-4xl font-semibold mb-4">DSA<span className="text-blue-400">Mate</span></h2>
-        <p className="text-gray-300 max-w-3xl mx-auto text-md md:text-lg">
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        viewport={{ once: true }}
+        className="px-6 md:px-20 py-14 text-center"
+      >
+        <h2 className="text-2xl md:text-4xl font-semibold mb-4 text-gray-900 dark:text-white">
+          DSA<span className="text-blue-500 dark:text-blue-400">Mate</span>
+        </h2>
+        <p className="text-gray-700 dark:text-gray-300 max-w-3xl mx-auto text-md md:text-lg">
           It's not just another practice sheet — it's your all-in-one platform to solve topic-wise problems, apply smart filters, and track your daily progress with the new streak feature. Whether you're revising for interviews, trying to stay consistent, or looking to master DSA with purpose — DSAMate helps you do it better.
           Mark questions, revisit tough ones, solve a new problem every day, and keep your streak alive.
         </p>
@@ -310,10 +309,12 @@ export default function Home() {
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
         viewport={{ once: true }}
-        className="bg-[#0d0f16] px-6 md:px-20 py-12 text-center"
+        className="bg-gray-100 dark:bg-[#0d0f16] px-6 md:px-20 py-12 text-center transition-colors duration-300"
       >
-        <h2 className="text-2xl font-semibold mb-4">💬 Loved using DSAMate? Share your thoughts!</h2>
-        <p className="text-gray-300 mb-6">
+        <h2 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-white">
+          💬 Loved using DSAMate? Share your thoughts!
+        </h2>
+        <p className="text-gray-700 dark:text-gray-300 mb-6">
           Provide your testimonial to share your experience with others.
         </p>
         <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mb-6">
@@ -321,49 +322,44 @@ export default function Home() {
             href="https://forms.gle/8BXQC1o3hsVsEEBp9"
             target="_blank"
             rel="noopener noreferrer"
-            className="bg-blue-600 hover:bg-gray-100 hover:text-blue-600 text-white px-4 py-2 rounded text-center"
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-center transition"
           >
             💬 Give a Testimonial
           </a>
           <a
-            href="https://dsamate.vercel.app" // replace with real site if custom domain
+            href="https://dsamate.vercel.app"
             target="_blank"
             rel="noopener noreferrer"
-            className="bg-white text-blue-600 hover:text-white hover:bg-blue-600 border border-blue-600 px-4 py-2 rounded text-center"
+            className="bg-white dark:bg-gray-900 dark:text-blue-400 text-blue-600 hover:text-white hover:bg-blue-600 border border-blue-600 dark:border-blue-400 px-4 py-2 rounded text-center transition"
           >
             🔗 Visit Original DSAMate
           </a>
         </div>
 
-
         {/* Testimonials List */}
         <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-5 mt-12 text-left">
           {testimonials.map(({ name, designation, rating, text, visibility }, idx) => {
-            const displayName =
-              visibility === "anonymous" ? "Anonymous User" : name;
+            const displayName = visibility === "anonymous" ? "Anonymous User" : name;
             const showDesignation = visibility === "full" && designation;
 
             return (
               <motion.div
                 key={idx}
                 whileHover={{ scale: 1.03 }}
-                className="bg-[#202533] p-6 rounded-xl shadow-md border border-gray-800 hover:bg-[#212638]"
+                className="bg-white dark:bg-[#202533] p-6 rounded-xl shadow-md border border-gray-300 dark:border-gray-800 hover:bg-gray-100 dark:hover:bg-[#212638] transition-colors duration-300"
               >
-                {/* User Details */}
-                <div className="flex items-center gap-3 mb-4 text-white">
-                  <FaUserCircle className="text-2xl text-gray-400" />
+                <div className="flex items-center gap-3 mb-4 text-gray-900 dark:text-white">
+                  <FaUserCircle className="text-2xl text-gray-400 dark:text-gray-500" />
                   <div>
                     <p className="font-semibold">{displayName}</p>
                     {showDesignation && (
-                      <p className="text-xs text-gray-400">{designation}</p>
+                      <p className="text-xs text-gray-600 dark:text-gray-400">{designation}</p>
                     )}
                   </div>
                 </div>
 
-                {/* Testimonial Text */}
-                <p className="text-gray-300 text-sm mb-4 italic">"{text}"</p>
+                <p className="text-gray-700 dark:text-gray-400 text-sm mb-4 italic">"{text}"</p>
 
-                {/* Rating */}
                 <div className="flex items-center text-yellow-400">
                   {Array.from({ length: 5 }).map((_, i) =>
                     i < rating ? <FaStar key={i} /> : <FaRegStar key={i} />
@@ -376,13 +372,16 @@ export default function Home() {
       </motion.section>
 
       {/* FAQ SECTION */}
-      <motion.section 
-      initial={{ opacity: 0, y: 30 }}
-  whileInView={{ opacity: 1, y: 0 }}
-  transition={{ duration: 0.5 }}
-  viewport={{ once: true }}
-      className="px-6 md:px-20 py-12">
-        <h2 className="text-2xl font-semibold mb-6 text-center">📌 FAQs</h2>
+      <motion.section
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        viewport={{ once: true }}
+        className="px-6 md:px-20 py-12"
+      >
+        <h2 className="text-2xl font-semibold mb-6 text-center text-gray-900 dark:text-white">
+          📌 FAQs
+        </h2>
         <div className="space-y-4 max-w-3xl mx-auto">
           {[
             {
@@ -414,8 +413,6 @@ export default function Home() {
           ))}
         </div>
       </motion.section>
-      
-
     </main>
   );
 }

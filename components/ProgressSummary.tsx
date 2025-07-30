@@ -34,16 +34,16 @@ export default function ProgressSummary() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
-      className="bg-gradient-to-r from-blue-600/10 to-purple-600/10 rounded-xl p-6 border border-blue-500/20 mb-8"
+      className="bg-gradient-to-r from-blue-500/5 to-purple-500/5 dark:from-blue-600/10 dark:to-purple-600/10 rounded-xl p-6 border border-blue-500/20 dark:border-blue-500/30 mb-8 shadow-sm hover:shadow-lg transition-all duration-300"
     >
       <div className="flex flex-col md:flex-row items-center justify-between gap-4">
         <div className="flex items-center gap-4">
-          <div className="bg-blue-500/20 p-3 rounded-full">
-            <FaTrophy className="text-2xl text-blue-400" />
+          <div className="bg-blue-500/10 dark:bg-blue-500/20 p-3 rounded-full">
+            <FaTrophy className="text-2xl text-blue-600 dark:text-blue-400" />
           </div>
           <div>
-            <h3 className="text-xl font-semibold text-white mb-1">Your Progress</h3>
-            <p className="text-gray-400 text-sm">
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-1">Your Progress</h3>
+            <p className="text-gray-600 dark:text-gray-400 text-sm">
               {solvedQuestions} out of {totalQuestions} problems solved
             </p>
           </div>
@@ -54,14 +54,14 @@ export default function ProgressSummary() {
           <div className="relative">
             <svg className="w-16 h-16 transform -rotate-90" viewBox="0 0 36 36">
               <path
-                className="text-gray-700"
+                className="text-gray-300 dark:text-gray-700"
                 stroke="currentColor"
                 strokeWidth="3"
                 fill="none"
                 d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
               />
               <path
-                className="text-blue-400"
+                className="text-blue-600 dark:text-blue-400"
                 stroke="currentColor"
                 strokeWidth="3"
                 strokeDasharray={`${percentage}, 100`}
@@ -71,14 +71,14 @@ export default function ProgressSummary() {
               />
             </svg>
             <div className="absolute inset-0 flex items-center justify-center">
-              <span className="text-sm font-bold text-white">{percentage}%</span>
+              <span className="text-sm font-bold text-gray-900 dark:text-white">{percentage}%</span>
             </div>
           </div>
 
           {/* CTA Button */}
           <Link
             href="/progress"
-            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors flex items-center gap-2"
+            className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-500 text-white px-6 py-3 rounded-lg font-medium transition-colors flex items-center gap-2 shadow-md hover:shadow-lg"
           >
             <FaChartLine />
             View Details
