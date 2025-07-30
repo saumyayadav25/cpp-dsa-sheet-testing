@@ -11,6 +11,20 @@ interface Contributor {
   html_url: string;
   avatar_url: string;
   contributions: number;
+  points?: number;
+  prCount?: number;
+  levelBreakdown?: {
+    level1: number;
+    level2: number;
+    level3: number;
+  };
+}
+
+interface ContributorStats {
+  totalContributors: number;
+  totalPoints: number;
+  totalPRs: number;
+  totalCommits: number;
 }
 
 interface GitHubStatsResponse {
@@ -115,6 +129,7 @@ interface ContributorCardProps {
 
 const ContributorCard: React.FC<ContributorCardProps> = ({ contributor, index, totalContributors }) => {
   const ratio = index / Math.max(1, totalContributors - 1);
+  const hasPoints = contributor.points !== undefined && contributor.points > 0;
 
   return (
     <div
@@ -130,15 +145,52 @@ const ContributorCard: React.FC<ContributorCardProps> = ({ contributor, index, t
           className="rounded-full border-2 border-white/10"
           loading="lazy"
         />
+        {hasPoints && (
+          <div className="absolute -top-2 -right-2 bg-gradient-to-r from-yellow-400 to-orange-500 text-black text-xs font-bold px-2 py-1 rounded-full shadow-lg">
+            {contributor.points}pts
+          </div>
+        )}
       </div>
 
       <h2 className="text-lg font-semibold mb-2 text-foreground">{contributor.login}</h2>
 
-      <p className="text-sm text-foreground mb-4">
-        <span className="text-yellow-400 font-medium">
-          {contributor.contributions.toLocaleString()} commit{contributor.contributions === 1 ? '' : 's'}
-        </span>
-      </p>
+      <div className="text-sm text-foreground mb-4 space-y-1">
+        {hasPoints ? (
+          <>
+            <div className="text-yellow-400 font-bold text-lg">
+              🏆 {contributor.points} Points
+            </div>
+            <div className="text-green-400 font-medium">
+              📝 {contributor.prCount} PR{contributor.prCount === 1 ? '' : 's'}
+            </div>
+            {contributor.levelBreakdown && (
+              <div className="text-xs text-gray-400 mt-2 space-y-1">
+                {contributor.levelBreakdown.level3 > 0 && (
+                  <div>🥇 Level-3: {contributor.levelBreakdown.level3} (10pts each)</div>
+                )}
+                {contributor.levelBreakdown.level2 > 0 && (
+                  <div>🥈 Level-2: {contributor.levelBreakdown.level2} (5pts each)</div>
+                )}
+                {contributor.levelBreakdown.level1 > 0 && (
+                  <div>🥉 Level-1: {contributor.levelBreakdown.level1} (3pts each)</div>
+                )}
+              </div>
+            )}
+            <div className="text-gray-500 text-xs mt-2">
+              {contributor.contributions} commit{contributor.contributions === 1 ? '' : 's'}
+            </div>
+          </>
+        ) : (
+          <div className="text-gray-400">
+            <div className="text-yellow-400 font-medium">
+              {contributor.contributions.toLocaleString()} commit{contributor.contributions === 1 ? '' : 's'}
+            </div>
+            <div className="text-xs text-gray-500 mt-1">
+              No eligible PRs found
+            </div>
+          </div>
+        )}
+      </div>
 
       <Button
         asChild
@@ -159,6 +211,7 @@ const ContributorCard: React.FC<ContributorCardProps> = ({ contributor, index, t
 
 export default function ContributorsPage() {
   const [contributors, setContributors] = useState<Contributor[]>([]);
+  const [stats, setStats] = useState<ContributorStats | null>(null);
   const [streak, setStreak] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -172,17 +225,39 @@ export default function ContributorsPage() {
         setLoading(true);
         setError(null);
 
-        // Try to fetch from our API route first
-        const response = await fetch('/api/contributors');
+        // Try to fetch from our new points API first
+        const pointsResponse = await fetch('/api/contributors-points');
 
-        if (response.ok) {
-          const fetchedContributors: Contributor[] = await response.json();
-          setContributors(fetchedContributors);
+        if (pointsResponse.ok) {
+          const data = await pointsResponse.json();
+          setContributors(data.contributors);
+          setStats(data.stats);
         } else {
-          // Fallback to direct GitHub API call
-          console.warn('API route failed, trying direct GitHub API');
-          const directFetch = await fetchContributors();
-          setContributors(directFetch);
+          // Fallback to original contributors API
+          console.warn('Points API failed, trying original contributors API');
+          const response = await fetch('/api/contributors');
+
+          if (response.ok) {
+            const fetchedContributors: Contributor[] = await response.json();
+            setContributors(fetchedContributors);
+            setStats({
+              totalContributors: fetchedContributors.length,
+              totalPoints: 0,
+              totalPRs: 0,
+              totalCommits: fetchedContributors.reduce((sum, c) => sum + c.contributions, 0),
+            });
+          } else {
+            // Last resort: direct GitHub API call
+            console.warn('API route failed, trying direct GitHub API');
+            const directFetch = await fetchContributors();
+            setContributors(directFetch);
+            setStats({
+              totalContributors: directFetch.length,
+              totalPoints: 0,
+              totalPRs: 0,
+              totalCommits: directFetch.reduce((sum, c) => sum + c.contributions, 0),
+            });
+          }
         }
       } catch (err) {
         console.error('Error fetching contributors:', err);
@@ -245,7 +320,7 @@ export default function ContributorsPage() {
       <Navbar streak={streak} />
       <main className="min-h-screen py-24 px-4 sm:px-8 lg:px-16 bg-background ">
         <section aria-labelledby="contributors-heading" className="max-w-7xl mx-auto">
-          <div className="text-center mb-12">
+            <div className="text-center mb-12">
             <h1 id="contributors-heading" className="text-3xl md:text-4xl font-bold mb-4">
               <span className="bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
                 Our Amazing Contributors
@@ -253,25 +328,48 @@ export default function ContributorsPage() {
             </h1>
 
             <p className="text-sm md:text-base text-foreground max-w-2xl mx-auto">
-              Every line of code, every fix, every idea — it all adds up. <br />
-              <span className="text-yellow-400 font-medium">Grateful to have you building with us.</span> <br />
+              Tracking points earned through merged PRs with <strong>gssoc25</strong> label. <br />
+              <span className="text-yellow-400 font-medium">Level-1: 3pts • Level-2: 5pts • Level-3: 10pts</span> <br />
               You all are the heart of this community! 🌟
             </p>
 
             <div className="flex flex-wrap justify-center gap-4 text-sm md:text-base text-gray-400 mt-6">
               <div className="bg-purple-500/10 px-4 py-2 rounded-full border border-purple-500/20">
-                <span className="text-purple-400 font-semibold">{contributors.length}</span> Contributors
+                <span className="text-purple-400 font-semibold">{stats?.totalContributors || contributors.length}</span> Contributors
               </div>
+              {stats?.totalPoints && stats.totalPoints > 0 && (
+                <div className="bg-yellow-500/10 px-4 py-2 rounded-full border border-yellow-500/20">
+                  <span className="text-yellow-400 font-semibold">
+                    {stats.totalPoints.toLocaleString()}
+                  </span>{' '}
+                  Total Points
+                </div>
+              )}
+              {stats?.totalPRs && stats.totalPRs > 0 && (
+                <div className="bg-green-500/10 px-4 py-2 rounded-full border border-green-500/20">
+                  <span className="text-green-400 font-semibold">
+                    {stats.totalPRs.toLocaleString()}
+                  </span>{' '}
+                  Eligible PRs
+                </div>
+              )}
               <div className="bg-blue-500/10 px-4 py-2 rounded-full border border-blue-500/20">
                 <span className="text-blue-400 font-semibold">
-                  {contributors.reduce((sum, c) => sum + c.contributions, 0).toLocaleString()}
+                  {stats?.totalCommits?.toLocaleString() || contributors.reduce((sum, c) => sum + c.contributions, 0).toLocaleString()}
                 </span>{' '}
                 Total Commits
               </div>
             </div>
-          </div>
 
-          {contributors.length === 0 ? (
+            {stats?.totalPoints === 0 && (
+              <div className="mt-6 bg-amber-500/10 border border-amber-500/20 rounded-lg p-4 max-w-2xl mx-auto">
+                <p className="text-amber-400 text-sm">
+                  <strong>Note:</strong> No eligible PRs found with required labels (gssoc25 + level-1/2/3). 
+                  Currently showing commit-based data as fallback.
+                </p>
+              </div>
+            )}
+          </div>          {contributors.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-gray-400 text-lg">No contributors found.</p>
             </div>
@@ -283,7 +381,38 @@ export default function ContributorsPage() {
             </div>
           )}
 
-          <div className="mt-16 text-center">
+          <div className="mt-16 space-y-8">
+            {/* Point System Explanation */}
+            <div className="bg-gradient-to-r from-indigo-500/10 via-purple-500/10 to-pink-500/10 rounded-2xl p-6 border border-white/10">
+              <h2 className="text-xl md:text-2xl font-bold mb-4 text-center">
+                <span className="bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
+                  🏆 Point System
+                </span>
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+                <div className="bg-yellow-500/10 rounded-lg p-4 border border-yellow-500/20">
+                  <div className="text-2xl mb-2">🥉</div>
+                  <div className="text-yellow-400 font-bold text-lg">Level-1</div>
+                  <div className="text-gray-300 text-sm">3 Points</div>
+                </div>
+                <div className="bg-orange-500/10 rounded-lg p-4 border border-orange-500/20">
+                  <div className="text-2xl mb-2">🥈</div>
+                  <div className="text-orange-400 font-bold text-lg">Level-2</div>
+                  <div className="text-gray-300 text-sm">5 Points</div>
+                </div>
+                <div className="bg-purple-500/10 rounded-lg p-4 border border-purple-500/20">
+                  <div className="text-2xl mb-2">🥇</div>
+                  <div className="text-purple-400 font-bold text-lg">Level-3</div>
+                  <div className="text-gray-300 text-sm">10 Points</div>
+                </div>
+              </div>
+              <p className="text-sm text-gray-400 text-center mt-4">
+                Points are awarded only for <strong>merged PRs</strong> with the <code className="bg-gray-700 px-2 py-1 rounded">gssoc25</code> label
+                and appropriate level labels. Only the highest level per PR counts.
+              </p>
+            </div>
+
+            {/* Call to Action */}
             <div className="bg-gradient-to-r from-purple-500/10 via-blue-500/10 to-pink-500/10 rounded-2xl p-8 border border-white/10">
               <h2 className="text-2xl md:text-3xl font-bold mb-4">
                 <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
@@ -292,6 +421,7 @@ export default function ContributorsPage() {
               </h2>
               <p className="text-foreground mb-6 max-w-2xl mx-auto">
                 Join our amazing community of developers! Check out our repository and start contributing today.
+                Make sure to follow the contribution guidelines to earn points!
               </p>
               <Button asChild size="lg" className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600">
                 <Link
