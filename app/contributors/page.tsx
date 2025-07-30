@@ -179,8 +179,11 @@ const ContributorCard: React.FC<ContributorCardProps> = ({ contributor, index, t
               <div className="text-transparent bg-gradient-to-r from-emerald-400 to-yellow-400 bg-clip-text font-bold text-lg">
                 👑 Project Admin
               </div>
-              <div className="text-gray-500 text-xs mt-2">
-                {contributor.contributions} commit{contributor.contributions === 1 ? '' : 's'}
+              <div className="text-gray-400 text-xs mt-2 mb-4 flex-grow"></div>
+              <div className="text-xs mt-2">
+                <span className="text-blue-400 font-medium">
+                  {contributor.contributions} Commit{contributor.contributions === 1 ? '' : 's'}
+                </span>
               </div>
             </>
           ) : hasPoints ? (
@@ -216,12 +219,14 @@ const ContributorCard: React.FC<ContributorCardProps> = ({ contributor, index, t
               </div>
             </>
           ) : (
-            <div className="text-gray-400">
-              <div className="text-yellow-400 font-medium">
-                {contributor.contributions.toLocaleString()} commit{contributor.contributions === 1 ? '' : 's'}
-              </div>
-              <div className="text-xs text-gray-500 mt-1">
+            <div className="text-gray-400 flex flex-col justify-between h-full">
+              <div className="text-xs text-gray-500 mt-1 mb-4 flex-grow">
                 Community Contributor
+              </div>
+              <div className="text-xs mt-2">
+                <span className="text-blue-400 font-medium">
+                  {contributor.contributions.toLocaleString()} commit{contributor.contributions === 1 ? '' : 's'}
+                </span>
               </div>
             </div>
           )}
@@ -353,9 +358,7 @@ export default function ContributorsPage() {
               Every line of code, every fix, every idea — it all adds up. <br />
               <span className="text-yellow-400 font-medium">Grateful to have you building with us.</span> <br />
               You all are the heart of this community! 🌟 <br />
-              <span className="text-xs text-gray-400 mt-2 block">
-                Displaying all contributors: GSSoC'25 participants with points shown first, followed by all other contributors sorted by commits.
-              </span>
+             
             </p>
 
             <div className="flex flex-wrap justify-center gap-4 text-sm md:text-base text-gray-400 mt-6">
