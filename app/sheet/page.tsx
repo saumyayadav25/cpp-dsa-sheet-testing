@@ -84,7 +84,7 @@ export default function SheetPage() {
             value={difficultyFilter}
             onChange={(e) => setDifficultyFilter(e.target.value)}
             // className="bg-white/5 rounded-lg px-3 py-2 md:px-4 backdrop-blur-md border border-white/20 text-white shadow-md hover:bg-white/8 transition duration-200"
-            className='bg-white text-black relative z-10 rounded px-4 py-2 focus:outline-none'
+            className='bg-white text-black relative z-10 rounded px-4 py-2 focus:outline-none transition-all duration-200 ease-out hover:shadow-md hover:scale-105 transform-gpu'
           >
             <option value="">Difficulties</option>
             <option value="easy">Easy</option>
@@ -97,7 +97,7 @@ export default function SheetPage() {
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
             // className="bg-white/5 backdrop-blur-md border border-white/20 text-white rounded-lg px-3 py-2 md:px-4 shadow-md hover:bg-white/8 transition duration-200"
-            className='bg-white text-black relative z-10 rounded px-4 py-2 focus:outline-none'
+            className='bg-white text-black relative z-10 rounded px-4 py-2 focus:outline-none transition-all duration-200 ease-out hover:shadow-md hover:scale-105 transform-gpu'
           >
             <option value="">Solved Status</option>
             <option value="solved">Solved</option>
@@ -109,7 +109,7 @@ export default function SheetPage() {
             value={revisionFilter}
             onChange={(e) => setRevisionFilter(e.target.value)}
             // className="bg-white/5 backdrop-blur-md border border-white/20 text-white rounded-lg px-3 py-2 md:px-4 shadow-md hover:bg-white/8 transition duration-200"
-            className='bg-white text-black relative z-10 rounded px-4 py-2 focus:outline-none'
+            className='bg-white text-black relative z-10 rounded px-4 py-2 focus:outline-none transition-all duration-200 ease-out hover:shadow-md hover:scale-105 transform-gpu'
           >
             <option value="">Revision Status</option>
             <option value="marked">Marked for Revision</option>
@@ -121,7 +121,7 @@ export default function SheetPage() {
             value={platformFilter}
             onChange={(e) => setPlatformFilter(e.target.value)}
             // className="bg-white/5 backdrop-blur-md border border-white/20 text-white rounded-lg px-3 py-2 md:px-4 shadow-md hover:bg-white/8 transition duration-200"
-            className='bg-white text-black relative z-10 rounded px-4 py-2 focus:outline-none'
+            className='bg-white text-black relative z-10 rounded px-4 py-2 focus:outline-none transition-all duration-200 ease-out hover:shadow-md hover:scale-105 transform-gpu'
           >
             <option value="">Platform</option>
             <option value="leetcode">LeetCode</option>
@@ -137,7 +137,7 @@ export default function SheetPage() {
             value={companyFilter}
             onChange={(e) => setCompanyFilter(e.target.value)}
             // className="bg-white/5 backdrop-blur-md border border-white/20 text-white rounded-lg px-3 py-2 md:px-4 shadow-md hover:bg-white/8 transition duration-200"
-            className='bg-white text-black relative z-10 rounded px-4 py-2 focus:outline-none'
+            className='bg-white text-black relative z-10 rounded px-4 py-2 focus:outline-none transition-all duration-200 ease-out hover:shadow-md hover:scale-105 transform-gpu'
           >
             <option value="">All Companies</option>
             <option value="Adobe">Adobe</option>
@@ -177,7 +177,7 @@ export default function SheetPage() {
           > */}
           <button
             onClick={resetFilters}
-            className="bg-red-500/10 backdrop-blur-md border border-red-500/30 text-red-300 rounded-lg px-4 py-2 shadow-md hover:bg-red-500/20 transition duration-200"
+            className="bg-red-500/10 backdrop-blur-md border border-red-500/30 text-red-300 rounded-lg px-4 py-2 shadow-md hover:bg-red-500/20 transition-all duration-300 ease-out hover:scale-105 hover:shadow-lg transform-gpu"
             // className="bg-red-500 text-white rounded px-4 py-2 hover:bg-red-600 "
           >
             Reset Filters
@@ -187,7 +187,7 @@ export default function SheetPage() {
             href="https://dsamate.vercel.app/sheet"
             target="_blank"
             rel="noopener noreferrer"
-            className="bg-[#131313] border text-white rounded px-4 py-2 hover:bg-gray-200 hover:text-[#131313] w-auto md:w-fit"
+            className="bg-[#131313] border text-white rounded px-4 py-2 hover:bg-gray-200 hover:text-[#131313] w-auto md:w-fit transition-all duration-300 ease-out hover:scale-105 hover:shadow-lg transform-gpu"
           >
             🔗 View Full List
           </a>

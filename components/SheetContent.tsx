@@ -116,10 +116,10 @@ export default function SheetContent({
         if (filteredQuestions.length === 0) return null;
 
         return (
-          <div key={topic.id} className="mb-6 border border-gray-700 rounded-lg">
+          <div key={topic.id} className="mb-6 border border-gray-700 rounded-lg transform-gpu">
             <button
               onClick={() => toggleTopic(topic.id)}
-              className="w-full flex justify-between items-center px-4 py-3 bg-[#131313]  hover:bg-[#16171a] text-left text-lg font-medium transition"
+              className="w-full flex justify-between items-center px-4 py-3 bg-[#131313] hover:bg-[#16171a] text-left text-lg font-medium transition-all duration-300 ease-out hover:scale-[1.01] hover:shadow-lg"
             >
               <span>{topic.name}</span>
               <span className="text-sm text-gray-400 font-medium px-2 py-2 ml-auto">
@@ -169,7 +169,7 @@ export default function SheetContent({
                       return (
                         <tr
                           key={uniqueKey}
-                          className="border-b border-gray-700 hover:bg-[#16171a] transition"
+                          className="border-b border-gray-700 hover:bg-[#16171a] transition-all duration-300 ease-out hover:scale-[1.005] hover:shadow-md transform-gpu"
                         >
                           <td className="py-2 px-3">{q.title}</td>
                           {/* <td className="py-2 px-3 text-center flex justify-center gap-2"> */}
@@ -177,37 +177,37 @@ export default function SheetContent({
                           {/* </td> */}
                           <td className="py-2 px-3 text-center flex justify-center gap-2">
                             {q.links.leetcode && (
-                              <a href={q.links.leetcode} target="_blank" rel="noopener noreferrer" title="LeetCode">
+                              <a href={q.links.leetcode} target="_blank" rel="noopener noreferrer" title="LeetCode" className="transform transition-all duration-200 ease-out hover:scale-125 hover:drop-shadow-glow">
                                 <SiLeetcode className="text-orange-500 text-2xl" />
                               </a>
                             )}
                             {q.links.gfg && (
-                              <a href={q.links.gfg} target="_blank" rel="noopener noreferrer" title="GeeksforGeeks">
+                              <a href={q.links.gfg} target="_blank" rel="noopener noreferrer" title="GeeksforGeeks" className="transform transition-all duration-200 ease-out hover:scale-125 hover:drop-shadow-glow">
                                 <SiGeeksforgeeks className="text-green-500 text-2xl" />
                               </a>
                             )}
                             {q.links.hackerrank && (
-                              <a href={q.links.hackerrank} target="_blank" rel="noopener noreferrer" title="HackerRank">
+                              <a href={q.links.hackerrank} target="_blank" rel="noopener noreferrer" title="HackerRank" className="transform transition-all duration-200 ease-out hover:scale-125 hover:drop-shadow-glow">
                                 <SiHackerrank className="text-white text-2xl" />
                               </a>
                             )}
                             {q.links.spoj && (
-                              <a href={q.links.spoj} target="_blank" rel="noopener noreferrer" title="SPOJ">
+                              <a href={q.links.spoj} target="_blank" rel="noopener noreferrer" title="SPOJ" className="transform transition-all duration-200 ease-out hover:scale-125 hover:drop-shadow-glow">
                                 <SiSpoj className="text-white text-2xl" />
                               </a>
                             )}
                             {q.links.ninja && (
-                              <a href={q.links.ninja} target="_blank" rel="noopener noreferrer" title="Coding Ninjas">
+                              <a href={q.links.ninja} target="_blank" rel="noopener noreferrer" title="Coding Ninjas" className="transform transition-all duration-200 ease-out hover:scale-125 hover:drop-shadow-glow">
                                 <SiCodingninjas className="text-white text-2xl" />
                               </a>
                             )}
                             {q.links.code && (
-                              <a href={q.links.code} target="_blank" rel="noopener noreferrer" title="Code">
+                              <a href={q.links.code} target="_blank" rel="noopener noreferrer" title="Code" className="transform transition-all duration-200 ease-out hover:scale-125 hover:drop-shadow-glow">
                                 <FaCode className="text-blue-200 text-2xl" />
                               </a>
                             )}
                             {q.links.custom && (
-                              <a href={q.links.custom} target="_blank" rel="noopener noreferrer" title="Custom">
+                              <a href={q.links.custom} target="_blank" rel="noopener noreferrer" title="Custom" className="transform transition-all duration-200 ease-out hover:scale-125 hover:drop-shadow-glow">
                                 <FaCode className="text-blue-400 text-2xl" />
                               </a>
                             )}
@@ -220,7 +220,7 @@ export default function SheetContent({
                               type="checkbox"
                               checked={isSolved}
                               onChange={() => toggleCheckbox(uniqueKey, 'isSolved')}
-                              className={`accent-green-500 cursor-pointer w-4 h-4`}
+                              className={`accent-green-500 cursor-pointer w-5 h-5 transform transition-all duration-200 ease-out hover:scale-110`}
                             />
                           </td>
                           <td className="py-2 px-3 text-center">
@@ -228,12 +228,12 @@ export default function SheetContent({
                               type="checkbox"
                               checked={isMarked}
                               onChange={() => toggleCheckbox(uniqueKey, 'isMarkedForRevision')}
-                              className={`accent-red-500 cursor-pointer w-4 h-4`}
+                              className={`accent-red-500 cursor-pointer w-5 h-5 transform transition-all duration-200 ease-out hover:scale-110`}
                             />
                           </td>
                           <td className="py-2 px-3 text-center flex justify-center items-center text-2xl">
                             {q.solutionLink ? (
-                              <a href={q.solutionLink} target="_blank" rel="noopener noreferrer" title="Solution on GitHub">
+                              <a href={q.solutionLink} target="_blank" rel="noopener noreferrer" title="Solution on GitHub" className="transform transition-all duration-200 ease-out hover:scale-125 hover:text-purple-400">
                                 <FaGithub />
                               </a>
                             ) : (
@@ -243,7 +243,7 @@ export default function SheetContent({
                         <td className="py-2 px-3 text-center relative">
   <button
   onClick={() => setOpenNoteId(uniqueKey)}
-  className="hover:scale-110 transition-transform duration-150"
+  className="transform transition-all duration-200 ease-out hover:scale-125 hover:drop-shadow-lg"
   title={local.note?.trim() === '' ? "Add Note" : "Edit Note"}
 >
   {(local.note || '').trim() === '' ? (

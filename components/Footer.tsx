@@ -4,15 +4,15 @@ import { FaGithub, FaLinkedin, FaTwitter } from 'react-icons/fa';
 import Link from 'next/link';
 export default function Footer() {
   return (
-      <footer className="bg-[#141620] px-6 md:px-20 py-12 text-gray-400 border-t border-gray-800/50">
+      <footer className="bg-card px-6 md:px-20 py-12 text-muted-foreground border-t border-border transition-colors duration-300">
         <div className="flex flex-col md:flex-row md:justify-center md:items-start gap-20 mx-auto">
           {/* About */}
           <div className='max-w-64 flex flex-col items-center justify-center mx-auto md:justify-start md:items-start'>
-            <h3 className="text-white text-xl font-semibold mb-4 flex items-center gap-2">
+            <h3 className="text-card-foreground text-xl font-semibold mb-4 flex items-center gap-2">
               <span className="bg-blue-600 w-2 h-2 rounded-full"></span>
               About DSAMate
             </h3>
-            <p className="text-sm text-gray-300 mb-4">
+            <p className="text-sm text-muted-foreground mb-4">
               Your ultimate destination for mastering Data Structures and Algorithms with comprehensive resources.
             </p>
             <a
@@ -27,7 +27,7 @@ export default function Footer() {
           
           {/* Quick Links */}
           <div className=''>
-            <h3 className="text-xl font-semibold mb-4 text-white flex items-center gap-2">
+            <h3 className="text-xl font-semibold mb-4 text-card-foreground flex items-center gap-2">
               <span className="bg-blue-600 w-2 h-2 rounded-full"></span>
               Quick Links
             </h3>
@@ -73,7 +73,7 @@ export default function Footer() {
           
           {/* Follow Us */}
           <div className='flex flex-col items-center justify-center mx-auto md:justify-start md:items-start'>
-            <h3 className="text-xl font-semibold mb-4 text-white flex items-center gap-2">
+            <h3 className="text-xl font-semibold mb-4 text-card-foreground flex items-center gap-2">
               <span className="bg-blue-600 w-2 h-2 rounded-full"></span>
               Connect With Me
             </h3>
@@ -92,7 +92,7 @@ export default function Footer() {
           
           {/* Contact */}
           <div className="max-w-64 flex flex-col items-center justify-center mx-auto md:justify-start md:items-start">
-            <h3 className="text-xl font-semibold mb-4 text-white flex items-center gap-2">
+            <h3 className="text-xl font-semibold mb-4 text-card-foreground flex items-center gap-2">
               <span className="bg-blue-600 w-2 h-2 rounded-full"></span>
               Contact Info
             </h3>
@@ -103,15 +103,15 @@ export default function Footer() {
               <a href="mailto:contact.dsapractice@gmail.com" className="hover:text-blue-400">contact.dsapractice@gmail.com</a>
             </p>
             <div className="mt-6 flex flex-col items-center justify-center mx-auto md:justify-start md:items-start">
-              <h4 className="text-sm font-medium text-gray-300 mb-2">Support This Project</h4>
-              <p className="text-xs text-gray-400 mb-3">
+              <h4 className="text-sm font-medium text-muted-foreground mb-2">Support This Project</h4>
+              <p className="text-xs text-muted-foreground mb-3">
                 If you find these resources helpful, consider supporting to help maintain and improve them.
               </p>
               <a 
                 href="https://github.com/sponsors/saumyayadav25" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 bg-[#1e2130] hover:bg-[#2a2e42] px-4 py-2 rounded-lg text-sm transition-all"
+                className="inline-flex items-center gap-2 bg-muted hover:bg-muted/80 px-4 py-2 rounded-lg text-sm transition-all"
               >
                 <FaGithub /> Sponsor on GitHub
               </a>
@@ -119,11 +119,11 @@ export default function Footer() {
           </div>
         </div>
         
-        <div className="border-t border-gray-800/50 mt-12 pt-8 text-center">
-          <p className="text-sm text-gray-500">
+        <div className="border-t border-border mt-12 pt-8 text-center">
+          <p className="text-sm text-muted-foreground">
             &copy; {new Date().getFullYear()} DSA Practice. All Rights Reserved.
           </p>
-          <p className="text-xs text-gray-600 mt-2">
+          <p className="text-xs text-muted-foreground mt-2">
             Made with ❤️ by Saumya Yadav
           </p>
         </div>
