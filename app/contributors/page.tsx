@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import Navbar from '@/components/Navbar';
 
@@ -132,15 +133,38 @@ const ContributorCard: React.FC<ContributorCardProps> = ({ contributor, index, t
   const ratio = index / Math.max(1, totalContributors - 1);
   const hasPoints = contributor.points !== undefined && contributor.points > 0;
 
+  const cardVariants = {
+    hidden: { opacity: 0, y: 20, scale: 0.95 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: {
+        delay: index * 0.1,
+        duration: 0.6,
+      },
+    },
+  };
+
   return (
-    <Link 
-      href={contributor.html_url} 
-      target="_blank" 
-      rel="noopener noreferrer"
-      className="block h-full"
+    <motion.div
+      initial="hidden"
+      animate="visible"
+      variants={cardVariants}
+      whileHover={{ 
+        scale: 1.05,
+        transition: { duration: 0.2 }
+      }}
+      className="h-full"
     >
+      <Link 
+        href={contributor.html_url} 
+        target="_blank" 
+        rel="noopener noreferrer"
+        className="block h-full"
+      >
       <div
-        className={`${getCardGradient(ratio)} rounded-xl p-6 flex flex-col items-center text-center shadow-sm border transition-all duration-300 hover:scale-105 relative group cursor-pointer h-full min-h-[280px]`}
+        className={`${getCardGradient(ratio)} rounded-xl p-6 flex flex-col items-center text-center shadow-sm border transition-all duration-300 relative group cursor-pointer h-full min-h-[280px]`}
         key={contributor.login}
       >
         {/* Hover overlay */}
@@ -232,7 +256,8 @@ const ContributorCard: React.FC<ContributorCardProps> = ({ contributor, index, t
           )}
         </div>
       </div>
-    </Link>
+      </Link>
+    </motion.div>
   );
 };
 
@@ -242,6 +267,18 @@ export default function ContributorsPage() {
   const [streak, setStreak] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+
+  const fadeInUp = {
+    hidden: { opacity: 0, y: 20 },
+    visible: (i: number) => ({
+      opacity: 1,
+      y: 0,
+      transition: {
+        delay: i * 0.1,
+        duration: 0.6,
+      },
+    }),
+  };
 
   useEffect(() => {
     const savedStreak = parseInt(localStorage.getItem('potd_streak') || '0');
@@ -345,9 +382,16 @@ export default function ContributorsPage() {
   return (
     <>
       <Navbar streak={streak} />
-      <main className="min-h-screen py-24 px-4 sm:px-8 lg:px-16 bg-background ">
+      <main className="min-h-screen py-24 px-4 sm:px-8 lg:px-16 bg-background transition-colors duration-300">
         <section aria-labelledby="contributors-heading" className="max-w-7xl mx-auto">
-            <div className="text-center mb-12">
+          {/* Header Section */}
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            custom={0}
+            variants={fadeInUp}
+            className="text-center mb-12"
+          >
             <h1 id="contributors-heading" className="text-3xl md:text-4xl font-bold mb-4">
               <span className="bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
                 Our Amazing Contributors
@@ -360,8 +404,16 @@ export default function ContributorsPage() {
               You all are the heart of this community! 🌟 <br />
              
             </p>
+          </motion.div>
 
-            <div className="flex flex-wrap justify-center gap-4 text-sm md:text-base text-gray-400 mt-6">
+          {/* Stats Section */}
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            custom={1}
+            variants={fadeInUp}
+            className="flex flex-wrap justify-center gap-4 text-sm md:text-base text-gray-400 mt-6 mb-12"
+          >
               <div className="bg-purple-500/10 px-4 py-2 rounded-full border border-purple-500/20">
                 <span className="text-purple-400 font-semibold">{stats?.totalContributors || contributors.length}</span> Contributors
               </div>
@@ -387,22 +439,41 @@ export default function ContributorsPage() {
                 </span>{' '}
                 Total Commits
               </div>
-            </div>
+            </motion.div>
 
             {stats?.totalPoints === 0 && (
-              <div className="mt-6 bg-amber-500/10 border border-amber-500/20 rounded-lg p-4 max-w-2xl mx-auto">
+              <motion.div
+                initial="hidden"
+                animate="visible"
+                custom={2}
+                variants={fadeInUp}
+                className="mt-6 bg-amber-500/10 border border-amber-500/20 rounded-lg p-4 max-w-2xl mx-auto"
+              >
                 <p className="text-amber-400 text-sm">
                   <strong>Note:</strong> No GSSoC'25 eligible PRs found with required labels (gssoc25 + level-1/2/3). 
                   Showing all contributors sorted by commits as fallback.
                 </p>
-              </div>
+              </motion.div>
             )}
-          </div>          {contributors.length === 0 ? (
-            <div className="text-center py-12">
+
+          {contributors.length === 0 ? (
+            <motion.div
+              initial="hidden"
+              animate="visible"
+              custom={3}
+              variants={fadeInUp}
+              className="text-center py-12"
+            >
               <p className="text-gray-400 text-lg">No contributors found.</p>
-            </div>
+            </motion.div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <motion.div
+              initial="hidden"
+              animate="visible"
+              custom={3}
+              variants={fadeInUp}
+              className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
+            >
               {(() => {
                 const projectOwner = 'saumyayadav25';
                 
@@ -436,10 +507,16 @@ export default function ContributorsPage() {
                   />
                 ));
               })()}
-            </div>
+            </motion.div>
           )}
 
-          <div className="mt-16 space-y-8">
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            custom={4}
+            variants={fadeInUp}
+            className="mt-16 space-y-8"
+          >
             {/* Point System Explanation */}
             <div className="bg-gradient-to-r from-indigo-500/10 via-purple-500/10 to-pink-500/10 rounded-2xl p-6 border border-white/10">
               <h2 className="text-xl md:text-2xl font-bold mb-4 text-center">
@@ -497,7 +574,7 @@ export default function ContributorsPage() {
                 </Button>
               </div>
             </div>
-          </div>
+          </motion.div>
         </section>
       </main>
     </>
