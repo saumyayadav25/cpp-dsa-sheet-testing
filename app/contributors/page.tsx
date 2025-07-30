@@ -145,11 +145,6 @@ const ContributorCard: React.FC<ContributorCardProps> = ({ contributor, index, t
           className="rounded-full border-2 border-white/10"
           loading="lazy"
         />
-        {hasPoints && (
-          <div className="absolute -top-2 -right-2 bg-gradient-to-r from-yellow-400 to-orange-500 text-black text-xs font-bold px-2 py-1 rounded-full shadow-lg">
-            {contributor.points}pts
-          </div>
-        )}
       </div>
 
       <h2 className="text-lg font-semibold mb-2 text-foreground">{contributor.login}</h2>
@@ -159,9 +154,6 @@ const ContributorCard: React.FC<ContributorCardProps> = ({ contributor, index, t
           <>
             <div className="text-yellow-400 font-bold text-lg">
               🏆 {contributor.points} Points
-            </div>
-            <div className="text-green-400 font-medium">
-              📝 {contributor.prCount} PR{contributor.prCount === 1 ? '' : 's'}
             </div>
             {contributor.levelBreakdown && (
               <div className="text-xs text-gray-400 mt-2 space-y-1">
@@ -177,7 +169,7 @@ const ContributorCard: React.FC<ContributorCardProps> = ({ contributor, index, t
               </div>
             )}
             <div className="text-gray-500 text-xs mt-2">
-              {contributor.contributions} commit{contributor.contributions === 1 ? '' : 's'}
+              {contributor.prCount} PR{contributor.prCount === 1 ? '' : 's'} - {contributor.contributions} commit{contributor.contributions === 1 ? '' : 's'}
             </div>
           </>
         ) : (
