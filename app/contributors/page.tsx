@@ -125,79 +125,107 @@ interface ContributorCardProps {
   contributor: Contributor;
   index: number;
   totalContributors: number;
+  isProjectOwner?: boolean;
 }
 
-const ContributorCard: React.FC<ContributorCardProps> = ({ contributor, index, totalContributors }) => {
+const ContributorCard: React.FC<ContributorCardProps> = ({ contributor, index, totalContributors, isProjectOwner = false }) => {
   const ratio = index / Math.max(1, totalContributors - 1);
   const hasPoints = contributor.points !== undefined && contributor.points > 0;
 
   return (
-    <div
-      className={`${getCardGradient(ratio)} rounded-xl p-6 flex flex-col items-center text-center shadow-sm border transition-transform duration-300 hover:scale-105`}
-      key={contributor.login}
+    <Link 
+      href={contributor.html_url} 
+      target="_blank" 
+      rel="noopener noreferrer"
+      className="block h-full"
     >
-      <div className="relative mb-4">
-        <Image
-          src={contributor.avatar_url}
-          alt={`${contributor.login}'s avatar`}
-          width={96}
-          height={96}
-          className="rounded-full border-2 border-white/10"
-          loading="lazy"
-        />
-      </div>
+      <div
+        className={`${getCardGradient(ratio)} rounded-xl p-6 flex flex-col items-center text-center shadow-sm border transition-all duration-300 hover:scale-105 relative group cursor-pointer h-full min-h-[280px]`}
+        key={contributor.login}
+      >
+        {/* Hover overlay */}
+        <div className="absolute inset-0 bg-white/10 backdrop-blur-sm rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center z-10">
+          <div className="relative mb-2">
+            <Image
+              src={contributor.avatar_url}
+              alt={`${contributor.login}'s avatar`}
+              width={64}
+              height={64}
+              className="rounded-full border-2 border-white/20"
+              loading="lazy"
+            />
+          </div>
+          <div className="text-white font-semibold text-sm">Click To Visit Profile</div>
+        </div>
 
-      <h2 className="text-lg font-semibold mb-2 text-foreground">{contributor.login}</h2>
+        <div className="relative mb-4 group-hover:opacity-0 transition-opacity duration-300">
+          <Image
+            src={contributor.avatar_url}
+            alt={`${contributor.login}'s avatar`}
+            width={96}
+            height={96}
+            className="rounded-full border-2 border-white/10"
+            loading="lazy"
+          />
+        </div>
 
-      <div className="text-sm text-foreground mb-4 space-y-1">
-        {hasPoints ? (
-          <>
-            <div className="text-yellow-400 font-bold text-lg">
-              🏆 {contributor.points} Points
-            </div>
-            {contributor.levelBreakdown && (
-              <div className="text-xs text-gray-400 mt-2 space-y-1">
-                {contributor.levelBreakdown.level3 > 0 && (
-                  <div>🥇 Level-3: {contributor.levelBreakdown.level3} (10pts each)</div>
-                )}
-                {contributor.levelBreakdown.level2 > 0 && (
-                  <div>🥈 Level-2: {contributor.levelBreakdown.level2} (5pts each)</div>
-                )}
-                {contributor.levelBreakdown.level1 > 0 && (
-                  <div>🥉 Level-1: {contributor.levelBreakdown.level1} (3pts each)</div>
+        <h2 className="text-lg font-semibold mb-2 text-foreground group-hover:opacity-0 transition-opacity duration-300">{contributor.login}</h2>
+
+        <div className="text-sm text-foreground mb-4 space-y-1 flex-grow flex flex-col justify-start group-hover:opacity-0 transition-opacity duration-300">
+          {isProjectOwner ? (
+            <>
+              <div className="text-transparent bg-gradient-to-r from-emerald-400 to-yellow-400 bg-clip-text font-bold text-lg">
+                👑 Project Admin
+              </div>
+              <div className="text-gray-500 text-xs mt-2">
+                {contributor.contributions} commit{contributor.contributions === 1 ? '' : 's'}
+              </div>
+            </>
+          ) : hasPoints ? (
+            <>
+              <div className="font-bold text-lg">
+                <span className="bg-gradient-to-r from-yellow-400 to-emerald-400 bg-clip-text text-transparent">
+                  🏆 {contributor.points} Points
+                </span>
+              </div>
+              <div className="text-xs text-gray-400 mt-2 space-y-1 min-h-[60px]">
+                {contributor.levelBreakdown && (
+                  <>
+                    {contributor.levelBreakdown.level3 > 0 && (
+                      <div>🥇 Level-3: {contributor.levelBreakdown.level3} (10pts each)</div>
+                    )}
+                    {contributor.levelBreakdown.level2 > 0 && (
+                      <div>🥈 Level-2: {contributor.levelBreakdown.level2} (5pts each)</div>
+                    )}
+                    {contributor.levelBreakdown.level1 > 0 && (
+                      <div>🥉 Level-1: {contributor.levelBreakdown.level1} (3pts each)</div>
+                    )}
+                  </>
                 )}
               </div>
-            )}
-            <div className="text-gray-500 text-xs mt-2">
-              {contributor.prCount} PR{contributor.prCount === 1 ? '' : 's'} - {contributor.contributions} commit{contributor.contributions === 1 ? '' : 's'}
+              <div className="text-xs mt-2">
+                <span className="text-red-400 font-medium">
+                  {contributor.prCount} PRS
+                </span>
+                <span className="text-gray-400"> & </span>
+                <span className="text-blue-400 font-medium">
+                  {contributor.contributions} Commit{contributor.contributions === 1 ? '' : 's'}
+                </span>
+              </div>
+            </>
+          ) : (
+            <div className="text-gray-400">
+              <div className="text-yellow-400 font-medium">
+                {contributor.contributions.toLocaleString()} commit{contributor.contributions === 1 ? '' : 's'}
+              </div>
+              <div className="text-xs text-gray-500 mt-1">
+                No eligible PRs found
+              </div>
             </div>
-          </>
-        ) : (
-          <div className="text-gray-400">
-            <div className="text-yellow-400 font-medium">
-              {contributor.contributions.toLocaleString()} commit{contributor.contributions === 1 ? '' : 's'}
-            </div>
-            <div className="text-xs text-gray-500 mt-1">
-              No eligible PRs found
-            </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
-
-      <Button
-        asChild
-        variant="outline"
-        size="sm"
-        className={`w-full ${getButtonGradient(ratio)} text-white border transition-all duration-300 hover:shadow-lg`}
-      >
-        <Link href={contributor.html_url} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2">
-          <span>View Profile</span>
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-          </svg>
-        </Link>
-      </Button>
-    </div>
+    </Link>
   );
 };
 
@@ -320,8 +348,8 @@ export default function ContributorsPage() {
             </h1>
 
             <p className="text-sm md:text-base text-foreground max-w-2xl mx-auto">
-              Tracking points earned through merged PRs with <strong>gssoc25</strong> label. <br />
-              <span className="text-yellow-400 font-medium">Level-1: 3pts • Level-2: 5pts • Level-3: 10pts</span> <br />
+              Every line of code, every fix, every idea — it all adds up. <br />
+              <span className="text-yellow-400 font-medium">Grateful to have you building with us.</span> <br />
               You all are the heart of this community! 🌟
             </p>
 
@@ -367,9 +395,39 @@ export default function ContributorsPage() {
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {contributors.map((contributor, index) => (
-                <ContributorCard key={contributor.login} contributor={contributor} index={index} totalContributors={contributors.length} />
-              ))}
+              {(() => {
+                const projectOwner = 'saumyayadav25';
+                
+                // Separate contributors into different categories
+                const ownerContributor = contributors.find(c => c.login === projectOwner);
+                const gssocContributors = contributors.filter(c => 
+                  c.login !== projectOwner && 
+                  c.points !== undefined && 
+                  c.points > 0
+                ).sort((a, b) => (b.points || 0) - (a.points || 0));
+                
+                const nonGssocContributors = contributors.filter(c => 
+                  c.login !== projectOwner && 
+                  (c.points === undefined || c.points === 0)
+                ).sort((a, b) => b.contributions - a.contributions);
+
+                // Combine them in order: owner first, then gssoc contributors, then non-gssoc
+                const sortedContributors = [
+                  ...(ownerContributor ? [ownerContributor] : []),
+                  ...gssocContributors,
+                  ...nonGssocContributors
+                ];
+
+                return sortedContributors.map((contributor, index) => (
+                  <ContributorCard 
+                    key={contributor.login} 
+                    contributor={contributor} 
+                    index={index} 
+                    totalContributors={sortedContributors.length}
+                    isProjectOwner={contributor.login === projectOwner}
+                  />
+                ));
+              })()}
             </div>
           )}
 
