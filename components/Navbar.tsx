@@ -81,7 +81,7 @@ export default function Navbar({ searchTerm, setSearchTerm, streak }: NavbarProp
           whileHover={{ scale: 1.01 }}
           whileTap={{ scale: 1.0 }}
         >
-          <Link href="/" className="group relative text-2xl font-bold text-white hover:cursor-pointer">
+          <Link href="/" className="group relative text-4xl font-extrabold text-white hover:cursor-pointer">
             <span className="relative z-10">
               DSA<span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-blue-500">Mate</span> Template
             </span>
@@ -137,7 +137,7 @@ export default function Navbar({ searchTerm, setSearchTerm, streak }: NavbarProp
                   onChange={(e) => setSearchTerm?.(e.target.value)}
                   onFocus={() => setIsSearchFocused(true)}
                   onBlur={() => setIsSearchFocused(false)}
-                  className="bg-transparent focus:outline-none text-sm text-white placeholder-gray-400 w-full font-medium"
+                  className="bg-transparent focus:outline-none text-lg text-white placeholder-gray-400 w-full font-medium"
                 />
                 
                 {/* Clear button */}
@@ -201,7 +201,7 @@ export default function Navbar({ searchTerm, setSearchTerm, streak }: NavbarProp
                 href={link.href} 
                 className={`relative px-3 py-2 rounded-lg transition-all duration-300 group hover:text-blue-400 hover:cursor-pointer hover:bg-white/5`}
               >
-                <span className={`relative z-10 ${link.isActive ? 'text-blue-400' : 'text-white hover:text-blue-400'}`}>
+                <span className={`relative z-10 font-bold text-xl ${link.isActive ? 'text-blue-400' : 'text-white hover:text-blue-400'}`}>
                   {link.label}
                 </span>
                 {/* Add active indicator */}

@@ -87,7 +87,7 @@ export default function Home() {
 
   return (
     <div
-      className="bg-[#1a1e2a] p-5 rounded-xl border border-gray-800 cursor-pointer"
+      className="bg-[#1a1e2a] p-5 rounded-xl border border-gray-800 cursor-pointer hover:bg-gray-700 hover:text-black transition duration-200"
       onClick={() => setIsOpen(!isOpen)}
     >
       <div className="flex justify-between items-center">
@@ -117,39 +117,42 @@ export default function Home() {
             transition: { staggerChildren: 0.2 }
           }
         }}
-        className="flex flex-col items-center justify-center text-center px-6 py-16 pt-24"
+        className="flex flex-col items-center justify-center text-center px-6 py-20 md:py-34 bg-black pt-24"
       >
-        <h1 className="text-4xl md:text-5xl font-bold mb-4">DSA<span className="text-blue-400">Mate</span> template</h1>
+        <h1 className="text-5xl md:text-6xl font-extrabold mb-6 leading-tight">DSA<span className="bg-gradient-to-r from blue-400 to purple-500 text-blue-400 bg-clip-text">Mate</span> template </h1>
         <motion.h1
-          variants={fadeInUp}
-          custom={0}
-          className="text-4xl md:text-5xl font-bold mb-4"
+
+        initial={{ y: 0 }}
+  animate={{ y: [0, -10, 0] }}
+  transition={{ duration: 2, repeat:2,repeatType:"loop", ease: "easeInOut" }}
+  className="text-2xl sm:text-3xl font-extrabold text-center bg-gradient-to-r from-blue-400 to-purple-500 text-transparent bg-clip-text drop-shadow-md mb-3"
+      
         >
           Your daily dose for DSA practice
         </motion.h1>
         <motion.p
           variants={fadeInUp}
           custom={1}
-          className="text-lg text-gray-300 max-w-xl mb-6"
+          className="text-lg md:text-xl text-gray-300 max-w-xl mb-8"
         >
           Solve better, revise smarter, and stay consistent with your preparation journey.
-          ⚠️ This is just a <span className="font-medium">template version</span> of DSAMate.
+          ⚠️ This is just a <span className="font-medium text-white">template version</span> of DSAMate.
         </motion.p>
         <motion.div
           variants={fadeInUp}
           custom={2}
-          className="flex flex-col sm:flex-row gap-4 mt-6"
+          className="flex flex-col sm:flex-row gap-4 mt-4 var:to-cyan-600 text-white font-semibold "
         >
           <Link
             href="/sheet"
-            className="bg-black text-white hover:bg-gray-200 border hover:text-blue-600 font-semibold py-3 px-6 rounded-full transition text-center"
+            className="bg-gradient-to-r from blue-500 to cyan-500 hover:from-blue-600 ho hover:text-white font-semibold py-3 px-6 rounded-full transition shadow-lg text-center hover:font-bold"
           >
             🚀 Go to Practice Sheet
           </Link>
 
           <Link
             href="/progress"
-            className="bg-gradient-to-r from-green-600 to-blue-600 text-white hover:from-green-700 hover:to-blue-700 font-semibold py-3 px-6 rounded-full transition text-center"
+            className="bg-gradient-to-r from-green-500 to-teal-600 hover:to-teal-900 text-white  font-semibold py-3 px-6 rounded-full shadow-lg transition text-center"
           >
             📊 Track Your Progress
           </Link>
@@ -158,7 +161,7 @@ export default function Home() {
             href="https://dsamate.vercel.app"
             target="_blank"
             rel="noopener noreferrer"
-            className="bg-gray-200 text-blue-600 hover:text-white hover:bg-black border border-blue-600 font-semibold py-3 px-6 rounded-full transition text-center"
+            className="border border-blue-500 text-blue-400 hover:bg-blue-500 hover:bg-blue-800 hover:text-white font-semibold py-3 px-6 rounded-full transition shadow-md        text-center"
           >
             🔗 Visit Original DSAMate
           </Link>
@@ -175,12 +178,12 @@ export default function Home() {
             transition: { staggerChildren: 0.2 }
           }
         }}
-         className="text-white px-6 md:px-20 py-10">
+         className="text-white px-6 md:px-20 py-10 text-lg font-bold ">
           <motion.div 
           variants={fadeInUp}
           custom={0}
           className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center px-4 sm:px-32">
-            <div className="bg-[#141720] border border-gray-700 py-4 px-4 rounded-md">
+            <div className="bg-[#141720] border border-gray-700 py-4 px-4 rounded-md ">
               <h2 className="text-m text-gray-300">Total Users</h2>
               <h3 className="text-2xl font-bold text-blue-400">2100+</h3>
             </div>
@@ -217,7 +220,7 @@ export default function Home() {
             href="https://forms.gle/z1sRLUGRvtfKrGcp7"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-full transition"
+            className="inline-block bg-blue-600 text-white hover:bg-blue-300 hover:text-black font-bold px-6 py-3 rounded-full transition"
           >
             📩 I'm Interested
           </a>
@@ -236,37 +239,37 @@ export default function Home() {
         <div className="px-2 sm:px-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {[
             {
-              icon: <FaListUl size={28} className="text-blue-400 mb-3" />,
+              icon: <FaListUl size={28} className="text-blue-400 mb-3 " />,
               title: "Tailored Questions",
               desc: "Topic-wise DSA problems to ensure complete coverage.",
               link: "/sheet",
             },
             {
-              icon: <FaRegCalendarAlt size={28} className="text-cyan-200 mb-3" />,
+              icon: <FaRegCalendarAlt size={28} className="text-cyan-200 mb-3 " />,
               title: "Daily Problem (POTD)",
               desc: "Stay consistent by solving one new question daily.",
               link: "/sheet#potd",
             },
             {
-              icon: <BiSliderAlt size={28} className="text-yellow-400 mb-3" />,
+              icon: <BiSliderAlt size={28} className="text-yellow-400 mb-3 " />,
               title: "Smart Filters",
               desc: "Filter by difficulty, status, revision, and platform.",
               link: "/sheet#filters",
             },
             {
-              icon: <FaChartBar size={28} className="text-green-400 mb-3" />,
+              icon: <FaChartBar size={28} className="text-green-400 mb-3 " />,
               title: "Track Progress",
               desc: "Comprehensive analytics, streak tracking, and detailed progress insights.",
               link: "/progress",
             },
             {
-              icon: <FaFire size={28} className="text-red-400 mb-3" />,
+              icon: <FaFire size={28} className="text-red-400 mb-3 " />,
               title: "Streaks",
               desc: "Mark POTD as done and maintain your daily solving streak!",
               link: "/progress#streaks",
             },
             {
-              icon: <FaSearch size={28} className="text-purple-400 mb-3" />,
+              icon: <FaSearch size={28} className="text-purple-400 mb-3 " />,
               title: "Search Questions Quickly",
               desc: "Instantly locate problems using keywords in the dedicated search bar.",
               link: "/sheet#search",
@@ -312,8 +315,8 @@ export default function Home() {
         viewport={{ once: true }}
         className="bg-[#0d0f16] px-6 md:px-20 py-12 text-center"
       >
-        <h2 className="text-2xl font-semibold mb-4">💬 Loved using DSAMate? Share your thoughts!</h2>
-        <p className="text-gray-300 mb-6">
+        <h2 className="text-3xl font-semibold mb-4">💬 Loved using DSAMate? Share your thoughts!</h2>
+        <p className="text-gray-300 mb-6 text-xl">
           Provide your testimonial to share your experience with others.
         </p>
         <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mb-6">
@@ -321,7 +324,7 @@ export default function Home() {
             href="https://forms.gle/8BXQC1o3hsVsEEBp9"
             target="_blank"
             rel="noopener noreferrer"
-            className="bg-blue-600 hover:bg-gray-100 hover:text-blue-600 text-white px-4 py-2 rounded text-center"
+            className="bg-blue-600 hover:bg-gray-100 hover:text-blue-600 hover:font-bold text-white px-4 py-2 rounded text-center font-bold "
           >
             💬 Give a Testimonial
           </a>
@@ -329,7 +332,7 @@ export default function Home() {
             href="https://dsamate.vercel.app" // replace with real site if custom domain
             target="_blank"
             rel="noopener noreferrer"
-            className="bg-white text-blue-600 hover:text-white hover:bg-blue-600 border border-blue-600 px-4 py-2 rounded text-center"
+            className="bg-white font-bold text-blue-600 hover:text-white hover:font-bold  hover:bg-blue-600 border border-blue-600 px-4 py-2 rounded text-center"
           >
             🔗 Visit Original DSAMate
           </a>
@@ -350,18 +353,18 @@ export default function Home() {
                 className="bg-[#202533] p-6 rounded-xl shadow-md border border-gray-800 hover:bg-[#212638]"
               >
                 {/* User Details */}
-                <div className="flex items-center gap-3 mb-4 text-white">
-                  <FaUserCircle className="text-2xl text-gray-400" />
+                <div className="flex items-center gap-3 mb-2 text-white">
+                  <FaUserCircle className="text-3xl text-gray-400" />
                   <div>
-                    <p className="font-semibold">{displayName}</p>
+                    <p className="font-bold">{displayName}</p>
                     {showDesignation && (
-                      <p className="text-xs text-gray-400">{designation}</p>
+                      <p className="text-s text-gray-400">{designation}</p>
                     )}
                   </div>
                 </div>
 
                 {/* Testimonial Text */}
-                <p className="text-gray-300 text-sm mb-4 italic">"{text}"</p>
+                <p className="text-gray-300 text-lg mb-4 italic">"{text}"</p>
 
                 {/* Rating */}
                 <div className="flex items-center text-yellow-400">
@@ -382,8 +385,8 @@ export default function Home() {
   transition={{ duration: 0.5 }}
   viewport={{ once: true }}
       className="px-6 md:px-20 py-12">
-        <h2 className="text-2xl font-semibold mb-6 text-center">📌 FAQs</h2>
-        <div className="space-y-4 max-w-3xl mx-auto">
+        <h2 className="text-2xl md:text-3xl font-semibold mb-6 text-center">📌 FAQs</h2>
+        <div className="space-y-4 max-w-3xl mx-auto text-lg text-lg font-bold ">
           {[
             {
               q: "What if I find an incorrect or broken link?",
