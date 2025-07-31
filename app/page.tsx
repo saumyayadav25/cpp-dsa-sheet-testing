@@ -119,7 +119,8 @@ export default function Home() {
         }}
         className="flex flex-col items-center justify-center text-center px-6 py-20 md:py-34 bg-black pt-24"
       >
-        <h1 className="text-5xl md:text-6xl font-extrabold mb-6 leading-tight">DSA<span className="bg-gradient-to-r from blue-400 to purple-500 text-blue-400 bg-clip-text">Mate</span> template </h1>
+        <h1 className="text-5xl md:text-6xl font-extrabold mb-6 leading-tight">DSA<span className="bg-gradient-to-r from-blue-400 to-purple-500 text-transparent bg-clip-text"
+>Mate</span> template </h1>
         <motion.h1
 
         initial={{ y: 0 }}
@@ -141,11 +142,12 @@ export default function Home() {
         <motion.div
           variants={fadeInUp}
           custom={2}
-          className="flex flex-col sm:flex-row gap-4 mt-4 var:to-cyan-600 text-white font-semibold "
+  className="flex flex-col sm:flex-row gap-4 mt-4 text-white font-semibold"
+
         >
           <Link
             href="/sheet"
-            className="bg-gradient-to-r from blue-500 to cyan-500 hover:from-blue-600 ho hover:text-white font-semibold py-3 px-6 rounded-full transition shadow-lg text-center hover:font-bold"
+            className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:text-white font-semibold py-3 px-6 rounded-full transition shadow-lg text-center hover:font-bold"
           >
             🚀 Go to Practice Sheet
           </Link>

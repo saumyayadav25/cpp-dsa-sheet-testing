@@ -119,7 +119,7 @@ export default function Footer() {
         </div>
         
         <div className="border-t border-gray-800/50 mt-12 pt-8 text-center">
-          <p className="text-l text-gray-500">
+          <p className="text-lg text-gray-500">
             &copy; {new Date().getFullYear()} DSA Practice. All Rights Reserved.
           </p>
           <p className="text-md text-gray-400 mt-2">
