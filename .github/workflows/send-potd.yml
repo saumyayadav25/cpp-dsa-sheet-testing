@@ -1,0 +1,13 @@
+name: Send POTD Daily
+
+on:
+  schedule:
+    - cron: "0 4 * * *" # Runs daily at 9:30 AM IST (4:00 UTC)
+  workflow_dispatch:
+
+jobs:
+  send-potd:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call deployed endpoint
+        run: curl -X GET "https://dsa-sheet-template.vercel.app/api/send-potd"

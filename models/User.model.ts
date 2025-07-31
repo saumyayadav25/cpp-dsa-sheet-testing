@@ -11,6 +11,8 @@ export interface IUser extends Document {
   otpExpiry?: Date;
   resetToken?: string;
   resetTokenExpiry?: Date;
+  subscribedToEmails?: boolean;
+  subscribedToNewsletter?: boolean;
 }
 
 const UserSchema = new Schema<IUser>({
@@ -24,6 +26,9 @@ const UserSchema = new Schema<IUser>({
   otpExpiry: Date,
   resetToken: String,
   resetTokenExpiry: Date,
+  // New field to track email subscription , newletters
+  subscribedToEmails: { type: Boolean, default: true },
+  subscribedToNewsletter: { type: Boolean, default: false }
 }, {
   timestamps: true
 });
