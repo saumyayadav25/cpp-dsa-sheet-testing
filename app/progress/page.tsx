@@ -3,10 +3,8 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FaChartLine, FaCalendarCheck, FaFire, FaTrophy, FaBullseye, FaBolt, FaCode, FaClock } from 'react-icons/fa';
-import { BiTrendingUp } from 'react-icons/bi';
 import { sampleTopics, type Question, type Topic } from '@/data/questions';
 import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
 import ProgressChart from '@/components/ProgressChart';
 import ProgressStats from '@/components/ProgressStats';
 import TopicProgress from '@/components/TopicProgress';
@@ -107,8 +105,8 @@ export default function ProgressPage() {
 
   return (
     <>
-      <Navbar streak={streak}/>
-      <main className="min-h-screen bg-[#131313] text-white px-4 md:px-12 py-24">
+      <Navbar streak={streak} />
+      <main className="min-h-screen bg-white dark:bg-background text-gray-900 dark:text-white px-4 md:px-12 py-24 transition-colors duration-300">
         
         {/* Header Section */}
         <motion.div
@@ -118,10 +116,10 @@ export default function ProgressPage() {
           variants={fadeInUp}
           className="mb-8 text-center"
         >
-          <h1 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+          <h1 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
             Track Your Progress
           </h1>
-          <p className="text-sm md:text-base text-gray-400 max-w-2xl mx-auto">
+          <p className="text-sm md:text-base text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
             Monitor your DSA journey with detailed analytics, track your solving patterns, 
             and celebrate your achievements along the way.
           </p>
@@ -135,46 +133,50 @@ export default function ProgressPage() {
           variants={fadeInUp}
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8"
         >
-          <div className="bg-gradient-to-br from-green-500/20 to-green-600/10 rounded-xl p-6 border border-green-500/20">
+          {/* Total Solved Card */}
+          <div className="bg-white dark:bg-zinc-900 border border-gray-200 dark:border-gray-800 rounded-xl p-6 shadow-sm hover:shadow-lg transition-all duration-300">
             <div className="flex items-center justify-between mb-4">
-              <FaTrophy className="text-2xl text-green-400" />
-              <span className="text-sm text-green-300">Total Solved</span>
+              <FaTrophy className="text-2xl text-green-600 dark:text-green-400" />
+              <span className="text-sm text-green-700 dark:text-green-300">Total Solved</span>
             </div>
-            <div className="text-3xl font-bold text-white mb-2">{stats.solvedQuestions}</div>
-            <div className="text-sm text-gray-400">out of {stats.totalQuestions} questions</div>
-            <div className="mt-3 bg-gray-700 rounded-full h-2">
+            <div className="text-3xl font-bold text-gray-900 dark:text-white mb-2">{stats.solvedQuestions}</div>
+            <div className="text-sm text-gray-600 dark:text-gray-400">out of {stats.totalQuestions} questions</div>
+            <div className="mt-3 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
               <div 
-                className="bg-green-400 h-2 rounded-full transition-all duration-500"
+                className="bg-green-500 dark:bg-green-400 h-2 rounded-full transition-all duration-500"
                 style={{ width: `${stats.percentage}%` }}
               ></div>
             </div>
           </div>
 
-          <div className="bg-gradient-to-br from-blue-500/20 to-blue-600/10 rounded-xl p-6 border border-blue-500/20">
+          {/* Current Streak Card */}
+          <div className="bg-white dark:bg-zinc-900 border border-gray-200 dark:border-gray-800 rounded-xl p-6 shadow-sm hover:shadow-lg transition-all duration-300">
             <div className="flex items-center justify-between mb-4">
-              <FaFire className="text-2xl text-orange-400" />
-              <span className="text-sm text-orange-300">Current Streak</span>
+              <FaFire className="text-2xl text-orange-600 dark:text-orange-400" />
+              <span className="text-sm text-orange-700 dark:text-orange-300">Current Streak</span>
             </div>
-            <div className="text-3xl font-bold text-white mb-2">{streak}</div>
-            <div className="text-sm text-gray-400">days in a row</div>
+            <div className="text-3xl font-bold text-gray-900 dark:text-white mb-2">{streak}</div>
+            <div className="text-sm text-gray-600 dark:text-gray-400">days in a row</div>
           </div>
 
-          <div className="bg-gradient-to-br from-purple-500/20 to-purple-600/10 rounded-xl p-6 border border-purple-500/20">
+          {/* Completion Rate Card */}
+          <div className="bg-white dark:bg-zinc-900 border border-gray-200 dark:border-gray-800 rounded-xl p-6 shadow-sm hover:shadow-lg transition-all duration-300">
             <div className="flex items-center justify-between mb-4">
-              <FaBullseye className="text-2xl text-purple-400" />
-              <span className="text-sm text-purple-300">Completion Rate</span>
+              <FaBullseye className="text-2xl text-purple-600 dark:text-purple-400" />
+              <span className="text-sm text-purple-700 dark:text-purple-300">Completion Rate</span>
             </div>
-            <div className="text-3xl font-bold text-white mb-2">{stats.percentage}%</div>
-            <div className="text-sm text-gray-400">overall progress</div>
+            <div className="text-3xl font-bold text-gray-900 dark:text-white mb-2">{stats.percentage}%</div>
+            <div className="text-sm text-gray-600 dark:text-gray-400">overall progress</div>
           </div>
 
-          <div className="bg-gradient-to-br from-yellow-500/20 to-yellow-600/10 rounded-xl p-6 border border-yellow-500/20">
+          {/* For Review Card */}
+          <div className="bg-white dark:bg-zinc-900 border border-gray-200 dark:border-gray-800 rounded-xl p-6 shadow-sm hover:shadow-lg transition-all duration-300">
             <div className="flex items-center justify-between mb-4">
-              <FaBolt className="text-2xl text-yellow-400" />
-              <span className="text-sm text-yellow-300">For Review</span>
+              <FaBolt className="text-2xl text-yellow-600 dark:text-yellow-400" />
+              <span className="text-sm text-yellow-700 dark:text-yellow-300">For Review</span>
             </div>
-            <div className="text-3xl font-bold text-white mb-2">{stats.markedForRevision}</div>
-            <div className="text-sm text-gray-400">questions marked</div>
+            <div className="text-3xl font-bold text-gray-900 dark:text-white mb-2">{stats.markedForRevision}</div>
+            <div className="text-sm text-gray-600 dark:text-gray-400">questions marked</div>
           </div>
         </motion.div>
 

@@ -1,9 +1,11 @@
-'use client';
+"use client";
 
 import { FaGithub, FaLinkedin, FaTwitter } from 'react-icons/fa';
 import Link from 'next/link';
+
 export default function Footer() {
   return (
+
       <footer className="bg-[#141620] px-6 md:px-20 py-12 text-gray-400 border-t border-gray-800/50">
         <div className="flex flex-col md:flex-row md:justify-center md:items-start gap-20 mx-auto">
           {/* About */}
@@ -15,10 +17,12 @@ export default function Footer() {
             <p className="text-lg text-gray-300 mb-4">
               Your ultimate destination for mastering Data Structures and Algorithms with comprehensive resources.
             </p>
+
             <a
-              href="https://www.buymeacoffee.com/saumyayadav"
+              href="https://x.com/SaumyaYadav817"
               target="_blank"
               rel="noopener noreferrer"
+
              className="text-lg font-bold inline-flex items-center gap-2 mt-4 bg-gradient-to-r from-yellow-600 to-yellow-500 text-black px-4 py-2 rounded-lg border border-transparent hover:border-black transition-all hover:shadow-lg">
               ☕ Buy me a coffee
             </a>
@@ -124,8 +128,35 @@ export default function Footer() {
           </p>
           <p className="text-md text-gray-400 mt-2">
             Made with ❤️ by Saumya Yadav
+
           </p>
+          <div className="mt-6 flex flex-col items-center justify-center mx-auto md:justify-start md:items-start">
+            <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
+              Support This Project
+            </h4>
+            <p className="text-xs text-gray-400 dark:text-gray-500 mb-3 max-w-xs">
+              If you find these resources helpful, consider supporting to help maintain and improve them.
+            </p>
+            <a
+              href="https://github.com/sponsors/saumyayadav25"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 bg-[#1e2130] hover:bg-[#2a2e42] px-4 py-2 rounded-lg text-sm text-gray-300 dark:text-gray-400 transition-colors"
+            >
+              <FaGithub /> Sponsor on GitHub
+            </a>
+          </div>
         </div>
-      </footer>
+      </div>
+
+      <div className="border-t border-gray-300 dark:border-gray-800 mt-12 pt-8 text-center">
+        <p className="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-300">
+          &copy; {new Date().getFullYear()} DSA Practice. All Rights Reserved.
+        </p>
+        <p className="text-xs text-gray-400 dark:text-gray-500 mt-2 transition-colors duration-300">
+          Made with ❤️ by Saumya Yadav
+        </p>
+      </div>
+    </footer>
   );
 }

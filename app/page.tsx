@@ -1,15 +1,19 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { FaListUl, FaRegCalendarAlt, FaChartBar, FaSearch, FaFire } from "react-icons/fa";
+import {
+  FaListUl,
+  FaRegCalendarAlt,
+  FaChartBar,
+  FaSearch,
+  FaFire,
+} from "react-icons/fa";
 import { FaStar, FaRegStar, FaUserCircle } from "react-icons/fa";
 import { BiSliderAlt } from "react-icons/bi";
-import ReportIssueButton from '@/components/ReportIssueButton';
-import Navbar from '@/components/Navbar';
-import { motion } from 'framer-motion';
-
-
+import ReportIssueButton from "@/components/ReportIssueButton";
+import Navbar from "@/components/Navbar";
+import { motion } from "framer-motion";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
@@ -23,7 +27,27 @@ const fadeInUp = {
   }),
 };
 
-// testimonial
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.15,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.5,
+    },
+  },
+};
+
 type Testimonial = {
   name: string;
   designation?: string;
@@ -32,13 +56,12 @@ type Testimonial = {
   visibility: "full" | "nameOnly" | "anonymous";
 };
 
-// testimonials -> need to add it to data when more testimonials are received
 const testimonials: Testimonial[] = [
   {
     name: "Prakhar Sinha",
     designation: "Student",
     rating: 5,
-    text: "It really helped me by listing important questions discussed in class, so we didn’t have to visit lectures again to revise those questions. Overall, it’s the best!",
+    text: "It really helped me by listing important questions discussed in class, so we didn't have to visit lectures again to revise those questions. Overall, it's the best!",
     visibility: "full",
   },
   {
@@ -71,21 +94,53 @@ const testimonials: Testimonial[] = [
 ];
 
 export default function Home() {
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [streak, setStreak] = useState(0);
 
-  // Initialize streak (you can load from localStorage or API)
   useEffect(() => {
-    const savedStreak = localStorage.getItem('userStreak');
+    const savedStreak = localStorage.getItem("userStreak");
     if (savedStreak) {
       setStreak(parseInt(savedStreak, 10));
     }
   }, []);
 
   function FAQItem({ question, answer }: { question: string; answer: string }) {
-  const [isOpen, setIsOpen] = useState(false);
+    const [isOpen, setIsOpen] = useState(false);
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="group"
+      >
+        <div
+          className="bg-white/70 dark:bg-white/5 backdrop-blur-sm p-6 rounded-2xl border border-gray-200/50 dark:border-white/10 cursor-pointer transition-all duration-300 hover:bg-white/80 dark:hover:bg-white/10 hover:shadow-lg hover:scale-[1.02]"
+          onClick={() => setIsOpen(!isOpen)}
+        >
+          <div className="flex justify-between items-center">
+            <h4 className="text-gray-900 dark:text-white font-semibold text-lg">
+              {question}
+            </h4>
+            <span className="text-blue-500 dark:text-blue-400 text-2xl font-light transition-transform duration-300 group-hover:scale-110">
+              {isOpen ? "−" : "+"}
+            </span>
+          </div>
+          <motion.div
+            initial={false}
+            animate={{ height: isOpen ? "auto" : 0, opacity: isOpen ? 1 : 0 }}
+            transition={{ duration: 0.3 }}
+            className="overflow-hidden"
+          >
+            <p className="text-gray-700 dark:text-gray-300 text-base mt-4 leading-relaxed">
+              {answer}
+            </p>
+          </motion.div>
+        </div>
+      </motion.div>
+    );
+  }
 
   return (
+
     <div
       className="bg-[#1a1e2a] p-5 rounded-xl border border-gray-800 cursor-pointer hover:bg-gray-700 hover:text-black transition duration-200"
       onClick={() => setIsOpen(!isOpen)}
@@ -102,16 +157,15 @@ export default function Home() {
   return (
     
     <main className="min-h-screen bg-black text-white">
-      <ReportIssueButton />
-      {/* NAVBAR */}
-      <Navbar 
-        streak={streak}
-      />
 
-      {/* HERO SECTION */}
+      <ReportIssueButton />
+      <Navbar streak={streak} />
+
+      {/* HERO SECTION - UNCHANGED */}
       <motion.section
         initial="hidden"
         animate="visible"
+
         variants={{
           visible: {
             transition: { staggerChildren: 0.2 }
@@ -145,29 +199,34 @@ export default function Home() {
         >
           <Link
             href="/sheet"
-            className="bg-gradient-to-r from blue-500 to cyan-500 hover:from-blue-600 ho hover:text-white font-semibold py-3 px-6 rounded-full transition shadow-lg text-center hover:font-bold"
+
           >
-            🚀 Go to Practice Sheet
-          </Link>
+            DSA<span className="text-blue-400">Mate</span> template
+          </motion.h1>
+
 
           <Link
             href="/progress"
             className="bg-gradient-to-r from-green-500 to-teal-600 hover:to-teal-900 text-white  font-semibold py-3 px-6 rounded-full shadow-lg transition text-center"
+
           >
-            📊 Track Your Progress
-          </Link>
+            Your daily dose for DSA practice
+          </motion.h2>
+
 
           <Link
             href="https://dsamate.vercel.app"
             target="_blank"
             rel="noopener noreferrer"
             className="border border-blue-500 text-blue-400 hover:bg-blue-500 hover:bg-blue-800 hover:text-white font-semibold py-3 px-6 rounded-full transition shadow-md        text-center"
-          >
-            🔗 Visit Original DSAMate
-          </Link>
-        </motion.div>
 
-      </motion.section>
+          >
+            <img
+              src="dsa-hero.png"
+              alt="DSA Mate Hero"
+              className="w-[40vw]"
+              draggable="false"
+            />
 
       {/* STATISTICS SECTION */}
         <motion.section
@@ -275,46 +334,132 @@ export default function Home() {
               link: "/sheet#search",
             }
           ].map(({ title, desc, icon ,link }) => (
+
             <motion.div
-              whileHover={{ scale: 1.03 }}
-              transition={{ duration: 0.3 }}
-              className="bg-[#202533] p-6 rounded-xl shadow-md border border-gray-800 hover:bg-[#212638] cursor-pointer"
-              key={title}
+              variants={fadeInUp}
+              custom={4}
+              className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center px-4 sm:px-0"
             >
-              {/* <h3 className="text-lg font-semibold mb-2">{title}</h3>
-              <p className="text-gray-400 text-sm">{desc}</p> */}
-              <div onClick={() => window.location.href = link} className="flex flex-col items-start text-white">
-          {icon}
-          <h3 className="text-lg font-semibold mb-1">{title}</h3>
-          <p className="text-gray-400 text-sm">{desc}</p>
-        </div>
+              <Link
+                href="/sheet"
+                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 sm:px-8 rounded-md transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 w-full sm:w-auto text-sm sm:text-base"
+              >
+                🚀 Go to Practice Sheet
+              </Link>
+              <Link
+                href="/progress"
+                className="bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white font-semibold py-3 px-6 sm:px-8 rounded-md transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 w-full sm:w-auto text-sm sm:text-base"
+              >
+                📊 Track Your Progress
+              </Link>
+              <Link
+                href="https://dsamate.vercel.app"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white border border-white/30 hover:border-white/50 font-semibold py-3 px-6 sm:px-8 rounded-md transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 w-full sm:w-auto text-sm sm:text-base"
+              >
+                🔗 Visit Original DSAMate
+              </Link>
             </motion.div>
-          ))}
+          </motion.div>
+        </div>
+
+        <style jsx>{`
+          @media (max-width: 640px) {
+            section {
+              background-size: cover;
+              background-position: center center;
+              background-attachment: scroll;
+            }
+          }
+        `}</style>
+      </motion.section>
+
+      {/* STATISTICS SECTION - REDESIGNED */}
+      <motion.section
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+        variants={containerVariants}
+        className="px-6 md:px-20 py-20 relative"
+      >
+        {/* Subtle background decoration */}
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-blue-50/30 to-transparent dark:via-blue-900/10 pointer-events-none"></div>
+        
+        <div className="relative z-10 max-w-6xl mx-auto">
+          <motion.div variants={itemVariants} className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+              Trusted by <span className="text-blue-500">Thousands</span>
+            </h2>
+            <p className="text-gray-600 dark:text-gray-400 text-lg max-w-2xl mx-auto">
+              Join our growing community of developers mastering DSA
+            </p>
+          </motion.div>
+
+          <motion.div
+            variants={containerVariants}
+            className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8"
+          >
+            {[
+              {
+                title: "Total Users",
+                value: "2100+",
+                icon: "👥",
+                gradient: "from-blue-500 to-cyan-500",
+              },
+              {
+                title: "Daily Users",
+                value: "30+",
+                icon: "⚡",
+                gradient: "from-yellow-500 to-orange-500",
+              },
+              {
+                title: "DSA Problems",
+                value: "450+",
+                icon: "🧩",
+                gradient: "from-green-500 to-emerald-500",
+              },
+              {
+                title: "Testimonials",
+                value: "10+",
+                icon: "💬",
+                gradient: "from-pink-500 to-purple-500",
+              },
+            ].map(({ title, value, icon, gradient }, index) => (
+              <motion.div
+                key={title}
+                variants={itemVariants}
+                whileHover={{ scale: 1.05, y: -5 }}
+                className="group relative"
+              >
+                <div className="bg-white/70 dark:bg-white/5 backdrop-blur-sm border border-gray-200/50 dark:border-white/10 rounded-2xl p-6 text-center transition-all duration-300 hover:shadow-xl hover:bg-white/80 dark:hover:bg-white/10">
+                  <div className="relative">
+                    <div className={`w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br ${gradient} flex items-center justify-center text-2xl shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+                      {icon}
+                    </div>
+                    <h3 className={`text-3xl md:text-4xl font-bold bg-gradient-to-r ${gradient} bg-clip-text text-transparent mb-2`}>
+                      {value}
+                    </h3>
+                    <p className="text-gray-600 dark:text-gray-400 font-medium">
+                      {title}
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
         </div>
       </motion.section>
 
-      {/* WHY DSA MATE SECTION */}
-      <motion.section
-      initial={{ opacity: 0, y: 30 }}
-  whileInView={{ opacity: 1, y: 0 }}
-  transition={{ duration: 0.5 }}
-  viewport={{ once: true }}
-      className="px-6 md:px-20 py-14 text-center">
-        <h2 className="text-2xl md:text-4xl font-semibold mb-4">DSA<span className="text-blue-400">Mate</span></h2>
-        <p className="text-gray-300 max-w-3xl mx-auto text-md md:text-lg">
-          It's not just another practice sheet — it's your all-in-one platform to solve topic-wise problems, apply smart filters, and track your daily progress with the new streak feature. Whether you're revising for interviews, trying to stay consistent, or looking to master DSA with purpose — DSAMate helps you do it better.
-          Mark questions, revisit tough ones, solve a new problem every day, and keep your streak alive.
-        </p>
-      </motion.section>
-
-      {/* TESTIMONIALS */}
+      {/* COMPANY-WISE INTEREST SECTION - REDESIGNED */}
       <motion.section
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
+        transition={{ duration: 0.8 }}
         viewport={{ once: true }}
-        className="bg-[#0d0f16] px-6 md:px-20 py-12 text-center"
+        className="px-6 md:px-20 py-20 relative overflow-hidden"
       >
+
         <h2 className="text-3xl font-semibold mb-4">💬 Loved using DSAMate? Share your thoughts!</h2>
         <p className="text-gray-300 mb-6 text-xl">
           Provide your testimonial to share your experience with others.
@@ -333,25 +478,115 @@ export default function Home() {
             target="_blank"
             rel="noopener noreferrer"
             className="bg-white font-bold text-blue-600 hover:text-white hover:font-bold  hover:bg-blue-600 border border-blue-600 px-4 py-2 rounded text-center"
+
           >
-            🔗 Visit Original DSAMate
-          </a>
+            <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-3xl shadow-lg">
+              🏢
+            </div>
+            <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-900 dark:text-white">
+              Want <span className="text-blue-500">Company-wise</span> Question Lists?
+            </h2>
+            <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-8 text-lg leading-relaxed">
+              We're planning to launch a company-specific DSA sheet! Fill this quick
+              form to let us know you're interested and stay in the loop.
+            </p>
+            <motion.a
+              href="https://forms.gle/z1sRLUGRvtfKrGcp7"
+              target="_blank"
+              rel="noopener noreferrer"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="inline-flex items-center gap-3 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-semibold px-8 py-4 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl"
+            >
+              📩 I'm Interested
+            </motion.a>
+          </motion.div>
         </div>
+      </motion.section>
 
+      {/* FEATURES SECTION - REDESIGNED */}
+      <motion.section
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-50px" }}
+        variants={containerVariants}
+        className="px-6 md:px-20 py-20 relative"
+      >
+        {/* Background decoration */}
+        <div className="absolute inset-0 bg-gradient-to-b from-gray-50/50 to-white/50 dark:from-gray-900/50 dark:to-black/50 pointer-events-none"></div>
+        
+        <div className="relative z-10 max-w-7xl mx-auto">
+          <motion.div variants={itemVariants} className="text-center mb-16">
+            <h2 className="text-3xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
+              Key <span className="text-blue-500">Features</span>
+            </h2>
+            <p className="text-gray-600 dark:text-gray-400 text-lg max-w-2xl mx-auto">
+              Everything you need to excel in your DSA journey
+            </p>
+          </motion.div>
 
-        {/* Testimonials List */}
-        <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-5 mt-12 text-left">
-          {testimonials.map(({ name, designation, rating, text, visibility }, idx) => {
-            const displayName =
-              visibility === "anonymous" ? "Anonymous User" : name;
-            const showDesignation = visibility === "full" && designation;
-
-            return (
+          <motion.div
+            variants={containerVariants}
+            className="grid gap-8 md:grid-cols-2 lg:grid-cols-3"
+          >
+            {[
+              {
+                icon: <FaListUl size={32} />,
+                title: "Tailored Questions",
+                desc: "Topic-wise DSA problems to ensure complete coverage.",
+                link: "/sheet",
+                gradient: "from-blue-500 to-cyan-500",
+                color: "text-blue-500 dark:text-blue-400"
+              },
+              {
+                icon: <FaRegCalendarAlt size={32} />,
+                title: "Daily Problem (POTD)",
+                desc: "Stay consistent by solving one new question daily.",
+                link: "/sheet#potd",
+                gradient: "from-cyan-500 to-teal-500",
+                color: "text-cyan-500 dark:text-cyan-400"
+              },
+              {
+                icon: <BiSliderAlt size={32} />,
+                title: "Smart Filters",
+                desc: "Filter by difficulty, status, revision, and platform.",
+                link: "/sheet#filters",
+                gradient: "from-yellow-500 to-orange-500",
+                color: "text-yellow-500 dark:text-yellow-400"
+              },
+              {
+                icon: <FaChartBar size={32} />,
+                title: "Track Progress",
+                desc: "Comprehensive analytics, streak tracking, and detailed progress insights.",
+                link: "/progress",
+                gradient: "from-green-500 to-emerald-500",
+                color: "text-green-500 dark:text-green-400"
+              },
+              {
+                icon: <FaFire size={32} />,
+                title: "Streaks",
+                desc: "Mark POTD as done and maintain your daily solving streak!",
+                link: "/progress#streaks",
+                gradient: "from-red-500 to-pink-500",
+                color: "text-red-500 dark:text-red-400"
+              },
+              {
+                icon: <FaSearch size={32} />,
+                title: "Search Questions Quickly",
+                desc: "Instantly locate problems using keywords in the dedicated search bar.",
+                link: "/sheet#search",
+                gradient: "from-purple-500 to-indigo-500",
+                color: "text-purple-500 dark:text-purple-400"
+              },
+            ].map(({ title, desc, icon, link, gradient, color }) => (
               <motion.div
-                key={idx}
-                whileHover={{ scale: 1.03 }}
-                className="bg-[#202533] p-6 rounded-xl shadow-md border border-gray-800 hover:bg-[#212638]"
+                key={title}
+                variants={itemVariants}
+                whileHover={{ scale: 1.03, y: -8 }}
+                className="group cursor-pointer"
+                onClick={() => (window.location.href = link)}
               >
+
                 {/* User Details */}
                 <div className="flex items-center gap-3 mb-2 text-white">
                   <FaUserCircle className="text-3xl text-gray-400" />
@@ -371,10 +606,11 @@ export default function Home() {
                   {Array.from({ length: 5 }).map((_, i) =>
                     i < rating ? <FaStar key={i} /> : <FaRegStar key={i} />
                   )}
+
                 </div>
               </motion.div>
-            );
-          })}
+            ))}
+          </motion.div>
         </div>
       </motion.section>
 
@@ -415,10 +651,63 @@ export default function Home() {
           ].map(({ q, a }, i) => (
             <FAQItem key={i} question={q} answer={a} />
           ))}
+
         </div>
       </motion.section>
-      
 
+      {/* FAQ SECTION - REDESIGNED */}
+      <motion.section
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-50px" }}
+        variants={containerVariants}
+        className="px-6 md:px-20 py-20 relative"
+      >
+        {/* Background decoration */}
+        <div className="absolute inset-0 bg-gradient-to-b from-blue-50/30 via-transparent to-blue-50/30 dark:from-blue-900/10 dark:via-transparent dark:to-blue-900/10 pointer-events-none"></div>
+        
+        <div className="relative z-10 max-w-4xl mx-auto">
+          <motion.div variants={itemVariants} className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+              📌 Frequently Asked <span className="text-blue-500">Questions</span>
+            </h2>
+            <p className="text-gray-600 dark:text-gray-400 text-lg">
+              Everything you need to know about DSAMate
+            </p>
+          </motion.div>
+
+          <div className="space-y-4">
+            {[
+              {
+                q: "What if I find an incorrect or broken link?",
+                a: "Click on 'Report an Issue' or email us — we'll fix it quickly.",
+              },
+              {
+                q: "Can I contribute questions or feedback?",
+                a: "Yes! Please fill the feedback form to provide your feedback. Email us to contribute questions.",
+              },
+              {
+                q: "How to use filters effectively?",
+                a: "You can use multiple filters like difficulty, platform, status, and revision together to narrow down the questions that best match your current focus. For example, if you're preparing for medium-level problems on LeetCode that you haven't solved yet, just select those filters. You can also filter by questions you've marked for revision. If the results feel too limited or you're done with a specific session, you can reset all filters with a single click to start fresh.",
+              },
+              {
+                q: "What is POTD and how does it help?",
+                a: "POTD (Problem of the Day) helps you build consistency by showing one new question every day. It encourages daily problem-solving without feeling overwhelming. Even if you're short on time, solving just one question keeps your practice streak going and builds momentum over time. It's a great way to stay connected with DSA regularly.",
+              },
+              {
+                q: "Is login required?",
+                a: "Nope! There's no need to sign up or log in. Your progress is automatically saved in your browser's local storage. However, keep in mind that if you clear your browser cache or use incognito mode, this data might get deleted — so your progress will reset. Just use the same browser and device for the best experience.",
+              },
+              {
+                q: "My question is not listed here, how can I get help?",
+                a: "If you have any questions or need assistance, feel free to reach out to us at contact.dsapractice@gmail.com",
+              },
+            ].map(({ q, a }, i) => (
+              <FAQItem key={i} question={q} answer={a} />
+            ))}
+          </div>
+        </div>
+      </motion.section>
     </main>
   );
 }

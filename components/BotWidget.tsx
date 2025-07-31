@@ -79,6 +79,11 @@ export default function BotWidget() {
               onChange={(e) => setInput(e.target.value)}
               placeholder="What have you covered so far?"
               className="flex-grow border p-2 rounded text-black"
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  handleSend();
+                }
+              }}
             />
             <button
               onClick={handleSend}

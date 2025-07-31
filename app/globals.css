@@ -112,12 +112,12 @@
   --sidebar-ring: oklch(0.551 0.027 264.364);
 }
 
-@layer utilities{
-  button{
+@layer utilities {
+  button {
     cursor: pointer;
   }
 
-  button:hover{
+  button:hover {
     cursor: pointer;
   }
 }
