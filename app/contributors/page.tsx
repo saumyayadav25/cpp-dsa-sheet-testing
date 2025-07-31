@@ -14,68 +14,6 @@ interface Contributor {
   points?: number; // <-- Added points
 }
 
-interface GitHubStatsResponse {
-  total: number;
-  author: {
-    login: string;
-    html_url: string;
-    avatar_url: string;
-  };
-}
-
-async function fetchContributors(): Promise<Contributor[]> {
-  const owner = 'saumyayadav25';
-  const repo = 'cpp-dsa-sheet-testing';
-
-  const headers: HeadersInit = {
-    Accept: 'application/vnd.github.v3+json',
-  };
-
-  if (process.env.GITHUB_TOKEN) {
-    headers.Authorization = `token ${process.env.GITHUB_TOKEN}`;
-  }
-
-  try {
-    const statsRes = await fetch(
-      `https://api.github.com/repos/${owner}/${repo}/stats/contributors`,
-      { headers, next: { revalidate: 86400 } }
-    );
-
-    if (statsRes.status === 202) {
-      return await fetchContributorsFallback(owner, repo, headers);
-    }
-
-    if (statsRes.ok) {
-      const stats: GitHubStatsResponse[] = await statsRes.json();
-      const contributors: Contributor[] = stats.map((stat) => ({
-        login: stat.author.login,
-        html_url: stat.author.html_url,
-        avatar_url: stat.author.avatar_url,
-        contributions: stat.total,
-      }));
-      return contributors.sort((a, b) => b.contributions - a.contributions);
-    }
-
-    return await fetchContributorsFallback(owner, repo, headers);
-  } catch (error) {
-    console.error('[contributors] Error fetching from GitHub API:', error);
-    throw new Error('Failed to fetch contributors data');
-  }
-}
-
-async function fetchContributorsFallback(owner: string, repo: string, headers: HeadersInit): Promise<Contributor[]> {
-  const listRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/contributors?per_page=100`, {
-    headers,
-    next: { revalidate: 86400 },
-  });
-
-  if (!listRes.ok) {
-    throw new Error(`[contributors] fallback fetch failed: ${listRes.status} ${listRes.statusText}`);
-  }
-
-  const contributors: Contributor[] = await listRes.json();
-  return contributors.sort((a, b) => b.contributions - a.contributions);
-}
 
 const getCardGradient = (ratio: number): string => {
   if (ratio <= 0.33) return 'bg-gradient-to-br from-purple-500/20 to-purple-600/10 border-purple-500/20';
@@ -147,52 +85,51 @@ export default function ContributorsPage() {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const savedStreak = parseInt(localStorage.getItem('potd_streak') || '0');
-    setStreak(savedStreak);
+useEffect(() => {
+  const savedStreak = parseInt(localStorage.getItem('potd_streak') || '0');
+  setStreak(savedStreak);
 
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        setError(null);
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      setError(null);
 
-        // fetch contributors
-        const response = await fetch('/api/contributors');
-        let fetchedContributors: Contributor[] = [];
-
-        if (response.ok) {
-          fetchedContributors = await response.json();
-        } else {
-          console.warn('API route failed, trying direct GitHub API');
-          fetchedContributors = await fetchContributors();
-        }
-
-        // fetch contributor points
-        const pointsRes = await fetch('/api/contributor-points');
-        const pointsData = pointsRes.ok ? await pointsRes.json() : { points: {} };
-
-        // merge points into contributors
-        fetchedContributors = fetchedContributors.map((c) => ({
-          ...c,
-          points: pointsData.points?.[c.login] || 0
-        }));
-
-        // sort contributors by points first then contributions
-        fetchedContributors.sort((a, b) =>
-          (b.points ?? 0) !== (a.points ?? 0) ? (b.points ?? 0) - (a.points ?? 0) : b.contributions - a.contributions
-        );
-
-        setContributors(fetchedContributors);
-      } catch (err) {
-        console.error('Error fetching contributors:', err);
-        setError('Failed to load contributors. Please try again later.');
-      } finally {
-        setLoading(false);
+      // Fetch contributors from your API
+      const response = await fetch('/api/contributors');
+      if (!response.ok) {
+        throw new Error(`Contributors API failed: ${response.status}`);
       }
-    };
+      let fetchedContributors: Contributor[] = await response.json();
 
-    fetchData();
-  }, []);
+      // Fetch contributor points from custom API
+      const pointsRes = await fetch('/api/contributor-points');
+      const pointsData = pointsRes.ok ? await pointsRes.json() : { points: {} };
+
+      // Merge points into contributors
+      fetchedContributors = fetchedContributors.map((c) => ({
+        ...c,
+        points: pointsData.points?.[c.login] || 0,
+      }));
+
+      // Sort by points first, then contributions
+      fetchedContributors.sort((a, b) =>
+        (b.points ?? 0) !== (a.points ?? 0)
+          ? (b.points ?? 0) - (a.points ?? 0)
+          : b.contributions - a.contributions
+      );
+
+      setContributors(fetchedContributors);
+    } catch (err) {
+      console.error('Error fetching contributors:', err);
+      setError('Failed to load contributors. Please try again later.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchData();
+}, []);
+
 
   if (loading) {
     return (
