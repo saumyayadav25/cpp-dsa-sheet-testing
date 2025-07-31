@@ -1,16 +1,15 @@
 import { NextResponse } from "next/server";
-import {connect} from "@/db/config";
+import { connect } from "@/db/config";
 import { Progress } from "@/models/Progress.model";
 import { Badge } from "@/models/Badge.model";
 
-interface Params {
-  params: { userId: string };
-}
-
-export async function GET(_req: Request, { params }: Params) {
+export async function GET(
+  _req: Request,
+  context: any
+) {
   try {
     await connect();
-    const { userId } = params;
+    const { userId } = context.params;
 
     const progress = await Progress.findOne({ userId });
     const badgeDoc = await Badge.findOne({ userId });
