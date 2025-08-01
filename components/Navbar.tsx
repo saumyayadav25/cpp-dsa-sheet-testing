@@ -48,7 +48,12 @@ export default function Navbar({ streak }: NavbarProps) {
       label: "Contributors",
       isActive: pathname === "/contributors",
     },
-  ];
+    {
+      href: "/timequiz",
+      label: "Time Quiz",
+      isActive: pathname === "/timequiz",
+    },
+];
 
   const streakVariants = {
     idle: { scale: 1, rotate: 0 },
