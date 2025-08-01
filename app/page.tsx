@@ -142,7 +142,8 @@ export default function Home() {
         <motion.div
           variants={fadeInUp}
           custom={2}
-  
+          className="flex flex-col sm:flex-row gap-6 mt-4 text-white font-semibold"
+          
         >
           <Link
             href="/sheet"
@@ -162,7 +163,7 @@ export default function Home() {
             href="https://dsamate.vercel.app"
             target="_blank"
             rel="noopener noreferrer"
-            className="border border-blue-500 text-blue-400 hover:bg-blue-500 hover:bg-blue-800 hover:text-white font-semibold py-3 px-6 rounded-full transition shadow-md        text-center"
+            className="border border-blue-500 text-blue-400 hover:bg-blue-500 hover:bg-blue-800 hover:text-white font-semibold py-3 px-6 rounded-full transition shadow-md  text-center"
           >
             🔗 Visit Original DSAMate
           </Link>
