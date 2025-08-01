@@ -144,7 +144,7 @@ export default function SigninPage() {
       <Button
         onClick={handleSubmit}
         disabled={loading}
-        className="w-full rounded-full bg-gradient-to-br from-slate-900 to-blue-600 hover:from-blue-700 hover:to-slate-900"
+        className="w-full rounded-full text-white bg-gradient-to-br from-slate-900 to-blue-600 hover:from-blue-700 hover:to-slate-900"
       >
         {loading ? (
           <Loader2 className="animate-spin mr-2 h-4 w-4" />
