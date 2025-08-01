@@ -142,8 +142,7 @@ export default function Home() {
         <motion.div
           variants={fadeInUp}
           custom={2}
-  className="flex flex-col sm:flex-row gap-4 mt-4 text-white font-semibold"
-
+  
         >
           <Link
             href="/sheet"

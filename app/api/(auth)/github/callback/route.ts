@@ -71,7 +71,7 @@ export async function GET(req: Request) {
       { expiresIn: "7d" }
     );
 
-    const res = NextResponse.redirect(`${process.env.NEXT_PUBLIC_BASE_URL}/dashboard`);
+    const res = NextResponse.redirect(`${process.env.NEXT_PUBLIC_BASE_URL}/`);
     res.cookies.set("session", token, {
       httpOnly: true,
       secure: true,
