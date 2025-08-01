@@ -49,12 +49,14 @@ export default function Navbar({ searchTerm, setSearchTerm, streak }: NavbarProp
 
   // Dynamic navigation links based on current pathname
   const navLinks = [
+
     { href: '/', label: 'Home', isActive: pathname === '/' },
     { href: '/notes', label: 'Notes', isActive: pathname === '/notes' },
     { href: '/sheet', label: 'Sheet', isActive: pathname === '/sheet' },
     { href: '/progress', label: 'Progress', isActive: pathname === '/progress' },
     { href: '/contributors', label: 'Contributors', isActive: pathname === '/contributors' },
   ];
+
 
   const streakVariants = {
     idle: { scale: 1, rotate: 0 },

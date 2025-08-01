@@ -1,0 +1,86 @@
+.quizContainer {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #1e293b, #0f172a);
+  color: #f1f5f9;
+  padding: 1rem;
+  text-align: center;
+}
+
+.countdown {
+  font-size: 1.5rem;
+}
+
+.countdownNumber {
+  font-size: 4rem;
+  font-weight: bold;
+  margin-top: 1rem;
+}
+
+.quizContent {
+  max-width: 600px;
+  width: 100%;
+}
+
+.optionsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.optionButton {
+  padding: 0.75rem 1.5rem;
+  border: 2px solid #94a3b8;
+  background: transparent;
+  color: #f1f5f9;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: border-color 0.3s ease, color 0.3s ease;
+  min-width: 120px;
+}
+
+.optionButton:hover:not(:disabled) {
+  border-color: #3b82f6;
+  color: #3b82f6;
+}
+
+.optionButton:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+
+.selectedOption {
+  border-color: #2563eb;
+  color: #2563eb;
+  font-weight: bold;
+}
+
+.timer {
+  margin-top: 1rem;
+  font-weight: bold;
+}
+
+.finishedContainer {
+  max-width: 400px;
+}
+
+.restartButton {
+  margin-top: 1rem;
+  padding: 0.75rem 1.5rem;
+  font-weight: bold;
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.restartButton:hover {
+  background-color: #1d4ed8;
+}
