@@ -209,7 +209,9 @@ export default function AuthButtons() {
       {!isLoggedIn ? (
         <motion.a
           href="/sign-in"
-          className="px-4 w-20 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-sm font-semibold rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl"
+
+          className="px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl text-lg"
+
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
         >
