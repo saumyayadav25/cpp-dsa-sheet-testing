@@ -9,6 +9,12 @@ import { useState, useEffect } from 'react';
 import TestimonialPrompt from '@/components/TestimonialPrompt';
 import ReportIssueButton from '@/components/ReportIssueButton';
 import ProgressSummary from '@/components/ProgressSummary';
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from '@/components/ui/dropdown-menu';
 
 export default function SheetPage() {
   const [difficultyFilter, setDifficultyFilter] = useState('');
@@ -43,6 +49,40 @@ export default function SheetPage() {
     setCompanyFilter('');
   };
 
+  // Company list for dropdown
+  const companies = [
+    'Adobe',
+    'Amazon',
+    'Apple',
+    'Cisco',
+    'DE shaw',
+    'Flipkart',
+    'Google',
+    'Intuit',
+    'MakeMyTrip',
+    'Meta',
+    'Microsoft',
+    'Morgan Stanley',
+    'Nvidia',
+    'Oracle',
+    'Paypal',
+    'Paytm',
+    'PhonePe',
+    'Salesforce',
+    'Samsung',
+    'Sprinklr',
+    'Swiggy',
+    'Tesla',
+    'Walmart',
+    'Uber',
+    'Visa',
+    'WITCH',
+  ];
+
+  const handleCompanySelect = (company: string) => {
+    setCompanyFilter(company);
+  };
+
   return (
     <>
       <Navbar searchTerm={searchTerm} setSearchTerm={setSearchTerm} streak={streak} />
@@ -50,6 +90,7 @@ export default function SheetPage() {
         <ReportIssueButton />
 
         {/* Progress Summary */}
+
         <ProgressSummary />
 
         {/* HERO SECTION */}
@@ -133,41 +174,22 @@ export default function SheetPage() {
             <option value="code">Others</option>
           </select>
 
-          {/* Company Filter */}
-          <select
-            value={companyFilter}
-            onChange={(e) => setCompanyFilter(e.target.value)}
-            className="bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded px-4 py-2 focus:outline-none transition-colors duration-300"
-          >
-            <option value="">All Companies</option>
-            <option value="Adobe">Adobe</option>
-            <option value="Amazon">Amazon</option>
-            <option value="Apple">Apple</option>
-            <option value="Cisco">Cisco</option>
-            <option value="DE shaw">DE shaw</option>
-            <option value="Flipkart">Flipkart</option>
-            <option value="Google">Google</option>
-            <option value="Intuit">Intuit</option>
-            <option value="MakeMyTrip">MakeMyTrip</option>
-            <option value="Meta">Meta</option>
-            <option value="Microsoft">Microsoft</option>
-            <option value="Morgan Stanley">Morgan Stanley</option>
-            <option value="Nvidia">Nvidia</option>
-            <option value="Oracle">Oracle</option>
-            <option value="Paypal">PayPal</option>
-            <option value="Paytm">Paytm</option>
-            <option value="PhonePe">PhonePe</option>
-            <option value="Salesforce">Salesforce</option>
-            <option value="Samsung">Samsung</option>
-            <option value="Sprinklr">Sprinklr</option>
-            <option value="Swiggy">Swiggy</option>
-            <option value="Tesla">Tesla</option>
-            <option value="Walmart">Walmart</option>
-            <option value="Uber">Uber</option>
-            <option value="Visa">Visa</option>
-            <option value="WITCH">WITCH</option>
-            {/* Add more as needed */}
-          </select>
+          {/* Company Filter - replaced with DropdownMenu */}
+          <DropdownMenu>
+            <DropdownMenuTrigger className="bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded px-4 py-2 focus:outline-none transition-colors duration-300 cursor-pointer">
+              {companyFilter || 'All Companies'}
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem onClick={() => handleCompanySelect('')}>
+                All Companies
+              </DropdownMenuItem>
+              {companies.map((company) => (
+                <DropdownMenuItem key={company} onClick={() => handleCompanySelect(company)}>
+                  {company}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
 
           {/* Reset Button */}
           <button
