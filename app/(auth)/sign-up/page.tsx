@@ -219,16 +219,16 @@ export default function SignupPage() {
         </div>
 
         <Button
-          onClick={handleSubmit}
-          disabled={loading}
-          className="w-full mt-2 rounded-full bg-gradient-to-br from-slate-900 to-blue-600 hover:from-blue-600 hover:to-slate-900"
-        >
-          {loading ? (
-            <Loader2 className="animate-spin mr-2 h-4 w-4" />
-          ) : (
-            "Sign Up"
-          )}
-        </Button>
+  onClick={handleSubmit}
+  disabled={loading}
+  className="w-full mt-2 rounded-full bg-blue-700 text-white hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+>
+  {loading ? (
+    <Loader2 className="animate-spin mr-2 h-4 w-4" />
+  ) : (
+    "Sign Up" // Or "Sign In"
+  )}
+</Button>
       </div>
 
       <div className="text-center font-bold text-blue-500">OR</div>
