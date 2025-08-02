@@ -55,3 +55,10 @@ _Updated at the end of day by mentor or PA only_
 | 33   | [@viraj-ap](https://github.com/viraj-ap)               | 10     | [#99](https://github.com/saumyayadav25/cpp-dsa-sheet-testing/pull/99) | Light and dark mode toggle                     |
 | 34   | [@Shreyas-TP](https://github.com/Shreyas-TP)           | 3      | [#100](https://github.com/saumyayadav25/cpp-dsa-sheet-testing/pull/100) | Bot msg send on enter                              |
 | 35   | [@Aman-agraw-35](https://github.com/Aman-agraw-35)     | 5      | [#102](https://github.com/saumyayadav25/cpp-dsa-sheet-testing/pull/102) | No content found if no such ques              |
+| 36   | [@viraj-ap](https://github.com/viraj-ap)         | 10     | [#104](https://github.com/saumyayadav25/cpp-dsa-sheet-testing/pull/104) | New UI for landing page                      |
+| 37   | [@NiteshCodes7](https://github.com/NiteshCodes7) | 3      | [#105](https://github.com/saumyayadav25/cpp-dsa-sheet-testing/pull/105) | Go to `/` after GitHub signup                |
+| 38   | [@Shaesh-Kuiper](https://github.com/Shaesh-Kuiper) | 5    | [#108](https://github.com/saumyayadav25/cpp-dsa-sheet-testing/pull/108) | Contributors points page                     |
+| 39   | [@Mevishf](https://github.com/Mevishf)           | 3      | [#107](https://github.com/saumyayadav25/cpp-dsa-sheet-testing/pull/107) | Logo submission                              |
+| 40   | [@gunjanghate](https://github.com/gunjanghate)   | 10     | [#106](https://github.com/saumyayadav25/cpp-dsa-sheet-testing/pull/106) | Backend for badge & progress tracking        |
+| 41   | [@SaiSruthisri](https://github.com/SaiSruthisri) | 10     | [#109](https://github.com/saumyayadav25/cpp-dsa-sheet-testing/pull/109) | Send daily POTD notification                 |
+| 42   | [@varsharaodevaraj](https://github.com/varsharaodevaraj) | 10 | [#114](https://github.com/saumyayadav25/cpp-dsa-sheet-testing/pull/114) | Time-based quiz with countdown               |
