@@ -92,12 +92,13 @@ export default function SignupPage() {
       const res = await axios.post("/api/verify-otp", {
         email: form.email,
         otp,
-      });
+      }); 
 
-      if (res.status === 200) {
+      if (res.status === 200) {      
         toast("✅ Account verified successfully!");
         setOtpOpen(false);
-        router.push("/sign-in");
+        //  Navigate to dashboard or home directly
+        router.push("/");
       } else {
         toast("❌ OTP verification failed.");
       }
