@@ -106,7 +106,10 @@ const TimeQuiz = () => {
   return (
     <>
       <Navbar streak={streak} />
-      <main className="min-h-screen py-24 px-4 sm:px-8 lg:px-16 bg-background transition-colors duration-300">
+      <main 
+        className="relative bg-white dark:bg-black min-h-screen flex flex-col items-center justify-center text-center px-4 sm:px-6 py-8 sm:py-16 pt-16 sm:pt-24 bg-cover bg-center bg-no-repeat overflow-hidden"
+        style={{ backgroundImage: "url(/bg.png)" }}
+      >
         <div className={styles.quizContainer}>
           {showWelcome && (
             <motion.div
@@ -118,20 +121,33 @@ const TimeQuiz = () => {
               <motion.h1
                 variants={fadeInUp}
                 custom={0}
-                className={styles.welcomeTitle}
+                className="text-4xl md:text-5xl font-bold mb-4 text-foreground drop-shadow-lg"
               >
-                What's Your Sleep Score
+                What's Your <span className="bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">Sleep</span> Score
               </motion.h1>
               <motion.p
                 variants={fadeInUp}
                 custom={1}
-                className={styles.motivationalQuote}
+                className="text-sm md:text-base text-foreground max-w-2xl mx-auto mb-6"
               >
-                "To learn you have to Listen, To improve you have to try"
+                To learn you have to Listen To improve you have to try
               </motion.p>
-              <motion.button
+              <motion.div
                 variants={fadeInUp}
                 custom={2}
+                className="flex justify-center relative mb-8"
+              >
+                <img
+                  src="quiz.png"
+                  alt="Quiz Hero"
+                  className="w-[80vw]"
+                  draggable="false"
+                />
+                <div className="absolute inset-0 -z-10 bg-gradient-to-r from-blue-500/20 via-blue-500/20 to-blue-500/20 rounded-full blur-3xl scale-110"></div>
+              </motion.div>
+              <motion.button
+                variants={fadeInUp}
+                custom={3}
                 className={styles.startButton}
                 onClick={startQuiz}
               >
