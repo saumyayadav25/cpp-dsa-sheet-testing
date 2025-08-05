@@ -167,7 +167,8 @@
 }
 
 .startButton {
-  background: linear-gradient(to right, #16a34a, #2563eb);
+  background: linear-gradient(90deg, #16a34a, #2563eb, #16a34a, #2563eb);
+  background-size: 300% 100%;
   color: white;
   font-weight: 600;
   padding: 0.75rem 1.5rem;
@@ -178,12 +179,27 @@
   cursor: pointer;
   transform: scale(1);
   width: 100%;
+  animation: flowingColors 3s ease-in-out infinite;
 }
 
 .startButton:hover {
-  background: linear-gradient(to right, #15803d, #1d4ed8);
+  background: linear-gradient(90deg, #15803d, #1d4ed8, #15803d, #1d4ed8);
+  background-size: 300% 100%;
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
   transform: scale(1.05);
+  animation: flowingColors 2s ease-in-out infinite;
+}
+
+@keyframes flowingColors {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 @media (min-width: 640px) {
