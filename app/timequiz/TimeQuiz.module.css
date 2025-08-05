@@ -167,7 +167,7 @@
 }
 
 .startButton {
-  background: linear-gradient(135deg, #22c55e, #84cc16);
+  background: linear-gradient(to right, #16a34a, #2563eb);
   color: white;
   font-weight: 600;
   padding: 0.75rem 1.5rem;
@@ -181,7 +181,7 @@
 }
 
 .startButton:hover {
-  background: linear-gradient(135deg, #16a34a, #65a30d);
+  background: linear-gradient(to right, #15803d, #1d4ed8);
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
   transform: scale(1.05);
 }

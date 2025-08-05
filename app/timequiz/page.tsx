@@ -121,16 +121,16 @@ const TimeQuiz = () => {
               <motion.h1
                 variants={fadeInUp}
                 custom={0}
-                className="text-4xl md:text-5xl font-bold mb-4 text-foreground drop-shadow-lg"
+                className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 text-foreground drop-shadow-lg"
               >
                 What's Your <span className="bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">Sleep</span> Score
               </motion.h1>
               <motion.p
                 variants={fadeInUp}
                 custom={1}
-                className="text-sm md:text-base text-foreground max-w-2xl mx-auto mb-6"
+                className="text-xl sm:text-1xl md:text-1xl lg:text-1xl font-semibold text-foreground drop-shadow-md max-w-2xl mx-auto mb-6"
               >
-                To learn you have to Listen To improve you have to try
+                To learn you have to Listen, To improve you have to try
               </motion.p>
               <motion.div
                 variants={fadeInUp}
