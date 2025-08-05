@@ -41,16 +41,21 @@ const TimeQuiz = () => {
   }, []);
 
   useEffect(() => {
-      if (!showWelcome && (quizStarted || isFinished)) return;
+      if (showWelcome || quizStarted || isFinished) return;
 
-      if (countdown === 0) {
-          setQuizStarted(true);
-          setTimeLeft(TIME_PER_QUES);
-          return;
+      if (countdown === 1) {
+          // Wait 1 second on "1" then start the quiz
+          const timer = setTimeout(() => {
+              setQuizStarted(true);
+              setTimeLeft(TIME_PER_QUES);
+          }, 1000);
+          return () => clearTimeout(timer);
       }
 
-      const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
-      return () => clearTimeout(timer);
+      if (countdown > 1) {
+          const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+          return () => clearTimeout(timer);
+      }
   }, [countdown, quizStarted, isFinished, showWelcome]);
 
   useEffect(() => {
@@ -90,6 +95,7 @@ const TimeQuiz = () => {
 
   const startQuiz = () => {
       setShowWelcome(false);
+      setCountdown(3); // Reset countdown to 3
   };
 
   const restart = () => {
