@@ -1,28 +1,29 @@
 .quizContainer {
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(135deg, #1e293b, #0f172a);
-  color: #f1f5f9;
-  padding: 1rem;
+  padding: 6rem 1rem 1rem;
   text-align: center;
 }
 
 .countdown {
   font-size: 1.5rem;
+  color: hsl(var(--foreground));
 }
 
 .countdownNumber {
   font-size: 4rem;
   font-weight: bold;
   margin-top: 1rem;
+  color: hsl(var(--foreground));
 }
 
 .quizContent {
   max-width: 600px;
   width: 100%;
+  color: hsl(var(--foreground));
 }
 
 .optionsContainer {
@@ -35,9 +36,9 @@
 
 .optionButton {
   padding: 0.75rem 1.5rem;
-  border: 2px solid #94a3b8;
+  border: 2px solid hsl(var(--border));
   background: transparent;
-  color: #f1f5f9;
+  color: hsl(var(--foreground));
   cursor: pointer;
   border-radius: 6px;
   transition: border-color 0.3s ease, color 0.3s ease;
@@ -67,6 +68,7 @@
 
 .finishedContainer {
   max-width: 400px;
+  color: hsl(var(--foreground));
 }
 
 .restartButton {
@@ -83,4 +85,50 @@
 
 .restartButton:hover {
   background-color: #1d4ed8;
+}
+
+.welcomeScreen {
+  max-width: 600px;
+  width: 100%;
+  text-align: center;
+}
+
+.welcomeTitle {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-align: center;
+}
+
+.motivationalQuote {
+  font-size: 1.2rem;
+  color: hsl(var(--muted-foreground));
+  font-style: italic;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.startButton {
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+  font-weight: bold;
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 14px 0 rgba(59, 130, 246, 0.3);
+}
+
+.startButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px 0 rgba(59, 130, 246, 0.4);
 }

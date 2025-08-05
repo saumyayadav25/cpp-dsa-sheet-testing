@@ -4,8 +4,21 @@ import { useState, useEffect } from "react";
 import questions from '@/data/questions.json';
 import styles from './TimeQuiz.module.css';
 import Navbar from "@/components/Navbar";
+import { motion } from "framer-motion";
 
 const TIME_PER_QUES = 10;
+
+const fadeInUp = {
+  hidden: { opacity: 0, y: 20 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: {
+      delay: i * 0.2,
+      duration: 0.6,
+    },
+  }),
+};
 
 const TimeQuiz = () => {
   const [currentIdx, setCurrentIdx] = useState(0);
@@ -16,6 +29,7 @@ const TimeQuiz = () => {
   const [countdown, setCountdown] = useState(3);
   const [quizStarted, setQuizStarted] = useState(false);
   const [streak, setStreak] = useState(0);
+  const [showWelcome, setShowWelcome] = useState(true);
 
   const current = questions[currentIdx];
 
@@ -27,7 +41,7 @@ const TimeQuiz = () => {
   }, []);
 
   useEffect(() => {
-      if (quizStarted || isFinished) return;
+      if (!showWelcome && (quizStarted || isFinished)) return;
 
       if (countdown === 0) {
           setQuizStarted(true);
@@ -37,7 +51,7 @@ const TimeQuiz = () => {
 
       const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
       return () => clearTimeout(timer);
-  }, [countdown, quizStarted, isFinished]);
+  }, [countdown, quizStarted, isFinished, showWelcome]);
 
   useEffect(() => {
       if (!quizStarted || isFinished) return;
@@ -74,6 +88,10 @@ const TimeQuiz = () => {
   }
 
 
+  const startQuiz = () => {
+      setShowWelcome(false);
+  };
+
   const restart = () => {
       setCurrentIdx(0);
       setSelected(null);
@@ -82,20 +100,54 @@ const TimeQuiz = () => {
       setIsFinished(false);
       setCountdown(3);
       setQuizStarted(false);
+      setShowWelcome(true);
   };
 
   return (
     <>
       <Navbar streak={streak} />
-      <div className={styles.quizContainer}>
-        {!quizStarted && !isFinished && (
+      <main className="min-h-screen py-24 px-4 sm:px-8 lg:px-16 bg-background transition-colors duration-300">
+        <div className={styles.quizContainer}>
+          {showWelcome && (
+            <motion.div
+              initial="hidden"
+              animate="visible"
+              variants={{ visible: { transition: { staggerChildren: 0.2 } } }}
+              className={styles.welcomeScreen}
+            >
+              <motion.h1
+                variants={fadeInUp}
+                custom={0}
+                className={styles.welcomeTitle}
+              >
+                What's Your Sleep Score
+              </motion.h1>
+              <motion.p
+                variants={fadeInUp}
+                custom={1}
+                className={styles.motivationalQuote}
+              >
+                "To learn you have to Listen, To improve you have to try"
+              </motion.p>
+              <motion.button
+                variants={fadeInUp}
+                custom={2}
+                className={styles.startButton}
+                onClick={startQuiz}
+              >
+                Start Quiz
+              </motion.button>
+            </motion.div>
+          )}
+
+        {!showWelcome && !quizStarted && !isFinished && (
           <div className={styles.countdown}>
             <h2>Quiz is about to start in</h2>
             <div className={styles.countdownNumber}>{countdown}</div>
           </div>
         )}
 
-      {quizStarted && !isFinished && (
+      {!showWelcome && quizStarted && !isFinished && (
         <div className={styles.quizContent}>
           <h2>Question {currentIdx + 1} / {questions.length}</h2>
           <p>{current.question}</p>
@@ -115,14 +167,15 @@ const TimeQuiz = () => {
         </div>
       )}
 
-      {isFinished && (
+      {!showWelcome && isFinished && (
         <div className={styles.finishedContainer}>
           <h2>Quiz Finished!</h2>
           <p>Your Score: {score} / {questions.length}</p>
           <button className={styles.restartButton} onClick={restart}>Restart Quiz</button>
         </div>
       )}
-      </div>
+        </div>
+      </main>
     </>
   );
 };
