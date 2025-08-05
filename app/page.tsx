@@ -139,6 +139,15 @@ export default function Home() {
 
   function FAQItem({ question, answer }: { question: string; answer: string }) {
     const [isOpen, setIsOpen] = useState(false);
+    const [isGlowing, setIsGlowing] = useState(false);
+    
+    const handleClick = () => {
+      setIsOpen(!isOpen);
+      setIsGlowing(true);
+      // Reset glow effect after animation
+      setTimeout(() => setIsGlowing(false), 600);
+    };
+    
     return (
       <motion.div
         initial={{ opacity: 0, y: 10 }}
@@ -146,16 +155,39 @@ export default function Home() {
         className="group"
       >
         <div
-          className="bg-white/70 dark:bg-white/5 backdrop-blur-sm p-6 rounded-2xl border border-gray-200/50 dark:border-white/10 cursor-pointer transition-all duration-300 hover:bg-white/80 dark:hover:bg-white/10 hover:shadow-lg hover:scale-[1.02]"
-          onClick={() => setIsOpen(!isOpen)}
+          className={`bg-white/70 dark:bg-white/5 backdrop-blur-sm p-6 rounded-2xl cursor-pointer transition-all duration-300 hover:bg-white/80 dark:hover:bg-white/10 hover:scale-[1.02] hover:shadow-[0_0_50px_rgba(59,130,246,0.8)] hover:ring-4 hover:ring-blue-400/70 hover:shadow-[0_0_80px_rgba(147,197,253,0.6)] ${
+            isGlowing ? 'shadow-[0_0_80px_rgba(59,130,246,1)] ring-8 ring-blue-400/80 shadow-[0_0_120px_rgba(147,197,253,0.8)]' : ''
+          }`}
+          onClick={handleClick}
         >
           <div className="flex justify-between items-center">
             <h4 className="text-gray-900 dark:text-white font-semibold text-lg">
               {question}
             </h4>
-            <span className="text-blue-500 dark:text-blue-400 text-2xl font-light transition-transform duration-300 group-hover:scale-110">
+                         <motion.span 
+               className={`text-blue-500 dark:text-blue-400 text-2xl font-light transition-all duration-300 group-hover:scale-110 ${
+                 isGlowing ? 'text-blue-200 scale-150' : ''
+               }`}
+               animate={isGlowing ? {
+                 scale: [1, 1.6, 1.5],
+                 textShadow: [
+                   "0 0 15px rgba(59, 130, 246, 1)",
+                   "0 0 40px rgba(147, 197, 253, 1)",
+                   "0 0 60px rgba(96, 165, 250, 1)",
+                   "0 0 30px rgba(59, 130, 246, 1)",
+                   "0 0 50px rgba(147, 197, 253, 0.9)"
+                 ],
+                 color: [
+                   "rgb(147, 197, 253)",
+                   "rgb(191, 219, 254)",
+                   "rgb(219, 234, 254)",
+                   "rgb(147, 197, 253)",
+                   "rgb(96, 165, 250)"
+                 ]
+               } : {}}
+             >
               {isOpen ? "−" : "+"}
-            </span>
+            </motion.span>
           </div>
           <motion.div
             initial={false}
