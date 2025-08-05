@@ -18,7 +18,40 @@ import { FaStar, FaRegStar, FaUserCircle } from "react-icons/fa";
 import { BiSliderAlt } from "react-icons/bi";
 import ReportIssueButton from "@/components/ReportIssueButton";
 import Navbar from "@/components/Navbar";
-import { motion } from "framer-motion";
+import { motion, useInView } from "framer-motion";
+
+// Custom hook for animated counting
+// Animates numbers from 1 to target value when element comes into view
+// Works with strings like "2100+", "30+", etc. and preserves the suffix
+function useAnimatedCounter(targetValue: string, isVisible: boolean) {
+  const [count, setCount] = useState(1);
+  
+  useEffect(() => {
+    if (!isVisible) {
+      setCount(1);
+      return;
+    }
+    
+    // Extract numeric value from strings like "2100+", "30+", etc.
+    const numericValue = parseInt(targetValue.replace(/[^0-9]/g, ''));
+    
+    let currentCount = 1;
+    const interval = setInterval(() => {
+      currentCount += Math.max(1, Math.floor(numericValue / 50)); // Faster increment
+      setCount(Math.min(currentCount, numericValue));
+      
+      if (currentCount >= numericValue) {
+        clearInterval(interval);
+      }
+    }, 20); // Much faster animation (20ms instead of 50ms)
+    
+    return () => clearInterval(interval);
+  }, [isVisible, targetValue]);
+  
+  // Format the count with the original suffix (like "+")
+  const suffix = targetValue.replace(/[0-9]/g, '');
+  return `${count}${suffix}`;
+}
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
@@ -118,6 +151,15 @@ export default function Home() {
 
   function FAQItem({ question, answer }: { question: string; answer: string }) {
     const [isOpen, setIsOpen] = useState(false);
+    const [isGlowing, setIsGlowing] = useState(false);
+    
+    const handleClick = () => {
+      setIsOpen(!isOpen);
+      setIsGlowing(true);
+      // Reset glow effect after animation
+      setTimeout(() => setIsGlowing(false), 600);
+    };
+    
     return (
       <motion.div
         initial={{ opacity: 0, y: 10 }}
@@ -125,16 +167,39 @@ export default function Home() {
         className="group"
       >
         <div
-          className="bg-white/70 dark:bg-white/5 backdrop-blur-sm p-6 rounded-2xl border border-gray-200/50 dark:border-white/10 cursor-pointer transition-all duration-300 hover:bg-white/80 dark:hover:bg-white/10 hover:shadow-lg hover:scale-[1.02]"
-          onClick={() => setIsOpen(!isOpen)}
+          className={`bg-white/70 dark:bg-white/5 backdrop-blur-sm p-6 rounded-2xl cursor-pointer transition-all duration-300 hover:bg-white/80 dark:hover:bg-white/10 hover:scale-[1.02] hover:shadow-[0_0_50px_rgba(59,130,246,0.8)] hover:ring-4 hover:ring-blue-400/70 hover:shadow-[0_0_80px_rgba(147,197,253,0.6)] ${
+            isGlowing ? 'shadow-[0_0_80px_rgba(59,130,246,1)] ring-8 ring-blue-400/80 shadow-[0_0_120px_rgba(147,197,253,0.8)]' : ''
+          }`}
+          onClick={handleClick}
         >
           <div className="flex justify-between items-center">
             <h4 className="text-gray-900 dark:text-white font-semibold text-lg">
               {question}
             </h4>
-            <span className="text-blue-500 dark:text-blue-400 text-2xl font-light transition-transform duration-300 group-hover:scale-110">
+                         <motion.span 
+               className={`text-blue-500 dark:text-blue-400 text-2xl font-light transition-all duration-300 group-hover:scale-110 ${
+                 isGlowing ? 'text-blue-200 scale-150' : ''
+               }`}
+               animate={isGlowing ? {
+                 scale: [1, 1.6, 1.5],
+                 textShadow: [
+                   "0 0 15px rgba(59, 130, 246, 1)",
+                   "0 0 40px rgba(147, 197, 253, 1)",
+                   "0 0 60px rgba(96, 165, 250, 1)",
+                   "0 0 30px rgba(59, 130, 246, 1)",
+                   "0 0 50px rgba(147, 197, 253, 0.9)"
+                 ],
+                 color: [
+                   "rgb(147, 197, 253)",
+                   "rgb(191, 219, 254)",
+                   "rgb(219, 234, 254)",
+                   "rgb(147, 197, 253)",
+                   "rgb(96, 165, 250)"
+                 ]
+               } : {}}
+             >
               {isOpen ? "−" : "+"}
-            </span>
+            </motion.span>
           </div>
           <motion.div
             initial={false}
@@ -296,28 +361,39 @@ export default function Home() {
                 icon: "💬",
                 gradient: "from-pink-500 to-purple-500",
               },
-            ].map(({ title, value, icon, gradient }, index) => (
-              <motion.div
-                key={title}
-                variants={itemVariants}
-                whileHover={{ scale: 1.05, y: -5 }}
-                className="group relative"
-              >
-                <div className="bg-white/70 dark:bg-white/5 backdrop-blur-sm border border-gray-200/50 dark:border-white/10 rounded-2xl p-6 text-center transition-all duration-300 hover:shadow-xl hover:bg-white/80 dark:hover:bg-white/10">
-                  <div className="relative">
-                    <div className={`w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br ${gradient} flex items-center justify-center text-2xl shadow-lg group-hover:scale-110 transition-transform duration-300`}>
-                      {icon}
+                         ].map(({ title, value, icon, gradient }, index) => {
+               const ref = useRef(null);
+               const isInView = useInView(ref, { 
+                 once: false,
+                 margin: "-100px",
+                 amount: 0.3
+               });
+               const animatedValue = useAnimatedCounter(value, isInView);
+              
+              return (
+                <motion.div
+                  ref={ref}
+                  key={title}
+                  variants={itemVariants}
+                  whileHover={{ scale: 1.05, y: -5 }}
+                  className="group relative"
+                >
+                  <div className={`bg-white/70 dark:bg-white/5 backdrop-blur-sm border border-gray-200/50 dark:border-white/10 rounded-2xl p-6 text-center transition-all duration-300 hover:shadow-xl hover:bg-white/80 dark:hover:bg-white/10 ${isInView ? 'ring-2 ring-blue-500/20' : ''}`}>
+                    <div className="relative">
+                      <div className={`w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br ${gradient} flex items-center justify-center text-2xl shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+                        {icon}
+                      </div>
+                      <h3 className={`text-3xl md:text-4xl font-bold bg-gradient-to-r ${gradient} bg-clip-text text-transparent mb-2 ${isInView ? 'animate-pulse' : ''}`}>
+                        {animatedValue}
+                      </h3>
+                      <p className="text-gray-600 dark:text-gray-400 font-medium">
+                        {title}
+                      </p>
                     </div>
-                    <h3 className={`text-3xl md:text-4xl font-bold bg-gradient-to-r ${gradient} bg-clip-text text-transparent mb-2`}>
-                      {value}
-                    </h3>
-                    <p className="text-gray-600 dark:text-gray-400 font-medium">
-                      {title}
-                    </p>
                   </div>
-                </div>
-              </motion.div>
-            ))}
+                </motion.div>
+              );
+            })}
           </motion.div>
         </div>
       </motion.section>
