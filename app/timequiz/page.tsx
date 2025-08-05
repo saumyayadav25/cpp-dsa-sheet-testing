@@ -33,12 +33,68 @@ const TimeQuiz = () => {
 
   const current = questions[currentIdx];
 
+  // Fullscreen functionality
+  const enterFullscreen = () => {
+    const element = document.documentElement;
+    if (element.requestFullscreen) {
+      element.requestFullscreen().catch(err => {
+        console.log(`Error attempting to enable fullscreen: ${err.message}`);
+      });
+    } else if ((element as any).webkitRequestFullscreen) {
+      (element as any).webkitRequestFullscreen();
+    } else if ((element as any).msRequestFullscreen) {
+      (element as any).msRequestFullscreen();
+    }
+  };
+
+  const exitFullscreen = () => {
+    if (document.exitFullscreen) {
+      document.exitFullscreen().catch(err => {
+        console.log(`Error attempting to exit fullscreen: ${err.message}`);
+      });
+    } else if ((document as any).webkitExitFullscreen) {
+      (document as any).webkitExitFullscreen();
+    } else if ((document as any).msExitFullscreen) {
+      (document as any).msExitFullscreen();
+    }
+  };
+
   useEffect(() => {
     const savedStreak = localStorage.getItem("userStreak");
     if (savedStreak) {
       setStreak(parseInt(savedStreak, 10));
     }
   }, []);
+
+  // Handle fullscreen change events and ESC key
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      // If user exits fullscreen manually (ESC key), we should respect that
+      const doc = document as any;
+      if (!document.fullscreenElement && !doc.webkitFullscreenElement && !doc.msFullscreenElement) {
+        // Fullscreen was exited
+      }
+    };
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      // Allow ESC to exit fullscreen during quiz if needed
+      if (event.key === 'Escape' && (quizStarted || (!showWelcome && !isFinished))) {
+        exitFullscreen();
+      }
+    };
+
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+    document.addEventListener('msfullscreenchange', handleFullscreenChange);
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+      document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
+      document.removeEventListener('msfullscreenchange', handleFullscreenChange);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [quizStarted, showWelcome, isFinished]);
 
   useEffect(() => {
       if (showWelcome || quizStarted || isFinished) return;
@@ -48,6 +104,8 @@ const TimeQuiz = () => {
           const timer = setTimeout(() => {
               setQuizStarted(true);
               setTimeLeft(TIME_PER_QUES);
+              // Enter fullscreen mode when quiz starts
+              enterFullscreen();
           }, 1000);
           return () => clearTimeout(timer);
       }
@@ -74,6 +132,8 @@ const TimeQuiz = () => {
       const nextIdx = currentIdx + 1;
       if (nextIdx >= questions.length) {
           setIsFinished(true);
+          // Exit fullscreen when quiz finishes
+          exitFullscreen();
       } else {
           setCurrentIdx(nextIdx);
           setSelected(null);
@@ -107,13 +167,18 @@ const TimeQuiz = () => {
       setCountdown(3);
       setQuizStarted(false);
       setShowWelcome(true);
+      // Exit fullscreen when restarting
+      exitFullscreen();
   };
 
   return (
     <>
-      <Navbar streak={streak} />
+      {/* Show navbar only when quiz is not active (welcome screen or finished) */}
+      {(showWelcome || isFinished) && <Navbar streak={streak} />}
       <main 
-        className="relative bg-white dark:bg-black min-h-screen flex flex-col items-center justify-center text-center px-4 sm:px-6 py-8 sm:py-16 pt-16 sm:pt-24 bg-cover bg-center bg-no-repeat overflow-hidden"
+        className={`relative bg-white dark:bg-black min-h-screen flex flex-col items-center justify-center text-center px-4 sm:px-6 py-8 sm:py-16 bg-cover bg-center bg-no-repeat overflow-hidden ${
+          (showWelcome || isFinished) ? 'pt-16 sm:pt-24' : 'pt-8'
+        }`}
         style={{ backgroundImage: "url(/bg.png)" }}
       >
         <div className={styles.quizContainer}>

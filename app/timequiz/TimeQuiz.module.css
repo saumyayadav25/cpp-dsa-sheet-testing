@@ -25,9 +25,40 @@
 }
 
 .quizContent {
-  max-width: 600px;
+  max-width: 800px;
   width: 100%;
   color: hsl(var(--foreground));
+  padding: 2rem;
+  margin: 0 auto;
+}
+
+/* Fullscreen quiz styling */
+:fullscreen .quizContent,
+:-webkit-full-screen .quizContent,
+:-ms-fullscreen .quizContent {
+  max-width: 90vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.2rem;
+}
+
+:fullscreen .quizContent h2,
+:-webkit-full-screen .quizContent h2,
+:-ms-fullscreen .quizContent h2 {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+}
+
+:fullscreen .quizContent p,
+:-webkit-full-screen .quizContent p,
+:-ms-fullscreen .quizContent p {
+  font-size: 1.5rem;
+  margin-bottom: 2rem;
+  text-align: center;
+  line-height: 1.6;
 }
 
 .optionsContainer {
@@ -36,6 +67,27 @@
   justify-content: center;
   gap: 1rem;
   margin-top: 1rem;
+  width: 100%;
+}
+
+/* Fullscreen options styling */
+:fullscreen .optionsContainer,
+:-webkit-full-screen .optionsContainer,
+:-ms-fullscreen .optionsContainer {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+  max-width: 800px;
+  margin-top: 3rem;
+}
+
+@media (max-width: 768px) {
+  :fullscreen .optionsContainer,
+  :-webkit-full-screen .optionsContainer,
+  :-ms-fullscreen .optionsContainer {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
 }
 
 .optionButton {
@@ -47,6 +99,17 @@
   border-radius: 6px;
   transition: border-color 0.3s ease, color 0.3s ease;
   min-width: 120px;
+}
+
+/* Fullscreen option button styling */
+:fullscreen .optionButton,
+:-webkit-full-screen .optionButton,
+:-ms-fullscreen .optionButton {
+  padding: 1.5rem 2rem;
+  font-size: 1.2rem;
+  min-width: 200px;
+  border-radius: 12px;
+  font-weight: 500;
 }
 
 .optionButton:hover:not(:disabled) {
@@ -67,6 +130,16 @@
 
 .timer {
   margin-top: 1rem;
+  font-weight: bold;
+}
+
+/* Fullscreen timer styling */
+:fullscreen .timer,
+:-webkit-full-screen .timer,
+:-ms-fullscreen .timer {
+  margin-top: 3rem;
+  font-size: 1.5rem;
+  color: #ef4444;
   font-weight: bold;
 }
 
@@ -214,4 +287,31 @@
   .startButton {
     font-size: 1rem;
   }
+}
+
+/* Fullscreen general styling */
+:fullscreen,
+:-webkit-full-screen,
+:-ms-fullscreen {
+  background: hsl(var(--background)) !important;
+}
+
+/* Fullscreen main content */
+:fullscreen main,
+:-webkit-full-screen main,
+:-ms-fullscreen main {
+  padding: 0 !important;
+  margin: 0 !important;
+  min-height: 100vh !important;
+  background-image: none !important;
+}
+
+/* Fullscreen quiz container */
+:fullscreen .quizContainer,
+:-webkit-full-screen .quizContainer,
+:-ms-fullscreen .quizContainer {
+  min-height: 100vh;
+  max-width: none;
+  width: 100vw;
+  padding: 2rem;
 }
