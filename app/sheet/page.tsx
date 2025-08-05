@@ -196,55 +196,6 @@ export default function SheetPage() {
             🔗 View Full List
           </a>
         </div>
-        {/* Random Question Block */}
-        <button
-          onClick={handleShuffle}
-          className="mt-4 mb-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors duration-300"
-        >
-          Shuffle Random Question
-        </button>
-      {randomQuestion && (
-        <>
-          <div className="mt-4 p-6 rounded-xl border dark:border-white/10 border-gray-200 bg-white/70 dark:bg-white/5 backdrop-blur-sm shadow-md">
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-              🔀 Random Question
-            </h2>
-            <p className="text-gray-800 dark:text-gray-200 text-lg mb-1">
-              {randomQuestion.title}
-            </p>
-            {(() => {
-              const links = randomQuestion.links || {};
-              const platforms = ['leetcode', 'gfg', 'hackerrank', 'spoj', 'ninja', 'code', 'custom'];
-              const platformMap: Record<string, string> = {
-                leetcode: 'LeetCode',
-                gfg: 'GeeksforGeeks',
-                hackerrank: 'HackerRank',
-                spoj: 'SPOJ',
-                ninja: 'Coding Ninjas',
-                code: 'Code',
-                custom: 'Custom',
-              };
-
-              const platform = platforms.find((p) => links[p as keyof typeof links]);
-              if (!platform) return null;
-
-              const url = links[platform as keyof typeof links];
-              const label = platformMap[platform] || platform;
-
-              return (
-                <a
-                  href={url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-block mt-4 bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition-all duration-200"
-                >
-                  🔗 Solve on {label}
-                </a>
-              );
-            })()}
-          </div>
-        </>
-      )}
 
         {/* POTD Section */}
         <POTD potd={potd} updateStreak={updateStreak} />

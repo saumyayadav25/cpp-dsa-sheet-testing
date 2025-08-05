@@ -40,13 +40,32 @@ export default function SheetContent({
   }>({});
   const [openNoteId, setOpenNoteId] = useState<string | null>(null);
 
+  // Step 1: Define state and handler at the top
+  const [randomQuestion, setRandomQuestion] = useState<Question | null>(null);
+
+  const handleRandomQuestion = () => {
+    const allQuestions = sampleTopics.flatMap((topic) => topic.questions);
+    const random = allQuestions[Math.floor(Math.random() * allQuestions.length)];
+    setRandomQuestion(random);
+  };
+
   // Load & persist progress
   useEffect(() => {
-    const stored = localStorage.getItem("dsa-progress");
-    if (stored) setProgress(JSON.parse(stored));
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem("dsa-progress");
+      if (stored) {
+        try {
+          setProgress(JSON.parse(stored));
+        } catch (error) {
+          console.error('Failed to parse stored progress:', error);
+        }
+      }
+    }
   }, []);
   useEffect(() => {
-    localStorage.setItem("dsa-progress", JSON.stringify(progress));
+    if (typeof window !== 'undefined') {
+      localStorage.setItem("dsa-progress", JSON.stringify(progress));
+    }
   }, [progress]);
 
   // Toggle solved/marked state
@@ -71,7 +90,7 @@ export default function SheetContent({
     );
   };
 
-  const difficultyClasses = {
+  const difficultyClasses: Record<string, string> = {
     easy: "text-green-600 dark:text-green-500",
     medium: "text-yellow-600 dark:text-yellow-400",
     hard: "text-red-600 dark:text-red-500",
@@ -118,6 +137,99 @@ export default function SheetContent({
   // 3️⃣ Otherwise render each topic that has matches
   return (
     <>
+      {/* Step 2: Add the Button above the table */}
+      <div className="mb-6">
+        <div className="flex justify-end mb-2">
+          <button
+            onClick={handleRandomQuestion}
+            className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 transition"
+          >
+            Get Random Question
+          </button>
+        </div>
+        {randomQuestion && (
+          <div className="overflow-x-auto border border-gray-300 dark:border-gray-700 rounded-md">
+            <table className="min-w-full table-fixed text-sm text-gray-900 dark:text-white bg-yellow-50 dark:bg-yellow-900">
+              <thead>
+                <tr className="border-b border-gray-300 dark:border-gray-600">
+                  <th className="py-2 px-3">Question</th>
+                  <th className="py-2 px-3">Links</th>
+                  <th className="py-2 px-3">Difficulty</th>
+                  <th className="py-2 px-3">Solved</th>
+                  <th className="py-2 px-3">Revision</th>
+                  <th className="py-2 px-3">Solution</th>
+                  <th className="py-2 px-3">Notes</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr key={randomQuestion ? randomQuestion.title : 'random-row'}>
+                  <td className="py-2 px-3 font-medium">
+                    {randomQuestion.title}
+                  </td>
+                  <td className="py-2 px-3 flex justify-center gap-2">
+                    {randomQuestion.links && randomQuestion.links.leetcode && (
+                      <a href={randomQuestion.links.leetcode} target="_blank" rel="noopener noreferrer">
+                        <SiLeetcode className="text-orange-500 text-2xl hover:text-orange-400" />
+                      </a>
+                    )}
+                    {randomQuestion.links && randomQuestion.links.gfg && (
+                      <a href={randomQuestion.links.gfg} target="_blank" rel="noopener noreferrer">
+                        <SiGeeksforgeeks className="text-green-500 text-2xl hover:text-green-400" />
+                      </a>
+                    )}
+                    {randomQuestion.links && randomQuestion.links.hackerrank && (
+                      <a href={randomQuestion.links.hackerrank} target="_blank" rel="noopener noreferrer">
+                        <SiHackerrank className="text-gray-600 dark:text-white text-2xl hover:text-cyan-400" />
+                      </a>
+                    )}
+                    {randomQuestion.links && randomQuestion.links.spoj && (
+                      <a href={randomQuestion.links.spoj} target="_blank" rel="noopener noreferrer">
+                        <SiSpoj className="text-gray-600 dark:text-white text-2xl hover:text-cyan-400" />
+                      </a>
+                    )}
+                    {randomQuestion.links && randomQuestion.links.ninja && (
+                      <a href={randomQuestion.links.ninja} target="_blank" rel="noopener noreferrer">
+                        <SiCodingninjas className="text-gray-600 dark:text-white text-2xl hover:text-indigo-400" />
+                      </a>
+                    )}
+                    {randomQuestion.links && randomQuestion.links.code && (
+                      <a href={randomQuestion.links.code} target="_blank" rel="noopener noreferrer">
+                        <FaCode className="text-blue-500 dark:text-blue-200 text-2xl hover:text-blue-300" />
+                      </a>
+                    )}
+                    {(!randomQuestion.links || (
+                      !randomQuestion.links.leetcode &&
+                      !randomQuestion.links.gfg &&
+                      !randomQuestion.links.hackerrank &&
+                      !randomQuestion.links.spoj &&
+                      !randomQuestion.links.ninja &&
+                      !randomQuestion.links.code
+                    )) && <span>—</span>}
+                  </td>
+                  <td className="py-2 px-3 capitalize">{randomQuestion.difficulty}</td>
+                  <td className="py-2 px-3">{randomQuestion.isSolved ? "✅" : "—"}</td>
+                  <td className="py-2 px-3">{randomQuestion.isMarkedForRevision ? "🔁" : "—"}</td>
+                  <td className="py-2 px-3">
+                    {randomQuestion.solutionLink ? (
+                      <a
+                        href={randomQuestion.solutionLink}
+                        className="text-blue-500 underline"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        Solution
+                      </a>
+                    ) : (
+                      "—"
+                    )}
+                  </td>
+                  <td className="py-2 px-3">—</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
       {sampleTopics.map((topic) => {
         // Filter per-topic
         const filtered = topic.questions.filter((q) => {
@@ -174,6 +286,7 @@ export default function SheetContent({
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
+                aria-hidden="true"
               >
                 <path d="M6 9l6 6 6-6" strokeWidth="2" strokeLinecap="round" />
               </svg>
@@ -185,7 +298,7 @@ export default function SheetContent({
                 id={`topic-${topic.id}-body`}
                 className="overflow-x-auto bg-background px-4 py-3"
               >
-                <table className="min-w-full table-fixed text-gray-900 dark:text-white">
+              <table className="min-w-full table-fixed text-gray-900 dark:text-white">
                   <thead>
                     <tr className="border-b border-gray-300 dark:border-gray-600">
                       <th className="py-2 px-3">Question</th>
@@ -198,6 +311,7 @@ export default function SheetContent({
                     </tr>
                   </thead>
                   <tbody>
+                    {/* Regular rows start below */}
                     {filtered.map((q) => {
                       const key = `${topic.id}-${q.id}`;
                       const local = progress[key] || {};
@@ -211,38 +325,38 @@ export default function SheetContent({
                         >
                           <td className="py-2 px-3">{q.title}</td>
                           <td className="py-2 px-3 flex justify-center gap-2">
-                            {q.links.leetcode && (
+                            {q.links && q.links.leetcode && (
                               <a href={q.links.leetcode} target="_blank" rel="noopener noreferrer">
-                                <SiLeetcode className="text-orange-500 text-2xl hover:text-orange-400" />
+                                <SiLeetcode className="text-orange-500 text-2xl hover:text-orange-400" aria-label="LeetCode" />
                               </a>
                             )}
-                            {q.links.gfg && (
+                            {q.links && q.links.gfg && (
                               <a href={q.links.gfg} target="_blank" rel="noopener noreferrer">
-                                <SiGeeksforgeeks className="text-green-500 text-2xl hover:text-green-400" />
+                                <SiGeeksforgeeks className="text-green-500 text-2xl hover:text-green-400" aria-label="GeeksforGeeks" />
                               </a>
                             )}
-                            {q.links.hackerrank && (
+                            {q.links && q.links.hackerrank && (
                               <a href={q.links.hackerrank} target="_blank" rel="noopener noreferrer">
-                                <SiHackerrank className="text-gray-600 dark:text-white text-2xl hover:text-cyan-400" />
+                                <SiHackerrank className="text-gray-600 dark:text-white text-2xl hover:text-cyan-400" aria-label="HackerRank" />
                               </a>
                             )}
-                            {q.links.spoj && (
+                            {q.links && q.links.spoj && (
                               <a href={q.links.spoj} target="_blank" rel="noopener noreferrer">
-                                <SiSpoj className="text-gray-600 dark:text-white text-2xl hover:text-cyan-400" />
+                                <SiSpoj className="text-gray-600 dark:text-white text-2xl hover:text-cyan-400" aria-label="SPOJ" />
                               </a>
                             )}
-                            {q.links.ninja && (
+                            {q.links && q.links.ninja && (
                               <a href={q.links.ninja} target="_blank" rel="noopener noreferrer">
-                                <SiCodingninjas className="text-gray-600 dark:text-white text-2xl hover:text-indigo-400" />
+                                <SiCodingninjas className="text-gray-600 dark:text-white text-2xl hover:text-indigo-400" aria-label="Coding Ninjas" />
                               </a>
                             )}
-                            {q.links.code && (
+                            {q.links && q.links.code && (
                               <a href={q.links.code} target="_blank" rel="noopener noreferrer">
-                                <FaCode className="text-blue-500 dark:text-blue-200 text-2xl hover:text-blue-300" />
+                                <FaCode className="text-blue-500 dark:text-blue-200 text-2xl hover:text-blue-300" aria-label="Code" />
                               </a>
                             )}
                           </td>
-                          <td className={`py-2 px-3 text-center font-semibold ${difficultyClasses[q.difficulty]}`}>
+                          <td className={`py-2 px-3 text-center font-semibold ${difficultyClasses[q.difficulty] || 'text-gray-600'}`}>
                             {q.difficulty.charAt(0).toUpperCase() + q.difficulty.slice(1)}
                           </td>
                           <td className="py-2 px-3 text-center">
@@ -266,7 +380,7 @@ export default function SheetContent({
                           <td className="py-2 px-3 text-center">
                             {q.solutionLink ? (
                               <a href={q.solutionLink} target="_blank" rel="noopener noreferrer">
-                                <FaGithub className="text-2xl hover:text-gray-400 dark:hover:text-gray-100" />
+                                <FaGithub className="text-2xl hover:text-gray-400 dark:hover:text-gray-100" aria-label="GitHub Solution" />
                               </a>
                             ) : (
                               <span className="text-gray-400 dark:text-gray-500">-</span>

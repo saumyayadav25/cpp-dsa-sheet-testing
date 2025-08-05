@@ -1,6 +1,11 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { sampleTopics } from "@/data/questions";
+import { getRandomItem } from "@/utils/random";
+
+const allQuestions = sampleTopics.flatMap(topic => topic.questions);
+
 import Link from "next/link";
 import {
   FaListUl,
@@ -96,6 +101,13 @@ const testimonials: Testimonial[] = [
 export default function Home() {
   const [searchTerm, setSearchTerm] = useState("");
   const [streak, setStreak] = useState(0);
+  const [randomQuestion, setRandomQuestion] = useState(() =>
+    getRandomItem(allQuestions)
+  );
+
+  const handleShuffle = () => {
+    setRandomQuestion(getRandomItem(allQuestions));
+  };
 
   useEffect(() => {
     const savedStreak = localStorage.getItem("userStreak");
