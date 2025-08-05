@@ -25,49 +25,102 @@
 }
 
 .quizContent {
-  max-width: 800px;
+  max-width: none;
   width: 100%;
+  height: 100vh;
   color: hsl(var(--foreground));
-  padding: 2rem;
-  margin: 0 auto;
+  padding: 3rem;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Fullscreen quiz styling */
 :fullscreen .quizContent,
 :-webkit-full-screen .quizContent,
 :-ms-fullscreen .quizContent {
-  max-width: 90vw;
+  max-width: none;
+  width: 100vw;
   height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  padding: 3rem;
   font-size: 1.2rem;
+  align-items: center;
+  justify-content: center;
 }
 
-:fullscreen .quizContent h2,
-:-webkit-full-screen .quizContent h2,
-:-ms-fullscreen .quizContent h2 {
-  font-size: 2rem;
-  margin-bottom: 2rem;
+/* Quiz header with question and timer */
+.quizHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+  width: 100%;
+  max-width: 1200px;
+  margin-left: -5%;
 }
 
-:fullscreen .quizContent p,
-:-webkit-full-screen .quizContent p,
-:-ms-fullscreen .quizContent p {
-  font-size: 1.5rem;
-  margin-bottom: 2rem;
-  text-align: center;
+.questionSection {
+  flex: 1;
+  text-align: left;
+  max-width: 70%;
+}
+
+.questionNumber {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: hsl(var(--muted-foreground));
+  margin-bottom: 1rem;
+}
+
+.questionText {
+  font-size: 1.8rem;
+  font-weight: 500;
   line-height: 1.6;
+  color: hsl(var(--foreground));
+}
+
+.timerSection {
+  background: linear-gradient(135deg, #ef4444/10, #dc2626/10);
+  border: 1px solid #ef4444/30;
+  border-radius: 12px;
+  padding: 1rem 1.5rem;
+  text-align: center;
+  min-width: 120px;
+}
+
+.timerLabel {
+  font-size: 0.875rem;
+  color: #ef4444;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.timerValue {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #ef4444;
 }
 
 .optionsContainer {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: 1fr;
   gap: 1rem;
-  margin-top: 1rem;
   width: 100%;
+  max-width: 1200px;
+  margin-top: 1rem;
+  margin-left: -5%;
+}
+
+@media (max-width: 768px) {
+  .optionsContainer {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin-left: 0;
+  }
 }
 
 /* Fullscreen options styling */
@@ -75,10 +128,11 @@
 :-webkit-full-screen .optionsContainer,
 :-ms-fullscreen .optionsContainer {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 2rem;
-  max-width: 800px;
-  margin-top: 3rem;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  max-width: 1200px;
+  margin-top: 1.5rem;
+  margin-left: -5%;
 }
 
 @media (max-width: 768px) {
@@ -87,34 +141,57 @@
   :-ms-fullscreen .optionsContainer {
     grid-template-columns: 1fr;
     gap: 1.5rem;
+    margin-left: 0;
   }
 }
 
 .optionButton {
-  padding: 0.75rem 1.5rem;
-  border: 2px solid hsl(var(--border));
-  background: transparent;
+  background: linear-gradient(135deg, #6366f1/20, #8b5cf6/15, #a855f7/10);
+  border: 1px solid #6366f1/30;
   color: hsl(var(--foreground));
   cursor: pointer;
-  border-radius: 6px;
-  transition: border-color 0.3s ease, color 0.3s ease;
-  min-width: 120px;
+  border-radius: 12px;
+  padding: 1.5rem;
+  text-align: left;
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.5;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.1);
+  min-height: 70px;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
-/* Fullscreen option button styling */
-:fullscreen .optionButton,
-:-webkit-full-screen .optionButton,
-:-ms-fullscreen .optionButton {
-  padding: 1.5rem 2rem;
-  font-size: 1.2rem;
-  min-width: 200px;
-  border-radius: 12px;
-  font-weight: 500;
+.optionLabel {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: white;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.optionText {
+  flex: 1;
 }
 
 .optionButton:hover:not(:disabled) {
-  border-color: #3b82f6;
-  color: #3b82f6;
+  background: linear-gradient(135deg, #6366f1/30, #8b5cf6/25, #a855f7/20);
+  border-color: #6366f1;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+}
+
+.optionButton:hover:not(:disabled) .optionLabel {
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  transform: scale(1.05);
 }
 
 .optionButton:disabled {
@@ -123,25 +200,43 @@
 }
 
 .selectedOption {
-  border-color: #2563eb;
-  color: #2563eb;
-  font-weight: bold;
+  background: linear-gradient(135deg, #6366f1/40, #8b5cf6/35, #a855f7/30);
+  border-color: #6366f1;
+  color: #6366f1;
+  font-weight: 600;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
 }
 
-.timer {
-  margin-top: 1rem;
-  font-weight: bold;
+.selectedOption .optionLabel {
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  transform: scale(1.1);
 }
 
-/* Fullscreen timer styling */
-:fullscreen .timer,
-:-webkit-full-screen .timer,
-:-ms-fullscreen .timer {
-  margin-top: 3rem;
-  font-size: 1.5rem;
-  color: #ef4444;
-  font-weight: bold;
+.selectedOption .optionText {
+  color: #6366f1;
 }
+
+/* Fullscreen option button styling */
+:fullscreen .optionButton,
+:-webkit-full-screen .optionButton,
+:-ms-fullscreen .optionButton {
+  padding: 2rem;
+  font-size: 1.3rem;
+  min-height: 90px;
+  border-radius: 16px;
+  gap: 1.5rem;
+}
+
+:fullscreen .optionLabel,
+:-webkit-full-screen .optionLabel,
+:-ms-fullscreen .optionLabel {
+  width: 50px;
+  height: 50px;
+  font-size: 1.3rem;
+}
+
+
 
 .finishedContainer {
   max-width: 400px;

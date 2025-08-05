@@ -236,21 +236,33 @@ const TimeQuiz = () => {
 
       {!showWelcome && quizStarted && !isFinished && (
         <div className={styles.quizContent}>
-          <h2>Question {currentIdx + 1} / {questions.length}</h2>
-          <p>{current.question}</p>
-          <div className={styles.optionsContainer}>
-            {current.options.map((option) => (
-              <button
-                key={option}
-                onClick={() => handleOption(option)}
-                disabled={!!selected}
-                className={`${styles.optionButton} ${selected === option ? styles.selectedOption : ''}`}
-              >
-                {option}
-              </button>
-            ))}
+          <div className={styles.quizHeader}>
+            <div className={styles.questionSection}>
+              <div className={styles.questionText}>
+                {currentIdx + 1}. {current.question}
+              </div>
+            </div>
+            <div className={styles.timerSection}>
+              <div className={styles.timerLabel}>Time Left</div>
+              <div className={styles.timerValue}>{timeLeft}s</div>
+            </div>
           </div>
-          <p className={styles.timer}>Time Left: {timeLeft}s</p>
+          <div className={styles.optionsContainer}>
+            {current.options.map((option, index) => {
+              const optionLabel = String.fromCharCode(65 + index); // A, B, C, D...
+              return (
+                <button
+                  key={option}
+                  onClick={() => handleOption(option)}
+                  disabled={!!selected}
+                  className={`${styles.optionButton} ${selected === option ? styles.selectedOption : ''}`}
+                >
+                  <div className={styles.optionLabel}>{optionLabel}</div>
+                  <div className={styles.optionText}>{option}</div>
+                </button>
+              );
+            })}
+          </div>
         </div>
       )}
 
