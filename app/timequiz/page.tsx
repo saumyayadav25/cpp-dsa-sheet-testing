@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import questions from '@/data/questions.json';
 import styles from './TimeQuiz.module.css';
+import Navbar from "@/components/Navbar";
 
 const TIME_PER_QUES = 10;
 
@@ -14,8 +15,16 @@ const TimeQuiz = () => {
   const [isFinished, setIsFinished] = useState(false);
   const [countdown, setCountdown] = useState(3);
   const [quizStarted, setQuizStarted] = useState(false);
+  const [streak, setStreak] = useState(0);
 
   const current = questions[currentIdx];
+
+  useEffect(() => {
+    const savedStreak = localStorage.getItem("userStreak");
+    if (savedStreak) {
+      setStreak(parseInt(savedStreak, 10));
+    }
+  }, []);
 
   useEffect(() => {
       if (quizStarted || isFinished) return;
@@ -76,13 +85,15 @@ const TimeQuiz = () => {
   };
 
   return (
-    <div className={styles.quizContainer}>
-      {!quizStarted && !isFinished && (
-        <div className={styles.countdown}>
-          <h2>Quiz is about to start in</h2>
-          <div className={styles.countdownNumber}>{countdown}</div>
-        </div>
-      )}
+    <>
+      <Navbar streak={streak} />
+      <div className={styles.quizContainer}>
+        {!quizStarted && !isFinished && (
+          <div className={styles.countdown}>
+            <h2>Quiz is about to start in</h2>
+            <div className={styles.countdownNumber}>{countdown}</div>
+          </div>
+        )}
 
       {quizStarted && !isFinished && (
         <div className={styles.quizContent}>
@@ -111,7 +122,8 @@ const TimeQuiz = () => {
           <button className={styles.restartButton} onClick={restart}>Restart Quiz</button>
         </div>
       )}
-    </div>
+      </div>
+    </>
   );
 };
 
