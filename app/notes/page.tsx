@@ -13,6 +13,7 @@ import { CgFileDocument } from "react-icons/cg";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
+import ErrorBoundary from "@/components/ErrorBoundary";
 
 type NoteTopic = {
   title: string;
@@ -58,8 +59,9 @@ export default function NotesPage() {
   }, []);
 
   return (
-    <>
-      <Navbar streak={streak} />
+    <ErrorBoundary>
+      <>
+        <Navbar streak={streak} />
       <motion.main
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
@@ -191,6 +193,7 @@ export default function NotesPage() {
           </motion.p>
         </div>
       </motion.main>
-    </>
+      </>
+    </ErrorBoundary>
   );
 }
