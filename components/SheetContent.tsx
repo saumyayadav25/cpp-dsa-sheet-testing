@@ -166,13 +166,12 @@ export default function SheetContent({
 
               {/* Header */}
               <motion.div
-                className="px-6 py-4 bg-blue-700 text-white flex justify-between items-center cursor-pointer"
-                onClick={() => toggleTopic(topic.id)}
-                whileHover={{ backgroundColor: '#415378ff' }}
-                transition={{ duration: 0.2 }}
-                initial={{ scale: 0.98 }}
-                animate={{ scale: 1 }}
-              >
+  className="px-6 py-4 bg-[#e7f0ff] dark:bg-[#223e76] text-[#1a1a1a] dark:text-white flex justify-between items-center cursor-pointer hover:bg-[#d4e3fc] dark:hover:bg-[#415378] transition-colors duration-200"
+  onClick={() => toggleTopic(topic.id)}
+  initial={{ scale: 0.98 }}
+  animate={{ scale: 1 }}
+>
+
                 <motion.div
                   className="text-xl font-bold"
                   animate={{ x: isOpen?5:0 }}
