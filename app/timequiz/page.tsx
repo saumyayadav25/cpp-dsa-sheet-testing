@@ -180,7 +180,7 @@ const TimeQuiz = () => {
           (showWelcome || isFinished) ? 'pt-16 sm:pt-24' : 'pt-8'
         }`}
         style={{ 
-          backgroundImage: (showWelcome || isFinished) ? "url(/bg.png)" : "none",
+          backgroundImage: "url(/bg.png)",
           padding: (quizStarted && !isFinished) ? "0" : undefined,
           margin: (quizStarted && !isFinished) ? "0" : undefined,
           minHeight: (quizStarted && !isFinished) ? "100vh" : undefined
