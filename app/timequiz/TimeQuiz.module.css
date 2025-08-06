@@ -1,52 +1,197 @@
 .quizContainer {
-  height: 100vh;
+  position: relative;
+  z-index: 10;
+  max-width: 1152px;
+  margin: 0 auto;
+  width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(135deg, #1e293b, #0f172a);
-  color: #f1f5f9;
-  padding: 1rem;
+  min-height: calc(100vh - 12rem);
   text-align: center;
 }
 
 .countdown {
   font-size: 1.5rem;
+  color: hsl(var(--foreground));
 }
 
 .countdownNumber {
   font-size: 4rem;
   font-weight: bold;
   margin-top: 1rem;
+  color: hsl(var(--foreground));
 }
 
 .quizContent {
-  max-width: 600px;
+  max-width: none;
   width: 100%;
-}
-
-.optionsContainer {
+  height: 100vh;
+  color: hsl(var(--foreground));
+  padding: 3rem;
+  margin: 0;
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
-  gap: 1rem;
-  margin-top: 1rem;
 }
 
-.optionButton {
-  padding: 0.75rem 1.5rem;
-  border: 2px solid #94a3b8;
-  background: transparent;
-  color: #f1f5f9;
-  cursor: pointer;
-  border-radius: 6px;
-  transition: border-color 0.3s ease, color 0.3s ease;
+/* Fullscreen quiz styling */
+:global(:fullscreen) .quizContent,
+:global(:-webkit-full-screen) .quizContent,
+:global(:-ms-fullscreen) .quizContent {
+  max-width: none;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 3rem;
+  font-size: 1.2rem;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Quiz header with question and timer */
+.quizHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+  width: 100%;
+  max-width: 1200px;
+  margin-left: -5%;
+}
+
+.questionSection {
+  flex: 1;
+  text-align: left;
+  max-width: 70%;
+}
+
+.questionNumber {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: hsl(var(--muted-foreground));
+  margin-bottom: 1rem;
+}
+
+.questionText {
+  font-size: 1.8rem;
+  font-weight: 500;
+  line-height: 1.6;
+  color: hsl(var(--foreground));
+}
+
+.timerSection {
+  background: linear-gradient(135deg, #ef4444/10, #dc2626/10);
+  border: 1px solid #ef4444/30;
+  border-radius: 12px;
+  padding: 1rem 1.5rem;
+  text-align: center;
   min-width: 120px;
 }
 
+.timerLabel {
+  font-size: 0.875rem;
+  color: #ef4444;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.timerValue {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #ef4444;
+}
+
+.optionsContainer {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  width: 100%;
+  max-width: 1200px;
+  margin-top: 1rem;
+  margin-left: -5%;
+}
+
+@media (max-width: 768px) {
+  .optionsContainer {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin-left: 0;
+  }
+}
+
+/* Fullscreen options styling */
+:global(:fullscreen) .optionsContainer,
+:global(:-webkit-full-screen) .optionsContainer,
+:global(:-ms-fullscreen) .optionsContainer {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  max-width: 1200px;
+  margin-top: 1.5rem;
+  margin-left: -5%;
+}
+
+@media (max-width: 768px) {
+  :global(:fullscreen) .optionsContainer,
+  :global(:-webkit-full-screen) .optionsContainer,
+  :global(:-ms-fullscreen) .optionsContainer {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin-left: 0;
+  }
+}
+
+.optionButton {
+  background: linear-gradient(135deg, #6366f1/20, #8b5cf6/15, #a855f7/10);
+  border: 1px solid #6366f1/30;
+  color: hsl(var(--foreground));
+  cursor: pointer;
+  border-radius: 12px;
+  padding: 1.5rem;
+  text-align: left;
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.5;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.1);
+  min-height: 70px;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.optionLabel {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: white;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.optionText {
+  flex: 1;
+}
+
 .optionButton:hover:not(:disabled) {
-  border-color: #3b82f6;
-  color: #3b82f6;
+  background: linear-gradient(135deg, #6366f1/30, #8b5cf6/25, #a855f7/20);
+  border-color: #6366f1;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+}
+
+.optionButton:hover:not(:disabled) .optionLabel {
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  transform: scale(1.05);
 }
 
 .optionButton:disabled {
@@ -55,18 +200,47 @@
 }
 
 .selectedOption {
-  border-color: #2563eb;
-  color: #2563eb;
-  font-weight: bold;
+  background: linear-gradient(135deg, #6366f1/40, #8b5cf6/35, #a855f7/30);
+  border-color: #6366f1;
+  color: #6366f1;
+  font-weight: 600;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
 }
 
-.timer {
-  margin-top: 1rem;
-  font-weight: bold;
+.selectedOption .optionLabel {
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  transform: scale(1.1);
 }
+
+.selectedOption .optionText {
+  color: #6366f1;
+}
+
+/* Fullscreen option button styling */
+:global(:fullscreen) .optionButton,
+:global(:-webkit-full-screen) .optionButton,
+:global(:-ms-fullscreen) .optionButton {
+  padding: 2rem;
+  font-size: 1.3rem;
+  min-height: 90px;
+  border-radius: 16px;
+  gap: 1.5rem;
+}
+
+:global(:fullscreen) .optionLabel,
+:global(:-webkit-full-screen) .optionLabel,
+:global(:-ms-fullscreen) .optionLabel {
+  width: 50px;
+  height: 50px;
+  font-size: 1.3rem;
+}
+
+
 
 .finishedContainer {
   max-width: 400px;
+  color: hsl(var(--foreground));
 }
 
 .restartButton {
@@ -83,4 +257,140 @@
 
 .restartButton:hover {
   background-color: #1d4ed8;
+}
+
+.welcomeScreen {
+  max-width: 600px;
+  width: 100%;
+  text-align: center;
+}
+
+.welcomeTitle {
+  font-size: 1.875rem; /* text-3xl */
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+  color: hsl(var(--foreground));
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  margin-top: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .welcomeTitle {
+    font-size: 2.25rem; /* sm:text-4xl */
+  }
+}
+
+@media (min-width: 768px) {
+  .welcomeTitle {
+    font-size: 3.75rem; /* md:text-6xl */
+  }
+}
+
+@media (min-width: 1024px) {
+  .welcomeTitle {
+    font-size: 4.5rem; /* lg:text-7xl */
+  }
+}
+
+.motivationalQuote1,
+.motivationalQuote2 {
+  font-size: 0.9rem; /* 20% smaller than text-lg (1.125rem * 0.8 = 0.9rem) */
+  color: hsl(var(--foreground));
+  font-weight: 600; /* font-semibold */
+  margin-bottom: 0.75rem;
+  line-height: 1.6;
+  max-width: 36rem;
+  margin-left: auto;
+  margin-right: auto;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 0 1rem;
+}
+
+.motivationalQuote2 {
+  margin-bottom: 1.5rem; /* More space before the image */
+}
+
+@media (min-width: 640px) {
+  .motivationalQuote1,
+  .motivationalQuote2 {
+    font-size: 1.2rem; /* 20% smaller than sm:text-2xl (1.5rem * 0.8 = 1.2rem) */
+    max-width: 48rem;
+    padding: 0;
+  }
+}
+
+@media (min-width: 768px) {
+  .motivationalQuote1,
+  .motivationalQuote2 {
+    font-size: 1.5rem; /* 20% smaller than md:text-3xl (1.875rem * 0.8 = 1.5rem) */
+  }
+}
+
+@media (min-width: 1024px) {
+  .motivationalQuote1,
+  .motivationalQuote2 {
+    font-size: 1.8rem; /* 20% smaller than lg:text-4xl (2.25rem * 0.8 = 1.8rem) */
+  }
+}
+
+.startButton {
+  background: linear-gradient(90deg, #16a34a, #2563eb, #16a34a, #2563eb);
+  background-size: 300% 100%;
+  color: white;
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.375rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  border: none;
+  cursor: pointer;
+  transform: scale(1);
+  width: 100%;
+  animation: flowingColors 3s ease-in-out infinite;
+}
+
+.startButton:hover {
+  background: linear-gradient(90deg, #15803d, #1d4ed8, #15803d, #1d4ed8);
+  background-size: 300% 100%;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  transform: scale(1.05);
+  animation: flowingColors 2s ease-in-out infinite;
+}
+
+@keyframes flowingColors {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@media (min-width: 640px) {
+  .startButton {
+    padding: 0.75rem 2rem;
+    width: auto;
+    font-size: 0.875rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .startButton {
+    font-size: 1rem;
+  }
+}
+
+/* Fullscreen general styling - using :global() for pseudo-class selectors */
+:global(:fullscreen) .quizContainer,
+:global(:-webkit-full-screen) .quizContainer,
+:global(:-ms-fullscreen) .quizContainer {
+  background: hsl(var(--background)) !important;
+  min-height: 100vh;
+  max-width: none;
+  width: 100vw;
+  padding: 2rem;
 }
