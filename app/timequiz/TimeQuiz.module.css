@@ -38,9 +38,9 @@
 }
 
 /* Fullscreen quiz styling */
-:fullscreen .quizContent,
-:-webkit-full-screen .quizContent,
-:-ms-fullscreen .quizContent {
+:global(:fullscreen) .quizContent,
+:global(:-webkit-full-screen) .quizContent,
+:global(:-ms-fullscreen) .quizContent {
   max-width: none;
   width: 100vw;
   height: 100vh;
@@ -124,9 +124,9 @@
 }
 
 /* Fullscreen options styling */
-:fullscreen .optionsContainer,
-:-webkit-full-screen .optionsContainer,
-:-ms-fullscreen .optionsContainer {
+:global(:fullscreen) .optionsContainer,
+:global(:-webkit-full-screen) .optionsContainer,
+:global(:-ms-fullscreen) .optionsContainer {
   display: grid;
   grid-template-columns: 1fr;
   gap: 1.5rem;
@@ -136,9 +136,9 @@
 }
 
 @media (max-width: 768px) {
-  :fullscreen .optionsContainer,
-  :-webkit-full-screen .optionsContainer,
-  :-ms-fullscreen .optionsContainer {
+  :global(:fullscreen) .optionsContainer,
+  :global(:-webkit-full-screen) .optionsContainer,
+  :global(:-ms-fullscreen) .optionsContainer {
     grid-template-columns: 1fr;
     gap: 1.5rem;
     margin-left: 0;
@@ -218,9 +218,9 @@
 }
 
 /* Fullscreen option button styling */
-:fullscreen .optionButton,
-:-webkit-full-screen .optionButton,
-:-ms-fullscreen .optionButton {
+:global(:fullscreen) .optionButton,
+:global(:-webkit-full-screen) .optionButton,
+:global(:-ms-fullscreen) .optionButton {
   padding: 2rem;
   font-size: 1.3rem;
   min-height: 90px;
@@ -228,9 +228,9 @@
   gap: 1.5rem;
 }
 
-:fullscreen .optionLabel,
-:-webkit-full-screen .optionLabel,
-:-ms-fullscreen .optionLabel {
+:global(:fullscreen) .optionLabel,
+:global(:-webkit-full-screen) .optionLabel,
+:global(:-ms-fullscreen) .optionLabel {
   width: 50px;
   height: 50px;
   font-size: 1.3rem;
@@ -384,27 +384,11 @@
   }
 }
 
-/* Fullscreen general styling */
-:fullscreen,
-:-webkit-full-screen,
-:-ms-fullscreen {
+/* Fullscreen general styling - using :global() for pseudo-class selectors */
+:global(:fullscreen) .quizContainer,
+:global(:-webkit-full-screen) .quizContainer,
+:global(:-ms-fullscreen) .quizContainer {
   background: hsl(var(--background)) !important;
-}
-
-/* Fullscreen main content */
-:fullscreen main,
-:-webkit-full-screen main,
-:-ms-fullscreen main {
-  padding: 0 !important;
-  margin: 0 !important;
-  min-height: 100vh !important;
-  background-image: none !important;
-}
-
-/* Fullscreen quiz container */
-:fullscreen .quizContainer,
-:-webkit-full-screen .quizContainer,
-:-ms-fullscreen .quizContainer {
   min-height: 100vh;
   max-width: none;
   width: 100vw;

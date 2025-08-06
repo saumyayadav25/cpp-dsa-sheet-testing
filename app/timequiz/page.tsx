@@ -179,7 +179,12 @@ const TimeQuiz = () => {
         className={`relative bg-white dark:bg-black min-h-screen flex flex-col items-center justify-center text-center px-4 sm:px-6 py-8 sm:py-16 bg-cover bg-center bg-no-repeat overflow-hidden ${
           (showWelcome || isFinished) ? 'pt-16 sm:pt-24' : 'pt-8'
         }`}
-        style={{ backgroundImage: "url(/bg.png)" }}
+        style={{ 
+          backgroundImage: (showWelcome || isFinished) ? "url(/bg.png)" : "none",
+          padding: (quizStarted && !isFinished) ? "0" : undefined,
+          margin: (quizStarted && !isFinished) ? "0" : undefined,
+          minHeight: (quizStarted && !isFinished) ? "100vh" : undefined
+        }}
       >
         <div className={styles.quizContainer}>
           {showWelcome && (
