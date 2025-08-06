@@ -1,14 +1,17 @@
 'use client';
 
+import { sampleTopics, Question } from "@/data/questions";
 import Navbar from '@/components/NavbarSheet';
 import SheetContent from '@/components/SheetContent';
-import { sampleTopics, type Question } from '@/data/questions';
 import POTD from '@/components/POTD';
 import { getPOTD } from '@/utils/getPOTD';
 import { useState, useEffect } from 'react';
 import TestimonialPrompt from '@/components/TestimonialPrompt';
 import ReportIssueButton from '@/components/ReportIssueButton';
 import ProgressSummary from '@/components/ProgressSummary';
+import { getRandomItem } from "@/utils/random";   
+
+const allQuestions = sampleTopics.flatMap((topic) => topic.questions);
 
 export default function SheetPage() {
   const [difficultyFilter, setDifficultyFilter] = useState('');
@@ -16,9 +19,14 @@ export default function SheetPage() {
   const [revisionFilter, setRevisionFilter] = useState('');
   const [platformFilter, setPlatformFilter] = useState('');
   const [companyFilter, setCompanyFilter] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
+
 
   const [streak, setStreak] = useState(0);
   const [potd, setPotd] = useState<Question | null>(null);
+  const [randomQuestion, setRandomQuestion] = useState<Question | null>(() =>
+  getRandomItem(allQuestions)
+);
 
   useEffect(() => {
     const potd = getPOTD();
@@ -33,7 +41,9 @@ export default function SheetPage() {
     setStreak(updatedStreak);
   };
 
-  const [searchTerm, setSearchTerm] = useState('');
+  const handleShuffle = () => {
+    setRandomQuestion(getRandomItem(allQuestions));
+  };
 
   const resetFilters = () => {
     setDifficultyFilter('');
@@ -205,3 +215,4 @@ export default function SheetPage() {
     </>
   );
 }
+
