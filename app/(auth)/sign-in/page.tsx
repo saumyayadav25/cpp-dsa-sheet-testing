@@ -5,11 +5,12 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import axios from "axios";
 import OtpInput from "@/components/verify-otp";
-import { toast } from "sonner";
 import { Loader2, Eye, EyeOff } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { GoogleLoginButton } from "@/components/OAuthLogin";
+import { ToastContainer, toast, Slide } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
 
 export default function SigninPage() {
   const [form, setForm] = useState({
@@ -39,12 +40,28 @@ export default function SigninPage() {
 
       if (res.status === 200) {
         setOtpOpen(true);
+ enhance/login-ui
         toast(res.data.message);
       } else {
         toast("❌ Wrong Password. Please try with correct password");
       }
+
+        toast.success(res.data.message, { //gives response Signin successfull otp sent
+          progressClassName: "bg-green-500",
+        });
+      }
+      else {
+        toast.error(" Incorrect email or password", {
+            progressClassName: "bg-red-500",
+          });
+        }    
+
+ main
     } catch (error) {
-      toast("❌ Wrong Password. Please try with correct password");
+      toast.error(" Please enter valid credentials", {
+          progressClassName: "bg-red-500",
+      });
+
       console.log(error);
     } finally {
       setLoading(false);
@@ -52,6 +69,7 @@ export default function SigninPage() {
   };
 
   const handleVerifyOtp = async (otp: string) => {
+ enhance/login-ui
     setLoading(true);
     try {
       const res = await axios.post("/api/signIn-verify-Otp", {
@@ -65,6 +83,34 @@ export default function SigninPage() {
         router.push("/");
       } else {
         toast("❌ OTP verification failed.");
+
+      setLoading(true);
+      try {
+        const res = await axios.post("/api/signIn-verify-Otp", {
+          email: form.email,
+          otp,
+        });
+  
+        if (res.status === 200) {
+          toast.success("Login successful", {
+            progressClassName: "bg-green-500",
+          });
+
+          setOtpOpen(false);
+          router.push("/");
+        } else {
+          toast.error(" OTP verification failed", {
+            progressClassName: "bg-red-500",
+          });
+
+        }
+      } catch (err: any) {
+        toast.error(" OTP verification failed", {
+            progressClassName: "bg-red-500",
+        });
+      } finally {
+        setLoading(false);
+ main
       }
     } catch (err: any) {
       toast("❌ OTP verification failed.");
@@ -74,6 +120,7 @@ export default function SigninPage() {
   };
 
   return (
+ enhance/login-ui
     <div 
       className={`w-full max-w-md mx-auto p-6 rounded-2xl shadow-lg space-y-6 animate-in fade-in slide-in-from-bottom-6 transition-all duration-500 ${
         isHovered ? 'bg-gradient-to-br from-blue-50 to-indigo-100 shadow-blue-200 shadow-xl' : 'bg-white'
@@ -94,6 +141,22 @@ export default function SigninPage() {
             ? 'text-blue-700 scale-105' 
             : 'text-gray-900 scale-100'
         }`}>
+
+    <div className="w-full max-w-md mx-auto bg-white p-6 rounded-2xl shadow-lg space-y-6 animate-in fade-in slide-in-from-bottom-6">
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        closeOnClick
+        pauseOnHover
+        transition={Slide}
+        toastClassName="relative flex p-4 items-center rounded-xl bg-white text-black shadow-md"
+        //bodyClassName="text-sm font-medium"
+        progressClassName="absolute bottom-0 left-0 h-1 rounded-b-xl bg-green-500"
+      />
+      <div className="text-center">
+        <h2 className="text-3xl font-bold text-gray-900 mb-1">
+    main
           Login to your account
         </h2>
         <p className={`text-sm transition-all duration-500 ${
