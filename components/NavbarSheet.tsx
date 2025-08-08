@@ -194,127 +194,96 @@ export default function NavbarSheet({ searchTerm, setSearchTerm, streak }: Navba
         </motion.div>
 
         {/* Desktop Links and Right Icons */}
-        <div className="hidden sm:flex items-center gap-6 text-foreground">
-          {/* Streak Icon */}
-          <motion.div
-            title={`Streak: ${streak} day${streak === 1 ? "" : "s"}`}
-            variants={streakVariants}
-            animate={streak > 0 ? "active" : "idle"}
-            transition={{
-              duration: 0.6,
-              repeat: streak > 0 ? Infinity : 0,
-              repeatDelay: 3,
-            }}
-            whileHover={{ scale: 1.1 }}
-            className="cursor-pointer"
-          >
-            <div
-              className={`flex items-center gap-2 px-3 py-2 rounded-xl transition-all duration-300 ${
-                streak > 0
-                  ? "text-orange-400"
-                  : "text-gray-400 opacity-50 hover:opacity-75"
-              }`}
-            >
-              <FaFire className="text-lg" />
-              {streak > 0 && (
-                <motion.span
-                  className="text-sm font-bold"
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ type: "spring", stiffness: 500, damping: 25 }}
-                >
-                  {streak}
-                </motion.span>
-              )}
-            </div>
-          </motion.div>
+        import { motion } from "framer-motion";
+import Link from "next/link"; // Or 'react-router-dom' if you're using React Router
+import { FaFire } from "react-icons/fa";
+import AuthButtons from "./AuthButtons"; // Adjust path if needed
 
-          {/* Navigation Links */}
-          {navLinks.map((link) => (
-            <motion.div
-              key={link.href}
-              whileHover={{ y: -2 }}
-              whileTap={{ y: 0 }}
-            >
-              <Link
-                href={link.href}
-                className={`relative px-3 py-2 rounded-lg transition-all duration-300 group hover:text-blue-400 hover:cursor-pointer`}
-              >
-                <span
-                  className={`relative z-10 ${
-                    link.isActive
-                      ? "text-blue-400"
-                      : "text-foreground hover:text-blue-400"
-                  }`}
-                >
-                  {link.label}
-                </span>
-                {/* Active indicator */}
-                {link.isActive && (
-                  <motion.div
-                    layoutId="activeTab"
-                    className="absolute inset-0 bg-blue-500/10 rounded-lg border border-blue-400/30"
-                    initial={false}
-                    transition={{ type: "spring", stiffness: 500, damping: 30 }}
-                  />
-                )}
-              </Link>
-            </motion.div>
-          ))}
+const NavbarSheet = ({ streak, navLinks }) => {
+  const streakVariants = {
+    active: { opacity: 1, scale: 1.1 },
+    idle: { opacity: 0.5, scale: 1 },
+  };
 
-          <AuthButtons />
-          <ModeToggle />
+  return (
+    <div className="hidden sm:flex flex-wrap items-center justify-end gap-4 text-white min-w-0">
+      {/* Streak Icon */}
+      <motion.div
+        title={`Streak: ${streak} day${streak === 1 ? "" : "s"}`}
+        variants={streakVariants}
+        animate={streak > 0 ? "active" : "idle"}
+        transition={{
+          duration: 0.6,
+          repeat: streak > 0 ? Infinity : 0,
+          repeatDelay: 3,
+        }}
+        whileHover={{ scale: 1.1 }}
+        className="cursor-pointer shrink-0"
+      >
+        <div
+          className={`flex items-center gap-2 px-3 py-2 rounded-xl transition-all duration-300 ${
+            streak > 0
+              ? "text-orange-400 bg-orange-500/10 shadow-lg shadow-orange-500/20"
+              : "text-gray-400 opacity-50 hover:opacity-75"
+          }`}
+        >
+          <FaFire className="text-lg" />
+          {streak > 0 && (
+            <motion.span
+              className="text-sm font-bold"
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ type: "spring", stiffness: 500, damping: 25 }}
+            >
+              {streak}
+            </motion.span>
+          )}
         </div>
+      </motion.div>
 
-        {/* Mobile Right Section */}
-        <div className="sm:hidden flex items-center gap-3 text-foreground">
-          <motion.button
-            onClick={toggleMobileSearch}
-            className="p-2 rounded-xl hover:bg-white/10 transition-colors"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            aria-label="Toggle search"
+      {/* Navigation Links */}
+      <div className="flex flex-wrap items-center gap-2 md:gap-4">
+        {navLinks.map((link) => (
+          <motion.div
+            key={link.href}
+            whileHover={{ y: -2 }}
+            whileTap={{ y: 0 }}
+            className="shrink-0"
           >
-            <motion.div
-              animate={{ rotate: showMobileSearch ? 90 : 0 }}
-              transition={{ duration: 0.2 }}
+            <Link
+              href={link.href}
+              className="relative px-3 py-2 rounded-lg transition-all duration-300 group hover:text-blue-400 hover:cursor-pointer hover:bg-white/5"
             >
-              {showMobileSearch ? <FiX className="text-xl" /> : <FiSearch className="text-xl" />}
-            </motion.div>
-          </motion.button>
-
-          <motion.button
-            onClick={toggleMobileMenu}
-            className="p-2 rounded-xl hover:bg-white/10 transition-colors"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            aria-label="Toggle menu"
-          >
-            <HamburgerIcon isOpen={isMobileMenuOpen} />
-          </motion.button>
-
-          <div className="flex items-center gap-3">
-            {/* Mobile Streak Icon */}
-            <motion.div
-              title={`Streak: ${streak} day${streak === 1 ? "" : "s"}`}
-              whileHover={{ scale: 1.1 }}
-              className="cursor-pointer"
-            >
-              <div
-                className={`flex items-center gap-1 ${
-                  streak > 0 ? "text-orange-400" : "text-gray-400 opacity-50"
+              <span
+                className={`relative z-10 ${
+                  link.isActive ? "text-blue-400" : "text-white hover:text-blue-400"
                 }`}
               >
-                <FaFire className="text-lg" />
-                {streak > 0 && <span className="text-sm font-bold">{streak}</span>}
-              </div>
-            </motion.div>
-
-            <ModeToggle />
-            <AuthButtons />
-          </div>
-        </div>
+                {link.label}
+              </span>
+              {link.isActive && (
+                <motion.div
+                  layoutId="activeTab"
+                  className="absolute inset-0 bg-blue-500/10 rounded-lg border border-blue-400/30"
+                  initial={false}
+                  transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                />
+              )}
+            </Link>
+          </motion.div>
+        ))}
       </div>
+
+      {/* Auth Buttons */}
+      <div className="shrink-0">
+        <AuthButtons />
+      </div>
+    </div>
+  );
+};
+
+
+
 
       {/* Mobile Search Bar */}
       <AnimatePresence>
