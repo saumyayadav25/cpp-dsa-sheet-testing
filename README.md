@@ -136,8 +136,8 @@ Check out this blog to kickstart your open-source journey with GSSoC (no experie
 If you have any doubts or questions regarding the issues or pull requests, feel free to reach out to the mentors:
 
 👩‍💻 **Mentors**  
-- [Yash](https://github.com/yashjscoder)
-- [Sumit Sagar](https://github.com/mostpalon3)  
+- [Yash](https://github.com/yashjscoder) · [LinkedIn](https://www.linkedin.com/in/yash-vishnoi-22456a291/)
+- [Sumit Sagar](https://github.com/mostpalon3) · [LinkedIn](https://www.linkedin.com/in/sumit-sagar-8a8b39286/)
 
 We’re here to guide you — don’t hesitate to ask in the Discord group or comment directly on the GitHub issue!
 

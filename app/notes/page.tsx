@@ -88,6 +88,18 @@ export default function NotesPage() {
               </span>{" "}
               to help you revise concepts quickly and effectively.
             </motion.p>
+            <motion.p 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2 }}
+            className="text-sm text-gray-300 mb-8">
+              If you've purchased notes, I’d love to hear your feedback! <a
+                href="https://forms.gle/57g5XWCqjXAng8mK9"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline hover:text-blue-100"
+              >Fill out this quick form</a> 🙌
+            </motion.p>
           </div>
 
           <motion.div

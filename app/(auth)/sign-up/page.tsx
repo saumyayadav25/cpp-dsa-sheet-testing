@@ -4,12 +4,13 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import axios from "axios";
-import { toast } from "sonner";
 import { Loader2, Eye, EyeOff } from "lucide-react";
 import OtpInput from "@/components/verify-otp";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { GoogleLoginButton } from "@/components/OAuthLogin";
+import { ToastContainer, toast, Slide } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
 
 export default function SignupPage() {
   const [form, setForm] = useState({
@@ -46,7 +47,9 @@ export default function SignupPage() {
     const { fullName, email, password, confirmPassword } = form;
 
     if (!fullName || !email || !password || !confirmPassword) {
-      toast("All fields are required.");
+      toast.error("All fields are required.", {
+        progressClassName: "bg-red-500",
+      });
       return;
     }
 
@@ -75,11 +78,18 @@ export default function SignupPage() {
 
       if (res.status === 200) {
         setOtpOpen(true);
+        toast.success("OTP sent successfully!", {
+          progressClassName: "bg-green-500",
+        });
       } else {
-        toast(res.data?.message || "❌ Signup failed. Please try again");
+        toast.error(res.data?.message || "Signup failed. Please try again", {
+          progressClassName: "bg-red-500",
+        });
       }
     } catch (err: any) {
-      toast("❌ Signup failed. Please try again");
+      toast.error("Signup failed. Please try again", {
+          progressClassName: "bg-red-500",
+      });
       console.log(err);
     } finally {
       setLoading(false);
@@ -92,17 +102,24 @@ export default function SignupPage() {
       const res = await axios.post("/api/verify-otp", {
         email: form.email,
         otp,
-      });
+      }); 
 
-      if (res.status === 200) {
-        toast("✅ Account verified successfully!");
+      if (res.status === 200) {      
+        toast.success("Account verified successfully!", {
+          progressClassName: "bg-green-500",
+        });
         setOtpOpen(false);
-        router.push("/sign-in");
+        //  Navigate to dashboard or home directly
+        router.push("/");
       } else {
-        toast("❌ OTP verification failed.");
+        toast.error("OTP verification failed.", {
+          progressClassName: "bg-red-500",
+        });
       }
     } catch (err: any) {
-      toast("❌ OTP verification failed.");
+      toast.error("OTP verification failed.", {
+          progressClassName: "bg-red-500",
+        });
     } finally {
       setLoading(false);
     }
@@ -110,6 +127,17 @@ export default function SignupPage() {
 
   return (
     <div className="w-full max-w-md mx-auto bg-white p-6 rounded-2xl shadow-lg space-y-6 animate-in fade-in slide-in-from-bottom-6">
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        closeOnClick
+        pauseOnHover
+        transition={Slide}
+        toastClassName="relative flex p-4 items-center rounded-xl bg-white text-black shadow-md"
+        //bodyClassName="text-sm font-medium"
+        progressClassName="absolute bottom-0 left-0 h-1 rounded-b-xl bg-green-500"
+      />
       <div className="text-center">
         <h2 className="text-3xl font-bold text-gray-900">
           Create your account
@@ -219,17 +247,16 @@ export default function SignupPage() {
         </div>
 
         <Button
-          onClick={handleSubmit}
-          disabled={loading}
-          className="w-full mt-2 text-white rounded-full bg-gradient-to-br from-slate-900 to-blue-600 hover:from-blue-600 hover:to-slate-900"
-        
-        >
-          {loading ? (
-            <Loader2 className="animate-spin mr-2 h-4 w-4" />
-          ) : (
-            "Sign Up"
-          )}
-        </Button>
+  onClick={handleSubmit}
+  disabled={loading}
+  className="w-full mt-2 rounded-full bg-blue-700 text-white hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+>
+  {loading ? (
+    <Loader2 className="animate-spin mr-2 h-4 w-4" />
+  ) : (
+    "Sign Up" // Or "Sign In"
+  )}
+</Button>
       </div>
 
       <div className="text-center font-bold text-blue-500">OR</div>

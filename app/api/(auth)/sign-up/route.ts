@@ -4,6 +4,8 @@ import { generateOTP } from "@/lib/utils";
 import { connect } from "@/db/config";
 import { sendOtpEmail } from "@/lib/sendOTP";
 import bcrypt from "bcryptjs";
+import { cookies } from "next/headers";
+import jwt from "jsonwebtoken";
 
 export async function POST(req: Request) {
   try {
@@ -32,7 +34,7 @@ export async function POST(req: Request) {
     // Generate OTP (6-digit)
     const otp = generateOTP();
     const otpExpiry = new Date(Date.now() + 10 * 60 * 1000); 
-
+    
     // Save user with unverified status
     const user = await User.create({
       full_name : fullName,
@@ -46,6 +48,19 @@ export async function POST(req: Request) {
     await user.save();
 
     await sendOtpEmail(email, otp);
+
+    //After a user sign up for first time no need to login again 
+    // Generate session token (JWT)  
+    const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET!, { expiresIn: "7d" });
+
+    // Set cookie
+    (await cookies()).set("session", token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "strict",
+      maxAge: 60 * 60 * 24 * 7,
+      path: "/",
+    });
 
     return NextResponse.json({ success: true, message: "Signup successful. OTP sent to email." }, { status: 200 });
 
