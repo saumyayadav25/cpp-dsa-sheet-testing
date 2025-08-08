@@ -9,6 +9,7 @@ import { useState, useEffect } from 'react';
 import TestimonialPrompt from '@/components/TestimonialPrompt';
 import ReportIssueButton from '@/components/ReportIssueButton';
 import ProgressSummary from '@/components/ProgressSummary';
+import ErrorBoundary from '@/components/ErrorBoundary';
 
 export default function SheetPage() {
   const [difficultyFilter, setDifficultyFilter] = useState('');
@@ -24,13 +25,19 @@ export default function SheetPage() {
     const potd = getPOTD();
     setPotd(potd);
 
-    const savedStreak = parseInt(localStorage.getItem('potd_streak') || '0');
-    setStreak(savedStreak);
+    // Safe localStorage access - prevent SSR crash
+    if (typeof window !== 'undefined') {
+      const savedStreak = parseInt(localStorage.getItem('potd_streak') || '0');
+      setStreak(savedStreak);
+    }
   }, []);
 
   const updateStreak = () => {
-    const updatedStreak = parseInt(localStorage.getItem('potd_streak') || '0');
-    setStreak(updatedStreak);
+    // Safe localStorage access - prevent SSR crash
+    if (typeof window !== 'undefined') {
+      const updatedStreak = parseInt(localStorage.getItem('potd_streak') || '0');
+      setStreak(updatedStreak);
+    }
   };
 
   const [searchTerm, setSearchTerm] = useState('');
@@ -44,8 +51,9 @@ export default function SheetPage() {
   };
 
   return (
-    <>
-      <Navbar searchTerm={searchTerm} setSearchTerm={setSearchTerm} streak={streak} />
+    <ErrorBoundary>
+      <>
+        <Navbar searchTerm={searchTerm} setSearchTerm={setSearchTerm} streak={streak} />
       <main className="min-h-screen bg-white dark:bg-background text-gray-900 dark:text-white px-4 md:px-12 py-24 transition-colors duration-300">
         <ReportIssueButton />
 
@@ -201,7 +209,8 @@ export default function SheetPage() {
         />
       </main>
 
-      <TestimonialPrompt />
-    </>
+        <TestimonialPrompt />
+      </>
+    </ErrorBoundary>
   );
 }
