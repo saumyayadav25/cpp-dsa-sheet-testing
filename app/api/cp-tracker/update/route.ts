@@ -66,9 +66,6 @@ export async function POST(req: Request) {
           stats,
           leetcodeUsername,
           codeforcesHandle,
-          gfgUsername,
-          hackerrankUsername,
-          codechefUsername,
           hackerearthUsername,
         },
         { upsert: true, new: true }
