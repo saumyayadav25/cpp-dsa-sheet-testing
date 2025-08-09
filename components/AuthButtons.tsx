@@ -27,6 +27,11 @@ export default function AuthButtons() {
 
   const menuItems = [
     {
+      label: "Track Your Cp",
+      href: "/cp-tracker",
+      icon: "🎯",
+    },
+    {
       label: "Star on GitHub",
       href: "https://github.com/saumyayadav25/DSA-Supreme-3.0",
       icon: "⭐",
@@ -45,7 +50,7 @@ export default function AuthButtons() {
       label: "Support the project",
       href: "https://www.buymeacoffee.com/saumyayadav",
       icon: "🔥",
-    },
+    },    
   ];
 
   // Check if user is logged in
@@ -95,6 +100,11 @@ export default function AuthButtons() {
       href: "/contributors",
       label: "Contributors",
       isActive: pathname === "/contributors",
+    },
+    {
+      href: "/cp-tracker",
+      label: "track Your CP",
+      isActive: pathname === "/cp-tracker",
     },
   ];
   const handleLogout = () => {

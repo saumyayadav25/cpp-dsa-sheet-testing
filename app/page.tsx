@@ -580,6 +580,12 @@ export default function Home() {
               >
                 🔗 Visit Original DSAMate
               </Link>
+              <Link
+                href="/cp-tracker"
+                className="bg-gradient-to-r from-indigo-600 to-purple-700 hover:from-indigo-700 hover:to-purple-800 text-white font-semibold py-3 px-6 sm:px-8 rounded-md transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 w-full sm:w-auto text-sm sm:text-base"
+               >
+                🎯 Track Your CP
+              </Link>
             </motion.div>
           </motion.div>
         </div>
