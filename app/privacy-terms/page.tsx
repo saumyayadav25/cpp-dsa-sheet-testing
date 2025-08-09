@@ -6,8 +6,10 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import Navbar from '@/components/Navbar';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
 
-export default function PrivacyTermsPage() {
+// Create a separate component for the content that uses useSearchParams
+function PrivacyTermsContent() {
   const [streak, setStreak] = useState<number>(0);
   const [activeTab, setActiveTab] = useState<'privacy' | 'terms'>('privacy');
   const router = useRouter();
@@ -312,5 +314,23 @@ export default function PrivacyTermsPage() {
         </section>
       </main>
     </>
+  );
+}
+
+// Loading component for Suspense fallback
+function Loading() {
+  return (
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-500"></div>
+    </div>
+  );
+}
+
+// Main component wrapped with Suspense
+export default function PrivacyTermsPage() {
+  return (
+    <Suspense fallback={<Loading />}>
+      <PrivacyTermsContent />
+    </Suspense>
   );
 }
