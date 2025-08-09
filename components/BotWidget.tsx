@@ -59,18 +59,52 @@ export default function BotWidget() {
       {open && (
         <div className="mt-2 w-96 bg-white p-4 rounded-xl shadow-md border max-h-[70vh] overflow-y-auto">
           <div className="space-y-2">
-            {messages.map((msg, i) => (
-              <div
-                key={i}
-                className={`p-2 rounded text-black text-sm whitespace-pre-line ${
-                  msg.role === "user"
-                    ? "bg-blue-100 text-right"
-                    : "bg-gray-100 text-left"
-                }`}
-              >
-                {msg.content}
-              </div>
-            ))}
+            {messages.map((msg, i) => {
+  let contentElement;
+
+  // Try to parse JSON
+  try {
+    const data = JSON.parse(msg.content);
+    if (Array.isArray(data) && data[0]?.title && data[0]?.description) {
+      // Render as question cards
+      contentElement = (
+        <div className="space-y-3">
+          {data.map((q, idx) => (
+            <div
+              key={idx}
+              className="border rounded-lg p-3 bg-white text-black shadow-sm"
+            >
+              <h3 className="font-bold text-blue-600">{q.title}</h3>
+              <p className="text-sm mt-1">{q.description}</p>
+              <p className="text-xs mt-2 text-gray-500">
+                <b>Topic:</b> {q.topic} | <b>Level:</b> {q.level}
+              </p>
+            </div>
+          ))}
+        </div>
+      );
+    } else {
+      contentElement = <span>{msg.content}</span>;
+    }
+  } catch {
+    contentElement = <span>{msg.content}</span>;
+  }
+
+  return (
+    <div
+      key={i}
+      className={`p-2 rounded text-black text-sm whitespace-pre-line ${
+        msg.role === "user"
+          ? "bg-blue-100 text-right"
+          : "bg-gray-100 text-left"
+      }`}
+    >
+      {contentElement}
+    </div>
+  );
+})}
+
+
           </div>
 
           <div className="flex items-center gap-2 mt-4">
