@@ -23,12 +23,16 @@ export async function GET(_req: Request, context: Context) {
 
     if (!badgeDoc) {
       return NextResponse.json(
-        { message: "No badges found for this user", badges: [] },
+        { message: "No badges found for this user", badges: [], updatedAt: null },
         { status: 404 }
       );
     }
 
-    return NextResponse.json({ badges: badgeDoc.badges });
+    // Return badges and updatedAt timestamp
+    return NextResponse.json({
+      badges: badgeDoc.badges,
+      updatedAt: badgeDoc.updatedAt, // include this
+    });
   } catch (error) {
     console.error("Error fetching badges:", error);
     return NextResponse.json(
