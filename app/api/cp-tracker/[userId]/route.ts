@@ -7,15 +7,15 @@ import { fetchCodeforcesStats } from "@/lib/cp/fetchCodeforces";
 import { fetchHackerEarthStats } from "@/lib/cp/fetchHackerEarth";
 // future imports for more platforms
 
-// ✅ Correct GET signature for Next.js App Router
+// Correct GET signature for Next.js App Router
 export async function GET(
-  request: NextRequest,
-  { params }: { params: { userId: string } }
+  _req: Request,
+  context: any  //loosened type 
 ) {
   try {
     await connect();
 
-    const { userId } = params;
+    const { userId } = context.params;
     const cpStats = await CpStats.findOne({ userId });
 
     if (!cpStats) {
@@ -35,15 +35,15 @@ export async function GET(
   }
 }
 
-// ✅ Correct POST signature for Next.js App Router
+//  Correct POST signature for Next.js App Router
 export async function POST(
-  request: NextRequest,
-  { params }: { params: { userId: string } }
+  request: Request,
+  context: any
 ) {
   try {
     await connect();
 
-    const { userId } = params;
+    const { userId } = context.params;
     const body = await request.json();
 
     const updatedUser = await User.findByIdAndUpdate(
