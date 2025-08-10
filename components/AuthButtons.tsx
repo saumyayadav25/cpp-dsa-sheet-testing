@@ -220,7 +220,7 @@ export default function AuthButtons() {
       {!isLoggedIn ? (
         <motion.a
           href="/sign-in"
-          className="px-4 w-20 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-sm font-semibold rounded-lg hover:from-blue-700 hover:to-purple-700"
+          className="px-4 w-20 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-sm font-semibold rounded-lg hover:from-blue-700 hover:to-purple-700 whitespace-nowrap"
         >
           Sign In
         </motion.a>
