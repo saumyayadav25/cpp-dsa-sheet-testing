@@ -27,5 +27,5 @@ The logo features a **minimal light bulb** containing `{ / }` code brackets, sym
 
 ---
 
-**Author:** Harshit Sharma
+**Author:** Harshit Sharma<br>
 **License:** This logo is an original design for the DSAMate open-source project and may not be reused without permission.
