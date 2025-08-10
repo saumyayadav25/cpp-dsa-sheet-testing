@@ -12,6 +12,14 @@ import {
 } from "react-icons/si";
 import { sampleTopics, type Question } from "@/data/questions";
 import { Plus, StickyNote, X } from "lucide-react";
+import axios from "axios";
+
+interface User {
+  _id: string;
+  full_name: string;
+  email: string;
+  avatar: string;
+}
 
 type SheetContentProps = {
   difficultyFilter: string;
@@ -33,35 +41,152 @@ export default function SheetContent({
   const [openTopics, setOpenTopics] = useState<number[]>([]);
   const [progress, setProgress] = useState<{
     [id: string]: {
-      isSolved: boolean;
-      isMarkedForRevision: boolean;
+      isSolved?: boolean;
+      isMarkedForRevision?: boolean;
       note?: string;
+      solvedAt?: string;
     };
   }>({});
   const [openNoteId, setOpenNoteId] = useState<string | null>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
 
-  // Load & persist progress
+  // Completed topics persisted (store topic ids or names — using topic.id here)
+  const [completedTopics, setCompletedTopics] = useState<Set<number>>(() => {
+    try {
+      const raw = localStorage.getItem("dsa-completed-topics");
+      if (raw) {
+        return new Set<number>(JSON.parse(raw));
+      }
+    } catch (e) {
+      // ignore
+    }
+    return new Set<number>();
+  });
+
+
+  // Auth check (runs once)
   useEffect(() => {
-    const stored = localStorage.getItem("dsa-progress");
-    if (stored) setProgress(JSON.parse(stored));
+    const checkAuth = async () => {
+      try {
+        const res = await axios.get("/api/check-auth");
+        if (res.status === 200) {
+          setIsLoggedIn(true);
+          setUser(res.data?.user);
+        }
+      } catch (err) {
+        console.error("Auth check failed:", err);
+      }
+    };
+    checkAuth();
+  }, []);
+
+  // Load & persist per-question progress (local cache)
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("dsa-progress");
+      if (stored) setProgress(JSON.parse(stored));
+    } catch (e) {
+      console.error("Failed to parse dsa-progress from localStorage", e);
+    }
   }, []);
   useEffect(() => {
-    localStorage.setItem("dsa-progress", JSON.stringify(progress));
+    try {
+      localStorage.setItem("dsa-progress", JSON.stringify(progress));
+    } catch (e) {
+      console.error("Failed to persist dsa-progress", e);
+    }
   }, [progress]);
 
-  // Toggle solved/marked state
-  const toggleCheckbox = (
+  // Persist completedTopics set
+  useEffect(() => {
+    try {
+      localStorage.setItem(
+        "dsa-completed-topics",
+        JSON.stringify(Array.from(completedTopics))
+      );
+    } catch (e) {
+      console.error("Failed to persist completed topics", e);
+    }
+  }, [completedTopics]);
+
+  // Helper: call progress update for a single question (or for topic completion)
+  async function sendProgressUpdate(payload: {
+    questionDifficulty?: string | null;
+    topicCompleted?: string | null;
+  }) {
+    try {
+      if (!isLoggedIn || !user) return null;
+
+      const body = {
+        userId: user._id,
+        questionDifficulty: payload.questionDifficulty ?? null,
+        topicCompleted: payload.topicCompleted ?? null,
+      };
+
+      // Update progress in backend
+      const res = await axios.post("/api/progress/update", body);
+
+      // ✅ If a topic was completed, also award the badge
+      if (payload.topicCompleted) {
+        try {
+          const badgeRes = await axios.post("/api/badges", {
+            userId: user._id,
+            topicCompleted: payload.topicCompleted
+          });
+          console.log("Badge awarded:", badgeRes.data);
+        } catch (badgeErr) {
+          console.error("Error awarding badge:", badgeErr);
+        }
+      }
+
+      return res.data;
+    } catch (err) {
+      console.error("Error sending progress update:", err);
+      return null;
+    }
+  }
+
+
+  // Toggle checkbox (solved/revision)
+  const toggleCheckbox = async (
     id: string,
-    field: "isSolved" | "isMarkedForRevision"
+    field: "isSolved" | "isMarkedForRevision",
+    questionDifficulty?: string,
+    topicCompleted?: string
   ) => {
+    // Read current value from latest state to avoid stale reads
+    const currentFieldValue = !!(progress[id]?.[field]);
+
+    // Optimistic UI update
     setProgress((prev) => {
-      const current = prev[id]?.[field] || false;
-      const updated = { ...prev[id], [field]: !current };
-      if (field === "isSolved" && !current) {
-        (updated as any).solvedAt = new Date().toISOString();
+      const updated = { ...(prev[id] || {}) };
+      updated[field] = !currentFieldValue;
+      if (field === "isSolved" && !currentFieldValue) {
+        updated.solvedAt = new Date().toISOString();
       }
       return { ...prev, [id]: updated };
     });
+
+    // Only fire backend update when marking solved (not when unchecking)
+    if (field === "isSolved" && !currentFieldValue) {
+      try {
+        // If the caller already passed topicCompleted (meaning they determined this question completed the topic),
+        // it's fine to pass that through; otherwise we'll detect topic completion centrally below.
+        await sendProgressUpdate({
+          questionDifficulty: questionDifficulty ?? null,
+          topicCompleted: topicCompleted ?? null,
+        });
+
+        // Play success sound
+        const audio = new Audio("/sounds/done.mp3");
+        audio.play().catch((err) =>
+          console.log("Audio play blocked or failed", err)
+        );
+      } catch (err) {
+        console.error("Error updating progress for solved question:", err);
+      }
+    }
   };
 
   // Expand/collapse topic
@@ -77,7 +202,67 @@ export default function SheetContent({
     hard: "text-red-600 dark:text-red-500",
   };
 
-  // 1️⃣ Compute total matches across all topics
+  //
+  // CENTRAL TOPIC-COMPLETION DETECTION
+  //
+  // Whenever `progress` or `user` changes, compute which topics are now completed.
+  // For any newly completed topic that we haven't previously recorded in completedTopics,
+  // call the backend once (via /api/progress/update) with topicCompleted to update server-side progress & trigger badge awarding.
+  //
+  useEffect(() => {
+    // Build list/set of topic ids that are completed according to current progress
+    const currentlyCompleted = new Set<number>();
+
+    sampleTopics.forEach((topic) => {
+      const totalQ = topic.questions.length;
+      const solvedQ = topic.questions.filter((q) => {
+        const key = `${topic.id}-${q.id}`;
+        return (progress[key]?.isSolved ?? q.isSolved) === true;
+      }).length;
+      if (solvedQ === totalQ) {
+        currentlyCompleted.add(topic.id);
+      }
+    });
+
+    // Find new completions = currentlyCompleted - completedTopics
+    const newCompletions: number[] = [];
+    currentlyCompleted.forEach((id) => {
+      if (!completedTopics.has(id)) newCompletions.push(id);
+    });
+
+    if (newCompletions.length === 0) return;
+
+    // For each new completion: call backend once (if logged in) and add to completedTopics set
+    (async () => {
+      for (const topicId of newCompletions) {
+        const topic = sampleTopics.find((t) => t.id === topicId);
+        if (!topic) continue;
+
+        try {
+          if (isLoggedIn && user) {
+            // Pass topic name so backend can push into progress.topicsCompleted and award badges
+            await sendProgressUpdate({
+              questionDifficulty: null,
+              topicCompleted: topic.name,
+            });
+          } else {
+            // Not logged in: just persist locally (we avoid calling server)
+            console.log(
+              `Guest completed topic "${topic.name}" — persisting locally only`
+            );
+          }
+
+          // Mark as handled locally so we won't re-send later
+          setCompletedTopics((prev) => new Set(prev).add(topicId));
+        } catch (err) {
+          console.error("Error notifying server about topic completion", err);
+          // If error, don't mark as completedTopics so we can retry later
+        }
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [progress, isLoggedIn, user]); // note: completedTopics used inside setter, persisted separately
+
   const totalFiltered = sampleTopics.reduce((sum, topic) => {
     return (
       sum +
@@ -168,9 +353,8 @@ export default function SheetContent({
                 {completed ? "🎉 Completed" : `✅ ${solvedQ}/${totalQ} solved`}
               </span>
               <svg
-                className={`h-5 w-5 transition-transform ${
-                  openTopics.includes(topic.id) ? "rotate-180" : ""
-                }`}
+                className={`h-5 w-5 transition-transform ${openTopics.includes(topic.id) ? "rotate-180" : ""
+                  }`}
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
@@ -249,9 +433,18 @@ export default function SheetContent({
                             <input
                               type="checkbox"
                               checked={isSolved}
-                              onChange={() => toggleCheckbox(key, "isSolved")}
+                              onChange={() =>
+                                toggleCheckbox(
+                                  key,
+                                  "isSolved",
+                                  q.difficulty,
+                                  // Pass topicCompleted only when this change likely completes the topic.
+                                  // We still have central detection so this is optional.
+                                  completed ? topic.name : undefined
+                                )
+                              }
                               className="accent-green-500 w-4 h-4"
-                              aria-label={`Mark '${q.title}' solved`}
+                              aria-label={`Mark '${q.title}' as solved`}
                             />
                           </td>
                           <td className="py-2 px-3 text-center">

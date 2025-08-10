@@ -21,9 +21,24 @@ interface User {
 export default function AuthButtons() {
   const pathname = usePathname();
   const [showDropdown, setShowDropdown] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState<User | null>(null);
-  const dropdownRef = useRef<HTMLDivElement>(null);
+
+
+  // Check if user is logged in
+  useEffect(() => {
+    const checkAuth = async () => {
+      const res = await axios.get("/api/check-auth");
+      if (res.status === 200) {
+        setIsLoggedIn(true);
+        setUser(res.data?.user);
+      }
+    };
+
+    checkAuth();
+  }, [isLoggedIn]);
 
   const menuItems = [
     {
@@ -52,20 +67,6 @@ export default function AuthButtons() {
       icon: "🔥",
     },    
   ];
-
-  // Check if user is logged in
-  useEffect(() => {
-    const checkAuth = async () => {
-      const res = await axios.get("/api/check-auth");
-      if (res.status === 200) {
-        setIsLoggedIn(true);
-        setUser(res.data?.user);
-      }
-    };
-
-    checkAuth();
-  }, [isLoggedIn]);
-
   const handleLogOut = async () => {
     const res = await axios.post("/api/logout");
 
@@ -226,23 +227,25 @@ export default function AuthButtons() {
           Sign In
         </motion.a>
       ) : (
-        <motion.a
-          href="/profile"
-          className="flex items-center gap-2 px-3 py-2 bg-white/10 backdrop-blur-sm rounded-lg hover:bg-white/20 transition-all duration-200 text-white text-sm font-medium border border-white/10"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          <div className="w-6 h-6 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-xs font-bold">
-            {user?.avatar ? (
-              <Image src={user.avatar} alt="U" width={25} height={25} />
-            ) : (
-              `${user?.full_name?.split(" ")[0]?.charAt(0) ?? "U"}${
-                user?.full_name?.split(" ")[1]?.charAt(0) ?? ""
-              }`.toUpperCase()
-            )}
-          </div>
-          <span className="max-w-20 truncate">{user?.full_name}</span>
-        </motion.a>
+<motion.a
+href={user ? `/profile/${encodeURIComponent(user._id)}` : "#"}
+        
+  className="flex items-center gap-2 px-3 py-2 bg-white/10 backdrop-blur-sm rounded-lg hover:bg-white/20 transition-all duration-200 text-white text-sm font-medium border border-white/10"
+  whileHover={{ scale: 1.05 }}
+  whileTap={{ scale: 0.95 }}
+>
+  <div className="w-6 h-6 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-xs font-bold">
+    {user?.avatar ? (
+      <Image src={user.avatar} alt="U" width={25} height={25} />
+    ) : (
+      `${user?.full_name?.split(" ")[0]?.charAt(0) ?? "U"}${
+        user?.full_name?.split(" ")[1]?.charAt(0) ?? ""
+      }`.toUpperCase()
+    )}
+  </div>
+  <span className="max-w-20 truncate">{user?.full_name}</span>
+</motion.a>
+
       )}
 
       {/* Hamburger Menu */}
@@ -455,7 +458,7 @@ export default function AuthButtons() {
                         transition={{ delay: 0.7, duration: 0.5 }}
                       />
 
-                      <motion.button
+                      <motion.div
                         onClick={handleLogout}
                         variants={itemVariants}
                         className="group flex items-center gap-3 px-4 py-3 text-sm text-red-300 rounded-xl transition-all duration-200 hover:bg-red-500/10 hover:text-red-200 relative overflow-hidden w-full"
@@ -488,7 +491,7 @@ export default function AuthButtons() {
                         >
                           <LogOut /> LogOut
                         </Button>
-                      </motion.button>
+                      </motion.div>
                     </>
                   )}
 
