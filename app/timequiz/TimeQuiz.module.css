@@ -243,22 +243,6 @@
   color: hsl(var(--foreground));
 }
 
-.restartButton {
-  margin-top: 1rem;
-  padding: 0.75rem 1.5rem;
-  font-weight: bold;
-  background-color: #2563eb;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.restartButton:hover {
-  background-color: #1d4ed8;
-}
-
 .welcomeScreen {
   max-width: 600px;
   width: 100%;
