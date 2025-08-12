@@ -53,7 +53,6 @@ export default function NavbarSheet({ searchTerm, setSearchTerm, streak }: Navba
   const searchInputRef = useRef<HTMLInputElement>(null);
   const pathname = usePathname();
 
-  // Toggle functions with mutual exclusion
   const toggleMobileSearch = () => {
     if (isMobileMenuOpen) setIsMobileMenuOpen(false);
     setShowMobileSearch((v) => !v);
@@ -193,97 +192,81 @@ export default function NavbarSheet({ searchTerm, setSearchTerm, streak }: Navba
           </div>
         </motion.div>
 
-        {/* Desktop Links and Right Icons */}
-        import { motion } from "framer-motion";
-import Link from "next/link"; // Or 'react-router-dom' if you're using React Router
-import { FaFire } from "react-icons/fa";
-import AuthButtons from "./AuthButtons"; // Adjust path if needed
-
-const NavbarSheet = ({ streak, navLinks }) => {
-  const streakVariants = {
-    active: { opacity: 1, scale: 1.1 },
-    idle: { opacity: 0.5, scale: 1 },
-  };
-
-  return (
-    <div className="hidden sm:flex flex-wrap items-center justify-end gap-4 text-white min-w-0">
-      {/* Streak Icon */}
-      <motion.div
-        title={`Streak: ${streak} day${streak === 1 ? "" : "s"}`}
-        variants={streakVariants}
-        animate={streak > 0 ? "active" : "idle"}
-        transition={{
-          duration: 0.6,
-          repeat: streak > 0 ? Infinity : 0,
-          repeatDelay: 3,
-        }}
-        whileHover={{ scale: 1.1 }}
-        className="cursor-pointer shrink-0"
-      >
-        <div
-          className={`flex items-center gap-2 px-3 py-2 rounded-xl transition-all duration-300 ${
-            streak > 0
-              ? "text-orange-400 bg-orange-500/10 shadow-lg shadow-orange-500/20"
-              : "text-gray-400 opacity-50 hover:opacity-75"
-          }`}
-        >
-          <FaFire className="text-lg" />
-          {streak > 0 && (
-            <motion.span
-              className="text-sm font-bold"
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ type: "spring", stiffness: 500, damping: 25 }}
-            >
-              {streak}
-            </motion.span>
-          )}
-        </div>
-      </motion.div>
-
-      {/* Navigation Links */}
-      <div className="flex flex-wrap items-center gap-2 md:gap-4">
-        {navLinks.map((link) => (
+        {/* Desktop Links + Streak + Auth */}
+        <div className="hidden sm:flex flex-wrap items-center justify-end gap-4 text-white min-w-0">
+          {/* Streak Icon */}
           <motion.div
-            key={link.href}
-            whileHover={{ y: -2 }}
-            whileTap={{ y: 0 }}
-            className="shrink-0"
+            title={`Streak: ${streak} day${streak === 1 ? "" : "s"}`}
+            variants={streakVariants}
+            animate={streak > 0 ? "active" : "idle"}
+            transition={{
+              duration: 0.6,
+              repeat: streak > 0 ? Infinity : 0,
+              repeatDelay: 3,
+            }}
+            whileHover={{ scale: 1.1 }}
+            className="cursor-pointer shrink-0"
           >
-            <Link
-              href={link.href}
-              className="relative px-3 py-2 rounded-lg transition-all duration-300 group hover:text-blue-400 hover:cursor-pointer hover:bg-white/5"
+            <div
+              className={`flex items-center gap-2 px-3 py-2 rounded-xl transition-all duration-300 ${
+                streak > 0
+                  ? "text-orange-400 bg-orange-500/10 shadow-lg shadow-orange-500/20"
+                  : "text-gray-400 opacity-50 hover:opacity-75"
+              }`}
             >
-              <span
-                className={`relative z-10 ${
-                  link.isActive ? "text-blue-400" : "text-white hover:text-blue-400"
-                }`}
-              >
-                {link.label}
-              </span>
-              {link.isActive && (
-                <motion.div
-                  layoutId="activeTab"
-                  className="absolute inset-0 bg-blue-500/10 rounded-lg border border-blue-400/30"
-                  initial={false}
-                  transition={{ type: "spring", stiffness: 500, damping: 30 }}
-                />
+              <FaFire className="text-lg" />
+              {streak > 0 && (
+                <motion.span
+                  className="text-sm font-bold"
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: "spring", stiffness: 500, damping: 25 }}
+                >
+                  {streak}
+                </motion.span>
               )}
-            </Link>
+            </div>
           </motion.div>
-        ))}
+
+          {/* Navigation Links */}
+          <div className="flex flex-wrap items-center gap-2 md:gap-4">
+            {navLinks.map((link) => (
+              <motion.div
+                key={link.href}
+                whileHover={{ y: -2 }}
+                whileTap={{ y: 0 }}
+                className="shrink-0"
+              >
+                <Link
+                  href={link.href}
+                  className="relative px-3 py-2 rounded-lg transition-all duration-300 group hover:text-blue-400 hover:cursor-pointer hover:bg-white/5"
+                >
+                  <span
+                    className={`relative z-10 ${
+                      link.isActive ? "text-blue-400" : "text-white hover:text-blue-400"
+                    }`}
+                  >
+                    {link.label}
+                  </span>
+                  {link.isActive && (
+                    <motion.div
+                      layoutId="activeTab"
+                      className="absolute inset-0 bg-blue-500/10 rounded-lg border border-blue-400/30"
+                      initial={false}
+                      transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                    />
+                  )}
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Auth Buttons */}
+          <div className="shrink-0">
+            <AuthButtons />
+          </div>
+        </div>
       </div>
-
-      {/* Auth Buttons */}
-      <div className="shrink-0">
-        <AuthButtons />
-      </div>
-    </div>
-  );
-};
-
-
-
 
       {/* Mobile Search Bar */}
       <AnimatePresence>
