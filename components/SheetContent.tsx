@@ -110,84 +110,88 @@ export default function SheetContent({
     }
   }, [completedTopics]);
 
-  // Helper: call progress update for a single question (or for topic completion)
-  async function sendProgressUpdate(payload: {
-    questionDifficulty?: string | null;
-    topicCompleted?: string | null;
-  }) {
-    try {
-      if (!isLoggedIn || !user) return null;
+// Helper: call progress update for a single question (or for topic completion)
+async function sendProgressUpdate(payload: {
+  questionDifficulty?: string | null;
+  topicCompleted?: string | null; // still used for badge logic
+  topicName?: string | null;
+  topicTotalQuestions?: number | null;
+}) {
+  try {
+    if (!isLoggedIn || !user) return null;
 
-      const body = {
-        userId: user._id,
-        questionDifficulty: payload.questionDifficulty ?? null,
-        topicCompleted: payload.topicCompleted ?? null,
-      };
+    const body = {
+      userId: user._id,
+      questionDifficulty: payload.questionDifficulty ?? null,
+      topicCompleted: payload.topicCompleted ?? null, // only for badge triggers
+      topicName: payload.topicName ?? null,
+      topicTotalQuestions: payload.topicTotalQuestions ?? null
+    };
 
-      // Update progress in backend
-      const res = await axios.post("/api/progress/update", body);
+    const res = await axios.post("/api/progress/update", body);
 
-      // ✅ If a topic was completed, also award the badge
-      if (payload.topicCompleted) {
-        try {
-          const badgeRes = await axios.post("/api/badges", {
-            userId: user._id,
-            topicCompleted: payload.topicCompleted
-          });
-          console.log("Badge awarded:", badgeRes.data);
-        } catch (badgeErr) {
-          console.error("Error awarding badge:", badgeErr);
-        }
+    // Badge logic stays separate
+    if (payload.topicCompleted) {
+      try {
+        const badgeRes = await axios.post("/api/badges", {
+          userId: user._id,
+          topicCompleted: payload.topicCompleted
+        });
+        console.log("Badge awarded:", badgeRes.data);
+      } catch (badgeErr) {
+        console.error("Error awarding badge:", badgeErr);
       }
+    }
 
-      return res.data;
+    return res.data;
+  } catch (err) {
+    console.error("Error sending progress update:", err);
+    return null;
+  }
+}
+
+// Toggle checkbox (solved/revision)
+const toggleCheckbox = async (
+  id: string,
+  field: "isSolved" | "isMarkedForRevision",
+  questionDifficulty?: string,
+  topicCompleted?: string,
+  topicName?: string,
+  topicTotalQuestions?: number
+) => {
+  const currentFieldValue = !!(progress[id]?.[field]);
+
+  // Optimistic UI update
+  setProgress((prev) => {
+    const updated = { ...(prev[id] || {}) };
+    updated[field] = !currentFieldValue;
+    if (field === "isSolved" && !currentFieldValue) {
+      updated.solvedAt = new Date().toISOString();
+    }
+    return { ...prev, [id]: updated };
+  });
+
+  // Only send backend update when marking solved
+  if (field === "isSolved" && !currentFieldValue) {
+    try {
+      await sendProgressUpdate({
+        questionDifficulty: questionDifficulty ?? null,
+        topicCompleted: topicCompleted ?? null, // still can pass if you want immediate badge
+        topicName: topicName ?? null,
+        topicTotalQuestions: topicTotalQuestions ?? null
+      });
+
+      const audio = new Audio("/sounds/done.mp3");
+      audio.play().catch((err) =>
+        console.log("Audio play blocked or failed", err)
+      );
     } catch (err) {
-      console.error("Error sending progress update:", err);
-      return null;
+      console.error("Error updating progress for solved question:", err);
     }
   }
+};
 
 
-  // Toggle checkbox (solved/revision)
-  const toggleCheckbox = async (
-    id: string,
-    field: "isSolved" | "isMarkedForRevision",
-    questionDifficulty?: string,
-    topicCompleted?: string
-  ) => {
-    // Read current value from latest state to avoid stale reads
-    const currentFieldValue = !!(progress[id]?.[field]);
-
-    // Optimistic UI update
-    setProgress((prev) => {
-      const updated = { ...(prev[id] || {}) };
-      updated[field] = !currentFieldValue;
-      if (field === "isSolved" && !currentFieldValue) {
-        updated.solvedAt = new Date().toISOString();
-      }
-      return { ...prev, [id]: updated };
-    });
-
-    // Only fire backend update when marking solved (not when unchecking)
-    if (field === "isSolved" && !currentFieldValue) {
-      try {
-        // If the caller already passed topicCompleted (meaning they determined this question completed the topic),
-        // it's fine to pass that through; otherwise we'll detect topic completion centrally below.
-        await sendProgressUpdate({
-          questionDifficulty: questionDifficulty ?? null,
-          topicCompleted: topicCompleted ?? null,
-        });
-
-        // Play success sound
-        const audio = new Audio("/sounds/done.mp3");
-        audio.play().catch((err) =>
-          console.log("Audio play blocked or failed", err)
-        );
-      } catch (err) {
-        console.error("Error updating progress for solved question:", err);
-      }
-    }
-  };
 
   // Expand/collapse topic
   const toggleTopic = (topicId: number) => {

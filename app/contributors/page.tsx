@@ -182,7 +182,7 @@ const ContributorCard: React.FC<ContributorCardProps> = ({ contributor, index, t
           <div className="text-yellow-400 font-medium text-sm mb-2 text-center px-2">
             {contributor.login}
           </div>
-          <div className="text-white font-semibold text-sm">Click To Visit Profile</div>
+          <div className="text-gray-900 dark:text-white font-semibold text-sm">Click To Visit Profile</div>
         </div>
 
         <div className="relative mb-4 group-hover:opacity-0 transition-opacity duration-500 ease-in-out">
