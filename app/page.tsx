@@ -576,7 +576,7 @@ export default function Home() {
                 href="https://dsamate.vercel.app"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-blue-700/70 dark:bg-blue-500 backdrop-blur-sm hover:bg-white/30 text-blue-50 dark:hover:bg-blue-900/70 border border-white/30 hover:border-white/50 font-semibold py-3 px-6 sm:px-8 rounded-md transition-all duration-300 shadow-lg hover:shadow-xl transform hover:schover:bg-blue-50 dark:hover:bg-blue-900/20ale-105 w-full sm:w-auto text-sm sm:text-base"
+                className="bg-blue-700/70 dark:bg-blue-500 backdrop-blur-sm hover:bg-blue-500 text-blue-50 dark:hover:bg-blue-900/70 border border-white/30 hover:border-white/50 font-semibold py-3 px-6 sm:px-8 hover:scale-105 rounded-md transition-all duration-300 shadow-lg hover:shadow-xl transform hover:schover:bg-blue-50 dark:hover:bg-blue-900/20ale-105 w-full sm:w-auto text-sm sm:text-base"
               >
                 🔗 Visit Original DSAMate
               </Link>
