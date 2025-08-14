@@ -243,7 +243,7 @@ export default function NavbarSheet({ searchTerm, setSearchTerm, streak }: Navba
                 >
                   <span
                     className={`relative z-10 ${
-                      link.isActive ? "text-blue-400" : "text-white hover:text-blue-400"
+                      link.isActive ? "text-blue-400" : "text-gray-900 dark:text-white hover:text-blue-400"
                     }`}
                   >
                     {link.label}
