@@ -3,94 +3,88 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FaChartLine, FaCalendarCheck, FaFire, FaTrophy, FaBullseye, FaBolt, FaCode, FaClock } from 'react-icons/fa';
-import { sampleTopics, type Question, type Topic } from '@/data/questions';
 import Navbar from '@/components/Navbar';
 import ProgressChart from '@/components/ProgressChart';
 import ProgressStats from '@/components/ProgressStats';
 import TopicProgress from '@/components/TopicProgress';
 import RecentActivity from '@/components/RecentActivity';
 import StreakCalendar from '@/components/StreakCalendar';
+import axios from 'axios';
+import { set } from 'mongoose';
 
+interface User {
+  _id: string;
+  full_name: string;
+  email: string;
+  avatar: string;
+}
 export default function ProgressPage() {
+  
   const [searchTerm, setSearchTerm] = useState('');
   const [streak, setStreak] = useState(0);
-  const [progress, setProgress] = useState<{
-    [id: string]: { 
-      isSolved: boolean; 
-      isMarkedForRevision: boolean; 
-      note?: string;
-      solvedAt?: string;
-    };
-  }>({});
-
+  const [prostats, setprostats] = useState<any>(null);
+  const [stats, setStats] = useState<any>(null);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [user, setUser] = useState<User | null>(null);
+    useEffect(() => {
+      const checkAuth = async () => {
+        try {
+          const res = await axios.get("/api/check-auth");
+          if (res.status === 200) {
+            setIsLoggedIn(true);
+            setUser(res.data?.user);
+          }
+        } catch (err) {
+          console.error("Auth check failed:", err);
+        }
+      };
+      checkAuth();
+    }, []);
   useEffect(() => {
-    const storedProgress = localStorage.getItem('dsa-progress');
-    if (storedProgress) {
-      setProgress(JSON.parse(storedProgress));
-    }
+    if (!user?._id) return;
 
-    const savedStreak = parseInt(localStorage.getItem('potd_streak') || '0');
-    setStreak(savedStreak);
-  }, []);
+    const fetchProgress = async () => {
+      try {
+        const res = await axios.get(`/api/progress/${user._id}`);
+        const data = res.data;
 
-  // Calculate progress statistics
-  const calculateStats = () => {
-    const allQuestions = sampleTopics.flatMap(topic => topic.questions);
-    const totalQuestions = allQuestions.length;
-    const solvedQuestions = allQuestions.filter(q => progress[q.id]?.isSolved).length;
-    const markedForRevision = allQuestions.filter(q => progress[q.id]?.isMarkedForRevision).length;
-    
-    const difficultyStats = {
-      easy: {
-        total: allQuestions.filter(q => q.difficulty === 'easy').length,
-        solved: allQuestions.filter(q => q.difficulty === 'easy' && progress[q.id]?.isSolved).length
-      },
-      medium: {
-        total: allQuestions.filter(q => q.difficulty === 'medium').length,
-        solved: allQuestions.filter(q => q.difficulty === 'medium' && progress[q.id]?.isSolved).length
-      },
-      hard: {
-        total: allQuestions.filter(q => q.difficulty === 'hard').length,
-        solved: allQuestions.filter(q => q.difficulty === 'hard' && progress[q.id]?.isSolved).length
+        // Transform API response to match existing `stats` structure
+        const progress = data.progress;
+        console.log(progress);
+        setprostats(progress);
+
+        setStats({
+          totalQuestions: progress.topicsProgress.reduce((sum: number, t: any) => sum + t.total, 0),
+          solvedQuestions: progress.topicsProgress.reduce((sum: number, t: any) => sum + t.solved, 0),
+          markedForRevision: progress.markedForRevision || 0,
+          percentage: Math.round(
+            (progress.topicsProgress.reduce((sum: number, t: any) => sum + t.solved, 0) /
+              progress.topicsProgress.reduce((sum: number, t: any) => sum + t.total, 0)) * 100
+          ),
+          difficultyStats: {
+            easy: { total: progress.easyTotal || 0, solved: progress.easySolved || 0 },
+            medium: { total: progress.mediumTotal || 0, solved: progress.mediumSolved || 0 },
+            hard: { total: progress.hardTotal || 0, solved: progress.hardSolved || 0 }
+          },
+          topicStats: progress.topicsProgress.map((t: any) => ({
+            name: t.name,
+            total: t.total,
+            solved: t.solved,
+            percentage: Math.round((t.solved / t.total) * 100)
+          })),
+          recentActivity: progress.recentActivity || []
+        });
+        // console.log(prostats)
+
+        setStreak(progress.streakCount || 0);
+      } catch (error) {
+        console.error('Error fetching progress:', error);
       }
     };
 
-    const topicStats = sampleTopics.map(topic => ({
-      name: topic.name,
-      total: topic.questions.length,
-      solved: topic.questions.filter(q => progress[q.id]?.isSolved).length,
-      percentage: Math.round((topic.questions.filter(q => progress[q.id]?.isSolved).length / topic.questions.length) * 100)
-    }));
-
-    // Calculate recent activity (last 30 days)
-    const thirtyDaysAgo = new Date();
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-    
-    const recentActivity = allQuestions
-      .filter(q => {
-        const solvedAt = progress[q.id]?.solvedAt;
-        return solvedAt && new Date(solvedAt) >= thirtyDaysAgo;
-      })
-      .sort((a, b) => {
-        const dateA = new Date(progress[a.id]?.solvedAt || 0);
-        const dateB = new Date(progress[b.id]?.solvedAt || 0);
-        return dateB.getTime() - dateA.getTime();
-      })
-      .slice(0, 10);
-
-    return {
-      totalQuestions,
-      solvedQuestions,
-      markedForRevision,
-      percentage: Math.round((solvedQuestions / totalQuestions) * 100),
-      difficultyStats,
-      topicStats,
-      recentActivity
-    };
-  };
-
-  const stats = calculateStats();
-
+    fetchProgress();
+  }, [user?._id]);
+ console.log(prostats)
   const fadeInUp = {
     hidden: { opacity: 0, y: 20 },
     visible: (i: number) => ({
@@ -102,6 +96,14 @@ export default function ProgressPage() {
       },
     }),
   };
+
+  if (!stats) {
+    return (
+      <main className="min-h-screen flex items-center justify-center text-gray-500 dark:text-gray-400">
+        Loading progress...
+      </main>
+    );
+  }
 
   return (
     <>
@@ -139,8 +141,8 @@ export default function ProgressPage() {
               <FaTrophy className="text-2xl text-green-600 dark:text-green-400" />
               <span className="text-sm text-green-700 dark:text-green-300">Total Solved</span>
             </div>
-            <div className="text-3xl font-bold text-gray-900 dark:text-white mb-2">{stats.solvedQuestions}</div>
-            <div className="text-sm text-gray-600 dark:text-gray-400">out of {stats.totalQuestions} questions</div>
+            <div className="text-3xl font-bold text-gray-900 dark:text-white mb-2">{stats.difficultyStats.easy.solved+stats.difficultyStats.medium.solved+stats.difficultyStats.hard.solved}</div>
+            <div className="text-sm text-gray-600 dark:text-gray-400">out of 104 questions</div>
             <div className="mt-3 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
               <div 
                 className="bg-green-500 dark:bg-green-400 h-2 rounded-full transition-all duration-500"
@@ -165,7 +167,7 @@ export default function ProgressPage() {
               <FaBullseye className="text-2xl text-purple-600 dark:text-purple-400" />
               <span className="text-sm text-purple-700 dark:text-purple-300">Completion Rate</span>
             </div>
-            <div className="text-3xl font-bold text-gray-900 dark:text-white mb-2">{stats.percentage}%</div>
+            <div className="text-3xl font-bold text-gray-900 dark:text-white mb-2">{((stats.difficultyStats.easy.solved+stats.difficultyStats.medium.solved+stats.difficultyStats.hard.solved)/104)*100}%</div>
             <div className="text-sm text-gray-600 dark:text-gray-400">overall progress</div>
           </div>
 
@@ -197,11 +199,10 @@ export default function ProgressPage() {
             custom={3}
             variants={fadeInUp}
           >
-            <ProgressStats stats={stats} />
+            <ProgressStats stats={prostats} />
           </motion.div>
         </div>
-
-        {/* Topic Progress and Recent Activity Row */}
+          {/* Topic Progress and Recent Activity Row */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
           <motion.div
             initial="hidden"
@@ -218,7 +219,7 @@ export default function ProgressPage() {
             custom={5}
             variants={fadeInUp}
           >
-            <RecentActivity recentActivity={stats.recentActivity} progress={progress} />
+            <RecentActivity recentActivity={stats.recentActivity} progress={stats} />
           </motion.div>
         </div>
 
@@ -229,10 +230,13 @@ export default function ProgressPage() {
           custom={6}
           variants={fadeInUp}
         >
-          <StreakCalendar progress={progress} />
+          <StreakCalendar progress={stats} />
         </motion.div>
-
       </main>
     </>
   );
 }
+
+
+
+      
