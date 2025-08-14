@@ -67,12 +67,12 @@ export default function ProgressChart({ difficultyStats }: ProgressChartProps) {
                 <span className="text-gray-700 dark:text-gray-300 font-medium">{difficulty.name}</span>
               </div>
               <div className="text-right">
-                <span className={`font-bold ${difficulty.textColor}`}>
-                  {difficulty.stats.solved}/{difficulty.stats.total}
+                <span className={`font-bold ${difficulty.textColor} text-2xl`}>
+                  {difficulty.stats.solved}
                 </span>
-                <span className="text-gray-500 dark:text-gray-400 text-sm ml-2">
+                {/* <span className="text-gray-500 dark:text-gray-400 text-sm ml-2">
                   ({difficulty.percentage}%)
-                </span>
+                </span> */}
               </div>
             </div>
             
@@ -81,7 +81,7 @@ export default function ProgressChart({ difficultyStats }: ProgressChartProps) {
                 <motion.div
                   className={`h-full ${difficulty.color} rounded-full`}
                   initial={{ width: 0 }}
-                  animate={{ width: `${difficulty.percentage}%` }}
+                  animate={{ width: `${((difficulty.stats.solved)/34)*100}%` }}
                   transition={{ 
                     duration: 1, 
                     delay: index * 0.1,
