@@ -5,6 +5,17 @@ import questions from '@/data/questions.json';
 import styles from './TimeQuiz.module.css';
 import Navbar from "@/components/Navbar";
 import { motion } from "framer-motion";
+import QuizResult from './QuizResult';
+
+type Question = {
+  question: string;
+  topic: string;
+  userAnswer: string;
+  correctAnswer: string;
+  explanation: string;
+  isCorrect: boolean;
+};
+
 
 const TIME_PER_QUES = 10;
 
@@ -30,6 +41,8 @@ const TimeQuiz = () => {
   const [quizStarted, setQuizStarted] = useState(false);
   const [streak, setStreak] = useState(0);
   const [showWelcome, setShowWelcome] = useState(true);
+  const [resultData, setResultData] = useState <Question[]> ([]);
+
 
   const current = questions[currentIdx];
 
@@ -128,6 +141,8 @@ const TimeQuiz = () => {
       return () => clearTimeout(timer);
   }, [timeLeft, quizStarted, isFinished]);
 
+
+
   const goNext = () => {
       const nextIdx = currentIdx + 1;
       if (nextIdx >= questions.length) {
@@ -141,16 +156,32 @@ const TimeQuiz = () => {
       }
 }
 
+ const handleOption = (option: string) => {
+  setSelected(option);
 
-  const handleOption = (option: string) => {
-      setSelected(option);
+  const isCorrect = option === current.answer;
 
-      if (option === current.answer) {
-        setScore((prev) => prev + 1);
-      }
+  const result: Question = {
+    question: current.question,
+    topic: current.topic || "General", // fallback if topic is missing
+    userAnswer: option,
+    correctAnswer: current.answer,
+    explanation: current.explanation || "No explanation provided.",
+    isCorrect: isCorrect,
+  };
 
-      setTimeout(goNext, 500);
+  setResultData(prev => [...prev, result]);
+
+  if (isCorrect) {
+    setScore(prev => prev + 1);
   }
+
+  setTimeout(goNext, 500);
+};
+
+
+
+
 
 
   const startQuiz = () => {
@@ -158,18 +189,21 @@ const TimeQuiz = () => {
       setCountdown(3); // Reset countdown to 3
   };
 
+  // Restart quiz function
+
   const restart = () => {
-      setCurrentIdx(0);
-      setSelected(null);
-      setScore(0);
-      setTimeLeft(TIME_PER_QUES);
-      setIsFinished(false);
-      setCountdown(3);
-      setQuizStarted(false);
-      setShowWelcome(true);
-      // Exit fullscreen when restarting
-      exitFullscreen();
-  };
+  setCurrentIdx(0);
+  setSelected(null);
+  setScore(0);
+  setTimeLeft(TIME_PER_QUES);
+  setIsFinished(false);
+  setCountdown(3);
+  setQuizStarted(false);
+  setShowWelcome(true);
+  setResultData([]);
+  exitFullscreen();
+};
+
 
   return (
     <>
@@ -272,12 +306,14 @@ const TimeQuiz = () => {
       )}
 
       {!showWelcome && isFinished && (
-        <div className={styles.finishedContainer}>
-          <h2>Quiz Finished!</h2>
-          <p>Your Score: {score} / {questions.length}</p>
-          <button className={styles.restartButton} onClick={restart}>Restart Quiz</button>
-        </div>
-      )}
+  <QuizResult
+    score={score}
+    totalQuestions={questions.length}
+    questions={resultData}
+    onRestart={restart}
+  />
+)}
+
         </div>
       </main>
     </>

@@ -2,56 +2,78 @@
   {
     "question": "What is the time complexity of binary search?",
     "options": ["O(n)", "O(log n)", "O(n log n)", "O(1)"],
-    "answer": "O(log n)"
+    "answer": "O(log n)",
+    "topic": "Algorithms",
+    "explanation": "Binary search divides the input in half each time, leading to logarithmic complexity."
   },
   {
     "question": "Which data structure uses LIFO?",
     "options": ["Queue", "Heap", "Stack", "Tree"],
-    "answer": "Stack"
+    "answer": "Stack",
+    "topic": "Data Structures",
+    "explanation": "Stack follows Last-In-First-Out (LIFO) order for accessing elements."
   },
   {
     "question": "Which data structure is used for implementing recursion?",
     "options": ["Queue", "Stack", "Linked List", "Graph"],
-    "answer": "Stack"
+    "answer": "Stack",
+    "topic": "Data Structures",
+    "explanation": "Recursion uses the call stack to manage function calls."
   },
   {
     "question": "What is the worst-case time complexity of quicksort?",
     "options": ["O(n)", "O(n log n)", "O(n^2)", "O(log n)"],
-    "answer": "O(n^2)"
+    "answer": "O(n^2)",
+    "topic": "Algorithms",
+    "explanation": "Quicksort degrades to O(n²) when pivot selection is poor, like in already sorted arrays."
   },
   {
     "question": "Which of the following is not a stable sorting algorithm?",
     "options": ["Merge Sort", "Bubble Sort", "Insertion Sort", "Quick Sort"],
-    "answer": "Quick Sort"
+    "answer": "Quick Sort",
+    "topic": "Sorting Algorithms",
+    "explanation": "Quick Sort doesn't guarantee stability as it can reorder equal elements."
   },
   {
     "question": "Which data structure is best suited for implementing a priority queue?",
     "options": ["Heap", "Stack", "Queue", "Array"],
-    "answer": "Heap"
+    "answer": "Heap",
+    "topic": "Data Structures",
+    "explanation": "Heaps allow efficient insertion and removal based on priority."
   },
   {
     "question": "In a max-heap, the root node is always:",
     "options": ["The minimum element", "The maximum element", "The median element", "None of the above"],
-    "answer": "The maximum element"
+    "answer": "The maximum element",
+    "topic": "Data Structures",
+    "explanation": "In a max-heap, the largest element is always at the root."
   },
   {
     "question": "Which graph traversal algorithm uses a queue?",
     "options": ["Depth First Search", "Breadth First Search", "Dijkstra's Algorithm", "Prim's Algorithm"],
-    "answer": "Breadth First Search"
+    "answer": "Breadth First Search",
+    "topic": "Graph Algorithms",
+    "explanation": "Breadth First Search uses a queue to explore nodes level by level."
   },
   {
     "question": "What is the space complexity of merge sort?",
     "options": ["O(1)", "O(log n)", "O(n)", "O(n log n)"],
-    "answer": "O(n)"
+    "answer": "O(n)",
+    "topic": "Algorithms",
+    "explanation": "Merge Sort requires additional space equal to the input size for merging."
   },
   {
     "question": "Which of the following is a self-balancing binary search tree?",
     "options": ["Binary Heap", "AVL Tree", "Trie", "Graph"],
-    "answer": "AVL Tree"
+    "answer": "AVL Tree",
+    "topic": "Data Structures",
+    "explanation": "AVL Trees automatically rebalance to maintain efficient search time."
   },
   {
     "question": "What is the best case time complexity of bubble sort?",
     "options": ["O(n)", "O(n log n)", "O(n^2)", "O(log n)"],
-    "answer": "O(n)"
+    "answer": "O(n)",
+    "topic": "Sorting Algorithms",
+    "explanation": "If the array is already sorted, Bubble Sort can complete in linear time."
   }
 ]
