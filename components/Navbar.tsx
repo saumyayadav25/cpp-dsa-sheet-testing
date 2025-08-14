@@ -1,7 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import { FiSearch, FiX } from "react-icons/fi";
+import { useState, useEffect } from "react";
 import { FaFire } from "react-icons/fa";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -17,7 +16,7 @@ export default function Navbar({ streak }: NavbarProps) {
   const [isScrolled, setIsScrolled] = useState(false);
   const pathname = usePathname();
 
-  // Handle scroll effect with throttling
+  // Scroll detection
   useEffect(() => {
     let ticking = false;
     const handleScroll = () => {
@@ -38,22 +37,10 @@ export default function Navbar({ streak }: NavbarProps) {
     { href: "/", label: "Home", isActive: pathname === "/" },
     { href: "/notes", label: "Notes", isActive: pathname === "/notes" },
     { href: "/sheet", label: "Sheet", isActive: pathname === "/sheet" },
-    {
-      href: "/progress",
-      label: "Progress",
-      isActive: pathname === "/progress",
-    },
-    {
-      href: "/contributors",
-      label: "Contributors",
-      isActive: pathname === "/contributors",
-    },
-    {
-      href: "/timequiz",
-      label: "Time Quiz",
-      isActive: pathname === "/timequiz",
-    },
-];
+    { href: "/progress", label: "Progress", isActive: pathname === "/progress" },
+    { href: "/contributors", label: "Contributors", isActive: pathname === "/contributors" },
+    { href: "/timequiz", label: "Time Quiz", isActive: pathname === "/timequiz" },
+  ];
 
   const streakVariants = {
     idle: { scale: 1, rotate: 0 },
@@ -65,17 +52,18 @@ export default function Navbar({ streak }: NavbarProps) {
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
-      className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 border-b ${
-        isScrolled ? "border-white/10" : "border-gray-800/50"
-      } px-4 sm:px-10 md:px-14 py-4 sm:py-5 bg-background`}
-      // bg-background uses your CSS variable, no hard-coded background!
+      className={`fixed top-0 left-0 w-full z-50 h-16 flex items-center 
+        transition-all duration-300 border-b 
+        ${isScrolled ? "border-white/10" : "border-gray-800/50"} 
+        bg-background px-4 sm:px-10`}
     >
-      <div className="relative flex items-center justify-between gap-4">
+      <div className="max-w-7xl w-full mx-auto flex items-center justify-between gap-4">
+        
         {/* Logo */}
         <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 1.0 }}>
           <Link
             href="/"
-            className="group relative text-2xl font-bold text-foreground hover:cursor-pointer"
+            className="group relative text-xl sm:text-2xl font-bold text-foreground flex-shrink-0"
           >
             <span className="relative z-10">
               DSA
@@ -87,8 +75,9 @@ export default function Navbar({ streak }: NavbarProps) {
           </Link>
         </motion.div>
 
-        {/* Desktop Links and Right Icons */}
-        <div className="hidden sm:flex items-center gap-6 text-foreground">
+        {/* Desktop Links */}
+        <div className="hidden sm:flex items-center gap-6 text-foreground flex-nowrap">
+          
           {/* Streak Icon */}
           <motion.div
             title={`Streak: ${streak} day${streak === 1 ? "" : "s"}`}
@@ -125,62 +114,26 @@ export default function Navbar({ streak }: NavbarProps) {
 
           {/* Navigation Links */}
           {navLinks.map((link) => (
-            <motion.div
+            <Link
               key={link.href}
-              whileHover={{ y: -2 }}
-              whileTap={{ y: 0 }}
+              href={link.href}
+              className={`relative px-3 py-2 rounded-lg whitespace-nowrap transition-all duration-300 ${
+                link.isActive
+                  ? "text-blue-400 bg-blue-500/10 border border-blue-400/30"
+                  : "text-foreground hover:text-blue-400"
+              }`}
             >
-              <Link
-                href={link.href}
-                className={`relative px-3 py-2 rounded-lg transition-all duration-300 group hover:text-blue-400 hover:cursor-pointer`}
-              >
-                <span
-                  className={`relative z-10 ${
-                    link.isActive
-                      ? "text-blue-400"
-                      : "text-foreground hover:text-blue-400"
-                  }`}
-                >
-                  {link.label}
-                </span>
-                {/* Active indicator */}
-                {link.isActive && (
-                  <motion.div
-                    layoutId="activeTab"
-                    className="absolute inset-0 bg-blue-500/10 rounded-lg border border-blue-400/30"
-                    initial={false}
-                    transition={{ type: "spring", stiffness: 500, damping: 30 }}
-                  />
-                )}
-              </Link>
-            </motion.div>
+              {link.label}
+            </Link>
           ))}
 
+          {/* Right Icons */}
           <AuthButtons />
           <ModeToggle />
         </div>
 
         {/* Mobile Right Section */}
-        <div className="sm:hidden flex items-center gap-3 text-foreground">
-          <div className="flex items-center gap-3">
-            {/* Mobile Streak Icon */}
-            <motion.div
-              title={`Streak: ${streak} day${streak === 1 ? "" : "s"}`}
-              whileHover={{ scale: 1.1 }}
-              className="cursor-pointer"
-            >
-              <div
-                className={`flex items-center gap-1 ${
-                  streak > 0 ? "text-orange-400" : "text-gray-400 opacity-50"
-                }`}
-              >
-                <FaFire className="text-lg" />
-                {streak > 0 && (
-                  <span className="text-sm font-bold">{streak}</span>
-                )}
-              </div>
-            </motion.div>
-          </div>
+        <div className="sm:hidden flex items-center gap-3">
           <ModeToggle />
           <AuthButtons />
         </div>

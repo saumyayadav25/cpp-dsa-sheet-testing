@@ -39,6 +39,46 @@ export default function Footer() {
               { href: "https://github.com/saumyayadav25/DSA-Supreme-3.0", external: true, label: "All DSA Codes" },
               { href: "/notes", label: "Notes" },
               { href: "/contributors", label: "Contributors" },
+              // { href: "https://forms.gle/bdwBp8oFRWugcrcg9", external: true, label: "Feedback" },
+            ].map(({ href, label, external }) => (
+              <li key={href}>
+                {external ? (
+                  <a
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-blue-500 dark:hover:text-blue-400 flex items-center gap-2 transition-transform duration-300 hover:-translate-y-0.5"
+                  >
+                    <span className="w-1 h-1 bg-gray-400 dark:bg-gray-600 rounded-full"></span>
+                    {label}
+                  </a>
+                ) : (
+                  <Link
+                    href={href}
+                    className="hover:text-blue-500 dark:hover:text-blue-400 flex items-center gap-2 transition-transform duration-300 hover:-translate-y-0.5"
+                  >
+                    <span className="w-1 h-1 bg-gray-400 dark:bg-gray-600 rounded-full"></span>
+                    {label}
+                  </Link>
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Related Links */}
+        <div>
+          <h3 className="text-gray-900 dark:text-white text-xl font-semibold mb-4 flex items-center gap-2">
+            <span className="bg-blue-600 w-2 h-2 rounded-full"></span>
+            Related Links
+          </h3>
+          <ul className="space-y-3">
+            {[
+              { href: "/privacy-terms", label: "Privacy Policy" },
+              { href: "https://github.com/saumyayadav25/cpp-dsa-sheet-testing/blob/main/CODE_OF_CONDUCT.md", label: "Code of Conduct" },
+              { href: "/privacy-terms?tab=terms", external: true, label: "Terms of Service" },
+              { href: "https://github.com/saumyayadav25/cpp-dsa-sheet-testing/blob/main/LICENSE", label: "License" },
+              // { href: "/contributors", label: "Contributors" },
               { href: "https://forms.gle/bdwBp8oFRWugcrcg9", external: true, label: "Feedback" },
             ].map(({ href, label, external }) => (
               <li key={href}>
@@ -66,13 +106,31 @@ export default function Footer() {
           </ul>
         </div>
 
-        {/* Follow Us */}
-        <div className="flex flex-col items-center justify-center mx-auto md:justify-start md:items-start">
+        {/* Contact */}
+        <div className="max-w-xs flex flex-col items-center justify-center mx-auto md:justify-start md:items-start">
           <h3 className="text-gray-900 dark:text-white text-xl font-semibold mb-4 flex items-center gap-2">
             <span className="bg-blue-600 w-2 h-2 rounded-full"></span>
-            Connect With Me
+            Contact Info
           </h3>
-          <div className="flex gap-4 text-2xl mb-4 text-gray-700 dark:text-gray-400">
+          <p className="mb-2 flex items-center gap-2 text-gray-700 dark:text-gray-400">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5 text-blue-500 dark:text-blue-400"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+            <a href="mailto:contact.dsapractice@gmail.com" className="hover:text-blue-500 dark:hover:text-blue-400">
+              contact.dsapractice@gmail.com
+            </a>
+          </p>
+          <div className="mt-6 flex flex-col items-center justify-center mx-auto md:justify-start md:items-start">
+            <div className="flex gap-4 text-2xl mb-6 text-gray-700 dark:text-gray-400">
             <a
               href="https://x.com/SaumyaYadav817"
               target="_blank"
@@ -98,32 +156,6 @@ export default function Footer() {
               <FaLinkedin />
             </a>
           </div>
-        </div>
-
-        {/* Contact */}
-        <div className="max-w-xs flex flex-col items-center justify-center mx-auto md:justify-start md:items-start">
-          <h3 className="text-gray-900 dark:text-white text-xl font-semibold mb-4 flex items-center gap-2">
-            <span className="bg-blue-600 w-2 h-2 rounded-full"></span>
-            Contact Info
-          </h3>
-          <p className="mb-2 flex items-center gap-2 text-gray-700 dark:text-gray-400">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5 text-blue-500 dark:text-blue-400"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-            </svg>
-            <a href="mailto:contact.dsapractice@gmail.com" className="hover:text-blue-500 dark:hover:text-blue-400">
-              contact.dsapractice@gmail.com
-            </a>
-          </p>
-          <div className="mt-6 flex flex-col items-center justify-center mx-auto md:justify-start md:items-start">
             <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
               Support This Project
             </h4>

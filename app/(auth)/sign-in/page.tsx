@@ -5,11 +5,12 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import axios from "axios";
 import OtpInput from "@/components/verify-otp";
-import { toast } from "sonner";
 import { Loader2, Eye, EyeOff } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { GoogleLoginButton } from "@/components/OAuthLogin";
+import { ToastContainer, toast, Slide } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
 
 export default function SigninPage() {
   const [form, setForm] = useState({
@@ -37,12 +38,21 @@ export default function SigninPage() {
 
       if (res.status === 200) {
         setOtpOpen(true);
-        toast(res.data.message)
+        toast.success(res.data.message, { //gives response Signin successfull otp sent
+          progressClassName: "bg-green-500",
+        });
       }
-      else toast("❌ Wrong Password. Please try with correct password");
+      else {
+        toast.error(" Incorrect email or password", {
+            progressClassName: "bg-red-500",
+          });
+        }    
 
     } catch (error) {
-      toast("❌ Wrong Password. Please try with correct password");
+      toast.error(" Please enter valid credentials", {
+          progressClassName: "bg-red-500",
+      });
+
       console.log(error);
 
     } finally {
@@ -59,14 +69,22 @@ export default function SigninPage() {
         });
   
         if (res.status === 200) {
-          toast("✅ Account verified successfully!");
+          toast.success("Login successful", {
+            progressClassName: "bg-green-500",
+          });
+
           setOtpOpen(false);
           router.push("/");
         } else {
-          toast("❌ OTP verification failed.");
+          toast.error(" OTP verification failed", {
+            progressClassName: "bg-red-500",
+          });
+
         }
       } catch (err: any) {
-        toast("❌ OTP verification failed.");
+        toast.error(" OTP verification failed", {
+            progressClassName: "bg-red-500",
+        });
       } finally {
         setLoading(false);
       }
@@ -74,6 +92,17 @@ export default function SigninPage() {
 
   return (
     <div className="w-full max-w-md mx-auto bg-white p-6 rounded-2xl shadow-lg space-y-6 animate-in fade-in slide-in-from-bottom-6">
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        closeOnClick
+        pauseOnHover
+        transition={Slide}
+        toastClassName="relative flex p-4 items-center rounded-xl bg-white text-black shadow-md"
+        //bodyClassName="text-sm font-medium"
+        progressClassName="absolute bottom-0 left-0 h-1 rounded-b-xl bg-green-500"
+      />
       <div className="text-center">
         <h2 className="text-3xl font-bold text-gray-900 mb-1">
           Login to your account
@@ -144,7 +173,7 @@ export default function SigninPage() {
       <Button
         onClick={handleSubmit}
         disabled={loading}
-        className="w-full rounded-full bg-gradient-to-br from-slate-900 to-blue-600 hover:from-blue-700 hover:to-slate-900"
+        className="w-full rounded-full text-white bg-gradient-to-br from-slate-900 to-blue-600 hover:from-blue-700 hover:to-slate-900"
       >
         {loading ? (
           <Loader2 className="animate-spin mr-2 h-4 w-4" />

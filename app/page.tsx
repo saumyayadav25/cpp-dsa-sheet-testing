@@ -13,7 +13,7 @@ import { FaStar, FaRegStar, FaUserCircle } from "react-icons/fa";
 import { BiSliderAlt } from "react-icons/bi";
 import ReportIssueButton from "@/components/ReportIssueButton";
 import Navbar from "@/components/Navbar";
-import { motion, useInView } from "framer-motion";
+import { motion, useInView, AnimatePresence } from "framer-motion";
 
 // Custom hook for animated counting
 // Animates numbers from 1 to target value when element comes into view
@@ -126,6 +126,301 @@ const testimonials: Testimonial[] = [
   },
 ];
 
+// FAQ data
+const faqData = [
+  {
+    question: "What if I find an incorrect or broken link?",
+    answer:  "Click on 'Report an Issue' or email us — we'll fix it quickly.",
+  },
+  {
+    question: "Can I contribute questions or feedback?",
+    answer: "The streak system tracks your daily problem-solving consistency. Mark the Problem of the Day (POTD) as completed to maintain your streak. Missing a day will reset your streak to zero, encouraging daily practice habits.",
+  },
+  {
+    question: "How to use filters effectively?",
+    answer: "You can use multiple filters like difficulty, platform, status, and revision together to narrow down the questions that best match your current focus. For example, if you're preparing for medium-level problems on LeetCode that you haven't solved yet, just select those filters. You can also filter by questions you've marked for revision. If the results feel too limited or you're done with a specific session, you can reset all filters with a single click to start fresh.",
+  },
+  {
+    question: "What is POTD and how does it help?",
+    answer: "POTD (Problem of the Day) helps you build consistency by showing one new question every day. It encourages daily problem-solving without feeling overwhelming. Even if you're short on time, solving just one question keeps your practice streak going and builds momentum over time. It's a great way to stay connected with DSA regularly.",
+  },
+  {
+    question: "Is login required?",
+    answer: "Nope! There's no need to sign up or log in. Your progress is automatically saved in your browser's local storage. However, keep in mind that if you clear your browser cache or use incognito mode, this data might get deleted — so your progress will reset. Just use the same browser and device for the best experience.",
+  },
+  {
+    question: "My question is not listed here, how can I get help?",
+    answer: "If you have any questions or need assistance, feel free to reach out to us at contact.dsapractice@gmail.com",
+  }
+];
+
+// FAQ Item Component
+const FAQItem = ({ question, answer }: { question: string; answer: string }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 30, scale: 0.95 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+      className="group relative overflow-hidden"
+      onHoverStart={() => setIsHovered(true)}
+      onHoverEnd={() => setIsHovered(false)}
+    >
+      {/* Animated background with moving gradient */}
+      <motion.div
+        className="absolute inset-0 bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 opacity-0 rounded-2xl"
+        animate={{
+          opacity: isHovered ? 0.15 : 0,
+          backgroundPosition: isHovered ? "100% 100%" : "0% 0%",
+        }}
+        transition={{ duration: 0.6, ease: "easeInOut" }}
+        style={{
+          backgroundSize: "200% 200%",
+        }}
+      />
+
+      {/* Glowing border effect */}
+      <motion.div
+        className="absolute inset-0 rounded-2xl"
+        animate={{
+          boxShadow: isOpen 
+            ? "0 0 0 2px rgba(59, 130, 246, 0.5), 0 0 20px rgba(59, 130, 246, 0.3), 0 0 40px rgba(59, 130, 246, 0.1)"
+            : isHovered 
+              ? "0 0 0 1px rgba(139, 92, 246, 0.4), 0 0 15px rgba(139, 92, 246, 0.2)"
+              : "0 0 0 1px rgba(229, 231, 235, 0.3)"
+        }}
+        transition={{ duration: 0.3 }}
+      />
+
+      {/* Floating particles effect */}
+      {isHovered && (
+        <div className="absolute inset-0 pointer-events-none">
+          {[...Array(6)].map((_, i) => (
+            <motion.div
+              key={i}
+              className="absolute w-1 h-1 bg-blue-400 rounded-full"
+              initial={{ 
+                x: Math.random() * 100 + "%", 
+                y: "100%", 
+                opacity: 0,
+                scale: 0 
+              }}
+              animate={{ 
+                y: "-20%", 
+                opacity: [0, 1, 0],
+                scale: [0, 1, 0]
+              }}
+              transition={{ 
+                duration: 2,
+                delay: i * 0.2,
+                repeat: Infinity,
+                ease: "easeOut"
+              }}
+            />
+          ))}
+        </div>
+      )}
+
+      {/* Main card */}
+      <motion.div
+        className="relative bg-white dark:bg-gray-900 rounded-2xl cursor-pointer overflow-hidden backdrop-blur-sm"
+        whileHover={{ 
+          scale: 1.03,
+          rotateY: 2,
+          rotateX: 1,
+        }}
+        whileTap={{ 
+          scale: 0.97,
+          rotateY: 0,
+          rotateX: 0,
+        }}
+        transition={{ 
+          type: "spring", 
+          stiffness: 300, 
+          damping: 20 
+        }}
+        onClick={() => setIsOpen(!isOpen)}
+        style={{
+          transformStyle: "preserve-3d",
+        }}
+      >
+        {/* Shimmer effect overlay */}
+        <motion.div
+          className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12"
+          initial={{ x: "-100%" }}
+          animate={{ x: isHovered ? "200%" : "-100%" }}
+          transition={{ duration: 0.8, ease: "easeInOut" }}
+        />
+
+        {/* Content */}
+        <div className="relative z-10">
+          {/* Question header */}
+          <div className="flex items-center justify-between p-8">
+            <motion.h3 
+              className="text-lg font-bold text-gray-900 dark:text-white pr-8 relative"
+              animate={{
+                color: isOpen 
+                  ? "#3B82F6" 
+                  : isHovered 
+                    ? "#8B5CF6" 
+                    : undefined
+              }}
+              transition={{ duration: 0.3 }}
+            >
+              {/* Animated underline */}
+              <motion.div
+                className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500"
+                initial={{ width: 0 }}
+                animate={{ width: isHovered || isOpen ? "100%" : 0 }}
+                transition={{ duration: 0.4, ease: "easeOut" }}
+              />
+              {question}
+            </motion.h3>
+            
+            {/* 3D Rotating chevron with glow */}
+            <motion.div
+              className="flex-shrink-0 w-8 h-8 relative"
+              animate={{ 
+                rotateX: isOpen ? 180 : 0,
+                scale: isHovered ? 1.2 : 1,
+              }}
+              transition={{ 
+                duration: 0.4, 
+                ease: "easeInOut",
+                type: "spring",
+                stiffness: 200
+              }}
+              style={{ transformStyle: "preserve-3d" }}
+            >
+              {/* Glow effect behind chevron */}
+              <motion.div
+                className="absolute inset-0 bg-blue-500 rounded-full blur-md"
+                animate={{
+                  opacity: isHovered ? 0.4 : 0,
+                  scale: isHovered ? 1.5 : 1,
+                }}
+                transition={{ duration: 0.3 }}
+              />
+              
+              <svg
+                className="w-full h-full text-gray-600 dark:text-gray-400 relative z-10"
+                style={{
+                  filter: isOpen ? "drop-shadow(0 0 8px rgba(59, 130, 246, 0.5))" : "none"
+                }}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <motion.path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={3}
+                  d="M19 9l-7 7-7-7"
+                  animate={{
+                    stroke: isOpen ? "#3B82F6" : isHovered ? "#8B5CF6" : undefined
+                  }}
+                />
+              </svg>
+            </motion.div>
+          </div>
+
+          {/* Answer with dramatic reveal */}
+          <AnimatePresence>
+            {isOpen && (
+              <motion.div
+                initial={{ 
+                  height: 0, 
+                  opacity: 0,
+                  rotateX: -90,
+                }}
+                animate={{ 
+                  height: "auto", 
+                  opacity: 1,
+                  rotateX: 0,
+                }}
+                exit={{ 
+                  height: 0, 
+                  opacity: 0,
+                  rotateX: -90,
+                }}
+                transition={{ 
+                  duration: 0.5, 
+                  ease: "easeOut",
+                  opacity: { delay: 0.1 }
+                }}
+                className="overflow-hidden"
+                style={{ transformOrigin: "top" }}
+              >
+                <motion.div
+                  initial={{ y: -20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  exit={{ y: -20, opacity: 0 }}
+                  transition={{ duration: 0.3, delay: 0.2 }}
+                  className="px-8 pb-8"
+                >
+                  {/* Animated divider */}
+                  <motion.div
+                    className="relative mb-6"
+                    initial={{ width: 0 }}
+                    animate={{ width: "100%" }}
+                    transition={{ duration: 0.6, delay: 0.3 }}
+                  >
+                    <div className="h-px bg-gradient-to-r from-transparent via-blue-500 to-transparent" />
+                    <motion.div
+                      className="absolute top-0 left-1/2 w-2 h-2 bg-blue-500 rounded-full transform -translate-x-1/2 -translate-y-1/2"
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      transition={{ delay: 0.5, type: "spring" }}
+                    />
+                  </motion.div>
+                  
+                  {/* Answer text with typewriter effect simulation */}
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.5, delay: 0.4 }}
+                    className="relative"
+                  >
+                    <motion.p 
+                      className="text-gray-700 dark:text-gray-300 leading-relaxed text-base"
+                      initial={{ filter: "blur(2px)" }}
+                      animate={{ filter: "blur(0px)" }}
+                      transition={{ duration: 0.4, delay: 0.5 }}
+                    >
+                      {answer}
+                    </motion.p>
+                    
+                    {/* Subtle background highlight */}
+                    <motion.div
+                      className="absolute inset-0 bg-gradient-to-r from-blue-50/50 to-purple-50/50 dark:from-blue-900/10 dark:to-purple-900/10 rounded-lg -z-10"
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.5, delay: 0.6 }}
+                    />
+                  </motion.div>
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+        {/* Interactive ripple effect on click */}
+        <motion.div
+          className="absolute inset-0 bg-blue-400 rounded-2xl pointer-events-none"
+          initial={{ scale: 0, opacity: 0.3 }}
+          animate={{ 
+            scale: isOpen ? [0, 1.2, 0] : 0,
+            opacity: isOpen ? [0.3, 0.1, 0] : 0
+          }}
+          transition={{ duration: 0.6 }}
+        />
+      </motion.div>
+    </motion.div>
+  );
+};
+
 export default function Home() {
   const [searchTerm, setSearchTerm] = useState("");
   const [streak, setStreak] = useState(0);
@@ -204,12 +499,13 @@ export default function Home() {
     );
   }
 
+
   return (
     <main className="min-h-screen bg-white dark:bg-black text-gray-900 dark:text-white transition-colors duration-500">
       <ReportIssueButton />
       <Navbar streak={streak} />
 
-      {/* HERO SECTION - UNCHANGED */}
+      {/* HERO SECTION */}
       <motion.section
         initial="hidden"
         animate="visible"
@@ -280,9 +576,15 @@ export default function Home() {
                 href="https://dsamate.vercel.app"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white border border-white/30 hover:border-white/50 font-semibold py-3 px-6 sm:px-8 rounded-md transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 w-full sm:w-auto text-sm sm:text-base"
+                className="bg-blue-700/70 dark:bg-blue-500 backdrop-blur-sm hover:bg-blue-500 text-blue-50 dark:hover:bg-blue-900/70 border border-white/30 hover:border-white/50 font-semibold py-3 px-6 sm:px-8 hover:scale-105 rounded-md transition-all duration-300 shadow-lg hover:shadow-xl transform hover:schover:bg-blue-50 dark:hover:bg-blue-900/20ale-105 w-full sm:w-auto text-sm sm:text-base"
               >
                 🔗 Visit Original DSAMate
+              </Link>
+              <Link
+                href="/cp-tracker"
+                className="bg-gradient-to-r from-indigo-600 to-purple-700 hover:from-indigo-700 hover:to-purple-800 text-white font-semibold py-3 px-6 sm:px-8 rounded-md transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 w-full sm:w-auto text-sm sm:text-base"
+               >
+                🎯 Track Your CP
               </Link>
             </motion.div>
           </motion.div>
@@ -299,7 +601,7 @@ export default function Home() {
         `}</style>
       </motion.section>
 
-      {/* STATISTICS SECTION - REDESIGNED */}
+      {/* STATISTICS SECTION */}
       <motion.section
         initial="hidden"
         whileInView="visible"
@@ -349,7 +651,7 @@ export default function Home() {
                 icon: "💬",
                 gradient: "from-pink-500 to-purple-500",
               },
-                         ].map(({ title, value, icon, gradient }, index) => {
+            ].map(({ title, value, icon, gradient }, index) => {
                const ref = useRef(null);
                const isInView = useInView(ref, { 
                  once: false,
@@ -386,7 +688,7 @@ export default function Home() {
         </div>
       </motion.section>
 
-      {/* COMPANY-WISE INTEREST SECTION - REDESIGNED */}
+      {/* COMPANY-WISE INTEREST SECTION */}
       <motion.section
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -428,7 +730,7 @@ export default function Home() {
         </div>
       </motion.section>
 
-      {/* FEATURES SECTION - REDESIGNED */}
+      {/* FEATURES SECTION */}
       <motion.section
         initial="hidden"
         whileInView="visible"
@@ -527,7 +829,7 @@ export default function Home() {
         </div>
       </motion.section>
 
-      {/* WHY DSA MATE SECTION - REDESIGNED */}
+      {/* WHY DSA MATE SECTION */}
       <motion.section
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -560,7 +862,7 @@ export default function Home() {
         </div>
       </motion.section>
 
-      {/* TESTIMONIALS - REDESIGNED */}
+      {/* TESTIMONIALS */}
       <motion.section
         initial="hidden"
         whileInView="visible"
@@ -660,7 +962,7 @@ export default function Home() {
         </div>
       </motion.section>
 
-      {/* FAQ SECTION - REDESIGNED */}
+      {/* FAQ SECTION */}
       <motion.section
         initial="hidden"
         whileInView="visible"
@@ -674,43 +976,23 @@ export default function Home() {
         <div className="relative z-10 max-w-4xl mx-auto">
           <motion.div variants={itemVariants} className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-              📌 Frequently Asked <span className="text-blue-500">Questions</span>
+              Frequently Asked <span className="text-blue-500">Questions</span>
             </h2>
-            <p className="text-gray-600 dark:text-gray-400 text-lg">
-              Everything you need to know about DSAMate
+            <p className="text-gray-600 dark:text-gray-400 text-lg max-w-2xl mx-auto">
+              Get answers to common questions about DSAMate
             </p>
           </motion.div>
 
-          <div className="space-y-4">
-            {[
-              {
-                q: "What if I find an incorrect or broken link?",
-                a: "Click on 'Report an Issue' or email us — we'll fix it quickly.",
-              },
-              {
-                q: "Can I contribute questions or feedback?",
-                a: "Yes! Please fill the feedback form to provide your feedback. Email us to contribute questions.",
-              },
-              {
-                q: "How to use filters effectively?",
-                a: "You can use multiple filters like difficulty, platform, status, and revision together to narrow down the questions that best match your current focus. For example, if you're preparing for medium-level problems on LeetCode that you haven't solved yet, just select those filters. You can also filter by questions you've marked for revision. If the results feel too limited or you're done with a specific session, you can reset all filters with a single click to start fresh.",
-              },
-              {
-                q: "What is POTD and how does it help?",
-                a: "POTD (Problem of the Day) helps you build consistency by showing one new question every day. It encourages daily problem-solving without feeling overwhelming. Even if you're short on time, solving just one question keeps your practice streak going and builds momentum over time. It's a great way to stay connected with DSA regularly.",
-              },
-              {
-                q: "Is login required?",
-                a: "Nope! There's no need to sign up or log in. Your progress is automatically saved in your browser's local storage. However, keep in mind that if you clear your browser cache or use incognito mode, this data might get deleted — so your progress will reset. Just use the same browser and device for the best experience.",
-              },
-              {
-                q: "My question is not listed here, how can I get help?",
-                a: "If you have any questions or need assistance, feel free to reach out to us at contact.dsapractice@gmail.com",
-              },
-            ].map(({ q, a }, i) => (
-              <FAQItem key={i} question={q} answer={a} />
+          <motion.div
+            variants={containerVariants}
+            className="space-y-4"
+          >
+            {faqData.map((faq, index) => (
+              <motion.div key={index} variants={itemVariants}>
+                <FAQItem question={faq.question} answer={faq.answer} />
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </motion.section>
     </main>

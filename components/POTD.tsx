@@ -2,6 +2,14 @@
 
 import { useState, useEffect } from 'react';
 import { Question } from '@/data/questions';
+import axios from 'axios';
+
+interface User {
+  _id: string;
+  full_name: string;
+  email: string;
+  avatar: string;
+}
 
 type POTDProps = {
   potd: Question | null;
@@ -10,41 +18,75 @@ type POTDProps = {
 
 export default function POTD({ potd, updateStreak }: POTDProps) {
   const [isSolved, setIsSolved] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
   const [today, setToday] = useState('');
 
+  // ✅ Check if user is logged in
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const res = await axios.get("/api/check-auth");
+        if (res.status === 200) {
+          setIsLoggedIn(true);
+          setUser(res.data?.user);
+        } else {
+          setIsLoggedIn(false);
+          setUser(null);
+        }
+      } catch (err) {
+        console.error("Auth check failed:", err);
+        setIsLoggedIn(false);
+        setUser(null);
+      }
+    };
+
+    checkAuth();
+  }, []);
+
+  // ✅ Check if today's POTD is already done
   useEffect(() => {
     const currentDate = new Date().toDateString();
     setToday(currentDate);
-
-    const yesterday = new Date(Date.now() - 86400000).toDateString();
     const lastDone = localStorage.getItem('potd_last_done');
-
-    if (lastDone && lastDone !== yesterday && lastDone !== currentDate) {
-      localStorage.setItem('potd_streak', '0');
-    }
-
     setIsSolved(currentDate === lastDone);
   }, []);
 
-  const handleMarkDone = () => {
-    const lastDone = localStorage.getItem('potd_last_done');
-    const savedStreak = parseInt(localStorage.getItem('potd_streak') || '0');
-
-    if (lastDone === new Date(Date.now() - 86400000).toDateString()) {
-      localStorage.setItem('potd_streak', (savedStreak + 1).toString());
-    } else if (lastDone !== today) {
-      localStorage.setItem('potd_streak', '1');
+  // ✅ Mark POTD as done and update backend progress
+  const handleMarkDone = async () => {
+    if (!user) {
+      console.error("User not logged in, cannot update progress.");
+      return;
     }
 
-    localStorage.setItem('potd_last_done', today);
-    setIsSolved(true);
-    updateStreak();
+    try {
+      const res = await axios.post("/api/progress/update", {
+        userId: user._id, // Required by backend
+        questionDifficulty: potd?.difficulty || "medium", // Use actual difficulty
+        topicCompleted: null // Pass topic name if applicable
+      });
 
-    // ✅ Play sound (create on click to avoid autoplay block)
-    const audio = new Audio('/sounds/done.mp3');
-    audio.play().catch(err => {
-      console.log("Audio play blocked or failed", err);
-    });
+      if (res.status === 200) {
+        console.log("Progress updated:", res.data);
+
+        // Mark locally to avoid multiple submissions in same day
+        localStorage.setItem('potd_last_done', today);
+        setIsSolved(true);
+
+        // Optionally update streak UI if needed
+        updateStreak();
+
+        // Play success sound
+        const audio = new Audio('/sounds/done.mp3');
+        audio.play().catch(err => {
+          console.log("Audio play blocked or failed", err);
+        });
+      } else {
+        console.error("Failed to update progress", res.data);
+      }
+    } catch (err) {
+      console.error("Error updating progress:", err);
+    }
   };
 
   if (!potd) return null;
@@ -52,20 +94,25 @@ export default function POTD({ potd, updateStreak }: POTDProps) {
   return (
     <div className="bg-white dark:bg-zinc-900 border border-gray-300 dark:border-gray-600 rounded-lg p-4 mb-8 flex justify-between items-start shadow-sm hover:shadow-lg transition-all duration-300">
       <div>
-        <h2 className="text-xl font-semibold text-blue-600 dark:text-blue-400 mb-2">🔥 Problem of the Day</h2>
+        <h2 className="text-xl font-semibold text-blue-600 dark:text-blue-400 mb-2">
+          🔥 Problem of the Day
+        </h2>
         <p className="text-lg font-medium text-gray-900 dark:text-white">{potd.title}</p>
         <p className="text-sm mt-1 text-gray-600 dark:text-gray-400 capitalize">
           Difficulty:{" "}
-          <span className={`font-semibold ${
-            potd.difficulty === "easy"
-              ? "text-green-600 dark:text-green-400"
-              : potd.difficulty === "medium"
-              ? "text-yellow-600 dark:text-yellow-400"
-              : "text-red-600 dark:text-red-400"
-          }`}>
+          <span
+            className={`font-semibold ${
+              potd.difficulty === "easy"
+                ? "text-green-600 dark:text-green-400"
+                : potd.difficulty === "medium"
+                ? "text-yellow-600 dark:text-yellow-400"
+                : "text-red-600 dark:text-red-400"
+            }`}
+          >
             {potd.difficulty}
           </span>
         </p>
+
         <div className="mt-2 flex flex-wrap gap-3 text-sm">
           {Object.entries(potd.links || {}).map(([platform, url]) => {
             const displayName =
@@ -88,15 +135,25 @@ export default function POTD({ potd, updateStreak }: POTDProps) {
               'text-gray-600 dark:text-gray-300';
 
             return (
-              <a key={platform} href={url} target="_blank" rel="noopener noreferrer"
-                 className={`underline hover:no-underline transition-all duration-200 ${textColor}`}>
+              <a
+                key={platform}
+                href={url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`underline hover:no-underline transition-all duration-200 ${textColor}`}
+              >
                 {displayName}
               </a>
             );
           })}
+
           {potd.solutionLink && (
-            <a href={potd.solutionLink} target="_blank" rel="noopener noreferrer"
-               className="text-gray-600 dark:text-gray-300 underline hover:no-underline transition-all duration-200">
+            <a
+              href={potd.solutionLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-gray-600 dark:text-gray-300 underline hover:no-underline transition-all duration-200"
+            >
               GitHub Solution
             </a>
           )}
@@ -106,7 +163,8 @@ export default function POTD({ potd, updateStreak }: POTDProps) {
       {!isSolved ? (
         <button
           onClick={handleMarkDone}
-          className="bg-green-600 hover:bg-green-700 dark:bg-green-600 dark:hover:bg-green-500 text-white px-4 py-2 rounded text-sm font-medium transition-colors duration-200 shadow-md hover:shadow-lg">
+          className="bg-green-600 hover:bg-green-700 dark:bg-green-600 dark:hover:bg-green-500 text-white px-4 py-2 rounded text-sm font-medium transition-colors duration-200 shadow-md hover:shadow-lg"
+        >
           Mark as Done
         </button>
       ) : (

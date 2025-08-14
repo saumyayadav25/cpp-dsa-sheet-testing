@@ -145,17 +145,17 @@ const ContributorCard: React.FC<ContributorCardProps> = ({ contributor, index, t
       },
     },
   };
-
   return (
     <motion.div
-      initial="hidden"
-      animate="visible"
-      variants={cardVariants}
-      whileHover={{ 
-        scale: 1.05,
-        transition: { duration: 0.2 }
-      }}
-      className="h-full"
+    initial="hidden"
+    animate="visible"
+    variants={cardVariants}
+    whileHover={{ 
+      scale: 1.05,
+      transition: { duration: 0.2 }
+    }}
+    className="h-full"
+    transition={{ duration: 0.2, ease: "easeOut" }} //Exit transition because after hover it took 4-5 seconds to be back to original position 
     >
       <Link 
         href={contributor.html_url} 
@@ -168,7 +168,7 @@ const ContributorCard: React.FC<ContributorCardProps> = ({ contributor, index, t
         key={contributor.login}
       >
         {/* Hover overlay */}
-        <div className="absolute inset-0 bg-white/10 backdrop-blur-sm rounded-xl opacity-0 group-hover:opacity-100 transition-all duration-500 ease-in-out flex flex-col items-center justify-center z-10">
+        <div className="absolute inset-0 bg-white/10 backdrop-blur-sm rounded-xl opacity-0 group-hover:opacity-100 transition-all duration-300 ease-in-out flex flex-col items-center justify-center z-10">
           <div className="relative mb-3">
             <Image
               src={contributor.avatar_url}
@@ -182,7 +182,7 @@ const ContributorCard: React.FC<ContributorCardProps> = ({ contributor, index, t
           <div className="text-yellow-400 font-medium text-sm mb-2 text-center px-2">
             {contributor.login}
           </div>
-          <div className="text-white font-semibold text-sm">Click To Visit Profile</div>
+          <div className="text-gray-900 dark:text-white font-semibold text-sm">Click To Visit Profile</div>
         </div>
 
         <div className="relative mb-4 group-hover:opacity-0 transition-opacity duration-500 ease-in-out">
