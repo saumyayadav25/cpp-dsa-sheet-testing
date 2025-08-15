@@ -3,10 +3,7 @@ import { connect } from "@/db/config";
 import { Progress } from "@/models/Progress.model";
 import { Badge } from "@/models/Badge.model";
 
-export async function GET(
-  _req: Request,
-  context: any
-) {
+export async function GET(_req: Request, context: any) {
   try {
     await connect();
     const { userId } = context.params;
@@ -15,7 +12,6 @@ export async function GET(
     const badgeDocRaw = await Badge.findOne({ userId }).lean();
     const badgeDoc = Array.isArray(badgeDocRaw) ? badgeDocRaw[0] : badgeDocRaw;
 
-    // If progress is an array, get the first element
     const progressDoc = Array.isArray(progress) ? progress[0] : progress;
 
     if (!progressDoc) {
@@ -26,11 +22,28 @@ export async function GET(
           hardSolved: 0,
           totalSolved: 0,
           streakCount: 0,
+          topicsCompleted: [],
           topicsProgress: [],
           lastVisited: null
         },
         badges: badgeDoc && 'badges' in badgeDoc ? badgeDoc.badges : []
       });
+    }
+
+    // 🔹 Compute topicsCompleted dynamically
+    const topicsCompleted = (progressDoc.topicsProgress || [])
+      .filter((t: any) => t.solvedCount >= t.totalQuestions && t.totalQuestions > 0)
+      .map((t: any) => t.topicName);
+
+    // 🔹 If not stored yet or outdated, update in DB
+    if (
+      !progressDoc.topicsCompleted ||
+      progressDoc.topicsCompleted.length !== topicsCompleted.length
+    ) {
+      await Progress.updateOne(
+        { userId },
+        { $set: { topicsCompleted } }
+      );
     }
 
     return NextResponse.json({
@@ -40,6 +53,7 @@ export async function GET(
         hardSolved: progressDoc.hardSolved,
         totalSolved: progressDoc.totalSolved,
         streakCount: progressDoc.streakCount,
+        topicsCompleted, // ✅ send to frontend
         topicsProgress: progressDoc.topicsProgress || [],
         lastVisited: progressDoc.lastVisited
       },
