@@ -19,7 +19,8 @@ export async function GET(_req: Request, context: Context) {
       );
     }
 
-    const badgeDoc = await Badge.findOne({ userId });
+    // Ensure that Badge schema includes 'updatedAt' as a field
+    const badgeDoc = await Badge.findOne({ userId }).lean<{ badges: any[]; updatedAt?: Date }>();
 
     if (!badgeDoc) {
       return NextResponse.json(
@@ -28,10 +29,13 @@ export async function GET(_req: Request, context: Context) {
       );
     }
 
-    // Return badges and updatedAt timestamp
+    // Sort badges by claimedAt descending (most recent first)
+    const sortedBadges = badgeDoc.badges.sort(
+      (a: any, b: any) => new Date(b.claimedAt).getTime() - new Date(a.claimedAt).getTime()
+    );
     return NextResponse.json({
-      badges: badgeDoc.badges,
-      updatedAt: badgeDoc.updatedAt, // include this
+      badges: sortedBadges,
+      updatedAt: badgeDoc.updatedAt ?? null,
     });
   } catch (error) {
     console.error("Error fetching badges:", error);

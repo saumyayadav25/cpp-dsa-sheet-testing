@@ -19,82 +19,108 @@ interface User {
   avatar: string;
 }
 export default function ProgressPage() {
-  
-  const [searchTerm, setSearchTerm] = useState('');
+
   const [streak, setStreak] = useState(0);
   const [prostats, setprostats] = useState<any>(null);
   const [stats, setStats] = useState<any>(null);
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [user, setUser] = useState<User | null>(null);
-    useEffect(() => {
-      const checkAuth = async () => {
-        try {
-          const res = await axios.get("/api/check-auth");
-          if (res.status === 200) {
-            setIsLoggedIn(true);
-            setUser(res.data?.user);
-          }
-        } catch (err) {
-          console.error("Auth check failed:", err);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+
+  // Check auth once
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const res = await axios.get("/api/check-auth");
+        if (res.status === 200) {
+          setIsLoggedIn(true);
+          setUser(res.data?.user);
+          console.log("User authenticated:", res.data.user);
         }
-      };
-      checkAuth();
-    }, []);
+      } catch (err) {
+        console.error("Auth check failed:", err);
+      }
+    };
+    checkAuth();
+  }, []);
+
+  // Fetch progress whenever user is set
   useEffect(() => {
     if (!user?._id) return;
 
-    const fetchProgress = async () => {
-      try {
-        const res = await axios.get(`/api/progress/${user._id}`);
-        const data = res.data;
+// After fetching progress from API
+const fetchProgress = async () => {
+  try {
+    const res = await axios.get(`/api/progress/${user._id}`);
+    const data = res.data;
+    const progress = data.progress;
 
-        // Transform API response to match existing `stats` structure
-        const progress = data.progress;
-        console.log(progress);
-        setprostats(progress);
+    setprostats(progress);
 
-        setStats({
-          totalQuestions: progress.topicsProgress.reduce((sum: number, t: any) => sum + t.total, 0),
-          solvedQuestions: progress.topicsProgress.reduce((sum: number, t: any) => sum + t.solved, 0),
-          markedForRevision: progress.markedForRevision || 0,
-          percentage: Math.round(
-            (progress.topicsProgress.reduce((sum: number, t: any) => sum + t.solved, 0) /
-              progress.topicsProgress.reduce((sum: number, t: any) => sum + t.total, 0)) * 100
-          ),
-          difficultyStats: {
-            easy: { total: progress.easyTotal || 0, solved: progress.easySolved || 0 },
-            medium: { total: progress.mediumTotal || 0, solved: progress.mediumSolved || 0 },
-            hard: { total: progress.hardTotal || 0, solved: progress.hardSolved || 0 }
-          },
-          topicStats: progress.topicsProgress.map((t: any) => ({
-            name: t.name,
-            total: t.total,
-            solved: t.solved,
-            percentage: Math.round((t.solved / t.total) * 100)
-          })),
-          recentActivity: progress.recentActivity || []
-        });
-        // console.log(prostats)
+    // Build topicStats with default total = 5
+    const topicStats = (progress.topicsProgress || []).map((t: any) => ({
+      name: t.topicName || "Unnamed Topic",
+      solved: t.solvedCount ?? 0, // default 0
+    }));
 
-        setStreak(progress.streakCount || 0);
-      } catch (error) {
-        console.error('Error fetching progress:', error);
-      }
-    };
+    interface DifficultyStat {
+      total: number;
+      solved: number;
+    }
+
+    interface TopicStat {
+      name: string;
+      solved: number;
+    }
+
+    interface Stats {
+      totalQuestions: number;
+      solvedQuestions: number;
+      markedForRevision: number;
+      percentage: number;
+      difficultyStats: {
+        easy: DifficultyStat;
+        medium: DifficultyStat;
+        hard: DifficultyStat;
+      };
+      topicStats: TopicStat[];
+      recentActivity: any[];
+    }
+
+    setStats({
+      totalQuestions: topicStats.length * 5,
+      solvedQuestions: topicStats.reduce((sum: number, t: TopicStat) => sum + t.solved, 0),
+      markedForRevision: progress.markedForRevision || 0,
+      percentage: topicStats.length
+        ? Math.round(topicStats.reduce((sum: number, t: TopicStat) => sum + t.solved, 0) / (topicStats.length * 5) * 100)
+        : 0,
+      difficultyStats: {
+        easy: { total: progress.easyTotal || 0, solved: progress.easySolved || 0 },
+        medium: { total: progress.mediumTotal || 0, solved: progress.mediumSolved || 0 },
+        hard: { total: progress.hardTotal || 0, solved: progress.hardSolved || 0 }
+      },
+      topicStats,
+      recentActivity: progress.recentActivity || []
+    } as Stats);
+     setprostats(progress);
+     console.log("Fetched progress:", progress);
+      setStreak(progress.streakCount || 0);
+  } catch (error) {
+    console.error('Error fetching progress:', error);
+  }
+};
+
 
     fetchProgress();
   }, [user?._id]);
- console.log(prostats)
+
+  // Animation variant for Framer Motion
   const fadeInUp = {
     hidden: { opacity: 0, y: 20 },
     visible: (i: number) => ({
       opacity: 1,
       y: 0,
-      transition: {
-        delay: i * 0.1,
-        duration: 0.6,
-      },
-    }),
+      transition: { delay: i * 0.1, duration: 0.6 }
+    })
   };
 
   if (!stats) {
@@ -109,7 +135,7 @@ export default function ProgressPage() {
     <>
       <Navbar streak={streak} />
       <main className="min-h-screen bg-white dark:bg-background text-gray-900 dark:text-white px-4 md:px-12 py-24 transition-colors duration-300">
-        
+
         {/* Header Section */}
         <motion.div
           initial="hidden"
@@ -122,7 +148,7 @@ export default function ProgressPage() {
             Track Your Progress
           </h1>
           <p className="text-sm md:text-base text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-            Monitor your DSA journey with detailed analytics, track your solving patterns, 
+            Monitor your DSA journey with detailed analytics, track your solving patterns,
             and celebrate your achievements along the way.
           </p>
         </motion.div>
@@ -141,10 +167,10 @@ export default function ProgressPage() {
               <FaTrophy className="text-2xl text-green-600 dark:text-green-400" />
               <span className="text-sm text-green-700 dark:text-green-300">Total Solved</span>
             </div>
-            <div className="text-3xl font-bold text-gray-900 dark:text-white mb-2">{stats.difficultyStats.easy.solved+stats.difficultyStats.medium.solved+stats.difficultyStats.hard.solved}</div>
+            <div className="text-3xl font-bold text-gray-900 dark:text-white mb-2">{stats.difficultyStats.easy.solved + stats.difficultyStats.medium.solved + stats.difficultyStats.hard.solved}</div>
             <div className="text-sm text-gray-600 dark:text-gray-400">out of 104 questions</div>
             <div className="mt-3 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-              <div 
+              <div
                 className="bg-green-500 dark:bg-green-400 h-2 rounded-full transition-all duration-500"
                 style={{ width: `${stats.percentage}%` }}
               ></div>
@@ -167,7 +193,9 @@ export default function ProgressPage() {
               <FaBullseye className="text-2xl text-purple-600 dark:text-purple-400" />
               <span className="text-sm text-purple-700 dark:text-purple-300">Completion Rate</span>
             </div>
-            <div className="text-3xl font-bold text-gray-900 dark:text-white mb-2">{((stats.difficultyStats.easy.solved+stats.difficultyStats.medium.solved+stats.difficultyStats.hard.solved)/104)*100}%</div>
+            <div className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+              {(((stats.difficultyStats.easy.solved + stats.difficultyStats.medium.solved + stats.difficultyStats.hard.solved) / 104) * 100).toFixed(2)}%
+            </div>
             <div className="text-sm text-gray-600 dark:text-gray-400">overall progress</div>
           </div>
 
@@ -192,7 +220,7 @@ export default function ProgressPage() {
           >
             <ProgressChart difficultyStats={stats.difficultyStats} />
           </motion.div>
-          
+
           <motion.div
             initial="hidden"
             animate="visible"
@@ -202,35 +230,20 @@ export default function ProgressPage() {
             <ProgressStats stats={prostats} />
           </motion.div>
         </div>
-          {/* Topic Progress and Recent Activity Row */}
+        {/* Topic Progress and Recent Activity Row */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-          <motion.div
-            initial="hidden"
-            animate="visible"
-            custom={4}
-            variants={fadeInUp}
-          >
+          <motion.div initial="hidden" animate="visible" custom={4} variants={fadeInUp}>
             <TopicProgress topicStats={stats.topicStats} />
           </motion.div>
-          
-          <motion.div
-            initial="hidden"
-            animate="visible"
-            custom={5}
-            variants={fadeInUp}
-          >
-            <RecentActivity recentActivity={stats.recentActivity} progress={stats} />
+
+          <motion.div initial="hidden" animate="visible" custom={5} variants={fadeInUp}>
+            <RecentActivity />
           </motion.div>
         </div>
 
         {/* Streak Calendar */}
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          custom={6}
-          variants={fadeInUp}
-        >
-          <StreakCalendar progress={stats} />
+        <motion.div initial="hidden" animate="visible" custom={6} variants={fadeInUp}>
+          <StreakCalendar progress={prostats} />
         </motion.div>
       </main>
     </>
@@ -239,4 +252,3 @@ export default function ProgressPage() {
 
 
 
-      

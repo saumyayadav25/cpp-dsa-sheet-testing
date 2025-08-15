@@ -3,32 +3,23 @@ import { connect } from "@/db/config";
 import { Progress } from "@/models/Progress.model";
 import { Badge } from "@/models/Badge.model";
 import { awardBadges } from "@/lib/awardBadges";
+
 interface TopicProgress {
   topicName: string;
   solvedCount: number;
-  totalQuestions: number;
+  totalQuestions?: number;
 }
 
-interface ProgressType {
-  userId: string;
-  lastVisited?: Date;
-  streakCount: number;
-  easySolved: number;
-  mediumSolved: number;
-  hardSolved: number;
-  totalSolved: number;
-  topicsProgress: TopicProgress[];
-  save: () => Promise<void>;
-  toObject: () => object;
-}
 export async function POST(req: Request) {
   try {
     await connect();
-    const { userId, questionDifficulty, topicName, topicTotalQuestions } = await req.json();
+    const { userId, questionDifficulty, topicName, topicCompleted } = await req.json();
 
-    if (!userId)
+    if (!userId) {
       return NextResponse.json({ message: "UserId required" }, { status: 400 });
+    }
 
+    // --- Fetch or create progress ---
     let progress = await Progress.findOne({ userId });
     if (!progress) {
       progress = await Progress.create({ userId });
@@ -52,33 +43,47 @@ export async function POST(req: Request) {
     if (questionDifficulty === "medium") progress.mediumSolved += 1;
     if (questionDifficulty === "hard") progress.hardSolved += 1;
 
-    // Auto-calculate totalSolved
     progress.totalSolved =
       Number(progress.easySolved ?? 0) +
       Number(progress.mediumSolved ?? 0) +
       Number(progress.hardSolved ?? 0);
 
-
     // --- Topic-wise Progress ---
-    if (topicName && topicTotalQuestions) {
-      const topicIndex: number = (progress as ProgressType).topicsProgress.findIndex(
+    if (topicName) {
+      const topicIndex = progress.topicsProgress.findIndex(
         (t: TopicProgress) => t.topicName === topicName
       );
 
       if (topicIndex > -1) {
-        // Update existing topic
-        if (progress.topicsProgress[topicIndex].solvedCount < topicTotalQuestions) {
-          progress.topicsProgress[topicIndex].solvedCount += 1;
+        progress.topicsProgress[topicIndex].solvedCount += 1;
+        // Default totalQuestions to 5 if not set
+        if (!progress.topicsProgress[topicIndex].totalQuestions) {
+          progress.topicsProgress[topicIndex].totalQuestions = 5;
         }
       } else {
-        // Add new topic
         progress.topicsProgress.push({
           topicName,
           solvedCount: 1,
-          totalQuestions: topicTotalQuestions
+          totalQuestions: 5 // Default value for testing
         });
       }
     }
+
+    // --- Topic Completion ---
+    if (!progress.topicsCompleted) progress.topicsCompleted = [];
+
+    // Manual completion from frontend
+    if (topicCompleted && !progress.topicsCompleted.includes(topicCompleted)) {
+      progress.topicsCompleted.push(topicCompleted);
+    }
+
+    // Auto-complete topics if solvedCount >= totalQuestions
+    progress.topicsProgress.forEach((topic) => {
+      const total = topic.totalQuestions || 5; // Default to 5 if missing
+      if (topic.solvedCount >= total && !progress.topicsCompleted.includes(topic.topicName)) {
+        progress.topicsCompleted.push(topic.topicName);
+      }
+    });
 
     await progress.save();
 
@@ -86,6 +91,7 @@ export async function POST(req: Request) {
     const badgeDoc = await Badge.findOne({ userId });
     const currentBadges = badgeDoc?.badges || [];
 
+    // Award badges based on updated progress
     await awardBadges(userId, { ...progress.toObject(), badges: currentBadges });
 
     const updatedBadges = await Badge.findOne({ userId });
@@ -95,7 +101,6 @@ export async function POST(req: Request) {
       progress,
       badges: updatedBadges?.badges || []
     });
-
   } catch (error) {
     console.error(error);
     return NextResponse.json({ message: "Server Error" }, { status: 500 });

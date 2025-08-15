@@ -51,21 +51,14 @@ export default function SheetContent({
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState<User | null>(null);
 
-  // Completed topics persisted (store topic ids or names — using topic.id here)
   const [completedTopics, setCompletedTopics] = useState<Set<number>>(() => {
     try {
       const raw = localStorage.getItem("dsa-completed-topics");
-      if (raw) {
-        return new Set<number>(JSON.parse(raw));
-      }
-    } catch (e) {
-      // ignore
-    }
+      if (raw) return new Set<number>(JSON.parse(raw));
+    } catch (e) {}
     return new Set<number>();
   });
 
-
-  // Auth check (runs once)
   useEffect(() => {
     const checkAuth = async () => {
       try {
@@ -81,7 +74,6 @@ export default function SheetContent({
     checkAuth();
   }, []);
 
-  // Load & persist per-question progress (local cache)
   useEffect(() => {
     try {
       const stored = localStorage.getItem("dsa-progress");
@@ -98,7 +90,6 @@ export default function SheetContent({
     }
   }, [progress]);
 
-  // Persist completedTopics set
   useEffect(() => {
     try {
       localStorage.setItem(
@@ -110,111 +101,84 @@ export default function SheetContent({
     }
   }, [completedTopics]);
 
-// Helper: call progress update for a single question (or for topic completion)
-async function sendProgressUpdate(payload: {
-  questionDifficulty?: string | null;
-  topicCompleted?: string | null; // still used for badge logic
-  topicName?: string | null;
-  topicTotalQuestions?: number | null;
-}) {
-  try {
-    if (!isLoggedIn || !user) return null;
-
-    const body = {
-      userId: user._id,
-      questionDifficulty: payload.questionDifficulty ?? null,
-      topicCompleted: payload.topicCompleted ?? null, // only for badge triggers
-      topicName: payload.topicName ?? null,
-      topicTotalQuestions: payload.topicTotalQuestions ?? null
-    };
-
-    const res = await axios.post("/api/progress/update", body);
-
-    // Badge logic stays separate
-    if (payload.topicCompleted) {
-      try {
-        const badgeRes = await axios.post("/api/badges", {
-          userId: user._id,
-          topicCompleted: payload.topicCompleted
-        });
-        console.log("Badge awarded:", badgeRes.data);
-      } catch (badgeErr) {
-        console.error("Error awarding badge:", badgeErr);
-      }
-    }
-
-    return res.data;
-  } catch (err) {
-    console.error("Error sending progress update:", err);
-    return null;
-  }
-}
-
-// Toggle checkbox (solved/revision)
-const toggleCheckbox = async (
-  id: string,
-  field: "isSolved" | "isMarkedForRevision",
-  questionDifficulty?: string,
-  topicCompleted?: string,
-  topicName?: string,
-  topicTotalQuestions?: number
-) => {
-  const currentFieldValue = !!(progress[id]?.[field]);
-
-  // Optimistic UI update
-  setProgress((prev) => {
-    const updated = { ...(prev[id] || {}) };
-    updated[field] = !currentFieldValue;
-    if (field === "isSolved" && !currentFieldValue) {
-      updated.solvedAt = new Date().toISOString();
-    }
-    return { ...prev, [id]: updated };
-  });
-
-  // Only send backend update when marking solved
-  if (field === "isSolved" && !currentFieldValue) {
-    try {
-      await sendProgressUpdate({
-        questionDifficulty: questionDifficulty ?? null,
-        topicCompleted: topicCompleted ?? null, // still can pass if you want immediate badge
-        topicName: topicName ?? null,
-        topicTotalQuestions: topicTotalQuestions ?? null
-      });
-
-      const audio = new Audio("/sounds/done.mp3");
-      audio.play().catch((err) =>
-        console.log("Audio play blocked or failed", err)
-      );
-    } catch (err) {
-      console.error("Error updating progress for solved question:", err);
-    }
-  }
-};
-
-
-
-  // Expand/collapse topic
-  const toggleTopic = (topicId: number) => {
-    setOpenTopics((prev) =>
-      prev.includes(topicId) ? prev.filter((id) => id !== topicId) : [...prev, topicId]
-    );
-  };
-
   const difficultyClasses = {
     easy: "text-green-600 dark:text-green-500",
     medium: "text-yellow-600 dark:text-yellow-400",
     hard: "text-red-600 dark:text-red-500",
   };
 
-  //
-  // CENTRAL TOPIC-COMPLETION DETECTION
-  //
-  // Whenever `progress` or `user` changes, compute which topics are now completed.
-  // For any newly completed topic that we haven't previously recorded in completedTopics,
-  // call the backend once (via /api/progress/update) with topicCompleted to update server-side progress & trigger badge awarding.
-  //
+  const toggleTopic = (topicId: number) => {
+    setOpenTopics((prev) =>
+      prev.includes(topicId) ? prev.filter((id) => id !== topicId) : [...prev, topicId]
+    );
+  };
+
+  async function sendProgressUpdate(payload: {
+    questionDifficulty?: string | null;
+    topicName?: string | null;
+    topicCompleted?: string | null;
+  }) {
+    try {
+      if (!isLoggedIn || !user) return null;
+      console.log("Sending progress update:", payload);
+
+      const body = {
+        userId: user._id,
+        questionDifficulty: payload.questionDifficulty ?? null,
+        topicName: payload.topicName ?? null,
+        topicCompleted: payload.topicCompleted ?? null,
+      };
+
+      const res = await axios.post("/api/progress/update", body);
+      return res.data;
+    } catch (err) {
+      console.error("Error sending progress update:", err);
+      return null;
+    }
+  }
+
+  const toggleCheckbox = async (
+    id: string,
+    field: "isSolved" | "isMarkedForRevision",
+    questionDifficulty?: string,
+    topicName?: string
+  ) => {
+    const currentFieldValue = !!(progress[id]?.[field]);
+    console.log("Toggling checkbox:", { id, field, questionDifficulty, topicName });
+
+    // Fail-safe: recover topicName if missing
+    if (!topicName) {
+      const [topicIdStr] = id.split("-");
+      const topicId = parseInt(topicIdStr);
+      const topic = sampleTopics.find((t) => t.id === topicId);
+      topicName = topic?.name || undefined;
+    }
+
+    setProgress((prev) => {
+      const updated = { ...(prev[id] || {}) };
+      updated[field] = !currentFieldValue;
+      if (field === "isSolved" && !currentFieldValue) {
+        updated.solvedAt = new Date().toISOString();
+      }
+      return { ...prev, [id]: updated };
+    });
+
+    if (field === "isSolved" && !currentFieldValue) {
+      try {
+        await sendProgressUpdate({
+          questionDifficulty: questionDifficulty ?? null,
+          topicName: topicName ?? null,
+        });
+
+        const audio = new Audio("/sounds/done.mp3");
+        audio.play().catch((err) => console.log("Audio play blocked or failed", err));
+      } catch (err) {
+        console.error("Error updating progress for solved question:", err);
+      }
+    }
+  };
+
   useEffect(() => {
-    // Build list/set of topic ids that are completed according to current progress
     const currentlyCompleted = new Set<number>();
 
     sampleTopics.forEach((topic) => {
@@ -223,12 +187,9 @@ const toggleCheckbox = async (
         const key = `${topic.id}-${q.id}`;
         return (progress[key]?.isSolved ?? q.isSolved) === true;
       }).length;
-      if (solvedQ === totalQ) {
-        currentlyCompleted.add(topic.id);
-      }
+      if (solvedQ === totalQ) currentlyCompleted.add(topic.id);
     });
 
-    // Find new completions = currentlyCompleted - completedTopics
     const newCompletions: number[] = [];
     currentlyCompleted.forEach((id) => {
       if (!completedTopics.has(id)) newCompletions.push(id);
@@ -236,7 +197,6 @@ const toggleCheckbox = async (
 
     if (newCompletions.length === 0) return;
 
-    // For each new completion: call backend once (if logged in) and add to completedTopics set
     (async () => {
       for (const topicId of newCompletions) {
         const topic = sampleTopics.find((t) => t.id === topicId);
@@ -244,28 +204,20 @@ const toggleCheckbox = async (
 
         try {
           if (isLoggedIn && user) {
-            // Pass topic name so backend can push into progress.topicsCompleted and award badges
             await sendProgressUpdate({
               questionDifficulty: null,
               topicCompleted: topic.name,
             });
           } else {
-            // Not logged in: just persist locally (we avoid calling server)
-            console.log(
-              `Guest completed topic "${topic.name}" — persisting locally only`
-            );
+            console.log(`Guest completed topic "${topic.name}" — persisting locally only`);
           }
-
-          // Mark as handled locally so we won't re-send later
           setCompletedTopics((prev) => new Set(prev).add(topicId));
         } catch (err) {
           console.error("Error notifying server about topic completion", err);
-          // If error, don't mark as completedTopics so we can retry later
         }
       }
     })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [progress, isLoggedIn, user]); // note: completedTopics used inside setter, persisted separately
+  }, [progress, isLoggedIn, user]);
 
   const totalFiltered = sampleTopics.reduce((sum, topic) => {
     return (
@@ -292,7 +244,6 @@ const toggleCheckbox = async (
     );
   }, 0);
 
-  // 2️⃣ If none match, show empty state ONCE
   if (totalFiltered === 0) {
     return (
       <div className="p-8">
@@ -304,11 +255,9 @@ const toggleCheckbox = async (
     );
   }
 
-  // 3️⃣ Otherwise render each topic that has matches
   return (
     <>
       {sampleTopics.map((topic) => {
-        // Filter per-topic
         const filtered = topic.questions.filter((q) => {
           const key = `${topic.id}-${q.id}`;
           const local = progress[key] || {};
@@ -350,15 +299,12 @@ const toggleCheckbox = async (
               aria-expanded={openTopics.includes(topic.id)}
               aria-controls={`topic-${topic.id}-body`}
             >
-              <span className="text-lg font-medium text-gray-900 dark:text-white">
-                {topic.name}
-              </span>
+              <span className="text-lg font-medium text-gray-900 dark:text-white">{topic.name}</span>
               <span className="text-sm text-gray-500 dark:text-gray-400 font-medium px-2 py-2 ml-auto">
                 {completed ? "🎉 Completed" : `✅ ${solvedQ}/${totalQ} solved`}
               </span>
               <svg
-                className={`h-5 w-5 transition-transform ${openTopics.includes(topic.id) ? "rotate-180" : ""
-                  }`}
+                className={`h-5 w-5 transition-transform ${openTopics.includes(topic.id) ? "rotate-180" : ""}`}
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
@@ -369,10 +315,7 @@ const toggleCheckbox = async (
 
             {/* Topic Body */}
             {openTopics.includes(topic.id) && (
-              <div
-                id={`topic-${topic.id}-body`}
-                className="overflow-x-auto bg-background px-4 py-3"
-              >
+              <div id={`topic-${topic.id}-body`} className="overflow-x-auto bg-background px-4 py-3">
                 <table className="min-w-full table-fixed text-gray-900 dark:text-white">
                   <thead>
                     <tr className="border-b border-gray-300 dark:border-gray-600">
@@ -437,16 +380,7 @@ const toggleCheckbox = async (
                             <input
                               type="checkbox"
                               checked={isSolved}
-                              onChange={() =>
-                                toggleCheckbox(
-                                  key,
-                                  "isSolved",
-                                  q.difficulty,
-                                  // Pass topicCompleted only when this change likely completes the topic.
-                                  // We still have central detection so this is optional.
-                                  completed ? topic.name : undefined
-                                )
-                              }
+                              onChange={() => toggleCheckbox(key, "isSolved", q.difficulty, topic.name)}
                               className="accent-green-500 w-4 h-4"
                               aria-label={`Mark '${q.title}' as solved`}
                             />
@@ -455,7 +389,7 @@ const toggleCheckbox = async (
                             <input
                               type="checkbox"
                               checked={isMarked}
-                              onChange={() => toggleCheckbox(key, "isMarkedForRevision")}
+                              onChange={() => toggleCheckbox(key, "isMarkedForRevision", undefined, topic.name)}
                               className="accent-red-500 w-4 h-4"
                               aria-label={`Mark '${q.title}' for revision`}
                             />
@@ -475,7 +409,7 @@ const toggleCheckbox = async (
                               className="hover:scale-110 transition"
                               aria-expanded={openNoteId === key}
                             >
-                              {(!local.note || local.note.trim() === "") ? (
+                              {!local.note || local.note.trim() === "" ? (
                                 <Plus className="w-6 h-6 text-gray-600 dark:text-white" />
                               ) : (
                                 <StickyNote className="w-6 h-6 text-amber-500 dark:text-amber-400" />
