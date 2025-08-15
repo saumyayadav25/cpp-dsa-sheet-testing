@@ -123,7 +123,7 @@ export default function Navbar({ streak }: NavbarProps) {
                   : "text-foreground hover:text-blue-400"
               }`}
               // Added passHref and changed children to span to avoid nested anchor
-              legacyBehavior
+              
             >
               <span>{link.label}</span>
             </Link>
