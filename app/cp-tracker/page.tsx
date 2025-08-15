@@ -1,3 +1,4 @@
+// page.tsx
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
@@ -6,10 +7,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-// The utility function for client-side fetching remains the same
+// Import both utility functions
 import { fetchCodeforcesStats } from '../../utils/codeforces';
+import { fetchLeetCodeStats } from '../../utils/leetcode';
 
-// Import all chart components
+// Import all chart and dashboard components
+import LeetCodeDashboard from '../../components/LeetCodeDashboard';
 import RatingChart from '../../components/charts/RatingChart';
 import DifficultyBarChart from '../../components/charts/DifficultyBarChart';
 import TopicRadarChart from '../../components/charts/TopicRadarChart';
@@ -35,7 +38,6 @@ type UsernameMap = { [key in PlatformKey]?: string };
 type StatsMap = { [key in PlatformKey]?: any };
 
 export default function CPTrackerPage() {
-  // Restore state to allow no initial selection
   const [selectedPlatform, setSelectedPlatform] = useState<PlatformKey | null>(null);
   const [usernames, setUsernames] = useState<UsernameMap>({});
   const [stats, setStats] = useState<StatsMap>({});
@@ -43,13 +45,11 @@ export default function CPTrackerPage() {
   const [streak, setStreak] = useState(0);
   const [userId, setUserId] = useState<string | null>(null);
 
-  // This hook can be used for your own user session logic
   useEffect(() => {
     const fetchUser = async () => { setUserId("local-user"); };
     fetchUser();
   }, []);
 
-  // Load saved data from localStorage on initial render
   useEffect(() => {
     if (!userId) return;
     const localKey = `cp-stats-${userId}`;
@@ -66,7 +66,6 @@ export default function CPTrackerPage() {
   }, [userId]);
   
   const handleSelect = (platformKey: PlatformKey) => {
-    // Allows toggling selection on and off
     setSelectedPlatform(prev => (prev === platformKey ? null : platformKey));
   };
 
@@ -86,49 +85,65 @@ export default function CPTrackerPage() {
       return;
     }
 
-    // Handle fetching for the selected platform
     setLoading(true);
-    if (selectedPlatform === 'codeforces') {
-      try {
-        const cfData = await fetchCodeforcesStats(handle);
-        if (cfData) {
-          const updatedStats = { ...stats, codeforces: cfData };
-          setStats(updatedStats);
-          toast.success(`Successfully fetched stats for ${handle}!`);
-          if (userId) {
-            localStorage.setItem(`cp-stats-${userId}`, JSON.stringify({
-              stats: updatedStats,
-              usernames: { ...usernames },
-            }));
-          }
+    // Clear the non-selected platform's data for a clean switch
+    const newStats = { ...stats };
+    if (selectedPlatform === 'codeforces') delete newStats.leetcode;
+    if (selectedPlatform === 'leetcode') delete newStats.codeforces;
+    setStats(newStats);
+
+    try {
+        let newData = null;
+        if (selectedPlatform === 'codeforces') {
+            newData = await fetchCodeforcesStats(handle);
+        } else if (selectedPlatform === 'leetcode') {
+            newData = await fetchLeetCodeStats(handle);
+        } else {
+            toast.info(`Fetching for ${selectedPlatform} requires a backend.`);
+            setLoading(false);
+            return;
         }
-      } catch (err) {
+
+        if (newData) {
+            // Use a functional update to prevent race conditions with the clear operation
+            setStats(prevStats => ({ ...prevStats, [selectedPlatform]: newData }));
+            toast.success(`Successfully fetched stats for ${handle}!`);
+            if (userId) {
+              localStorage.setItem(`cp-stats-${userId}`, JSON.stringify({
+                stats: { ...stats, [selectedPlatform]: newData },
+                usernames: { ...usernames },
+              }));
+            }
+        }
+    } catch (err) {
         toast.error(err instanceof Error ? err.message : 'An unknown error occurred.');
-      } finally {
+    } finally {
         setLoading(false);
-      }
-    } else {
-      // Handle other platforms that require a backend
-      toast.info(`Fetching for ${selectedPlatform} requires a backend and is not supported in this client-only version.`);
-      setLoading(false);
     }
   };
   
-  // The combined stats for the top cards will work automatically
+  // Corrected this hook to use the right data structure
   const combinedStats = useMemo(() => {
     const initial = { Easy: 0, Medium: 0, Hard: 0, ActiveDays: 0 };
-    for (const stat of Object.values(stats)) {
+    for (const [platform, stat] of Object.entries(stats)) {
       if (!stat) continue;
-      initial.Easy += stat.Easy || 0;
-      initial.Medium += stat.Medium || 0;
-      initial.Hard += stat.Hard || 0;
-      initial.ActiveDays = Math.max(initial.ActiveDays || 0, stat.ActiveDays || 0);
+      if (platform === 'codeforces') {
+        initial.Easy += stat.Easy || 0;
+        initial.Medium += stat.Medium || 0;
+        initial.Hard += stat.Hard || 0;
+        initial.ActiveDays = Math.max(initial.ActiveDays || 0, stat.ActiveDays || 0);
+      } else if (platform === 'leetcode' && stat.submissionCounts) {
+        initial.Easy += stat.submissionCounts.easy?.solved || 0;
+        initial.Medium += stat.submissionCounts.medium?.solved || 0;
+        initial.Hard += stat.submissionCounts.hard?.solved || 0;
+      }
     }
     return initial;
   }, [stats]);
 
 
   const codeforcesData = stats.codeforces;
+  const leetcodeData = stats.leetcode;
 
   return (
     <>
@@ -153,7 +168,6 @@ export default function CPTrackerPage() {
         </motion.div>
 
         <div className="max-w-md mx-auto">
-          {/* --- PLATFORM SELECTOR RESTORED --- */}
           <motion.div className="flex flex-wrap justify-center gap-4 mb-8">
             {platforms.map(({ key, label }) => (
               <motion.button key={key} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
@@ -169,7 +183,6 @@ export default function CPTrackerPage() {
             ))}
           </motion.div>
 
-          {/* --- CONDITIONAL INPUT FIELD RESTORED --- */}
           <AnimatePresence>
             {selectedPlatform && (
               <motion.div initial={{ opacity: 0, y: -20, height: 0 }} animate={{ opacity: 1, y: 0, height: 'auto' }} exit={{ opacity: 0, y: -20, height: 0 }} transition={{ duration: 0.3 }} className="mb-8 flex flex-col items-center">
@@ -194,10 +207,11 @@ export default function CPTrackerPage() {
           </div>
         </div>
 
+        {/* --- EXCLUSIVE CODEFORCES DASHBOARD --- */}
         <AnimatePresence>
-          {codeforcesData && (
+          {codeforcesData && selectedPlatform === 'codeforces' && (
             <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.5 }}>
-              <h2 className="text-2xl text-center font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+              <h2 className="text-2xl text-center font-bold mb-8 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
                 Codeforces Analysis for {usernames.codeforces}
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -226,13 +240,21 @@ export default function CPTrackerPage() {
             </motion.div>
           )}
         </AnimatePresence>
+
+        {/* --- EXCLUSIVE LEETCODE DASHBOARD --- */}
+        <AnimatePresence>
+            {leetcodeData && selectedPlatform === 'leetcode' && (
+                <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.5, delay: 0.2 }}>
+                    <LeetCodeDashboard data={leetcodeData} username={usernames.leetcode || ''} />
+                </motion.div>
+            )}
+        </AnimatePresence>
       </div>
     </>
   );
 }
 
 // --- HELPER COMPONENTS ---
-
 type CardColor = 'green' | 'yellow' | 'red' | 'blue' | 'purple' | 'pink' | 'teal';
 interface StatCardProps { color: CardColor; label: string; value: number; }
 const StatCard = ({ color, label, value }: StatCardProps) => {
@@ -254,7 +276,7 @@ const StatCard = ({ color, label, value }: StatCardProps) => {
 };
 
 const ChartPlaceholder = ({ message }: { message: string }) => (
-  <div className="bg-white/5 dark:bg-zinc-900/70 border border-dashed border-gray-200/10 dark:border-zinc-700 p-6 rounded-xl shadow-md backdrop-blur-lg flex items-center justify-center min-h-[352px]">
+  <div className="bg-zinc-900/70 border border-dashed border-zinc-700 p-6 rounded-xl shadow-md backdrop-blur-lg flex items-center justify-center min-h-[352px]">
     <p className="text-gray-400 text-center">{message}</p>
   </div>
 );

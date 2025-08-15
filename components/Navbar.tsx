@@ -122,8 +122,10 @@ export default function Navbar({ streak }: NavbarProps) {
                   ? "text-blue-400 bg-blue-500/10 border border-blue-400/30"
                   : "text-foreground hover:text-blue-400"
               }`}
+              // Added passHref and changed children to span to avoid nested anchor
+              legacyBehavior
             >
-              {link.label}
+              <span>{link.label}</span>
             </Link>
           ))}
 
