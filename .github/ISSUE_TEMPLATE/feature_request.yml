@@ -1,0 +1,53 @@
+name: "Feature request"
+description: "Propose a new feature or improvement"
+title: "[Feature]: "
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Help us understand the value of your idea by describing the problem first, then your proposed solution.
+  - type: textarea
+    id: problem_statement
+    attributes:
+      label: Problem statement
+      description: What problem are you trying to solve? Why is it important?
+      placeholder: "Explain the user problem clearly."
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed_solution
+    attributes:
+      label: Proposed solution
+      description: How will you solve it? Be as specific as possible.
+      placeholder: "Describe the feature and how it should work."
+    validations:
+      required: true
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots / mockups (if applicable)
+      description: Drag and drop images or paste links to designs.
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional_context
+    attributes:
+      label: Additional context
+      description: Any alternatives considered or extra details.
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checklist
+      options:
+        - label: I searched existing issues and did not find a duplicate
+          required: true
+        - label: I am willing to contribute or collaborate on this feature
+          required: false

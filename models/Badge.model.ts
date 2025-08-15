@@ -1,14 +1,24 @@
 import { Schema, model, models, Document, Types } from "mongoose";
 
+export interface IBadgeItem {
+  name: string;
+  claimedAt: Date;
+}
+
 export interface IBadge extends Document {
-  userId:  Types.ObjectId;
-  badges: string[]; // e.g. ["Consistency_7", "Hard_Hitter"]
+  userId: Types.ObjectId;
+  badges: IBadgeItem[]; // Array of badges with timestamps
 }
 
 const BadgeSchema = new Schema<IBadge>(
   {
     userId: { type: Schema.Types.ObjectId, ref: "User", required: true, unique: true },
-    badges: [{ type: String }]
+    badges: [
+      {
+        name: { type: String, required: true },
+        claimedAt: { type: Date, default: Date.now }
+      }
+    ]
   },
   { timestamps: true }
 );
