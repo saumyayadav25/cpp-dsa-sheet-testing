@@ -4,7 +4,7 @@ export interface IUser extends Document {
   full_name?: string;
   email: string;
   password?: string;
-  avatar?: string;
+  avatar?: string | null;
   provider?: "credentials" | "google" | "github";
   isVerified?: boolean;
   otp?: string;
@@ -19,7 +19,7 @@ const UserSchema = new Schema<IUser>({
   full_name: String,
   email: { type: String, required: true, unique: true },
   password: String,
-  avatar: String,
+  avatar: { type: String, default: null },
   provider: { type: String, default: "credentials" },
   isVerified: { type: Boolean, default: false },
   otp: String,
