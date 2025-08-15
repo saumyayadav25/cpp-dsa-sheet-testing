@@ -257,13 +257,18 @@ export default function AuthButtons() {
   whileTap={{ scale: 0.95 }}
 >
   {user ? (
-    <Image
-      src={user.avatar || "/images/default-avatar.png" }
-      alt="Avatar"
-      width={36}
-      height={36}
-      className="object-cover w-full h-full"
-    />
+  <img
+  src={user?.avatar || "/images/default-avatar.png"}
+  alt="Avatar"
+  className="object-cover w-full h-full rounded-full"
+   />
+    // <Image
+    //   src={user.avatar || "/images/default-avatar.png" }
+    //   alt="Avatar"
+    //   width={36}
+    //   height={36}
+    //   className="object-cover w-full h-full"
+    // />
   ) : (
     <div className="w-full h-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center">
       <Image
