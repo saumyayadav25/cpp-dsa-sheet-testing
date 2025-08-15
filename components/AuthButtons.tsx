@@ -225,26 +225,78 @@ export default function AuthButtons() {
           Sign In
         </motion.a>
       ) : (
-<motion.a
-href={user ? `/profile/${encodeURIComponent(user._id)}` : "#"}
+
+
+// <motion.a
+// // href={user ? `/profile/${encodeURIComponent(user._id)}` : "#"}
+// href={user ? "/profile_pic/settings/avatar" : "#"}
         
-  className="flex items-center gap-2 px-3 py-2 bg-white/10 backdrop-blur-sm rounded-lg hover:bg-white/20 transition-all duration-200 text-white text-sm font-medium border border-white/10"
+//   className="flex items-center gap-2 px-3 py-2 bg-white/10 backdrop-blur-sm rounded-lg hover:bg-white/20 transition-all duration-200 text-white text-sm font-medium border border-white/10"
+//   whileHover={{ scale: 1.05 }}
+//   whileTap={{ scale: 0.95 }}
+// >
+//   <div className="w-9 h-9 rounded-full overflow-hidden bg-gradient-to-r from-blue-500 to-purple-500">
+//     {user?.avatar ? (
+//       <Image src={user.avatar} alt="Avatar" width={32} height={32} />
+//     ) : (
+//       // `${user?.full_name?.split(" ")[0]?.charAt(0) ?? "U"}${
+//       //   user?.full_name?.split(" ")[1]?.charAt(0) ?? ""
+//       // }`.toUpperCase()
+//       <Image src="/images/default-avatar.svg" alt="Default Avatar" width={32} height={32} />
+//     )}
+//   </div>
+//   {/* <span className="max-w-20 truncate">{user?.full_name}</span> */}
+// </motion.a>
+
+//       )}
+
+<motion.a
+  href="#"
+  className="relative w-9 h-9 rounded-full overflow-hidden flex items-center justify-center border border-white/10 group"
   whileHover={{ scale: 1.05 }}
   whileTap={{ scale: 0.95 }}
 >
-  <div className="w-6 h-6 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-xs font-bold">
-    {user?.avatar ? (
-      <Image src={user.avatar} alt="U" width={25} height={25} />
-    ) : (
-      `${user?.full_name?.split(" ")[0]?.charAt(0) ?? "U"}${
-        user?.full_name?.split(" ")[1]?.charAt(0) ?? ""
-      }`.toUpperCase()
-    )}
-  </div>
-  <span className="max-w-20 truncate">{user?.full_name}</span>
-</motion.a>
+  {user ? (
+    <Image
+      src={user.avatar || "/images/default-avatar.png" }
+      alt="Avatar"
+      width={36}
+      height={36}
+      className="object-cover w-full h-full"
+    />
+  ) : (
+    <div className="w-full h-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center">
+      <Image
+        src="/images/default-avatar.png"
+        alt="Default Avatar"
+        width={20}
+        height={20}
+      />
+    </div>
+  )}
 
-      )}
+  {/* Hover Edit Button */}
+  <Link
+    href="/profile_pic/settings/avatar"
+    className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={2}
+      stroke="white"
+      className="w-4 h-4"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M15.232 5.232a3 3 0 014.243 4.243L7.5 21H3v-4.5L15.232 5.232z"
+      />
+    </svg>
+  </Link>
+</motion.a>
+    )}
 
       {/* Hamburger Menu */}
       <div className="relative" ref={dropdownRef}>
