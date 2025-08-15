@@ -1,10 +1,10 @@
 ### Related Issue(s)
 - Fixes #<issue_number>
 
-### Problem Statement Summary
+### Summary
 Briefly explain the problem and how this PR solves it.
 
-### What's implemented
+### Changes
 - 
 - 
 - 
