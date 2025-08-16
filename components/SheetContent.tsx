@@ -295,7 +295,7 @@ export default function SheetContent({
             {/* Topic Header */}
             <button
               onClick={() => toggleTopic(topic.id)}
-              className="w-full px-4 py-3 flex justify-between items-center bg-background hover:bg-gray-100 dark:hover:bg-zinc-900 transition"
+              className="w-full px-4 py-3 flex justify-between items-center bg-background hover:bg-gray-100 dark:hover:bg-zinc-900 transition rounded-lg"
               aria-expanded={openTopics.includes(topic.id)}
               aria-controls={`topic-${topic.id}-body`}
             >
@@ -315,7 +315,7 @@ export default function SheetContent({
 
             {/* Topic Body */}
             {openTopics.includes(topic.id) && (
-              <div id={`topic-${topic.id}-body`} className="overflow-x-auto bg-background px-4 py-3">
+              <div id={`topic-${topic.id}-body`} className="overflow-x-auto bg-background px-4 py-3 rounded-lg">
                 <table className="min-w-full table-fixed text-gray-900 dark:text-white">
                   <thead>
                     <tr className="border-b border-gray-300 dark:border-gray-600">
