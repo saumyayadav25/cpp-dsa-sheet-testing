@@ -39,7 +39,7 @@ export default function Navbar({ streak }: NavbarProps) {
     { href: "/sheet", label: "Sheet", isActive: pathname === "/sheet" },
     { href: "/progress", label: "Progress", isActive: pathname === "/progress" },
     { href: "/contributors", label: "Contributors", isActive: pathname === "/contributors" },
-    { href: "/timequiz", label: "Time Quiz", isActive: pathname === "/timequiz" },
+    { href: "/timequiz", label: "Timed Quiz", isActive: pathname === "/timequiz" },
   ];
 
   const streakVariants = {
@@ -58,7 +58,7 @@ export default function Navbar({ streak }: NavbarProps) {
         bg-background px-4 sm:px-10`}
     >
       <div className="max-w-7xl w-full mx-auto flex items-center justify-between gap-4">
-        
+
         {/* Logo */}
         <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 1.0 }}>
           <Link
@@ -77,7 +77,7 @@ export default function Navbar({ streak }: NavbarProps) {
 
         {/* Desktop Links */}
         <div className="hidden sm:flex items-center gap-6 text-foreground flex-nowrap">
-          
+
           {/* Streak Icon */}
           <motion.div
             title={`Streak: ${streak} day${streak === 1 ? "" : "s"}`}
@@ -92,11 +92,10 @@ export default function Navbar({ streak }: NavbarProps) {
             className="cursor-pointer"
           >
             <div
-              className={`flex items-center gap-2 px-3 py-2 rounded-xl transition-all duration-300 ${
-                streak > 0
+              className={`flex items-center gap-2 px-3 py-2 rounded-xl transition-all duration-300 ${streak > 0
                   ? "text-orange-400"
                   : "text-gray-400 opacity-50 hover:opacity-75"
-              }`}
+                }`}
             >
               <FaFire className="text-lg" />
               {streak > 0 && (
@@ -117,13 +116,14 @@ export default function Navbar({ streak }: NavbarProps) {
             <Link
               key={link.href}
               href={link.href}
-              className={`relative px-3 py-2 rounded-lg whitespace-nowrap transition-all duration-300 ${
-                link.isActive
+              className={`relative px-3 py-2 rounded-lg whitespace-nowrap transition-all duration-300 ${link.isActive
                   ? "text-blue-400 bg-blue-500/10 border border-blue-400/30"
                   : "text-foreground hover:text-blue-400"
+
               }`}
               // Added passHref and changed children to span to avoid nested anchor
               
+
             >
               <span>{link.label}</span>
             </Link>
