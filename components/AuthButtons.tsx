@@ -3,13 +3,13 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
-import Image from "next/image";
+import Link from "next/link";
 import { Button } from "./ui/button";
 import { LogOut } from "lucide-react";
 import { toast } from "sonner";
 import { FiSearch, FiX } from "react-icons/fi";
 import { FaFire } from "react-icons/fa";
-import Link from "next/link";
+
 import { usePathname } from "next/navigation";
 interface User {
   _id: string;
@@ -22,7 +22,7 @@ export default function AuthButtons() {
   const pathname = usePathname();
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  
+
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState<User | null>(null);
 
@@ -65,7 +65,7 @@ export default function AuthButtons() {
       label: "Support the project",
       href: "https://www.buymeacoffee.com/saumyayadav",
       icon: "🔥",
-    },    
+    },
   ];
   const handleLogOut = async () => {
     const res = await axios.post("/api/logout");
@@ -184,100 +184,110 @@ export default function AuthButtons() {
     },
   };
 
- const HamburgerIcon = ({ isOpen }: { isOpen: boolean }) => (
-  <div className="relative w-6 h-6 flex flex-col justify-center items-center">
-    <motion.span
-      animate={{
-        rotate: isOpen ? 45 : 0,
-        y: isOpen ? 0 : -4,
-      }}
-      transition={{ duration: 0.3, ease: "easeInOut" }}
-      className="block w-5 h-0.5 bg-foreground origin-center absolute"
-    />
-    <motion.span
-      animate={{
-        opacity: isOpen ? 0 : 1,
-        x: isOpen ? -10 : 0,
-      }}
-      transition={{ duration: 0.2, ease: "easeInOut" }}
-      className="block w-5 h-0.5 bg-foreground origin-center absolute"
-    />
-    <motion.span
-      animate={{
-        rotate: isOpen ? -45 : 0,
-        y: isOpen ? 0 : 4,
-      }}
-      transition={{ duration: 0.3, ease: "easeInOut" }}
-      className="block w-5 h-0.5 bg-foreground origin-center absolute"
-    />
-  </div>
-);
+  const HamburgerIcon = ({ isOpen }: { isOpen: boolean }) => (
+    <div className="relative w-6 h-6 flex flex-col justify-center items-center">
+      <motion.span
+        animate={{
+          rotate: isOpen ? 45 : 0,
+          y: isOpen ? 0 : -4,
+        }}
+        transition={{ duration: 0.3, ease: "easeInOut" }}
+        className="block w-5 h-0.5 bg-foreground origin-center absolute"
+      />
+      <motion.span
+        animate={{
+          opacity: isOpen ? 0 : 1,
+          x: isOpen ? -10 : 0,
+        }}
+        transition={{ duration: 0.2, ease: "easeInOut" }}
+        className="block w-5 h-0.5 bg-foreground origin-center absolute"
+      />
+      <motion.span
+        animate={{
+          rotate: isOpen ? -45 : 0,
+          y: isOpen ? 0 : 4,
+        }}
+        transition={{ duration: 0.3, ease: "easeInOut" }}
+        className="block w-5 h-0.5 bg-foreground origin-center absolute"
+      />
+    </div>
+  );
 
 
   return (
     <div className="flex items-center gap-3">
       {/* Login/Sign In Button or User Profile */}
       {!isLoggedIn ? (
-        <motion.a
-          href="/sign-in"
-          className="px-4 w-20 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-sm font-semibold rounded-lg hover:from-blue-700 hover:to-purple-700 whitespace-nowrap"
-        >
-          Sign In
-        </motion.a>
+        <motion.div>
+          <Link
+            href="/sign-in"
+            className="px-4 w-20 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-sm font-semibold rounded-lg hover:from-blue-700 hover:to-purple-700 whitespace-nowrap"
+          >
+            Sign In
+          </Link>
+        </motion.div>
       ) : (
 
-<motion.a
-  href={user ? `/profile/${encodeURIComponent(user._id)}` : "#"} //Redirects to user profile dashboard
-  className="relative flex items-center gap-2 px-3 py-2 bg-white/10 backdrop-blur-sm rounded-lg hover:bg-white/20 transition-all duration-200 text-white text-sm font-medium border border-white/10"
-  whileHover={{ scale: 1.05 }}
-  whileTap={{ scale: 0.95 }}
->
-  {/* Avatar Circle */}
-  <div className="relative w-7 h-7 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center overflow-hidden">
-    {user?.avatar ? (
-      <img
-        src={user.avatar}
-        alt="U"
-        width={25}
-        height={25}
-        className="object-cover w-full h-full"
-      />
-    ) : (
-      <img
-        src="/images/default-avatar.png"
-        alt="Default Avatar"
-        width={25}
-        height={25}
-        className="object-cover w-full h-full"
-      />
-    )}
+        <Link
+          href={user ? `/profile/${encodeURIComponent(user._id)}` : "#"} //Redirects to user profile dashboard
+          className="relative flex items-center gap-2 px-3 py-2 bg-white/10 backdrop-blur-sm rounded-lg hover:bg-white/20 transition-all duration-200 text-white text-sm font-medium border border-white/10"
+        >
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="flex items-center gap-2 w-full"
+          >
+            {/* Avatar Circle */}
+            <div className="relative w-7 h-7 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center overflow-hidden">
+              {user?.avatar ? (
+                <img
+                  src={user.avatar}
+                  alt="U"
+                  width={25}
+                  height={25}
+                  className="object-cover w-full h-full"
+                />
+              ) : (
+                <img
+                  src="/images/default-avatar.png"
+                  alt="Default Avatar"
+                  width={25}
+                  height={25}
+                  className="object-cover w-full h-full"
+                />
+              )}
 
-    {/* Hover Edit Button */}
-    <Link
-      href="/profile_pic/settings/avatar"  //edit button on profile_pic redirects to profile settings page
-      className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-200 rounded-full"
-      onClick={e => e.stopPropagation()} // prevent navigating to profile when clicking this
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        strokeWidth={2}
-        stroke="white"
-        className="w-4 h-4"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M15.232 5.232a3 3 0 014.243 4.243L7.5 21H3v-4.5L15.232 5.232z"
-        />
-      </svg>
-    </Link>
-  </div>
+              {/* Hover Edit Button */}
+              <button
+                type="button"
+                className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-200 rounded-full"
+                onClick={e => {
+                  e.stopPropagation();
+                  window.location.href = "/profile_pic/settings/avatar";
+                }} // prevent navigating to profile when clicking this and redirect
+                aria-label="Edit Avatar"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={2}
+                  stroke="white"
+                  className="w-4 h-4"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M15.232 5.232a3 3 0 014.243 4.243L7.5 21H3v-4.5L15.232 5.232z"
+                  />
+                </svg>
+              </button>
+            </div>
 
-  <span className="max-w-20 truncate">{user?.full_name}</span>
-</motion.a>
-    )}
+            <span className="max-w-20 truncate">{user?.full_name}</span>
+          </motion.div>
+        </Link>
+      )}
 
       {/* Hamburger Menu */}
       <div className="relative" ref={dropdownRef}>
@@ -389,11 +399,10 @@ export default function AuthButtons() {
                           className={`relative px-3 py-2 rounded-lg transition-all duration-300 group hover:text-blue-400 hover:cursor-pointer hover:bg-white/5`}
                         >
                           <span
-                            className={`relative z-10 ${
-                              link.isActive
+                            className={`relative z-10 ${link.isActive
                                 ? "text-blue-400"
                                 : "text-white hover:text-blue-400"
-                            }`}
+                              }`}
                           >
                             {link.label}
                           </span>

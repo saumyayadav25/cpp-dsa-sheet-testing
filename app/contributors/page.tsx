@@ -337,7 +337,7 @@ export default function ContributorsPage() {
   if (loading) {
     return (
       <>
-        <Navbar streak={streak} />
+        <Navbar />
         <main className="min-h-screen py-24 px-4 sm:px-8 lg:px-16 bg-background text-white">
           <div className="max-w-7xl mx-auto text-center">
             <div className="animate-pulse">
@@ -363,7 +363,7 @@ export default function ContributorsPage() {
   if (error) {
     return (
       <>
-        <Navbar streak={streak} />
+        <Navbar />
         <main className="min-h-screen py-24 px-4 sm:px-8 lg:px-16 bg-background text-white">
           <div className="max-w-7xl mx-auto text-center">
             <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-8">
@@ -381,7 +381,7 @@ export default function ContributorsPage() {
 
   return (
     <>
-      <Navbar streak={streak} />
+      <Navbar />
       <main className="min-h-screen py-24 px-4 sm:px-8 lg:px-16 bg-background transition-colors duration-300">
         <section aria-labelledby="contributors-heading" className="max-w-7xl mx-auto">
           {/* Header Section */}

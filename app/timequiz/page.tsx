@@ -174,7 +174,7 @@ const TimeQuiz = () => {
   return (
     <>
       {/* Show navbar only when quiz is not active (welcome screen or finished) */}
-      {(showWelcome || isFinished) && <Navbar streak={streak} />}
+      {(showWelcome || isFinished) && <Navbar />}
       <main 
         className={`relative bg-white dark:bg-black min-h-screen flex flex-col items-center justify-center text-center px-4 sm:px-6 py-8 sm:py-16 bg-cover bg-center bg-no-repeat overflow-hidden ${
           (showWelcome || isFinished) ? 'pt-16 sm:pt-24' : 'pt-8'
