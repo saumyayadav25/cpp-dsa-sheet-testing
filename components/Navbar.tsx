@@ -39,7 +39,7 @@ export default function Navbar({ streak }: NavbarProps) {
     { href: "/sheet", label: "Sheet", isActive: pathname === "/sheet" },
     { href: "/progress", label: "Progress", isActive: pathname === "/progress" },
     { href: "/contributors", label: "Contributors", isActive: pathname === "/contributors" },
-    { href: "/timequiz", label: "Timed quiz", isActive: pathname === "/timequiz" },
+    { href: "/timequiz", label: "Timed Quiz", isActive: pathname === "/timequiz" },
   ];
 
   const streakVariants = {
