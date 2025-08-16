@@ -27,7 +27,7 @@ export default function AvatarSettings() {
 
   return (
     <>
-      <Navbar streak={0} />
+      <Navbar />
       <div className="max-w-md mx-auto p-30">
         <h1 className="text-2xl font-semibold mb-4">Profile Picture</h1>
         <img

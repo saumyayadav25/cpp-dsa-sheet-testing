@@ -147,7 +147,7 @@ export default function CPTrackerPage() {
 
   return (
     <>
-      <Navbar streak={streak} />
+      <Navbar />
       <div className="min-h-screen bg-background text-white px-4 md:px-12 py-24 transition-colors duration-300">
         <ToastContainer position="top-right" autoClose={4000} hideProgressBar theme="dark" />
         

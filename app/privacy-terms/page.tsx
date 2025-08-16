@@ -49,7 +49,7 @@ function PrivacyTermsContent() {
 
   return (
     <>
-      <Navbar streak={streak} />
+      <Navbar />
       <main className="min-h-screen py-24 px-4 sm:px-8 lg:px-16 bg-background transition-colors duration-300">
         <section aria-labelledby="legal-heading" className="max-w-4xl mx-auto">
           {/* Header Section */}
