@@ -3,7 +3,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextResponse } from 'next/server';
 
 // Make sure your GOOGLE_API_KEY is in your .env.local file
-const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY!);
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_KEY!);
 
 export async function GET() {
   try {
