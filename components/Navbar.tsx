@@ -119,9 +119,13 @@ export default function Navbar({ streak }: NavbarProps) {
               className={`relative px-3 py-2 rounded-lg whitespace-nowrap transition-all duration-300 ${link.isActive
                   ? "text-blue-400 bg-blue-500/10 border border-blue-400/30"
                   : "text-foreground hover:text-blue-400"
-                }`}
+
+              }`}
+              // Added passHref and changed children to span to avoid nested anchor
+              
+
             >
-              {link.label}
+              <span>{link.label}</span>
             </Link>
           ))}
 
