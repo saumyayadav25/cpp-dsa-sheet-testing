@@ -10,7 +10,6 @@ import TopicProgress from '@/components/TopicProgress';
 import RecentActivity from '@/components/RecentActivity';
 import StreakCalendar from '@/components/StreakCalendar';
 import axios from 'axios';
-import { set } from 'mongoose';
 
 interface User {
   _id: string;
@@ -133,7 +132,7 @@ const fetchProgress = async () => {
 
   return (
     <>
-      <Navbar streak={streak} />
+      <Navbar />
       <main className="min-h-screen bg-white dark:bg-background text-gray-900 dark:text-white px-4 md:px-12 py-24 transition-colors duration-300">
 
         {/* Header Section */}

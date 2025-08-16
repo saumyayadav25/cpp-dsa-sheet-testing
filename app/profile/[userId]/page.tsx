@@ -21,7 +21,7 @@ export default function ProfilePage({ params }: { params: Promise<{ userId: stri
         const progressRes = await axios.get(`/api/progress/${userId}`);
         setProgress(progressRes.data.progress || null);
         // setBadges(progressRes.data.badges || []);
-        console.log("Profile data fetched successfully", progressRes.data.progress.streakCount);
+        console.log("Profile data fetched successfully", progressRes.data.progress);
         setStreak(progressRes.data.progress.streakCount || 0);
 
         // Optionally fetch badges separately if needed
@@ -131,20 +131,20 @@ export default function ProfilePage({ params }: { params: Promise<{ userId: stri
 
   return (
     <div className="min-h-screen bg-white dark:bg-background text-gray-900 dark:text-white px-6 py-28">
-      <Navbar streak={streak} />
+      <Navbar/>
       <div className="max-w-6xl mx-auto">
         {/* Header Section */}
         <div className="mb-8">
           <div className="backdrop-blur-md bg-white/10 rounded-2xl p-6 border border-white/20">
             <div className="flex items-center gap-4 mb-4">
               <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-2xl font-bold">
-                {progress.userId?.slice(0, 2)?.toUpperCase() || "??"}
+                {userId?.slice(0, 2)?.toUpperCase() || "??"}
               </div>
               <div>
                 <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
                   Profile Dashboard
                 </h1>
-                <p className="text-gray-300">User ID: {progress.userId}</p>
+                <p className="text-gray-300">User ID: {userId}</p>
               </div>
             </div>
             <div className="flex items-center gap-2 text-sm text-gray-400">

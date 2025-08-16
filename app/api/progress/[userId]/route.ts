@@ -6,7 +6,7 @@ import { Badge } from "@/models/Badge.model";
 export async function GET(_req: Request, context: any) {
   try {
     await connect();
-    const { userId } = context.params;
+    const { userId } = await context.params;
 
     const progress = await Progress.findOne({ userId }).lean() as any;
     const badgeDocRaw = await Badge.findOne({ userId }).lean();

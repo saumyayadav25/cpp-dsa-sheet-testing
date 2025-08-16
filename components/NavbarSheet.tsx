@@ -8,11 +8,18 @@ import { motion, AnimatePresence } from "framer-motion";
 import { usePathname } from "next/navigation";
 import AuthButtons from "@/components/AuthButtons";
 import { ModeToggle } from "./mode-toggle";
+import axios from "axios";
+
+interface User {
+  _id: string;
+  full_name: string;
+  email: string;
+  avatar: string;
+}
 
 type NavbarProps = {
   searchTerm?: string;
   setSearchTerm?: (term: string) => void;
-  streak: number;
 };
 
 const HamburgerIcon = ({ isOpen }: { isOpen: boolean }) => (
@@ -44,7 +51,7 @@ const HamburgerIcon = ({ isOpen }: { isOpen: boolean }) => (
   </div>
 );
 
-export default function NavbarSheet({ searchTerm, setSearchTerm, streak }: NavbarProps) {
+export default function NavbarSheet({ searchTerm, setSearchTerm}: NavbarProps) {
   const [showMobileSearch, setShowMobileSearch] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
@@ -61,6 +68,40 @@ export default function NavbarSheet({ searchTerm, setSearchTerm, streak }: Navba
     if (showMobileSearch) setShowMobileSearch(false);
     setIsMobileMenuOpen((v) => !v);
   };
+    const [streak, setStreak] = useState(0);
+      const [user, setUser] = useState<User | null>(null);
+  
+    // Check auth once
+    useEffect(() => {
+      const checkAuth = async () => {
+        try {
+          const res = await axios.get("/api/check-auth");
+          if (res.status === 200) {
+            // setIsLoggedIn(true);
+            setUser(res.data?.user);
+            console.log("User authenticated:", res.data.user);
+          }
+        } catch (err) {
+          console.error("Auth check failed:", err);
+        }
+      };
+      checkAuth();
+    }, []);
+    useEffect(()=>{
+       if (!user?._id) return;
+      const fetchStreak = async () => {
+        try {
+          console.log("Fetching streak for user:", user?._id);
+          const response = await axios.get(`/api/progress/${user?._id}`);
+          console.log("Streak response:", response.data.progress.streakCount);
+          setStreak(response.data.progress.streakCount);
+        } catch (error) {
+          console.log(error);
+        }
+      };
+      fetchStreak();
+    }, [user?._id]);
+  
 
   useEffect(() => {
     let ticking = false;
