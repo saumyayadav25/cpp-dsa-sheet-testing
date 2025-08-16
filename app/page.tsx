@@ -1,5 +1,6 @@
 "use client";
-
+import { CardSpotlight } from "@/components/ui/card-spotlight";
+import { AnimatedTooltip } from "@/components/ui/animated-tooltip";
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import {
@@ -125,7 +126,43 @@ const testimonials: Testimonial[] = [
     visibility: "full",
   },
 ];
-
+const people = [
+  {
+    id: 1,
+    name: "Prakhar Sinha",
+    designation: "Student",
+    image:
+      "https://images.unsplash.com/photo-1599566150163-29194dcaad36?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=3387&q=80",
+  },
+  {
+    id: 2,
+    name: "Aryan",
+    designation: "Student",
+    image:
+      "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8YXZhdGFyfGVufDB8fDB8fHww&auto=format&fit=crop&w=800&q=60",
+  },
+  {
+    id: 3,
+    name: "Roshan Gorakhpuriya",
+    designation: "Student",
+    image:
+      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fGF2YXRhcnxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=800&q=60",
+  },
+  {
+    id: 4,
+    name: "Supriya Pandey",
+    designation: "Student / Aspiring Developer",
+    image:
+      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=3540&q=80",
+  },
+  {
+    id: 5,
+    name: "Anonymous User B",
+    designation: "Anonymous",
+    image:
+      "https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=3534&q=80",
+  },
+];
 // FAQ data
 const faqData = [
   {
@@ -905,10 +942,12 @@ export default function Home() {
               </motion.a>
             </div>
           </motion.div>
+           <div className="flex flex-row items-center justify-center mb-10">
+      <AnimatedTooltip items={people} />
+    </div>
 
           <motion.div
-            variants={containerVariants}
-            className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5"
+            className="flex  flex-wrap justify-center items-start gap-6"
           >
             {testimonials.map(
               ({ name, designation, rating, text, visibility }, idx) => {
@@ -918,12 +957,13 @@ export default function Home() {
 
                 return (
                   <motion.div
-                    key={idx}
-                    variants={itemVariants}
-                    whileHover={{ scale: 1.03, y: -5 }}
-                    className="group"
+                  key={idx}
+                  variants={itemVariants}
+                  whileHover={{ scale: 1.03, y: -5 }}
+                  className="group "
                   >
-                    <div className="bg-white/70 dark:bg-white/5 backdrop-blur-sm border border-gray-200/50 dark:border-white/10 rounded-2xl p-6 h-full transition-all duration-300 hover:shadow-xl hover:bg-white/80 dark:hover:bg-white/10">
+                    <CardSpotlight>
+                    <div className=" backdrop-blur-sm p-2 rounded-2xl min-h-52 w-44 transition-all duration-300 hover:shadow-xl ">
                       <div className="flex items-center gap-3 mb-4">
                         <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-white shadow-lg">
                           <FaUserCircle className="text-xl" />
@@ -938,6 +978,7 @@ export default function Home() {
                             </p>
                           )}
                         </div>
+                        
                       </div>
 
                       <p className="text-gray-600 dark:text-gray-300 text-sm mb-4 italic leading-relaxed">
@@ -953,11 +994,20 @@ export default function Home() {
                           )
                         )}
                       </div>
+                      
                     </div>
+                                      <motion.div
+                    className="h-px bg-gradient-to-r from-transparent via-white/20 to-transparent mt-2"
+                    initial={{ scaleX: 0 }}
+                    animate={{ scaleX: 1 }}
+                    transition={{ delay: 0.5, duration: 0.5 }}
+                  />
+                  </CardSpotlight>
                   </motion.div>
                 );
               }
             )}
+
           </motion.div>
         </div>
       </motion.section>
