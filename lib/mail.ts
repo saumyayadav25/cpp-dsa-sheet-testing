@@ -19,11 +19,13 @@ export const sendEmail = async ({
 }) => {
   try {
     await transporter.sendMail({
-      from: `"DSAMate" <${process.env.GOOGLE_APP_USER}>`,
+      from: process.env.GOOGLE_APP_USER || '' ,
+    
       to,
       subject,
       html,
     });
+    
   
   } catch (error) {
     console.log("Failed to send email", error);
