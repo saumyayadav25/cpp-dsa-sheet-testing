@@ -35,7 +35,7 @@ export const CardSpotlight = ({
   return (
     <div
       className={cn(
-        "group/spotlight p-5  rounded-md relative border border-neutral-800 dark:hover:border-blue-950 hover:drop-shadow-blue-950 hover:drop-shadow-sm bg-black dark:border-neutral-800",
+        "group/spotlight p-2 hover:scale-105 transition-all duration-400 rounded-md relative border border-neutral-800 dark:hover:border-blue-950 hover:drop-shadow-blue-950 hover:drop-shadow-sm bg-black dark:border-neutral-800",
         className
       )}
       onMouseMove={handleMouseMove}
@@ -51,7 +51,7 @@ export const CardSpotlight = ({
             radial-gradient(
               ${radius}px circle at ${mouseX}px ${mouseY}px,
               white,
-              transparent 80%
+              transparent 60%
             )
           `,
         }}

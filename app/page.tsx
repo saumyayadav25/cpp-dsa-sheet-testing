@@ -15,7 +15,7 @@ import { BiSliderAlt } from "react-icons/bi";
 import ReportIssueButton from "@/components/ReportIssueButton";
 import Navbar from "@/components/Navbar";
 import { motion, useInView, AnimatePresence } from "framer-motion";
-
+import { MarqueeDemo } from "@/components/MarqueeDemo";
 // Custom hook for animated counting
 // Animates numbers from 1 to target value when element comes into view
 // Works with strings like "2100+", "30+", etc. and preserves the suffix
@@ -82,50 +82,8 @@ const itemVariants = {
   },
 };
 
-type Testimonial = {
-  name: string;
-  designation?: string;
-  rating: number; // from 1 to 5
-  text: string;
-  visibility: "full" | "nameOnly" | "anonymous";
-};
 
-const testimonials: Testimonial[] = [
-  {
-    name: "Prakhar Sinha",
-    designation: "Student",
-    rating: 5,
-    text: "It really helped me by listing important questions discussed in class, so we didn't have to visit lectures again to revise those questions. Overall, it's the best!",
-    visibility: "full",
-  },
-  {
-    name: "Aryan",
-    designation: "Student",
-    rating: 5,
-    text: "It's amazing! The way in which we can track our progress is amazing.",
-    visibility: "full",
-  },
-  {
-    name: "",
-    rating: 5,
-    text: "DSAMate bhot bhot accha laga mujhe! Especially the platform filter where we can choose LeetCode, GFG, etc. Now I'm definitely going to start practicing questions from DSAMate as well.",
-    visibility: "anonymous",
-  },
-  {
-    name: "Roshan Gorakhpuriya",
-    designation: "Student",
-    rating: 5,
-    text: "Structured question which covers all the supreme batch questions.",
-    visibility: "full",
-  },
-  {
-    name: "Supriya Pandey",
-    designation: "Student / Aspiring Developer",
-    rating: 5,
-    text: "EXCELLENT! Helped a lot in my dsa journey. ",
-    visibility: "full",
-  },
-];
+
 const people = [
   {
     id: 1,
@@ -949,7 +907,7 @@ export default function Home() {
           <motion.div
             className="flex  flex-wrap justify-center items-start gap-6"
           >
-            {testimonials.map(
+            {/* {testimonials.map(
               ({ name, designation, rating, text, visibility }, idx) => {
                 const displayName =
                   visibility === "anonymous" ? "Anonymous User" : name;
@@ -1006,7 +964,8 @@ export default function Home() {
                   </motion.div>
                 );
               }
-            )}
+            )} */}
+            <MarqueeDemo />
 
           </motion.div>
         </div>
