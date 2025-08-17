@@ -392,7 +392,7 @@ export default async function ContributorsPage() {
       <main className="min-h-screen py-24 px-4 sm:px-8 lg:px-16 bg-background transition-colors duration-300">
         <section aria-labelledby="contributors-heading" className="max-w-7xl mx-auto">
 
-          {* <h1 className="text-2xl font-bold mb-4">Leaderboard</h1>
+          {/* <h1 className="text-2xl font-bold mb-4">Leaderboard</h1>
           <table className="table-auto border-collapse border border-gray-400 w-full mb-8">
             <thead>
               <tr>
@@ -408,7 +408,7 @@ export default async function ContributorsPage() {
                 </tr>
               ))}
             </tbody>
-          </table>
+          </table> */}
           
 
           {/* Header Section */}
