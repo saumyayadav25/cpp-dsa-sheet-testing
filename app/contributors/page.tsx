@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import Navbar from '@/components/Navbar';
+import { fetchContributions } from "@/utils/githubContributions";
 
 interface Contributor {
   login: string;
@@ -261,12 +262,18 @@ const ContributorCard: React.FC<ContributorCardProps> = ({ contributor, index, t
   );
 };
 
-export default function ContributorsPage() {
+export default async function ContributorsPage() {
   const [contributors, setContributors] = useState<Contributor[]>([]);
   const [stats, setStats] = useState<ContributorStats | null>(null);
   const [streak, setStreak] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+
+  const res = await fetch("https://api.github.com/repos/saumyayadav25/cpp-dsa-sheet-testing/contributors");
+  const contributorsList = await res.json(); // 🔹 naam change kiya
+
+  // 🟢 Leaderboard ke liye points fetch karo
+  const leaderboard = await fetchContributions("saumyayadav25", "cpp-dsa-sheet-testing");
 
   const fadeInUp = {
     hidden: { opacity: 0, y: 20 },
@@ -384,6 +391,25 @@ export default function ContributorsPage() {
       <Navbar />
       <main className="min-h-screen py-24 px-4 sm:px-8 lg:px-16 bg-background transition-colors duration-300">
         <section aria-labelledby="contributors-heading" className="max-w-7xl mx-auto">
+
+          <h1 className="text-2xl font-bold mb-4">Leaderboard</h1>
+          <table className="table-auto border-collapse border border-gray-400 w-full mb-8">
+            <thead>
+              <tr>
+                <th className="border px-4 py-2">Contributor</th>
+                <th className="border px-4 py-2">Points</th>
+              </tr>
+            </thead>
+            <tbody>
+              {Object.entries(leaderboard).map(([user, points]) => (
+                <tr key={user}>
+                  <td className="border px-4 py-2">{user}</td>
+                  <td className="border px-4 py-2">{points}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
           {/* Header Section */}
           <motion.div
             initial="hidden"
