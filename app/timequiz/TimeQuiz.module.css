@@ -16,7 +16,80 @@
   font-size: 1.5rem;
   color: hsl(var(--foreground));
 }
+/* ADD THESE STYLES TO THE END OF YOUR CSS FILE */
 
+/* Green style for the correct answer after selection */
+.optionButton.correct {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: white;
+  border-color: #16a34a;
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3);
+}
+
+.optionButton.correct .optionLabel {
+  background: white;
+  color: #16a34a;
+}
+
+/* Red style for the user's incorrect selection */
+.optionButton.incorrect {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: white;
+  border-color: #dc2626;
+}
+
+.optionButton.incorrect .optionLabel {
+  background: white;
+  color: #dc2626;
+}
+
+/* This makes the other non-selected options fade out after an answer is chosen */
+.optionButton:disabled:not(.correct):not(.incorrect) {
+  opacity: 0.5;
+  background: transparent;
+  box-shadow: none;
+}
+
+/* Container for the feedback text from the AI */
+.feedbackContainer {
+  margin-top: 1.5rem;
+  padding: 1rem 1.5rem;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  color: hsl(var(--foreground));
+  width: 100%;
+  max-width: 1200px;
+  margin-left: -5%;
+  text-align: center;
+}
+
+.feedbackContainer p {
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+/* Styling for the "Next Question" button */
+.nextButton {
+  background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.nextButton:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
 .countdownNumber {
   font-size: 4rem;
   font-weight: bold;
