@@ -269,11 +269,11 @@ export default async function ContributorsPage() {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  const res = await fetch("https://api.github.com/repos/saumyayadav25/cpp-dsa-sheet-testing/contributors");
-  const contributorsList = await res.json(); // 🔹 naam change kiya
+  // const res = await fetch("https://api.github.com/repos/saumyayadav25/cpp-dsa-sheet-testing/contributors");
+  // const contributorsList = await res.json(); // 🔹 naam change kiya
 
-  // 🟢 Leaderboard ke liye points fetch karo
-  const leaderboard = await fetchContributions("saumyayadav25", "cpp-dsa-sheet-testing");
+  // // Leaderboard ke liye points fetch karo
+  // const leaderboard = await fetchContributions("saumyayadav25", "cpp-dsa-sheet-testing");
 
   const fadeInUp = {
     hidden: { opacity: 0, y: 20 },
@@ -392,7 +392,7 @@ export default async function ContributorsPage() {
       <main className="min-h-screen py-24 px-4 sm:px-8 lg:px-16 bg-background transition-colors duration-300">
         <section aria-labelledby="contributors-heading" className="max-w-7xl mx-auto">
 
-          <h1 className="text-2xl font-bold mb-4">Leaderboard</h1>
+          {* <h1 className="text-2xl font-bold mb-4">Leaderboard</h1>
           <table className="table-auto border-collapse border border-gray-400 w-full mb-8">
             <thead>
               <tr>
@@ -409,6 +409,7 @@ export default async function ContributorsPage() {
               ))}
             </tbody>
           </table>
+          
 
           {/* Header Section */}
           <motion.div
