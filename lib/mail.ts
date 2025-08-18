@@ -13,10 +13,16 @@ export const sendEmail = async ({
   subject,
   html,
 }: {
+  
   to: string;
   subject: string;
   html: string;
 }) => {
+  const fromEmail = ProcessingInstruction.env.GOOGLE_APP_USER;
+  if  ( !fromEmail) {
+    throw new Error ("GOOGLE_APP_USER environment variable not set");
+  }
+
   try {
     await transporter.sendMail({
       from: `"DSAMate" <${process.env.GOOGLE_APP_USER}>`,
@@ -24,6 +30,8 @@ export const sendEmail = async ({
       subject,
       html,
     });
+    
+  console.log("Email sent successfully");
   
   } catch (error) {
     console.log("Failed to send email", error);
