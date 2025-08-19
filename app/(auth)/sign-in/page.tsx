@@ -2,7 +2,7 @@
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import axios from "axios";
 import OtpInput from "@/components/verify-otp";
 import { Loader2, Eye, EyeOff } from "lucide-react";
@@ -92,7 +92,8 @@ export default function SigninPage() {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto bg-white p-6 rounded-2xl shadow-lg space-y-6 animate-in fade-in slide-in-from-bottom-6">
+    <Suspense fallback={<div>Loading...</div>}>
+      <div className="w-full max-w-md mx-auto bg-white p-6 rounded-2xl shadow-lg space-y-6 animate-in fade-in slide-in-from-bottom-6">
       <ToastContainer
         position="top-right"
         autoClose={3000}
@@ -208,5 +209,6 @@ export default function SigninPage() {
         onVerify={handleVerifyOtp}
       />
     </div>
+    </Suspense>
   );
 }
