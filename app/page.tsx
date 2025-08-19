@@ -16,6 +16,7 @@ import ReportIssueButton from "@/components/ReportIssueButton";
 import Navbar from "@/components/Navbar";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import { MarqueeDemo } from "@/components/MarqueeDemo";
+
 // Custom hook for animated counting
 // Animates numbers from 1 to target value when element comes into view
 // Works with strings like "2100+", "30+", etc. and preserves the suffix
@@ -82,8 +83,6 @@ const itemVariants = {
   },
 };
 
-
-
 const people = [
   {
     id: 1,
@@ -121,6 +120,7 @@ const people = [
       "https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=3534&q=80",
   },
 ];
+
 // FAQ data
 const faqData = [
   {
@@ -150,8 +150,17 @@ const faqData = [
 ];
 
 // FAQ Item Component
-const FAQItem = ({ question, answer }: { question: string; answer: string }) => {
-  const [isOpen, setIsOpen] = useState(false);
+const FAQItem = ({ 
+  question, 
+  answer, 
+  isOpen, 
+  onToggle 
+}: { 
+  question: string; 
+  answer: string;
+  isOpen: boolean;
+  onToggle: () => void;
+}) => {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
@@ -236,7 +245,7 @@ const FAQItem = ({ question, answer }: { question: string; answer: string }) => 
           stiffness: 300, 
           damping: 20 
         }}
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={onToggle}
         style={{
           transformStyle: "preserve-3d",
         }}
@@ -419,6 +428,7 @@ const FAQItem = ({ question, answer }: { question: string; answer: string }) => 
 export default function Home() {
   const [searchTerm, setSearchTerm] = useState("");
   const [streak, setStreak] = useState(0);
+  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
 
   useEffect(() => {
     const savedStreak = localStorage.getItem("userStreak");
@@ -427,73 +437,9 @@ export default function Home() {
     }
   }, []);
 
-  function FAQItem({ question, answer }: { question: string; answer: string }) {
-    const [isOpen, setIsOpen] = useState(false);
-    const [isGlowing, setIsGlowing] = useState(false);
-    
-    const handleClick = () => {
-      setIsOpen(!isOpen);
-      setIsGlowing(true);
-      // Reset glow effect after animation
-      setTimeout(() => setIsGlowing(false), 600);
-    };
-    
-    return (
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="group"
-      >
-        <div
-          className={`bg-white/70 dark:bg-white/5 backdrop-blur-sm p-6 rounded-2xl cursor-pointer transition-all duration-300 hover:bg-white/80 dark:hover:bg-white/10 hover:scale-[1.02] hover:shadow-[0_0_50px_rgba(59,130,246,0.8)] hover:ring-4 hover:ring-blue-400/70 hover:shadow-[0_0_80px_rgba(147,197,253,0.6)] ${
-            isGlowing ? 'shadow-[0_0_80px_rgba(59,130,246,1)] ring-8 ring-blue-400/80 shadow-[0_0_120px_rgba(147,197,253,0.8)]' : ''
-          }`}
-          onClick={handleClick}
-        >
-          <div className="flex justify-between items-center">
-            <h4 className="text-gray-900 dark:text-white font-semibold text-lg">
-              {question}
-            </h4>
-                         <motion.span 
-               className={`text-blue-500 dark:text-blue-400 text-2xl font-light transition-all duration-300 group-hover:scale-110 ${
-                 isGlowing ? 'text-blue-200 scale-150' : ''
-               }`}
-               animate={isGlowing ? {
-                 scale: [1, 1.6, 1.5],
-                 textShadow: [
-                   "0 0 15px rgba(59, 130, 246, 1)",
-                   "0 0 40px rgba(147, 197, 253, 1)",
-                   "0 0 60px rgba(96, 165, 250, 1)",
-                   "0 0 30px rgba(59, 130, 246, 1)",
-                   "0 0 50px rgba(147, 197, 253, 0.9)"
-                 ],
-                 color: [
-                   "rgb(147, 197, 253)",
-                   "rgb(191, 219, 254)",
-                   "rgb(219, 234, 254)",
-                   "rgb(147, 197, 253)",
-                   "rgb(96, 165, 250)"
-                 ]
-               } : {}}
-             >
-              {isOpen ? "−" : "+"}
-            </motion.span>
-          </div>
-          <motion.div
-            initial={false}
-            animate={{ height: isOpen ? "auto" : 0, opacity: isOpen ? 1 : 0 }}
-            transition={{ duration: 0.3 }}
-            className="overflow-hidden"
-          >
-            <p className="text-gray-700 dark:text-gray-300 text-base mt-4 leading-relaxed">
-              {answer}
-            </p>
-          </motion.div>
-        </div>
-      </motion.div>
-    );
-  }
-
+  const toggleFaq = (index: number) => {
+    setOpenFaqIndex(openFaqIndex === index ? null : index);
+  };
 
   return (
     <main className="min-h-screen bg-white dark:bg-black text-gray-900 dark:text-white transition-colors duration-500">
@@ -907,66 +853,7 @@ export default function Home() {
           <motion.div
             className="flex  flex-wrap justify-center items-start gap-6"
           >
-            {/* {testimonials.map(
-              ({ name, designation, rating, text, visibility }, idx) => {
-                const displayName =
-                  visibility === "anonymous" ? "Anonymous User" : name;
-                const showDesignation = visibility === "full" && designation;
-
-                return (
-                  <motion.div
-                  key={idx}
-                  variants={itemVariants}
-                  whileHover={{ scale: 1.03, y: -5 }}
-                  className="group "
-                  >
-                    <CardSpotlight>
-                    <div className=" backdrop-blur-sm p-2 rounded-2xl min-h-52 w-44 transition-all duration-300 hover:shadow-xl ">
-                      <div className="flex items-center gap-3 mb-4">
-                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-white shadow-lg">
-                          <FaUserCircle className="text-xl" />
-                        </div>
-                        <div>
-                          <p className="font-semibold text-gray-900 dark:text-white">
-                            {displayName}
-                          </p>
-                          {showDesignation && (
-                            <p className="text-xs text-gray-600 dark:text-gray-400">
-                              {designation}
-                            </p>
-                          )}
-                        </div>
-                        
-                      </div>
-
-                      <p className="text-gray-600 dark:text-gray-300 text-sm mb-4 italic leading-relaxed">
-                        "{text}"
-                      </p>
-
-                      <div className="flex items-center gap-1 text-yellow-400">
-                        {Array.from({ length: 5 }).map((_, i) =>
-                          i < rating ? (
-                            <FaStar key={i} className="text-sm" />
-                          ) : (
-                            <FaRegStar key={i} className="text-sm" />
-                          )
-                        )}
-                      </div>
-                      
-                    </div>
-                                      <motion.div
-                    className="h-px bg-gradient-to-r from-transparent via-white/20 to-transparent mt-2"
-                    initial={{ scaleX: 0 }}
-                    animate={{ scaleX: 1 }}
-                    transition={{ delay: 0.5, duration: 0.5 }}
-                  />
-                  </CardSpotlight>
-                  </motion.div>
-                );
-              }
-            )} */}
             <MarqueeDemo />
-
           </motion.div>
         </div>
       </motion.section>
@@ -998,7 +885,12 @@ export default function Home() {
           >
             {faqData.map((faq, index) => (
               <motion.div key={index} variants={itemVariants}>
-                <FAQItem question={faq.question} answer={faq.answer} />
+                <FAQItem 
+                  question={faq.question} 
+                  answer={faq.answer}
+                  isOpen={openFaqIndex === index}
+                  onToggle={() => toggleFaq(index)}
+                />
               </motion.div>
             ))}
           </motion.div>
