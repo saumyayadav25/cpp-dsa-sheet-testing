@@ -1,6 +1,7 @@
 "use client";
 import Navbar from "../../../../components/Navbar";
 import { useState } from "react";
+import Image from "next/image";
 
 export default function AvatarSettings() {
   const [avatar, setAvatar] = useState<string | null>(null);
@@ -30,10 +31,12 @@ export default function AvatarSettings() {
       <Navbar />
       <div className="max-w-md mx-auto p-30">
         <h1 className="text-2xl font-semibold mb-4">Profile Picture</h1>
-        <img
+        <Image
           src={avatar || "/images/default-avatar.png"}
           alt="Avatar"
-          className="w-40 h-40 rounded-full object-cover"
+          width={160}              
+          height={160}            
+          className="rounded-full object-cover"
         />
         <form onSubmit={handleUpload} className="space-y-4 ">
           <input

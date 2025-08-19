@@ -3,6 +3,8 @@ import { Marquee } from "@/components/magicui/marquee";
 import { CardSpotlight } from "./ui/card-spotlight";
 import { motion } from "framer-motion";
 import { FaStar, FaRegStar, FaUserCircle } from "react-icons/fa";
+import Image from "next/image";
+
 type Testimonial = {
   name: string;
   username: string;
@@ -117,7 +119,7 @@ const ReviewCard = ({
         )}
       >
         <div className="flex flex-row items-start gap-2">
-          <img className="rounded-full" width="32" height="32" alt="" src={img} />
+          <Image className="rounded-full" width={32} height={32} alt="" src={img} />
           <div className="flex flex-col ">
             <figcaption className="text-sm font-medium dark:text-white">
               {name}

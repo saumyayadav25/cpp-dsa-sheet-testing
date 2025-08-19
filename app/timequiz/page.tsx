@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import styles from './TimeQuiz.module.css';
 import Navbar from "@/components/Navbar";
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 const TIME_PER_QUES = 10;
 
@@ -167,7 +168,14 @@ const TimeQuiz = () => {
                 Test your knowledge with AI-generated questions.
               </motion.p>
               <motion.div variants={fadeInUp} custom={2} className="flex justify-center relative mb-8">
-                 <img src="quiz.png" alt="Quiz Hero" className="w-[80vw] max-w-sm" draggable="false" />
+                 <Image
+                  src="/quiz.png"
+                  alt="Quiz Hero"
+                  width={384}              
+                  height={224}       
+                  className="w-[80vw] max-w-sm h-auto"
+                  draggable={false}
+                />
               </motion.div>
               <motion.button variants={fadeInUp} custom={3} className={styles.startButton} onClick={startQuiz}>
                 Start Quiz
