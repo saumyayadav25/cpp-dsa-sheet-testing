@@ -6,7 +6,7 @@ import { useState } from "react";
 import axios from "axios";
 import OtpInput from "@/components/verify-otp";
 import { Loader2, Eye, EyeOff } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { GoogleLoginButton } from "@/components/OAuthLogin";
 import { ToastContainer, toast, Slide } from 'react-toastify';
@@ -23,6 +23,8 @@ export default function SigninPage() {
   const [otpOpen, setOtpOpen] = useState(false);
 
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const returnUrl = searchParams.get("returnUrl") || "/";
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -61,34 +63,33 @@ export default function SigninPage() {
   };
 
   const handleVerifyOtp = async (otp: string) => {
-      setLoading(true);
-      try {
-        const res = await axios.post("/api/signIn-verify-Otp", {
-          email: form.email,
-          otp,
+    setLoading(true);
+    try {
+      const res = await axios.post("/api/signIn-verify-Otp", {
+        email: form.email,
+        otp,
+      });
+
+      if (res.status === 200) {
+        toast.success("Login successful", {
+          progressClassName: "bg-green-500",
         });
-  
-        if (res.status === 200) {
-          toast.success("Login successful", {
-            progressClassName: "bg-green-500",
-          });
 
-          setOtpOpen(false);
-          router.push("/");
-        } else {
-          toast.error(" OTP verification failed", {
-            progressClassName: "bg-red-500",
-          });
-
-        }
-      } catch (err: any) {
+        setOtpOpen(false);
+        router.push(returnUrl); // <-- Redirect to intended page
+      } else {
         toast.error(" OTP verification failed", {
-            progressClassName: "bg-red-500",
+          progressClassName: "bg-red-500",
         });
-      } finally {
-        setLoading(false);
       }
-    };
+    } catch (err: any) {
+      toast.error(" OTP verification failed", {
+        progressClassName: "bg-red-500",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="w-full max-w-md mx-auto bg-white p-6 rounded-2xl shadow-lg space-y-6 animate-in fade-in slide-in-from-bottom-6">
