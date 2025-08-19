@@ -11,7 +11,7 @@ import Link from "next/link";
 import { GoogleLoginButton } from "@/components/OAuthLogin";
 import { ToastContainer, toast, Slide } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
-
+import banner from "@/assets/banner.png";
 export default function SignupPage() {
   const [form, setForm] = useState({
     fullName: "",
@@ -126,7 +126,7 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto bg-white p-6 rounded-2xl shadow-lg space-y-6 animate-in fade-in slide-in-from-bottom-6">
+    <div className="w-full max-w-md mx-auto bg-blue-100  px-6 py-2 rounded-2xl shadow-lg space-y-6 animate-in fade-in slide-in-from-bottom-6">
       <ToastContainer
         position="top-right"
         autoClose={3000}
@@ -249,7 +249,7 @@ export default function SignupPage() {
         <Button
   onClick={handleSubmit}
   disabled={loading}
-  className="w-full mt-2 rounded-full bg-blue-700 text-white hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+  className="w-full mt-2 rounded-lg bg-blue-700 text-white hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
 >
   {loading ? (
     <Loader2 className="animate-spin mr-2 h-4 w-4" />
@@ -267,7 +267,7 @@ export default function SignupPage() {
 
       <hr className="border-1" />
 
-      <div className="text-center text-sm text-gray-700 mb-2">
+      <div className="text-center text-sm text-gray-700">
         <p>
           Already have an account?{" "}
           <Link href={"/sign-in"} className="text-blue-600 hover:underline">

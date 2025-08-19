@@ -11,7 +11,7 @@ import Link from "next/link";
 import { GoogleLoginButton } from "@/components/OAuthLogin";
 import { ToastContainer, toast, Slide } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
-
+import banner from "@/assets/banner.png";
 export default function SigninPage() {
   const [form, setForm] = useState({
     email: "",
@@ -91,7 +91,7 @@ export default function SigninPage() {
     };
 
   return (
-    <div className="w-full max-w-md mx-auto bg-white p-6 rounded-2xl shadow-lg space-y-6 animate-in fade-in slide-in-from-bottom-6">
+    <div className="w-full max-w-md mx-auto bg-blue-100 border-2 p-6 rounded-2xl shadow-lg space-y-6 animate-in fade-in slide-in-from-bottom-6">
       <ToastContainer
         position="top-right"
         autoClose={3000}
@@ -108,7 +108,7 @@ export default function SigninPage() {
           Login to your account
         </h2>
         <p className="text-sm text-gray-500">
-          Explore DSAMate to enter the world of problem solving.
+          Explore <span className="text-blue-700">DSAMate</span> to enter the world of problem solving.
         </p>
       </div>
 
@@ -173,7 +173,7 @@ export default function SigninPage() {
       <Button
         onClick={handleSubmit}
         disabled={loading}
-        className="w-full rounded-full text-white bg-gradient-to-br from-slate-900 to-blue-600 hover:from-blue-700 hover:to-slate-900"
+        className="w-full rounded-lg text-white bg-gradient-to-br from-blue-900 to-blue-500 transition-colors duration-300 hover:from-blue-600 hover:to-blue-800"
       >
         {loading ? (
           <Loader2 className="animate-spin mr-2 h-4 w-4" />
