@@ -169,7 +169,7 @@ export default function AuthButtons() {
       x: 0,
       rotateY: 0,
       transition: {
-        type: "spring" as "spring",
+        type: "spring" as const,
         damping: 20,
         stiffness: 400,
       },
