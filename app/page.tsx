@@ -14,6 +14,7 @@ import { FaStar, FaRegStar, FaUserCircle } from "react-icons/fa";
 import { BiSliderAlt } from "react-icons/bi";
 import ReportIssueButton from "@/components/ReportIssueButton";
 import Navbar from "@/components/Navbar";
+import ScrollToTopBottom from "@/components/ScrollToTopBottom";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import { MarqueeDemo } from "@/components/MarqueeDemo";
 
@@ -858,7 +859,8 @@ export default function Home() {
         </div>
       </motion.section>
 
-      {/* FAQ SECTION */}
+  <ScrollToTopBottom />
+  {/* FAQ SECTION */}
       <motion.section
         initial="hidden"
         whileInView="visible"
