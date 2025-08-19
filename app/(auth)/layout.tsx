@@ -7,7 +7,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
 
       {/* Left Side: Gradient branding */}
       <div
-        className="hidden md:flex md:flex-col md:w-1/2 text-white p-10 justify-center space-y-6 relative transition-all duration-300 rounded-r-4xl h-screen "
+        className="hidden md:flex md:flex-col md:w-1/2 text-white p-10 justify-center space-y-6 relative transition-all duration-300 rounded-r-2xl h-screen "
         style={{
           backgroundImage: `url(${banner.src})`,
           backgroundSize: "cover",
@@ -15,17 +15,17 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
           backgroundRepeat: "no-repeat",
         }}
       >
-        <div className=" bg-transparent backdrop-blur-2xl border-2 rounded-3xl flex flex-col justify-center items-center py-8">
+        <div className=" bg-transparent backdrop-blur-2xl border-2 rounded-3xl flex flex-col justify-center items-center py-6">
 
         <div className="flex flex-col items-center text-center space-y-2">
           <Image
         src={"/icons/icon-192.png"}
         alt="DSAMate Logo"
         width={150}
-        height={200}
+        height={130}
         className="mb-10  shake-hover"
         />
-          <h1 className="text-3xl lg:text-4xl font-bold leading-tight">Make it to DSA</h1>
+          <h1 className="text-2xl lg:text-3xl font-bold leading-tight">Make it to DSA</h1>
           <p className="text-base text-white/90 max-w-sm">Get all DSA problems here to boost your career.</p>
         </div>
 
