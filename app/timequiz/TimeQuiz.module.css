@@ -467,3 +467,27 @@
   width: 100vw;
   padding: 2rem;
 }
+
+/* Butterfly button + icon */
+.butterflyButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.butterfly {
+  color: #ff6bcb; /* pink-ish by default */
+  transition: transform 250ms ease, filter 250ms ease, color 250ms ease;
+}
+
+.butterfly:hover {
+  transform: translateY(-4px) scale(1.05);
+  filter: drop-shadow(0 6px 14px rgba(255,107,203,0.18));
+}
+
+/* When saved, turn the butterfly black to indicate final state */
+.black {
+  color: #111111 !important;
+  filter: drop-shadow(0 6px 18px rgba(0,0,0,0.25));
+}
