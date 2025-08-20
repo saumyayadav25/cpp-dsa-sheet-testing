@@ -6,6 +6,8 @@ import "./globals.css";
 import FooterWrapper from "@/components/FooterWrapper"; 
 import BotWidget from "@/components/BotWidget";
 import { ThemeProvider } from "@/components/theme-provider";
+import ScrollToTop from "@/components/ScrollToTopBottom";
+import ScrollToTopBottom from "@/components/ScrollToTopBottom";
 
 const plusJakarta = Plus_Jakarta_Sans({
   variable: "--font-plus-jakarta",
@@ -53,6 +55,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           {children}
+          <ScrollToTopBottom/>
         </ThemeProvider>
         <BotWidget />
         <FooterWrapper /> 
