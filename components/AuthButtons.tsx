@@ -9,6 +9,7 @@ import { LogOut } from "lucide-react";
 import { toast } from "sonner";
 import { FiSearch, FiX } from "react-icons/fi";
 import { FaFire } from "react-icons/fa";
+import Image from "next/image";
 
 import { usePathname } from "next/navigation";
 interface User {
@@ -240,7 +241,7 @@ export default function AuthButtons() {
             {/* Avatar Circle */}
             <div className="relative w-7 h-7 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center overflow-hidden">
               {user?.avatar ? (
-                <img
+                <Image
                   src={user.avatar}
                   alt="U"
                   width={25}
@@ -248,7 +249,7 @@ export default function AuthButtons() {
                   className="object-cover w-full h-full"
                 />
               ) : (
-                <img
+                <Image
                   src="/images/default-avatar.png"
                   alt="Default Avatar"
                   width={25}

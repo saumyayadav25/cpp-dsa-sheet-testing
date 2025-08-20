@@ -3,6 +3,7 @@ import { CardSpotlight } from "@/components/ui/card-spotlight";
 import { AnimatedTooltip } from "@/components/ui/animated-tooltip";
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import {
   FaListUl,
   FaRegCalendarAlt,
@@ -477,11 +478,13 @@ export default function Home() {
             custom={2}
             className="flex justify-center"
           >
-            <img
-              src="dsa-hero.png"
+            <Image
+              src="/dsa-hero.png"
               alt="DSA Mate Hero"
-              className="w-[40vw]"
-              draggable="false"
+              width={1200}          // set actual image width
+              height={800}          // set actual image height
+              className="w-[40vw] h-auto"
+              draggable={false}
             />
 
             <div className="absolute inset-0 -z-10 bg-gradient-to-r from-blue-500/20 via-blue-500/20 to-blue-500/20 rounded-full blur-3xl scale-110"></div>
