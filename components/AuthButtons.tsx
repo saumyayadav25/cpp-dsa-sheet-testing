@@ -47,6 +47,11 @@ export default function AuthButtons() {
       icon: "🎯",
     },
     {
+      label: "Flashcards",
+      href: "/flashcards",
+      icon: "🧠",
+    },
+    {
       label: "Star on GitHub",
       href: "https://github.com/saumyayadav25/DSA-Supreme-3.0",
       icon: "⭐",
@@ -92,6 +97,7 @@ export default function AuthButtons() {
     { href: "/", label: "Home", isActive: pathname === "/" },
     { href: "/notes", label: "Notes", isActive: pathname === "/notes" },
     { href: "/sheet", label: "Sheet", isActive: pathname === "/sheet" },
+    { href: "/flashcards", label: "Flashcards", isActive: pathname === "/flashcards" },
     {
       href: "/progress",
       label: "Progress",
