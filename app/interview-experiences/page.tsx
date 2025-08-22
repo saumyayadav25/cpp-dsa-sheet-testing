@@ -276,7 +276,7 @@ const Experiences = () => {
         page1Link="/theory-cheatsheets"
         pageTitle="Interview Experiences"
         page3={"Share Experience"}
-        page3Link="/share-experience"
+        page3Link="/interview-experiences/share-experience"
       />
 
       {/* Hero Section */}

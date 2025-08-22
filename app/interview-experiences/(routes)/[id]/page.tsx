@@ -134,7 +134,7 @@ const InterviewDetailPage = () => {
       <Navbar
         onBack="/interview-experiences"
         page3={"Share Experience"}
-        page3Link="/share-experience"
+        page3Link="/interview-experiences/share-experience"
         pageTitle="Interview Experiences"
         icon={<Users />}
       />
