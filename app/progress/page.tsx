@@ -33,10 +33,15 @@ export default function ProgressPage() {
         if (res.status === 200) {
           setIsLoggedIn(true);
           setUser(res.data?.user);
-          console.log("User authenticated:", res.data.user);
         }
-      } catch (err) {
-        console.error("Auth check failed:", err);
+      } catch (err: any) {
+        if (err.response?.status === 401 || err.response?.status === 503) {
+          setIsLoggedIn(false);
+          setUser(null);
+        } else {
+          setIsLoggedIn(false);
+          setUser(null);
+        }
       }
     };
     checkAuth();

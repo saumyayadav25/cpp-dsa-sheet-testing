@@ -30,10 +30,23 @@ export default function AuthButtons() {
   // Check if user is logged in
   useEffect(() => {
     const checkAuth = async () => {
-      const res = await axios.get("/api/check-auth");
-      if (res.status === 200) {
-        setIsLoggedIn(true);
-        setUser(res.data?.user);
+      try {
+        const res = await axios.get("/api/check-auth");
+        if (res.status === 200) {
+          setIsLoggedIn(true);
+          setUser(res.data?.user);
+        }
+      } catch (err: any) {
+        if (err.response?.status === 401) {
+          setIsLoggedIn(false);
+          setUser(null);
+        } else if (err.response?.status === 503) {
+          setIsLoggedIn(false);
+          setUser(null);
+        } else {
+          setIsLoggedIn(false);
+          setUser(null);
+        }
       }
     };
 
