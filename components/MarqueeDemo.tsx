@@ -154,26 +154,24 @@ export function MarqueeDemo() {
       }
 
       const response = await fetch('/api/testimonial', {
-        cache: 'no-store', // Ensure fresh data
+        cache: 'no-store',
       });
 
       if (!response.ok) {
-        throw new Error('Failed to fetch testimonials');
+        console.log('Testimonials API not available, using fallback');
+        setTestimonials([]);
+        setError(null);
+        return;
       }
 
       const data: Testimonial[] = await response.json();
-
-      // Transform API data to display format
       const transformedTestimonials = data.map(transformTestimonialToDisplay);
-
       setTestimonials(transformedTestimonials);
-      console.log("Testimonials fetched successfully:", transformedTestimonials);
       setError(null);
     } catch (err) {
-      console.error('Error fetching testimonials:', err);
-      setError('Failed to load testimonials');
-      // Fallback to empty array
+      console.log('Testimonials service unavailable, continuing without testimonials');
       setTestimonials([]);
+      setError(null);
     } finally {
       setLoading(false);
       setRefreshing(false);

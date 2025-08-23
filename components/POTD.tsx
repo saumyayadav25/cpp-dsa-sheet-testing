@@ -30,14 +30,15 @@ export default function POTD({ potd, updateStreak }: POTDProps) {
         if (res.status === 200) {
           setIsLoggedIn(true);
           setUser(res.data?.user);
+        }
+      } catch (err: any) {
+        if (err.response?.status === 401 || err.response?.status === 503) {
+          setIsLoggedIn(false);
+          setUser(null);
         } else {
           setIsLoggedIn(false);
           setUser(null);
         }
-      } catch (err) {
-        console.error("Auth check failed:", err);
-        setIsLoggedIn(false);
-        setUser(null);
       }
     };
 
