@@ -200,7 +200,7 @@ useEffect(() => {
               className="relative p-4 bg-gradient-to-br from-blue-600/10 to-blue-500/5 rounded-xl text-blue-600 dark:text-blue-400 group-hover:from-blue-600/20 group-hover:to-blue-500/10 group-hover:text-blue-400 transition-all duration-300 border border-blue-600/10 dark:border-blue-600/20 group-hover:border-blue-400/20"
             >
               {/* Icon glow effect */}
-              <div className="absolute inset-0 bg-blue-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-md"></div>
+              <div className="absolute inset-0 bg-blue-500/10 rounded-xl  group-hover:opacity-100 transition-opacity duration-300 blur-md"></div>
               <div className="relative z-10">{icon}</div>
             </motion.div>
 
