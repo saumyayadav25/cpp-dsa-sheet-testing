@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import { motion } from "framer-motion";
 
@@ -34,6 +35,8 @@ const fadeInUp = {
 };
 
 const TimeQuiz = () => {
+  const router = useRouter();
+
   // State for dynamically fetched questions
   const [questions, setQuestions] = useState<Question[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -50,6 +53,7 @@ const TimeQuiz = () => {
   // Auth state
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState<User | null>(null);
+  const [authChecked, setAuthChecked] = useState(false);
   // Recent attempts and stats
   const [recentAttempts, setRecentAttempts] = useState<any[]>([]);
   const [stats, setStats] = useState<{ avgScore?: number; totalQuizzes?: number } | null>(null);
@@ -118,15 +122,29 @@ const TimeQuiz = () => {
         if (res.status === 200) {
           setIsLoggedIn(true);
           setUser(res.data?.user || null);
+        } else {
+          setIsLoggedIn(false);
+          setUser(null);
         }
       } catch (err) {
-        // not logged in or error; keep defaults
+        // not logged in or error; redirect to sign-in
         console.debug("Auth check failed or not logged in", err);
+        setIsLoggedIn(false);
+        setUser(null);
+      } finally {
+        setAuthChecked(true);
       }
     };
 
     checkAuth();
   }, []);
+
+  // Redirect to sign-in if not authenticated
+  useEffect(() => {
+    if (authChecked && !isLoggedIn) {
+      router.push('/sign-in');
+    }
+  }, [authChecked, isLoggedIn, router]);
 
   // When user becomes available, fetch recent attempts and stats
   useEffect(() => {
@@ -255,8 +273,14 @@ const TimeQuiz = () => {
 
   const current = questions[currentIdx];
 
-  if (isLoading) {
+  // Show loading while checking authentication or loading questions
+  if (!authChecked || isLoading) {
     return <div className="flex items-center justify-center min-h-screen text-2xl dark:bg-black dark:text-white">Loading Quiz...</div>;
+  }
+
+  // Don't render anything if user is not logged in (will be redirected)
+  if (!isLoggedIn) {
+    return <div className="flex items-center justify-center min-h-screen text-2xl dark:bg-black dark:text-white">Redirecting to sign in...</div>;
   }
 
   return (
