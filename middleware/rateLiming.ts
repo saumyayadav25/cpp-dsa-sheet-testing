@@ -1,47 +1,44 @@
-// lib/rateLimiter.ts
-import rateLimit from "express-rate-limit";
-import type { NextRequest } from "next/server";
-import { NextResponse } from "next/server";
+import { rateLimit } from "express-rate-limit";
+import { NextRequest, NextResponse } from "next/server";
 
-// Express-style rate limiter (5 requests / 15 minutes per IP)
-export const apiLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 2,                   // Limit each IP to 5 requests per window
-  standardHeaders: true,
+const getIP = (req: NextRequest) => {
+  const forwardedFor = req.headers.get("x-forwarded-for");
+  const realIP = req.headers.get("x-real-ip");
+  console.log("forwardedFor : ", forwardedFor);
+  console.log("realIP : ", realIP);
+  // Return the first IP found, prioritizing x-forwarded-for
+  return forwardedFor?.split(",")[0] ?? realIP ?? "";
+};
+
+const apiLimiter = rateLimit({
+  windowMs: 10 * 10 * 1000, // 10 minutes
+  limit: 5, // Let's set a smaller limit for testing purposes
+  standardHeaders: "draft-7",
   legacyHeaders: false,
-  message: {
-    error: "too_many_requests",
-    message: "Too many requests, please try again later."
+
+  // Override the key generator to use the IP address from the headers
+  keyGenerator: (req) => getIP(req as unknown as NextRequest),
+
+  handler: (_, res) => {
+    // This handler function is now correctly used by the `limiter` instance
+    // to send a 429 response when the limit is exceeded.
+    return res.status(429).json({
+      message: "Too many requests, please try again after 15 minutes.",
+    });
   },
-  keyGenerator: (req: any) => {
-    // For Next.js, use headers to extract IP
-    const forwarded = req.headers?.["x-forwarded-for"];
-    if (typeof forwarded === "string") {
-      return forwarded.split(",")[0];
-    }
-    return req.ip || "unknown";
-  }
 });
 
-// Adapter: Convert express-rate-limit to Next.js middleware
-export function withRateLimit(limiter: ReturnType<typeof rateLimit>) {
-  return async (req: NextRequest) =>
-    new Promise<NextResponse | null>((resolve) => {
-      limiter(
-        // Fake Express `req` object
-        req as any,
-        {
-          // Express `res.end` equivalent
-          end: (msg: any) =>
-            resolve(
-              NextResponse.json(
-                typeof msg === "string" ? { message: msg } : msg,
-                { status: 429 }
-              )
-            ),
-          setHeader: () => {}, // ignore headers
-        } as any,
-        () => resolve(null) // continue if not rate-limited
-      );
-    });
-}
+// Create a mock Express-like response object
+const res = {
+  status: (statusCode: number) => {
+    // Return a function that sends a JSON response
+    return {
+      json: (data: any) => NextResponse.json(data, { status: statusCode }),
+      send: (data: any) => NextResponse.json(data, { status: statusCode }),
+    };
+  },
+  // Mock the setHeader function to avoid the TypeError
+  setHeader: (name: string, value: string) => {},
+};
+
+export { apiLimiter, res };
