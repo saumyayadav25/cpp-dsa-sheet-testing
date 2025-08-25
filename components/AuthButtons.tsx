@@ -30,10 +30,23 @@ export default function AuthButtons() {
   // Check if user is logged in
   useEffect(() => {
     const checkAuth = async () => {
-      const res = await axios.get("/api/check-auth");
-      if (res.status === 200) {
-        setIsLoggedIn(true);
-        setUser(res.data?.user);
+      try {
+        const res = await axios.get("/api/check-auth");
+        if (res.status === 200) {
+          setIsLoggedIn(true);
+          setUser(res.data?.user);
+        }
+      } catch (err: any) {
+        if (err.response?.status === 401) {
+          setIsLoggedIn(false);
+          setUser(null);
+        } else if (err.response?.status === 503) {
+          setIsLoggedIn(false);
+          setUser(null);
+        } else {
+          setIsLoggedIn(false);
+          setUser(null);
+        }
       }
     };
 
@@ -45,6 +58,11 @@ export default function AuthButtons() {
       label: "Track Your Cp",
       href: "/cp-tracker",
       icon: "🎯",
+    },
+    {
+      label: "Flashcards",
+      href: "/flashcards",
+      icon: "🧠",
     },
     {
       label: "Star on GitHub",
@@ -92,6 +110,7 @@ export default function AuthButtons() {
     { href: "/", label: "Home", isActive: pathname === "/" },
     { href: "/notes", label: "Notes", isActive: pathname === "/notes" },
     { href: "/sheet", label: "Sheet", isActive: pathname === "/sheet" },
+    { href: "/flashcards", label: "Flashcards", isActive: pathname === "/flashcards" },
     {
       href: "/progress",
       label: "Progress",
@@ -169,7 +188,7 @@ export default function AuthButtons() {
       x: 0,
       rotateY: 0,
       transition: {
-        type: "spring" as "spring",
+        type: "spring" as const,
         damping: 20,
         stiffness: 400,
       },

@@ -14,6 +14,7 @@ import { FaStar, FaRegStar, FaUserCircle } from "react-icons/fa";
 import { BiSliderAlt } from "react-icons/bi";
 import ReportIssueButton from "@/components/ReportIssueButton";
 import Navbar from "@/components/Navbar";
+import ScrollToTopBottom from "@/components/ScrollToTopBottom";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import { MarqueeDemo } from "@/components/MarqueeDemo";
 
@@ -22,29 +23,29 @@ import { MarqueeDemo } from "@/components/MarqueeDemo";
 // Works with strings like "2100+", "30+", etc. and preserves the suffix
 function useAnimatedCounter(targetValue: string, isVisible: boolean) {
   const [count, setCount] = useState(1);
-  
+
   useEffect(() => {
     if (!isVisible) {
       setCount(1);
       return;
     }
-    
+
     // Extract numeric value from strings like "2100+", "30+", etc.
     const numericValue = parseInt(targetValue.replace(/[^0-9]/g, ''));
-    
+
     let currentCount = 1;
     const interval = setInterval(() => {
       currentCount += Math.max(1, Math.floor(numericValue / 50)); // Faster increment
       setCount(Math.min(currentCount, numericValue));
-      
+
       if (currentCount >= numericValue) {
         clearInterval(interval);
       }
     }, 20); // Much faster animation (20ms instead of 50ms)
-    
+
     return () => clearInterval(interval);
   }, [isVisible, targetValue]);
-  
+
   // Format the count with the original suffix (like "+")
   const suffix = targetValue.replace(/[0-9]/g, '');
   return `${count}${suffix}`;
@@ -125,7 +126,7 @@ const people = [
 const faqData = [
   {
     question: "What if I find an incorrect or broken link?",
-    answer:  "Click on 'Report an Issue' or email us — we'll fix it quickly.",
+    answer: "Click on 'Report an Issue' or email us — we'll fix it quickly.",
   },
   {
     question: "Can I contribute questions or feedback?",
@@ -150,13 +151,13 @@ const faqData = [
 ];
 
 // FAQ Item Component
-const FAQItem = ({ 
-  question, 
-  answer, 
-  isOpen, 
-  onToggle 
-}: { 
-  question: string; 
+const FAQItem = ({
+  question,
+  answer,
+  isOpen,
+  onToggle
+}: {
+  question: string;
   answer: string;
   isOpen: boolean;
   onToggle: () => void;
@@ -189,9 +190,9 @@ const FAQItem = ({
       <motion.div
         className="absolute inset-0 rounded-2xl"
         animate={{
-          boxShadow: isOpen 
+          boxShadow: isOpen
             ? "0 0 0 2px rgba(59, 130, 246, 0.5), 0 0 20px rgba(59, 130, 246, 0.3), 0 0 40px rgba(59, 130, 246, 0.1)"
-            : isHovered 
+            : isHovered
               ? "0 0 0 1px rgba(139, 92, 246, 0.4), 0 0 15px rgba(139, 92, 246, 0.2)"
               : "0 0 0 1px rgba(229, 231, 235, 0.3)"
         }}
@@ -205,18 +206,18 @@ const FAQItem = ({
             <motion.div
               key={i}
               className="absolute w-1 h-1 bg-blue-400 rounded-full"
-              initial={{ 
-                x: Math.random() * 100 + "%", 
-                y: "100%", 
+              initial={{
+                x: Math.random() * 100 + "%",
+                y: "100%",
                 opacity: 0,
-                scale: 0 
+                scale: 0
               }}
-              animate={{ 
-                y: "-20%", 
+              animate={{
+                y: "-20%",
                 opacity: [0, 1, 0],
                 scale: [0, 1, 0]
               }}
-              transition={{ 
+              transition={{
                 duration: 2,
                 delay: i * 0.2,
                 repeat: Infinity,
@@ -230,20 +231,20 @@ const FAQItem = ({
       {/* Main card */}
       <motion.div
         className="relative bg-white dark:bg-gray-900 rounded-2xl cursor-pointer overflow-hidden backdrop-blur-sm"
-        whileHover={{ 
+        whileHover={{
           scale: 1.03,
           rotateY: 2,
           rotateX: 1,
         }}
-        whileTap={{ 
+        whileTap={{
           scale: 0.97,
           rotateY: 0,
           rotateX: 0,
         }}
-        transition={{ 
-          type: "spring", 
-          stiffness: 300, 
-          damping: 20 
+        transition={{
+          type: "spring",
+          stiffness: 300,
+          damping: 20
         }}
         onClick={onToggle}
         style={{
@@ -262,13 +263,13 @@ const FAQItem = ({
         <div className="relative z-10">
           {/* Question header */}
           <div className="flex items-center justify-between p-8">
-            <motion.h3 
+            <motion.h3
               className="text-lg font-bold text-gray-900 dark:text-white pr-8 relative"
               animate={{
-                color: isOpen 
-                  ? "#3B82F6" 
-                  : isHovered 
-                    ? "#8B5CF6" 
+                color: isOpen
+                  ? "#3B82F6"
+                  : isHovered
+                    ? "#8B5CF6"
                     : undefined
               }}
               transition={{ duration: 0.3 }}
@@ -282,16 +283,16 @@ const FAQItem = ({
               />
               {question}
             </motion.h3>
-            
+
             {/* 3D Rotating chevron with glow */}
             <motion.div
               className="flex-shrink-0 w-8 h-8 relative"
-              animate={{ 
+              animate={{
                 rotateX: isOpen ? 180 : 0,
                 scale: isHovered ? 1.2 : 1,
               }}
-              transition={{ 
-                duration: 0.4, 
+              transition={{
+                duration: 0.4,
                 ease: "easeInOut",
                 type: "spring",
                 stiffness: 200
@@ -307,7 +308,7 @@ const FAQItem = ({
                 }}
                 transition={{ duration: 0.3 }}
               />
-              
+
               <svg
                 className="w-full h-full text-gray-600 dark:text-gray-400 relative z-10"
                 style={{
@@ -334,23 +335,23 @@ const FAQItem = ({
           <AnimatePresence>
             {isOpen && (
               <motion.div
-                initial={{ 
-                  height: 0, 
+                initial={{
+                  height: 0,
                   opacity: 0,
                   rotateX: -90,
                 }}
-                animate={{ 
-                  height: "auto", 
+                animate={{
+                  height: "auto",
                   opacity: 1,
                   rotateX: 0,
                 }}
-                exit={{ 
-                  height: 0, 
+                exit={{
+                  height: 0,
                   opacity: 0,
                   rotateX: -90,
                 }}
-                transition={{ 
-                  duration: 0.5, 
+                transition={{
+                  duration: 0.5,
                   ease: "easeOut",
                   opacity: { delay: 0.1 }
                 }}
@@ -379,7 +380,7 @@ const FAQItem = ({
                       transition={{ delay: 0.5, type: "spring" }}
                     />
                   </motion.div>
-                  
+
                   {/* Answer text with typewriter effect simulation */}
                   <motion.div
                     initial={{ opacity: 0 }}
@@ -387,7 +388,7 @@ const FAQItem = ({
                     transition={{ duration: 0.5, delay: 0.4 }}
                     className="relative"
                   >
-                    <motion.p 
+                    <motion.p
                       className="text-gray-700 dark:text-gray-300 leading-relaxed text-base"
                       initial={{ filter: "blur(2px)" }}
                       animate={{ filter: "blur(0px)" }}
@@ -395,7 +396,7 @@ const FAQItem = ({
                     >
                       {answer}
                     </motion.p>
-                    
+
                     {/* Subtle background highlight */}
                     <motion.div
                       className="absolute inset-0 bg-gradient-to-r from-blue-50/50 to-purple-50/50 dark:from-blue-900/10 dark:to-purple-900/10 rounded-lg -z-10"
@@ -414,7 +415,7 @@ const FAQItem = ({
         <motion.div
           className="absolute inset-0 bg-blue-400 rounded-2xl pointer-events-none"
           initial={{ scale: 0, opacity: 0.3 }}
-          animate={{ 
+          animate={{
             scale: isOpen ? [0, 1.2, 0] : 0,
             opacity: isOpen ? [0.3, 0.1, 0] : 0
           }}
@@ -429,6 +430,21 @@ export default function Home() {
   const [searchTerm, setSearchTerm] = useState("");
   const [streak, setStreak] = useState(0);
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Form state for testimonial
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    designation: "",
+    rating: 5,
+    likedMost: "",
+    howHelped: "",
+    feedback: "",
+    canShow: true,
+    displayPreference: "nameAndDesignation"
+  });
 
   useEffect(() => {
     const savedStreak = localStorage.getItem("userStreak");
@@ -441,8 +457,106 @@ export default function Home() {
     setOpenFaqIndex(openFaqIndex === index ? null : index);
   };
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value, type } = e.target;
+
+    setFormData(prev => {
+      let newValue: string | number | boolean = value;
+
+      if (type === 'checkbox') {
+        newValue = (e.target as HTMLInputElement).checked;
+      } else if (type === 'number') {
+        newValue = parseInt(value);
+      }
+
+      // If canShow is being unchecked, reset displayPreference
+      if (name === 'canShow' && !newValue) {
+        return {
+          ...prev,
+          [name]: newValue as boolean,
+          displayPreference: "nameAndDesignation" // Reset to default
+        };
+      }
+
+      return {
+        ...prev,
+        [name]: newValue
+      };
+    });
+  };
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setIsSubmitting(true);
+
+    try {
+      // Validate required fields
+      if (!formData.name.trim() || !formData.email.trim() || !formData.designation.trim() ||
+        !formData.likedMost.trim() || !formData.howHelped.trim() || !formData.feedback.trim() ||
+        (formData.canShow && !formData.displayPreference)) {
+        alert('Please fill in all required fields.');
+        setIsSubmitting(false);
+        return;
+      }
+
+      const response = await fetch('/api/testimonial/post', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...formData,
+          date: new Date().toISOString()
+        }),
+      });
+
+      if (response.ok) {
+        // Trigger testimonials refresh event
+        window.dispatchEvent(new CustomEvent('testimonialsUpdated'));
+
+        alert('Thank you for your testimonial! It has been submitted successfully and will appear in the testimonials section shortly.');
+
+        setFormData({
+          name: "",
+          email: "",
+          designation: "",
+          rating: 5,
+          likedMost: "",
+          howHelped: "",
+          feedback: "",
+          canShow: true,
+          displayPreference: "nameAndDesignation"
+        });
+        setIsModalOpen(false);
+      } else {
+        const errorData = await response.json();
+        alert(`Error: ${errorData.error || 'Failed to submit testimonial'}`);
+      }
+    } catch (error) {
+      console.error('Error submitting testimonial:', error);
+      alert('Error submitting testimonial. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setFormData({
+      name: "",
+      email: "",
+      designation: "",
+      rating: 5,
+      likedMost: "",
+      howHelped: "",
+      feedback: "",
+      canShow: true,
+      displayPreference: "nameAndDesignation"
+    });
+  };
+
   return (
-    <main className="min-h-screen bg-white dark:bg-black text-gray-900 dark:text-white transition-colors duration-500">
+    <main className="min-h-screen bg-white dark:bg-black text-gray-900 dark:text-white transition-colors duration-500 relative">
       <ReportIssueButton />
       <Navbar />
 
@@ -524,7 +638,7 @@ export default function Home() {
               <Link
                 href="/cp-tracker"
                 className="bg-gradient-to-r from-indigo-600 to-purple-700 hover:from-indigo-700 hover:to-purple-800 text-white font-semibold py-3 px-6 sm:px-8 rounded-md transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 w-full sm:w-auto text-sm sm:text-base"
-               >
+              >
                 🎯 Track Your CP
               </Link>
             </motion.div>
@@ -552,7 +666,7 @@ export default function Home() {
       >
         {/* Subtle background decoration */}
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-blue-50/30 to-transparent dark:via-blue-900/10 pointer-events-none"></div>
-        
+
         <div className="relative z-10 max-w-6xl mx-auto">
           <motion.div variants={itemVariants} className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
@@ -593,14 +707,14 @@ export default function Home() {
                 gradient: "from-pink-500 to-purple-500",
               },
             ].map(({ title, value, icon, gradient }, index) => {
-               const ref = useRef(null);
-               const isInView = useInView(ref, { 
-                 once: false,
-                 margin: "-100px",
-                 amount: 0.3
-               });
-               const animatedValue = useAnimatedCounter(value, isInView);
-              
+              const ref = useRef(null);
+              const isInView = useInView(ref, {
+                once: false,
+                margin: "-100px",
+                amount: 0.3
+              });
+              const animatedValue = useAnimatedCounter(value, isInView);
+
               return (
                 <motion.div
                   ref={ref}
@@ -639,7 +753,7 @@ export default function Home() {
       >
         {/* Background decoration */}
         <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 via-transparent to-cyan-50/50 dark:from-blue-900/20 dark:via-transparent dark:to-cyan-900/20 pointer-events-none"></div>
-        
+
         <div className="relative z-10 max-w-4xl mx-auto text-center">
           <motion.div
             initial={{ scale: 0.9, opacity: 0 }}
@@ -681,7 +795,7 @@ export default function Home() {
       >
         {/* Background decoration */}
         <div className="absolute inset-0 bg-gradient-to-b from-gray-50/50 to-white/50 dark:from-gray-900/50 dark:to-black/50 pointer-events-none"></div>
-        
+
         <div className="relative z-10 max-w-7xl mx-auto">
           <motion.div variants={itemVariants} className="text-center mb-16">
             <h2 className="text-3xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
@@ -780,7 +894,7 @@ export default function Home() {
       >
         {/* Background decoration */}
         <div className="absolute inset-0 bg-gradient-to-r from-blue-50/30 via-transparent to-blue-50/30 dark:from-blue-900/10 dark:via-transparent dark:to-blue-900/10 pointer-events-none"></div>
-        
+
         <div className="relative z-10 max-w-5xl mx-auto text-center">
           <motion.div
             initial={{ scale: 0.9, opacity: 0 }}
@@ -813,7 +927,7 @@ export default function Home() {
       >
         {/* Background decoration */}
         <div className="absolute inset-0 bg-gradient-to-b from-gray-50/50 to-white/50 dark:from-gray-900/50 dark:to-black/50 pointer-events-none"></div>
-        
+
         <div className="relative z-10 max-w-7xl mx-auto">
           <motion.div variants={itemVariants} className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-6">
@@ -822,18 +936,16 @@ export default function Home() {
             <p className="text-gray-600 dark:text-gray-300 text-lg mb-8 max-w-2xl mx-auto">
               Share your thoughts and help others discover the power of structured DSA practice
             </p>
-            
+
             <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mb-12">
-              <motion.a
-                href="https://forms.gle/8BXQC1o3hsVsEEBp9"
-                target="_blank"
-                rel="noopener noreferrer"
+              <motion.button
+                onClick={() => setIsModalOpen(true)}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-semibold px-6 py-3 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl"
               >
                 💬 Give a Testimonial
-              </motion.a>
+              </motion.button>
               <motion.a
                 href="https://dsamate.vercel.app"
                 target="_blank"
@@ -846,9 +958,9 @@ export default function Home() {
               </motion.a>
             </div>
           </motion.div>
-           <div className="flex flex-row items-center justify-center mb-10">
-      <AnimatedTooltip items={people} />
-    </div>
+          <div className="flex flex-row items-center justify-center mb-10">
+            <AnimatedTooltip items={people} />
+          </div>
 
           <motion.div
             className="flex  flex-wrap justify-center items-start gap-6"
@@ -857,7 +969,266 @@ export default function Home() {
           </motion.div>
         </div>
       </motion.section>
+      {/* Testimonial Modal */}
+      <AnimatePresence>
+        {isModalOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            onClick={closeModal}
+          >
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0, y: 50 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.8, opacity: 0, y: 50 }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto border border-gray-200 dark:border-gray-700"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Modal Header */}
+              <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                  Share Your Testimonial
+                </h2>
+                <button
+                  onClick={closeModal}
+                  className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
 
+              {/* Modal Body */}
+              <form onSubmit={handleSubmit} className="p-6 space-y-6">
+                {/* Name and Email Row */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      Name *
+                    </label>
+                    <input
+                      type="text"
+                      id="name"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleInputChange}
+                      required
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                      placeholder="Your full name"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      Email *
+                    </label>
+                    <input
+                      type="email"
+                      id="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      required
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                      placeholder="your.email@example.com"
+                    />
+                  </div>
+                </div>
+
+                {/* Designation and Rating Row */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label htmlFor="designation" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      Designation *
+                    </label>
+                    <input
+                      type="text"
+                      id="designation"
+                      name="designation"
+                      value={formData.designation}
+                      onChange={handleInputChange}
+                      required
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                      placeholder="e.g., Student, Software Engineer"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="rating" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      Rating *
+                    </label>
+                    <select
+                      id="rating"
+                      name="rating"
+                      value={formData.rating}
+                      onChange={handleInputChange}
+                      required
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                    >
+                      {[5, 4, 3, 2, 1].map(num => (
+                        <option key={num} value={num}>
+                          {num} Star{num !== 1 ? 's' : ''}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                {/* What you liked most */}
+                <div>
+                  <label htmlFor="likedMost" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    What did you like most about DSAMate? *
+                  </label>
+                  <textarea
+                    id="likedMost"
+                    name="likedMost"
+                    value={formData.likedMost}
+                    onChange={handleInputChange}
+                    required
+                    rows={3}
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-vertical"
+                    placeholder="Tell us about your favorite features..."
+                  />
+                </div>
+
+                {/* How it helped */}
+                <div>
+                  <label htmlFor="howHelped" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    How did DSAMate help you? *
+                  </label>
+                  <textarea
+                    id="howHelped"
+                    name="howHelped"
+                    value={formData.howHelped}
+                    onChange={handleInputChange}
+                    required
+                    rows={3}
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-vertical"
+                    placeholder="Share how DSAMate improved your learning journey..."
+                  />
+                </div>
+
+                {/* Feedback */}
+                <div>
+                  <label htmlFor="feedback" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Additional Feedback *
+                  </label>
+                  <textarea
+                    id="feedback"
+                    name="feedback"
+                    value={formData.feedback}
+                    onChange={handleInputChange}
+                    required
+                    rows={4}
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-vertical"
+                    placeholder="Any additional thoughts, suggestions, or experiences you'd like to share..."
+                  />
+                </div>
+
+                {/* Permission to show */}
+                <div className="flex items-center space-x-3">
+                  <input
+                    type="checkbox"
+                    id="canShow"
+                    name="canShow"
+                    checked={formData.canShow}
+                    onChange={handleInputChange}
+                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                  />
+                  <label htmlFor="canShow" className="text-sm text-gray-700 dark:text-gray-300">
+                    I allow DSAMate to display this testimonial publicly
+                  </label>
+                </div>
+
+                {/* Display Preference - Only show if canShow is true */}
+                {formData.canShow && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                      If yes, how would you like your feedback to be shown? *
+                    </label>
+                    <div className="space-y-3">
+                      <div className="flex items-center">
+                        <input
+                          type="radio"
+                          id="nameAndDesignation"
+                          name="displayPreference"
+                          value="nameAndDesignation"
+                          checked={formData.displayPreference === "nameAndDesignation"}
+                          onChange={handleInputChange}
+                          className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                        />
+                        <label htmlFor="nameAndDesignation" className="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                          Use my name and designation
+                        </label>
+                      </div>
+                      <div className="flex items-center">
+                        <input
+                          type="radio"
+                          id="nameOnly"
+                          name="displayPreference"
+                          value="nameOnly"
+                          checked={formData.displayPreference === "nameOnly"}
+                          onChange={handleInputChange}
+                          className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                        />
+                        <label htmlFor="nameOnly" className="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                          Use my name only
+                        </label>
+                      </div>
+                      <div className="flex items-center">
+                        <input
+                          type="radio"
+                          id="anonymous"
+                          name="displayPreference"
+                          value="anonymous"
+                          checked={formData.displayPreference === "anonymous"}
+                          onChange={handleInputChange}
+                          className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                        />
+                        <label htmlFor="anonymous" className="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                          As anonymous user
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Submit Button */}
+                <div className="flex gap-4 pt-4">
+                  <button
+                    type="button"
+                    onClick={closeModal}
+                    className="flex-1 px-6 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-all font-medium"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="flex-1 px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white rounded-lg transition-all font-medium disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Submitting...
+                      </>
+                    ) : (
+                      'Submit Testimonial'
+                    )}
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <ScrollToTopBottom />
       {/* FAQ SECTION */}
       <motion.section
         initial="hidden"
@@ -868,7 +1239,7 @@ export default function Home() {
       >
         {/* Background decoration */}
         <div className="absolute inset-0 bg-gradient-to-b from-blue-50/30 via-transparent to-blue-50/30 dark:from-blue-900/10 dark:via-transparent dark:to-blue-900/10 pointer-events-none"></div>
-        
+
         <div className="relative z-10 max-w-4xl mx-auto">
           <motion.div variants={itemVariants} className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
@@ -885,8 +1256,8 @@ export default function Home() {
           >
             {faqData.map((faq, index) => (
               <motion.div key={index} variants={itemVariants}>
-                <FAQItem 
-                  question={faq.question} 
+                <FAQItem
+                  question={faq.question}
                   answer={faq.answer}
                   isOpen={openFaqIndex === index}
                   onToggle={() => toggleFaq(index)}

@@ -28,12 +28,19 @@ export default function Navbar() {
       try {
         const res = await axios.get("/api/check-auth");
         if (res.status === 200) {
-          // setIsLoggedIn(true);
           setUser(res.data?.user);
           console.log("User authenticated:", res.data.user);
         }
-      } catch (err) {
-        console.error("Auth check failed:", err);
+      } catch (err: any) {
+        if (err.response?.status === 401) {
+          setUser(null);
+        } else if (err.response?.status === 503) {
+          console.log("Auth service temporarily unavailable");
+          setUser(null);
+        } else {
+          console.log("Auth service unavailable");
+          setUser(null);
+        }
       }
     };
     checkAuth();

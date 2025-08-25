@@ -1,7 +1,8 @@
 'use client';
-
+import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { FaLock } from "react-icons/fa";
 import { FaChartLine, FaCalendarCheck, FaFire, FaTrophy, FaBullseye, FaBolt, FaCode, FaClock } from 'react-icons/fa';
 import Navbar from '@/components/Navbar';
 import ProgressChart from '@/components/ProgressChart';
@@ -24,6 +25,10 @@ export default function ProgressPage() {
   const [stats, setStats] = useState<any>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState<User | null>(null);
+  const [authChecked, setAuthChecked] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
+  const router = useRouter();
+
 
   // Check auth once
   useEffect(() => {
@@ -33,14 +38,29 @@ export default function ProgressPage() {
         if (res.status === 200) {
           setIsLoggedIn(true);
           setUser(res.data?.user);
-          console.log("User authenticated:", res.data.user);
         }
-      } catch (err) {
-        console.error("Auth check failed:", err);
-      }
+      } catch (err: any) {
+        if (err.response?.status === 401 || err.response?.status === 503) {
+          setIsLoggedIn(false);
+          setUser(null);
+        } else {
+          setIsLoggedIn(false);
+          setUser(null);
+        }
+      } finally {
+      setAuthChecked(true); // auth check done
+     }
+
     };
     checkAuth();
   }, []);
+
+  // If auth check completed and user is not logged in, show popup
+  useEffect(() => {
+    if (authChecked && !isLoggedIn) {
+      setShowPopup(true);
+    }
+  }, [authChecked, isLoggedIn]);
 
   // Fetch progress whenever user is set
   useEffect(() => {
@@ -121,7 +141,47 @@ const fetchProgress = async () => {
       transition: { delay: i * 0.1, duration: 0.6 }
     })
   };
+  // While checking authentication
+  if (!authChecked) {
+    return (
+      <main className="min-h-screen flex items-center justify-center text-gray-500 dark:text-gray-400">
+        Checking authentication...
+      </main>
+    );
+  }
+  // If user is not logged in → show popup
+  if (showPopup) {
+    return (
+      <main className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
+    <motion.div
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.3 }}
+      className="bg-white dark:bg-zinc-900 p-8 rounded-2xl shadow-xl text-center w-[90%] max-w-md border border-gray-200 dark:border-gray-800"
+    >
+      <div className="flex items-center justify-center w-16 h-16 mx-auto mb-4 rounded-full bg-blue-100 dark:bg-blue-900">
+        <FaLock className="text-blue-600 dark:text-blue-400 text-2xl" />
+      </div>
 
+      <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+        Login Required
+      </h2>
+
+      <p className="text-gray-600 dark:text-gray-400 mb-6">
+        Please sign in to view your progress and stats.
+      </p>
+
+      <button
+        onClick={() => router.push(`/sign-in?redirect=/progress`)}
+        className="w-full py-3 px-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-medium shadow-md hover:opacity-90 transition-all duration-300"
+      >
+        Go to Login
+      </button>
+
+    </motion.div>
+  </main>
+    );
+  }
   if (!stats) {
     return (
       <main className="min-h-screen flex items-center justify-center text-gray-500 dark:text-gray-400">

@@ -51,7 +51,7 @@ export async function GET() {
     };
 
     // Fetch all merged PRs
-    let allPRs: PRData[] = [];
+    const allPRs: PRData[] = [];
     let page = 1;
     const perPage = 100;
 

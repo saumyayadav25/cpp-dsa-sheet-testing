@@ -5,7 +5,15 @@ import jwt from "jsonwebtoken";
 import { connect } from "@/db/config";
 import { apiLimiter, res } from "@/middleware/rateLiming";
 
+
 export async function GET(req: Request) {
+  
+   try {
+    await connect();
+  } catch (error) {
+    return NextResponse.json({ error: "Service unavailable" }, { status: 503 });
+  }
+  
   // Wait for the rate limiter to process the request
   const rateLimitResult = await new Promise((resolve) => {
     apiLimiter(req as any, res as any, (next: any) => {
@@ -21,7 +29,6 @@ export async function GET(req: Request) {
       { status: 429 }
     );
   }
-  await connect();
 
   const token = (await cookies()).get("session")?.value;
 
