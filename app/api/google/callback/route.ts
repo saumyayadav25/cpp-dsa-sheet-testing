@@ -11,7 +11,12 @@ export async function GET(req: Request) {
   const code = searchParams.get("code");
 
   if (!code) {
-    return NextResponse.json({ error: "No code found" }, { status: 400 });
+    const errorResponse = NextResponse.json({ error: "No code found" }, { status: 400 });
+    errorResponse.headers.set('Access-Control-Allow-Origin', '*');
+    errorResponse.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    errorResponse.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+    errorResponse.headers.set('Access-Control-Allow-Credentials', 'true');
+    return errorResponse;
   }
 
   try {
@@ -59,6 +64,13 @@ export async function GET(req: Request) {
 
     // 5. Set session cookie and redirect
     const res = NextResponse.redirect(`${process.env.NEXT_PUBLIC_BASE_URL}/`);
+    
+    // Add CORS headers
+    res.headers.set('Access-Control-Allow-Origin', '*');
+    res.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+    res.headers.set('Access-Control-Allow-Credentials', 'true');
+    
     res.cookies.set("session", token, {
       httpOnly: true,
        secure: true,
@@ -70,6 +82,11 @@ export async function GET(req: Request) {
     return res;
   } catch (err) {
     console.error("OAuth Error:", err);
-    return NextResponse.json({ error: "OAuth failed" }, { status: 500 });
+    const errorResponse = NextResponse.json({ error: "OAuth failed" }, { status: 500 });
+    errorResponse.headers.set('Access-Control-Allow-Origin', '*');
+    errorResponse.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    errorResponse.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+    errorResponse.headers.set('Access-Control-Allow-Credentials', 'true');
+    return errorResponse;
   }
 }

@@ -47,6 +47,10 @@ export async function GET(request: Request) {
 
     const problem = getPOTD();
 
+    let successCount = 0;
+    let failureCount = 0;
+    const failedEmails: string[] = [];
+
     for (const email of emails) {
       if (!email) continue;
 
@@ -81,14 +85,33 @@ export async function GET(request: Request) {
           <a href="${baseUrl}/email-preference?email=${email}&action=newsletter">Subscribe to Newsletter</a>
       `;
 
-      await sendEmail({
+      const emailResult = await sendEmail({
         to: email,
         subject: `🧠 DSAMate POTD – ${problem.title}`,
         html,
       });
+
+      if (emailResult.success) {
+        successCount++;
+        console.log(`✅ POTD email sent successfully to ${email}:`, emailResult.messageId);
+      } else {
+        failureCount++;
+        failedEmails.push(email);
+        console.error(`❌ Failed to send POTD email to ${email}:`, emailResult.error);
+      }
     }
 
-    return NextResponse.json({ message: "POTD emails sent successfully!" });
+    const message = `POTD emails sent successfully! Success: ${successCount}, Failures: ${failureCount}`;
+    if (failedEmails.length > 0) {
+      console.warn("Failed emails:", failedEmails);
+    }
+
+    return NextResponse.json({ 
+      message,
+      successCount,
+      failureCount,
+      failedEmails: failedEmails.length > 0 ? failedEmails : undefined
+    });
   } catch (error) {
     console.error("❌ Error sending POTD emails:", error);
     return NextResponse.json({ error: "Failed to send emails" }, { status: 500 });
