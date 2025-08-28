@@ -3,9 +3,9 @@ import { User } from "@/models/User.model";
 import { connect } from "@/db/config";
 
 export async function POST(req: NextRequest) {
-  await connect();
-
   try {
+    await connect();
+
     const body = await req.json();
     const { email, otp } = body;
 
