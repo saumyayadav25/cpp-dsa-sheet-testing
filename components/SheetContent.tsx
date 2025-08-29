@@ -12,6 +12,14 @@ import {
 } from "react-icons/si";
 import { sampleTopics, type Question } from "@/data/questions";
 import { Plus, StickyNote, X } from "lucide-react";
+import axios from "axios";
+
+interface User {
+  _id: string;
+  full_name: string;
+  email: string;
+  avatar: string;
+}
 
 type SheetContentProps = {
   difficultyFilter: string;
@@ -33,43 +41,92 @@ export default function SheetContent({
   const [openTopics, setOpenTopics] = useState<number[]>([]);
   const [progress, setProgress] = useState<{
     [id: string]: {
-      isSolved: boolean;
-      isMarkedForRevision: boolean;
+      isSolved?: boolean;
+      isMarkedForRevision?: boolean;
       note?: string;
+      solvedAt?: string;
     };
   }>({});
   const [openNoteId, setOpenNoteId] = useState<string | null>(null);
+  const [showSignInModal, setShowSignInModal] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
 
-  // Load & persist progress
+  const [completedTopics, setCompletedTopics] = useState<Set<number>>(() => {
+    try {
+      const raw = localStorage.getItem("dsa-completed-topics");
+      if (raw) return new Set<number>(JSON.parse(raw));
+    } catch (e) { }
+    return new Set<number>();
+  });
+
   useEffect(() => {
-    const stored = localStorage.getItem("dsa-progress");
-    if (stored) setProgress(JSON.parse(stored));
+    const checkAuth = async () => {
+      try {
+        const res = await axios.get("/api/check-auth");
+        if (res.status === 200) {
+          setIsLoggedIn(true);
+          setUser(res.data?.user);
+        }
+      } catch (err: any) {
+        if (err.response?.status === 401 || err.response?.status === 503) {
+          setIsLoggedIn(false);
+          setUser(null);
+        } else {
+          setIsLoggedIn(false);
+          setUser(null);
+        }
+      }
+    };
+    checkAuth();
+  }, []);
+
+  // Handle Escape key for modal
+  useEffect(() => {
+    const handleEscapeKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && showSignInModal) {
+        setShowSignInModal(false);
+      }
+    };
+
+    if (showSignInModal) {
+      document.addEventListener('keydown', handleEscapeKey);
+      // Prevent body scroll when modal is open
+      document.body.style.overflow = 'hidden';
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleEscapeKey);
+      document.body.style.overflow = 'unset';
+    };
+  }, [showSignInModal]);
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("dsa-progress");
+      if (stored) setProgress(JSON.parse(stored));
+    } catch (e) {
+      console.error("Failed to parse dsa-progress from localStorage", e);
+    }
   }, []);
   useEffect(() => {
-    localStorage.setItem("dsa-progress", JSON.stringify(progress));
+    try {
+      localStorage.setItem("dsa-progress", JSON.stringify(progress));
+    } catch (e) {
+      console.error("Failed to persist dsa-progress", e);
+    }
   }, [progress]);
 
-  // Toggle solved/marked state
-  const toggleCheckbox = (
-    id: string,
-    field: "isSolved" | "isMarkedForRevision"
-  ) => {
-    setProgress((prev) => {
-      const current = prev[id]?.[field] || false;
-      const updated = { ...prev[id], [field]: !current };
-      if (field === "isSolved" && !current) {
-        (updated as any).solvedAt = new Date().toISOString();
-      }
-      return { ...prev, [id]: updated };
-    });
-  };
-
-  // Expand/collapse topic
-  const toggleTopic = (topicId: number) => {
-    setOpenTopics((prev) =>
-      prev.includes(topicId) ? prev.filter((id) => id !== topicId) : [...prev, topicId]
-    );
-  };
+  useEffect(() => {
+    try {
+      localStorage.setItem(
+        "dsa-completed-topics",
+        JSON.stringify(Array.from(completedTopics))
+      );
+    } catch (e) {
+      console.error("Failed to persist completed topics", e);
+    }
+  }, [completedTopics]);
 
   const difficultyClasses = {
     easy: "text-green-600 dark:text-green-500",
@@ -77,7 +134,128 @@ export default function SheetContent({
     hard: "text-red-600 dark:text-red-500",
   };
 
-  // 1️⃣ Compute total matches across all topics
+  const toggleTopic = (topicId: number) => {
+    setOpenTopics((prev) =>
+      prev.includes(topicId) ? prev.filter((id) => id !== topicId) : [...prev, topicId]
+    );
+  };
+
+  async function sendProgressUpdate(payload: {
+    questionDifficulty?: string | null;
+    topicName?: string | null;
+    topicCompleted?: string | null;
+  }) {
+    try {
+      if (!isLoggedIn || !user) return null;
+      console.log("Sending progress update:", payload);
+
+      const body = {
+        userId: user._id,
+        questionDifficulty: payload.questionDifficulty ?? null,
+        topicName: payload.topicName ?? null,
+        topicCompleted: payload.topicCompleted ?? null,
+      };
+
+      const res = await axios.post("/api/progress/update", body);
+      return res.data;
+    } catch (err) {
+      console.error("Error sending progress update:", err);
+      return null;
+    }
+  }
+
+  const toggleCheckbox = async (
+    id: string,
+    field: "isSolved" | "isMarkedForRevision",
+    questionDifficulty?: string,
+    topicName?: string
+  ) => {
+    console.log("Auth state:", { isLoggedIn, user });
+
+    // Check if user is authenticated before allowing any changes
+    if (!isLoggedIn || !user) {
+      console.log("User not authenticated, showing modal");
+      // Show the sign-in modal instead of browser confirm
+      setShowSignInModal(true);
+      return;
+    }
+
+    const currentFieldValue = !!(progress[id]?.[field]);
+    console.log("Toggling checkbox:", { id, field, questionDifficulty, topicName });
+
+    // Fail-safe: recover topicName if missing
+    if (!topicName) {
+      const [topicIdStr] = id.split("-");
+      const topicId = parseInt(topicIdStr);
+      const topic = sampleTopics.find((t) => t.id === topicId);
+      topicName = topic?.name || undefined;
+    }
+
+    setProgress((prev) => {
+      const updated = { ...(prev[id] || {}) };
+      updated[field] = !currentFieldValue;
+      if (field === "isSolved" && !currentFieldValue) {
+        updated.solvedAt = new Date().toISOString();
+      }
+      return { ...prev, [id]: updated };
+    });
+
+    if (field === "isSolved" && !currentFieldValue) {
+      try {
+        await sendProgressUpdate({
+          questionDifficulty: questionDifficulty ?? null,
+          topicName: topicName ?? null,
+        });
+
+        const audio = new Audio("/sounds/done.mp3");
+        audio.play().catch((err) => console.log("Audio play blocked or failed", err));
+      } catch (err) {
+        console.error("Error updating progress for solved question:", err);
+      }
+    }
+  };
+
+  useEffect(() => {
+    const currentlyCompleted = new Set<number>();
+
+    sampleTopics.forEach((topic) => {
+      const totalQ = topic.questions.length;
+      const solvedQ = topic.questions.filter((q) => {
+        const key = `${topic.id}-${q.id}`;
+        return (progress[key]?.isSolved ?? q.isSolved) === true;
+      }).length;
+      if (solvedQ === totalQ) currentlyCompleted.add(topic.id);
+    });
+
+    const newCompletions: number[] = [];
+    currentlyCompleted.forEach((id) => {
+      if (!completedTopics.has(id)) newCompletions.push(id);
+    });
+
+    if (newCompletions.length === 0) return;
+
+    (async () => {
+      for (const topicId of newCompletions) {
+        const topic = sampleTopics.find((t) => t.id === topicId);
+        if (!topic) continue;
+
+        try {
+          if (isLoggedIn && user) {
+            await sendProgressUpdate({
+              questionDifficulty: null,
+              topicCompleted: topic.name,
+            });
+          } else {
+            console.log(`Guest completed topic "${topic.name}" — persisting locally only`);
+          }
+          setCompletedTopics((prev) => new Set(prev).add(topicId));
+        } catch (err) {
+          console.error("Error notifying server about topic completion", err);
+        }
+      }
+    })();
+  }, [progress, isLoggedIn, user]);
+
   const totalFiltered = sampleTopics.reduce((sum, topic) => {
     return (
       sum +
@@ -103,7 +281,6 @@ export default function SheetContent({
     );
   }, 0);
 
-  // 2️⃣ If none match, show empty state ONCE
   if (totalFiltered === 0) {
     return (
       <div className="p-8">
@@ -115,11 +292,26 @@ export default function SheetContent({
     );
   }
 
-  // 3️⃣ Otherwise render each topic that has matches
   return (
     <>
+      {/* Authentication Notice */}
+      {(!isLoggedIn || !user) && (
+        <div className="mb-6 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-4">
+          <div className="flex items-center space-x-2">
+            <svg className="w-5 h-5 text-amber-600 dark:text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+            </svg>
+            <p className="text-amber-800 dark:text-amber-200 text-sm">
+              <strong>Sign in required:</strong> To track your progress and mark questions as solved or for revision, please{' '}
+              <a href="/sign-in" className="underline hover:text-amber-900 dark:hover:text-amber-100 font-medium">
+                sign in to your account
+              </a>.
+            </p>
+          </div>
+        </div>
+      )}
+
       {sampleTopics.map((topic) => {
-        // Filter per-topic
         const filtered = topic.questions.filter((q) => {
           const key = `${topic.id}-${q.id}`;
           const local = progress[key] || {};
@@ -157,20 +349,16 @@ export default function SheetContent({
             {/* Topic Header */}
             <button
               onClick={() => toggleTopic(topic.id)}
-              className="w-full px-4 py-3 flex justify-between items-center bg-background hover:bg-gray-100 dark:hover:bg-zinc-900 transition"
+              className="w-full px-4 py-3 flex justify-between items-center bg-background hover:bg-gray-100 dark:hover:bg-zinc-900 transition rounded-lg"
               aria-expanded={openTopics.includes(topic.id)}
               aria-controls={`topic-${topic.id}-body`}
             >
-              <span className="text-lg font-medium text-gray-900 dark:text-white">
-                {topic.name}
-              </span>
+              <span className="text-lg font-medium text-gray-900 dark:text-white">{topic.name}</span>
               <span className="text-sm text-gray-500 dark:text-gray-400 font-medium px-2 py-2 ml-auto">
                 {completed ? "🎉 Completed" : `✅ ${solvedQ}/${totalQ} solved`}
               </span>
               <svg
-                className={`h-5 w-5 transition-transform ${
-                  openTopics.includes(topic.id) ? "rotate-180" : ""
-                }`}
+                className={`h-5 w-5 transition-transform ${openTopics.includes(topic.id) ? "rotate-180" : ""}`}
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
@@ -181,10 +369,7 @@ export default function SheetContent({
 
             {/* Topic Body */}
             {openTopics.includes(topic.id) && (
-              <div
-                id={`topic-${topic.id}-body`}
-                className="overflow-x-auto bg-background px-4 py-3"
-              >
+              <div id={`topic-${topic.id}-body`} className="overflow-x-auto bg-background px-4 py-3 rounded-lg">
                 <table className="min-w-full table-fixed text-gray-900 dark:text-white">
                   <thead>
                     <tr className="border-b border-gray-300 dark:border-gray-600">
@@ -249,18 +434,22 @@ export default function SheetContent({
                             <input
                               type="checkbox"
                               checked={isSolved}
-                              onChange={() => toggleCheckbox(key, "isSolved")}
-                              className="accent-green-500 w-4 h-4"
-                              aria-label={`Mark '${q.title}' solved`}
+                              disabled={!isLoggedIn || !user}
+                              onChange={() => toggleCheckbox(key, "isSolved", q.difficulty, topic.name)}
+                              className={`w-4 h-4 ${!isLoggedIn || !user ? 'cursor-not-allowed opacity-50' : 'accent-green-500'}`}
+                              aria-label={`Mark '${q.title}' as solved`}
+                              title={!isLoggedIn || !user ? "Please sign in to mark as solved" : "Mark as solved"}
                             />
                           </td>
                           <td className="py-2 px-3 text-center">
                             <input
                               type="checkbox"
                               checked={isMarked}
-                              onChange={() => toggleCheckbox(key, "isMarkedForRevision")}
-                              className="accent-red-500 w-4 h-4"
+                              disabled={!isLoggedIn || !user}
+                              onChange={() => toggleCheckbox(key, "isMarkedForRevision", undefined, topic.name)}
+                              className={`w-4 h-4 ${!isLoggedIn || !user ? 'cursor-not-allowed opacity-50' : 'accent-red-500'}`}
                               aria-label={`Mark '${q.title}' for revision`}
+                              title={!isLoggedIn || !user ? "Please sign in to mark for revision" : "Mark for revision"}
                             />
                           </td>
                           <td className="py-2 px-3 text-center">
@@ -278,7 +467,7 @@ export default function SheetContent({
                               className="hover:scale-110 transition"
                               aria-expanded={openNoteId === key}
                             >
-                              {(!local.note || local.note.trim() === "") ? (
+                              {!local.note || local.note.trim() === "" ? (
                                 <Plus className="w-6 h-6 text-gray-600 dark:text-white" />
                               ) : (
                                 <StickyNote className="w-6 h-6 text-amber-500 dark:text-amber-400" />
@@ -330,6 +519,56 @@ export default function SheetContent({
           </div>
         );
       })}
+
+      {/* Sign-In Required Modal */}
+      {console.log("Modal state:", showSignInModal)}
+      {showSignInModal && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+          onClick={() => setShowSignInModal(false)}
+        >
+          <div
+            className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-mx-4 shadow-xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="text-center">
+              {/* Icon */}
+              <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 dark:bg-red-900/20 mb-4">
+                <svg className="h-6 w-6 text-red-600 dark:text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.966-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                </svg>
+              </div>
+
+              {/* Title */}
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+                Sign In Required
+              </h3>
+
+              {/* Message */}
+              <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
+                You need to sign in to mark questions as solved or for revision. This helps us track your progress and provide personalized recommendations.
+              </p>
+
+              {/* Buttons */}
+              <div className="flex gap-3 justify-center">
+                <button
+                  onClick={() => setShowSignInModal(false)}
+                  className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                >
+                  Cancel
+                </button>
+                <a
+                  href="/sign-in"
+                  className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors"
+                >
+                  Sign In
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
+  

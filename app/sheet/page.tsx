@@ -45,7 +45,7 @@ export default function SheetPage() {
 
   return (
     <>
-      <Navbar searchTerm={searchTerm} setSearchTerm={setSearchTerm} streak={streak} />
+      <Navbar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
       <main className="min-h-screen bg-white dark:bg-background text-gray-900 dark:text-white px-4 md:px-12 py-24 transition-colors duration-300">
         <ReportIssueButton />
 

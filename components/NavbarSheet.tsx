@@ -8,11 +8,18 @@ import { motion, AnimatePresence } from "framer-motion";
 import { usePathname } from "next/navigation";
 import AuthButtons from "@/components/AuthButtons";
 import { ModeToggle } from "./mode-toggle";
+import axios from "axios";
+
+interface User {
+  _id: string;
+  full_name: string;
+  email: string;
+  avatar: string;
+}
 
 type NavbarProps = {
   searchTerm?: string;
   setSearchTerm?: (term: string) => void;
-  streak: number;
 };
 
 const HamburgerIcon = ({ isOpen }: { isOpen: boolean }) => (
@@ -44,7 +51,7 @@ const HamburgerIcon = ({ isOpen }: { isOpen: boolean }) => (
   </div>
 );
 
-export default function NavbarSheet({ searchTerm, setSearchTerm, streak }: NavbarProps) {
+export default function NavbarSheet({ searchTerm, setSearchTerm}: NavbarProps) {
   const [showMobileSearch, setShowMobileSearch] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
@@ -53,7 +60,6 @@ export default function NavbarSheet({ searchTerm, setSearchTerm, streak }: Navba
   const searchInputRef = useRef<HTMLInputElement>(null);
   const pathname = usePathname();
 
-  // Toggle functions with mutual exclusion
   const toggleMobileSearch = () => {
     if (isMobileMenuOpen) setIsMobileMenuOpen(false);
     setShowMobileSearch((v) => !v);
@@ -62,6 +68,42 @@ export default function NavbarSheet({ searchTerm, setSearchTerm, streak }: Navba
     if (showMobileSearch) setShowMobileSearch(false);
     setIsMobileMenuOpen((v) => !v);
   };
+    const [streak, setStreak] = useState(0);
+      const [user, setUser] = useState<User | null>(null);
+  
+    // Check auth once
+    useEffect(() => {
+      const checkAuth = async () => {
+        try {
+          const res = await axios.get("/api/check-auth");
+          if (res.status === 200) {
+            setUser(res.data?.user);
+          }
+        } catch (err: any) {
+          if (err.response?.status === 401 || err.response?.status === 503) {
+            setUser(null);
+          } else {
+            setUser(null);
+          }
+        }
+      };
+      checkAuth();
+    }, []);
+    useEffect(()=>{
+       if (!user?._id) return;
+      const fetchStreak = async () => {
+        try {
+          console.log("Fetching streak for user:", user?._id);
+          const response = await axios.get(`/api/progress/${user?._id}`);
+          console.log("Streak response:", response.data.progress.streakCount);
+          setStreak(response.data.progress.streakCount);
+        } catch (error) {
+          console.log(error);
+        }
+      };
+      fetchStreak();
+    }, [user?._id]);
+  
 
   useEffect(() => {
     let ticking = false;
@@ -193,8 +235,8 @@ export default function NavbarSheet({ searchTerm, setSearchTerm, streak }: Navba
           </div>
         </motion.div>
 
-        {/* Desktop Links and Right Icons */}
-        <div className="hidden sm:flex items-center gap-6 text-foreground">
+        {/* Desktop Links + Streak + Auth */}
+        <div className="hidden sm:flex flex-wrap items-center justify-end gap-4 text-white min-w-0">
           {/* Streak Icon */}
           <motion.div
             title={`Streak: ${streak} day${streak === 1 ? "" : "s"}`}
@@ -206,12 +248,12 @@ export default function NavbarSheet({ searchTerm, setSearchTerm, streak }: Navba
               repeatDelay: 3,
             }}
             whileHover={{ scale: 1.1 }}
-            className="cursor-pointer"
+            className="cursor-pointer shrink-0"
           >
             <div
               className={`flex items-center gap-2 px-3 py-2 rounded-xl transition-all duration-300 ${
                 streak > 0
-                  ? "text-orange-400"
+                  ? "text-orange-400 bg-orange-500/10 shadow-lg shadow-orange-500/20"
                   : "text-gray-400 opacity-50 hover:opacity-75"
               }`}
             >
@@ -230,87 +272,40 @@ export default function NavbarSheet({ searchTerm, setSearchTerm, streak }: Navba
           </motion.div>
 
           {/* Navigation Links */}
-          {navLinks.map((link) => (
-            <motion.div
-              key={link.href}
-              whileHover={{ y: -2 }}
-              whileTap={{ y: 0 }}
-            >
-              <Link
-                href={link.href}
-                className={`relative px-3 py-2 rounded-lg transition-all duration-300 group hover:text-blue-400 hover:cursor-pointer`}
+          <div className="flex flex-wrap items-center gap-2 md:gap-4">
+            {navLinks.map((link) => (
+              <motion.div
+                key={link.href}
+                whileHover={{ y: -2 }}
+                whileTap={{ y: 0 }}
+                className="shrink-0"
               >
-                <span
-                  className={`relative z-10 ${
-                    link.isActive
-                      ? "text-blue-400"
-                      : "text-foreground hover:text-blue-400"
-                  }`}
+                <Link
+                  href={link.href}
+                  className="relative px-3 py-2 rounded-lg transition-all duration-300 group hover:text-blue-400 hover:cursor-pointer hover:bg-white/5"
                 >
-                  {link.label}
-                </span>
-                {/* Active indicator */}
-                {link.isActive && (
-                  <motion.div
-                    layoutId="activeTab"
-                    className="absolute inset-0 bg-blue-500/10 rounded-lg border border-blue-400/30"
-                    initial={false}
-                    transition={{ type: "spring", stiffness: 500, damping: 30 }}
-                  />
-                )}
-              </Link>
-            </motion.div>
-          ))}
+                  <span
+                    className={`relative z-10 ${
+                      link.isActive ? "text-blue-400" : "text-gray-900 dark:text-white hover:text-blue-400"
+                    }`}
+                  >
+                    {link.label}
+                  </span>
+                  {link.isActive && (
+                    <motion.div
+                      layoutId="activeTab"
+                      className="absolute inset-0 bg-blue-500/10 rounded-lg border border-blue-400/30"
+                      initial={false}
+                      transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                    />
+                  )}
+                </Link>
+              </motion.div>
+            ))}
+          </div>
 
-          <AuthButtons />
-          <ModeToggle />
-        </div>
-
-        {/* Mobile Right Section */}
-        <div className="sm:hidden flex items-center gap-3 text-foreground">
-          <motion.button
-            onClick={toggleMobileSearch}
-            className="p-2 rounded-xl hover:bg-white/10 transition-colors"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            aria-label="Toggle search"
-          >
-            <motion.div
-              animate={{ rotate: showMobileSearch ? 90 : 0 }}
-              transition={{ duration: 0.2 }}
-            >
-              {showMobileSearch ? <FiX className="text-xl" /> : <FiSearch className="text-xl" />}
-            </motion.div>
-          </motion.button>
-
-          <motion.button
-            onClick={toggleMobileMenu}
-            className="p-2 rounded-xl hover:bg-white/10 transition-colors"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            aria-label="Toggle menu"
-          >
-            <HamburgerIcon isOpen={isMobileMenuOpen} />
-          </motion.button>
-
-          <div className="flex items-center gap-3">
-            {/* Mobile Streak Icon */}
-            <motion.div
-              title={`Streak: ${streak} day${streak === 1 ? "" : "s"}`}
-              whileHover={{ scale: 1.1 }}
-              className="cursor-pointer"
-            >
-              <div
-                className={`flex items-center gap-1 ${
-                  streak > 0 ? "text-orange-400" : "text-gray-400 opacity-50"
-                }`}
-              >
-                <FaFire className="text-lg" />
-                {streak > 0 && <span className="text-sm font-bold">{streak}</span>}
-              </div>
-            </motion.div>
-
-            <ModeToggle />
+          {/* Auth Buttons */}
+          <div className="shrink-0">
             <AuthButtons />
           </div>
         </div>

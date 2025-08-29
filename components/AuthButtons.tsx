@@ -3,13 +3,13 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
-import Image from "next/image";
+import Link from "next/link";
 import { Button } from "./ui/button";
 import { LogOut } from "lucide-react";
 import { toast } from "sonner";
 import { FiSearch, FiX } from "react-icons/fi";
 import { FaFire } from "react-icons/fa";
-import Link from "next/link";
+
 import { usePathname } from "next/navigation";
 interface User {
   _id: string;
@@ -21,11 +21,49 @@ interface User {
 export default function AuthButtons() {
   const pathname = usePathname();
   const [showDropdown, setShowDropdown] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [user, setUser] = useState<User | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+
+
+  // Check if user is logged in
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const res = await axios.get("/api/check-auth");
+        if (res.status === 200) {
+          setIsLoggedIn(true);
+          setUser(res.data?.user);
+        }
+      } catch (err: any) {
+        if (err.response?.status === 401) {
+          setIsLoggedIn(false);
+          setUser(null);
+        } else if (err.response?.status === 503) {
+          setIsLoggedIn(false);
+          setUser(null);
+        } else {
+          setIsLoggedIn(false);
+          setUser(null);
+        }
+      }
+    };
+
+    checkAuth();
+  }, [isLoggedIn]);
+
   const menuItems = [
+    {
+      label: "Track Your Cp",
+      href: "/cp-tracker",
+      icon: "🎯",
+    },
+    {
+      label: "Flashcards",
+      href: "/flashcards",
+      icon: "🧠",
+    },
     {
       label: "Star on GitHub",
       href: "https://github.com/saumyayadav25/DSA-Supreme-3.0",
@@ -47,20 +85,6 @@ export default function AuthButtons() {
       icon: "🔥",
     },
   ];
-
-  // Check if user is logged in
-  useEffect(() => {
-    const checkAuth = async () => {
-      const res = await axios.get("/api/check-auth");
-      if (res.status === 200) {
-        setIsLoggedIn(true);
-        setUser(res.data?.user);
-      }
-    };
-
-    checkAuth();
-  }, [isLoggedIn]);
-
   const handleLogOut = async () => {
     const res = await axios.post("/api/logout");
 
@@ -86,6 +110,7 @@ export default function AuthButtons() {
     { href: "/", label: "Home", isActive: pathname === "/" },
     { href: "/notes", label: "Notes", isActive: pathname === "/notes" },
     { href: "/sheet", label: "Sheet", isActive: pathname === "/sheet" },
+    { href: "/flashcards", label: "Flashcards", isActive: pathname === "/flashcards" },
     {
       href: "/progress",
       label: "Progress",
@@ -95,6 +120,11 @@ export default function AuthButtons() {
       href: "/contributors",
       label: "Contributors",
       isActive: pathname === "/contributors",
+    },
+    {
+      href: "/cp-tracker",
+      label: "track Your CP",
+      isActive: pathname === "/cp-tracker",
     },
   ];
   const handleLogout = () => {
@@ -158,7 +188,7 @@ export default function AuthButtons() {
       x: 0,
       rotateY: 0,
       transition: {
-        type: "spring" as "spring",
+        type: "spring" as const,
         damping: 20,
         stiffness: 400,
       },
@@ -173,66 +203,109 @@ export default function AuthButtons() {
     },
   };
 
- const HamburgerIcon = ({ isOpen }: { isOpen: boolean }) => (
-  <div className="relative w-6 h-6 flex flex-col justify-center items-center">
-    <motion.span
-      animate={{
-        rotate: isOpen ? 45 : 0,
-        y: isOpen ? 0 : -4,
-      }}
-      transition={{ duration: 0.3, ease: "easeInOut" }}
-      className="block w-5 h-0.5 bg-foreground origin-center absolute"
-    />
-    <motion.span
-      animate={{
-        opacity: isOpen ? 0 : 1,
-        x: isOpen ? -10 : 0,
-      }}
-      transition={{ duration: 0.2, ease: "easeInOut" }}
-      className="block w-5 h-0.5 bg-foreground origin-center absolute"
-    />
-    <motion.span
-      animate={{
-        rotate: isOpen ? -45 : 0,
-        y: isOpen ? 0 : 4,
-      }}
-      transition={{ duration: 0.3, ease: "easeInOut" }}
-      className="block w-5 h-0.5 bg-foreground origin-center absolute"
-    />
-  </div>
-);
+  const HamburgerIcon = ({ isOpen }: { isOpen: boolean }) => (
+    <div className="relative w-6 h-6 flex flex-col justify-center items-center">
+      <motion.span
+        animate={{
+          rotate: isOpen ? 45 : 0,
+          y: isOpen ? 0 : -4,
+        }}
+        transition={{ duration: 0.3, ease: "easeInOut" }}
+        className="block w-5 h-0.5 bg-foreground origin-center absolute"
+      />
+      <motion.span
+        animate={{
+          opacity: isOpen ? 0 : 1,
+          x: isOpen ? -10 : 0,
+        }}
+        transition={{ duration: 0.2, ease: "easeInOut" }}
+        className="block w-5 h-0.5 bg-foreground origin-center absolute"
+      />
+      <motion.span
+        animate={{
+          rotate: isOpen ? -45 : 0,
+          y: isOpen ? 0 : 4,
+        }}
+        transition={{ duration: 0.3, ease: "easeInOut" }}
+        className="block w-5 h-0.5 bg-foreground origin-center absolute"
+      />
+    </div>
+  );
 
 
   return (
     <div className="flex items-center gap-3">
       {/* Login/Sign In Button or User Profile */}
       {!isLoggedIn ? (
-        <motion.a
-          href="/sign-in"
-          className="px-4 w-20 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-sm font-semibold rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          Sign In
-        </motion.a>
+        <motion.div>
+          <Link
+            href="/sign-in"
+            className="px-4 w-20 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-sm font-semibold rounded-lg hover:from-blue-700 hover:to-purple-700 whitespace-nowrap"
+          >
+            Sign In
+          </Link>
+        </motion.div>
       ) : (
-        <motion.a
-          href="/profile"
-          className="flex items-center gap-2 px-3 py-2 bg-white/10 backdrop-blur-sm rounded-lg hover:bg-white/20 transition-all duration-200 text-white text-sm font-medium border border-white/10"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
+
+        <Link
+          href={user ? `/profile/${encodeURIComponent(user._id)}` : "#"} //Redirects to user profile dashboard
+          className="relative flex items-center gap-2 px-3 py-2 bg-white/10 backdrop-blur-sm rounded-lg hover:bg-white/20 transition-all duration-200 text-white text-sm font-medium border border-white/10"
         >
-          <div className="w-6 h-6 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-xs font-bold">
-            {user?.avatar ? (
-              <Image src={user.avatar} alt="U" width={25} height={25} />
-            ) : (
-              `${user?.full_name?.split(" ")[0]?.charAt(0) ?? "U"}${
-                user?.full_name?.split(" ")[1]?.charAt(0) ?? ""
-              }`.toUpperCase()
-            )}
-          </div>
-          <span className="max-w-20 truncate">{user?.full_name}</span>
-        </motion.a>
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="flex items-center gap-2 w-full"
+          >
+            {/* Avatar Circle */}
+            <div className="relative w-7 h-7 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center overflow-hidden">
+              {user?.avatar ? (
+                <img
+                  src={user.avatar}
+                  alt="U"
+                  width={25}
+                  height={25}
+                  className="object-cover w-full h-full"
+                />
+              ) : (
+                <img
+                  src="/images/default-avatar.png"
+                  alt="Default Avatar"
+                  width={25}
+                  height={25}
+                  className="object-cover w-full h-full"
+                />
+              )}
+
+              {/* Hover Edit Button */}
+              <button
+                type="button"
+                className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-200 rounded-full"
+                onClick={e => {
+                  e.stopPropagation();
+                  window.location.href = "/profile_pic/settings/avatar";
+                }} // prevent navigating to profile when clicking this and redirect
+                aria-label="Edit Avatar"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={2}
+                  stroke="white"
+                  className="w-4 h-4"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M15.232 5.232a3 3 0 014.243 4.243L7.5 21H3v-4.5L15.232 5.232z"
+                  />
+                </svg>
+              </button>
+            </div>
+
+            <span className="max-w-20 truncate">{user?.full_name}</span>
+          </motion.div>
+        </Link>
       )}
 
       {/* Hamburger Menu */}
@@ -345,11 +418,10 @@ export default function AuthButtons() {
                           className={`relative px-3 py-2 rounded-lg transition-all duration-300 group hover:text-blue-400 hover:cursor-pointer hover:bg-white/5`}
                         >
                           <span
-                            className={`relative z-10 ${
-                              link.isActive
+                            className={`relative z-10 ${link.isActive
                                 ? "text-blue-400"
                                 : "text-white hover:text-blue-400"
-                            }`}
+                              }`}
                           >
                             {link.label}
                           </span>
@@ -445,7 +517,7 @@ export default function AuthButtons() {
                         transition={{ delay: 0.7, duration: 0.5 }}
                       />
 
-                      <motion.button
+                      <motion.div
                         onClick={handleLogout}
                         variants={itemVariants}
                         className="group flex items-center gap-3 px-4 py-3 text-sm text-red-300 rounded-xl transition-all duration-200 hover:bg-red-500/10 hover:text-red-200 relative overflow-hidden w-full"
@@ -478,7 +550,7 @@ export default function AuthButtons() {
                         >
                           <LogOut /> LogOut
                         </Button>
-                      </motion.button>
+                      </motion.div>
                     </>
                   )}
 

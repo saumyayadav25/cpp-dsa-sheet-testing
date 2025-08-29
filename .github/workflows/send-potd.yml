@@ -1,13 +1,18 @@
+
 name: Send POTD Daily
 
 on:
   schedule:
     - cron: "0 4 * * *" # Runs daily at 9:30 AM IST (4:00 UTC)
   workflow_dispatch:
+concurrency:
+  group: send-potd
+  cancel-in-progress: false
 
 jobs:
   send-potd:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Call deployed endpoint
-        run: curl -X GET "https://dsa-sheet-template.vercel.app/api/send-potd"
+        run: "curl -sS --fail -X GET -H 'x-cron-secret: ${{ secrets.CRON_SECRET }}' 'https://dsa-sheet-template.vercel.app/api/send-potd'"
