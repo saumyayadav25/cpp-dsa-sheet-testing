@@ -17,4 +17,7 @@ Favicons (48px): `DSAMatefavicon.svg` `DSAMatefavicon_dark.svg`
 These should cover use across the website, app, and as small icons.<br>
 Suggested Placements would be: README file, Website, Social media banners. 
 
+Light Verison Logo: <img src="https://github.com/xshriya/cpp-dsa-sheet-testing/blob/feature/dsamatelogo/design/logo-submissions/xshriya-dsamatelogo/DSAMatelight.png">
+Dark Version logo: <img src="https://github.com/xshriya/cpp-dsa-sheet-testing/blob/feature/dsamatelogo/design/logo-submissions/xshriya-dsamatelogo/DSAMatedark.png">
+
 My Profile link: <a href = "https://github.com/xshriya">xshriya</a>
