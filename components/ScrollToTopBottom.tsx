@@ -28,7 +28,7 @@ export default function ScrollToTopBottom() {
   if (!show) return null;
 
   return (
-    <div className="fixed z-50 bottom-28 right-8 flex flex-col gap-3">
+    <div className="fixed z-50 bottom-23 left-4 flex flex-col gap-3">
       {!atBottom && (
         <button
           aria-label="Scroll to bottom"
