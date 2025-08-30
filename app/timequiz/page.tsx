@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import { motion } from "framer-motion";
 
-const TIME_PER_QUES = 5;
+const TIME_PER_QUES = 10;
 
 // Define a type for our question structure
 interface Question {
@@ -63,6 +63,9 @@ const TimeQuiz = () => {
   const [feedbackText, setFeedbackText] = useState("");
   const [isFeedbackLoading, setIsFeedbackLoading] = useState(false);
 
+  // --- NEW: State for the exit confirmation modal ---
+  const [showExitModal, setShowExitModal] = useState(false);
+
   // Fetch questions from our new API route
   useEffect(() => {
     const fetchQuestions = async () => {
@@ -74,7 +77,6 @@ const TimeQuiz = () => {
         setQuestions(data);
       } catch (error) {
         console.error(error);
-        // Handle error: maybe show a message to the user
       } finally {
         setIsLoading(false);
       }
@@ -102,14 +104,12 @@ const TimeQuiz = () => {
   useEffect(() => {
     if (!quizStarted || isFinished || showFeedback) return;
     if (timeLeft === 0) {
-      handleOption("Time's up!"); // Handle timeout as an incorrect answer
+      handleOption("Time's up!");
       return;
     }
     const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
     return () => clearTimeout(timer);
   }, [timeLeft, quizStarted, isFinished, showFeedback]);
-
-  // (removed old synchronous goNext — using async version below that saves results when quiz ends)
 
   // Track whether results were saved to server to avoid duplicate calls
   const [savedToServer, setSavedToServer] = useState(false);
@@ -127,7 +127,6 @@ const TimeQuiz = () => {
           setUser(null);
         }
       } catch (err) {
-        // not logged in or error; redirect to sign-in
         console.debug("Auth check failed or not logged in", err);
         setIsLoggedIn(false);
         setUser(null);
@@ -271,14 +270,29 @@ const TimeQuiz = () => {
     window.location.reload(); // Easiest way to get a new set of questions
   };
 
+  // --- NEW: Function to handle exiting the quiz ---
+  const handleExitQuiz = () => {
+    // Hide the modal and return to the welcome screen without saving progress
+    setShowExitModal(false);
+    setShowWelcome(true);
+    setQuizStarted(false);
+    setIsFinished(false);
+
+    // Reset quiz state
+    setCurrentIdx(0);
+    setSelected(null);
+    setScore(0);
+    setTimeLeft(TIME_PER_QUES);
+    setSavedToServer(false);
+  };
+
+
   const current = questions[currentIdx];
 
-  // Show loading while checking authentication or loading questions
   if (!authChecked || isLoading) {
     return <div className="flex items-center justify-center min-h-screen text-2xl dark:bg-black dark:text-white">Loading Quiz...</div>;
   }
 
-  // Don't render anything if user is not logged in (will be redirected)
   if (!isLoggedIn) {
     return <div className="flex items-center justify-center min-h-screen text-2xl dark:bg-black dark:text-white">Redirecting to sign in...</div>;
   }
@@ -344,7 +358,15 @@ const TimeQuiz = () => {
           )}
 
           {quizStarted && !isFinished && current && (
-            <div className="w-full h-screen text-current p-12 flex flex-col items-center justify-center">
+            <div className="w-full h-screen text-current p-12 flex flex-col items-center justify-center relative">
+              {/* --- NEW: Exit Button --- */}
+              <button
+                onClick={() => setShowExitModal(true)}
+                className="absolute top-6 left-6 px-4 py-2 bg-black/20 border border-white/10 rounded-md text-sm font-semibold hover:bg-red-500 hover:border-red-500 transition-colors"
+              >
+                Exit
+              </button>
+
               <div className="flex justify-between items-start mb-6 w-full max-w-[1200px]">
                 <div className="flex-1 text-left max-w-[70%]">
                   <div className="text-2xl font-medium leading-7">
@@ -362,10 +384,11 @@ const TimeQuiz = () => {
                   const isCorrect = option === current.answer;
                   const isSelected = selected === option;
 
-                  let optionClass = "bg-gradient-to-r from-white/5 to-white/3 border border-purple-200 text-current cursor-pointer rounded-lg p-6 text-left text-base font-medium leading-6 shadow-md min-h-[70px] flex items-center gap-4";
+                  let optionClass = "bg-gradient-to-r from-white/5 to-white/3 border border-purple-200 text-current cursor-pointer rounded-lg p-6 text-left text-base font-medium leading-6 shadow-md min-h-[70px] flex items-center gap-4 transition-all duration-300";
                   if (selected) {
                     if (isCorrect) optionClass += " bg-green-500 text-white border-green-600 -translate-y-1 scale-105 shadow-lg";
                     else if (isSelected) optionClass += " bg-red-500 text-white border-red-600";
+                    else optionClass += " opacity-50 cursor-not-allowed";
                   }
 
                   return (
@@ -380,7 +403,7 @@ const TimeQuiz = () => {
                 <div className="mt-6 p-4 rounded-lg bg-black/20 border border-white/10 backdrop-blur text-current w-full max-w-[1200px] text-center">
                   {isFeedbackLoading ? <p>Loading feedback...</p> : <p>{feedbackText}</p>}
                   {!isFeedbackLoading && (
-                    <button onClick={goNext} className="bg-gradient-to-r from-violet-600 to-blue-500 text-white px-4 py-2 rounded-md font-bold">
+                    <button onClick={goNext} className="mt-2 bg-gradient-to-r from-violet-600 to-blue-500 text-white px-4 py-2 rounded-md font-bold">
                       {currentIdx === questions.length - 1 ? 'Finish' : 'Next Question'}
                     </button>
                   )}
@@ -421,13 +444,12 @@ const TimeQuiz = () => {
 
                 <div className="mt-5 flex gap-3">
                   <button onClick={restart} className="px-4 py-2 bg-blue-600 text-white rounded-md font-bold">Restart Quiz</button>
-                  <button onClick={async () => await saveResults()} className={`px-4 py-2 rounded-md font-semibold ${savedToServer ? 'bg-gray-500 text-white' : 'bg-pink-500 text-white'}`}>
+                  <button onClick={async () => await saveResults()} className={`px-4 py-2 rounded-md font-semibold ${savedToServer ? 'bg-gray-500 text-white cursor-not-allowed' : 'bg-pink-500 text-white'}`} disabled={savedToServer}>
                     {savedToServer ? 'Saved' : 'Save Result'}
                   </button>
                   <button onClick={() => { setShowFeedback(false); setIsFinished(false); setCurrentIdx(0); setSelected(null); setScore(0); }} className="px-4 py-2 bg-transparent border border-white/10 rounded-md">Review Questions</button>
                 </div>
 
-                {/* optionally show recent attempts in finished view */}
                 {recentAttempts.length > 0 && (
                   <div className="mt-6">
                     <h3 className="text-sm font-semibold mb-2">Recent attempts</h3>
@@ -445,6 +467,32 @@ const TimeQuiz = () => {
             </div>
           )}
         </div>
+
+        {/* --- NEW: Exit Confirmation Modal --- */}
+        {showExitModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70 backdrop-blur-sm">
+            <div className="bg-gray-800 border border-white/10 rounded-lg shadow-xl p-6 max-w-sm w-full text-center">
+              <h3 className="text-lg font-bold mb-2">Exit Quiz?</h3>
+              <p className="text-sm text-gray-400 mb-6">
+                Are you sure you want to exit? Your current progress will not be saved.
+              </p>
+              <div className="flex justify-center gap-4">
+                <button
+                  onClick={() => setShowExitModal(false)}
+                  className="px-6 py-2 rounded-md bg-gray-600 hover:bg-gray-500 font-semibold transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleExitQuiz}
+                  className="px-6 py-2 rounded-md bg-red-600 hover:bg-red-500 text-white font-semibold transition-colors"
+                >
+                  Exit
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </main>
     </>
   );
