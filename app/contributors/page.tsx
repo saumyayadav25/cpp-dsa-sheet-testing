@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import Navbar from '@/components/Navbar';
+import { fetchContributions } from "@/utils/githubContributions";
 
 interface Contributor {
   login: string;
@@ -145,60 +146,60 @@ const ContributorCard: React.FC<ContributorCardProps> = ({ contributor, index, t
       },
     },
   };
-
   return (
     <motion.div
       initial="hidden"
       animate="visible"
       variants={cardVariants}
-      whileHover={{ 
+      whileHover={{
         scale: 1.05,
         transition: { duration: 0.2 }
       }}
       className="h-full"
+      transition={{ duration: 0.2, ease: "easeOut" }} //Exit transition because after hover it took 4-5 seconds to be back to original position 
     >
-      <Link 
-        href={contributor.html_url} 
-        target="_blank" 
+      <Link
+        href={contributor.html_url}
+        target="_blank"
         rel="noopener noreferrer"
         className="block h-full"
       >
-      <div
-        className={`${getCardGradient(ratio)} rounded-xl p-6 flex flex-col items-center text-center shadow-sm border transition-all duration-300 relative group cursor-pointer h-full min-h-[280px]`}
-        key={contributor.login}
-      >
-        {/* Hover overlay */}
-        <div className="absolute inset-0 bg-white/10 backdrop-blur-sm rounded-xl opacity-0 group-hover:opacity-100 transition-all duration-500 ease-in-out flex flex-col items-center justify-center z-10">
-          <div className="relative mb-3">
+        <div
+          className={`${getCardGradient(ratio)} rounded-xl p-6 flex flex-col items-center text-center shadow-sm border transition-all duration-300 relative group cursor-pointer h-full min-h-[280px]`}
+          key={contributor.login}
+        >
+          {/* Hover overlay */}
+          <div className="absolute inset-0 bg-white/10 backdrop-blur-sm rounded-xl opacity-0 group-hover:opacity-100 transition-all duration-300 ease-in-out flex flex-col items-center justify-center z-10">
+            <div className="relative mb-3">
+              <Image
+                src={contributor.avatar_url}
+                alt={`${contributor.login}'s avatar`}
+                width={64}
+                height={64}
+                className="rounded-full border-2 border-white/40"
+                loading="lazy"
+              />
+            </div>
+            <div className="text-yellow-400 font-medium text-sm mb-2 text-center px-2">
+              {contributor.login}
+            </div>
+            <div className="text-gray-900 dark:text-white font-semibold text-sm">Click To Visit Profile</div>
+          </div>
+
+          <div className="relative mb-4 group-hover:opacity-0 transition-opacity duration-500 ease-in-out">
             <Image
               src={contributor.avatar_url}
               alt={`${contributor.login}'s avatar`}
-              width={64}
-              height={64}
-              className="rounded-full border-2 border-white/40"
+              width={96}
+              height={96}
+              className="rounded-full border-2 border-white/10"
               loading="lazy"
             />
           </div>
-          <div className="text-yellow-400 font-medium text-sm mb-2 text-center px-2">
-            {contributor.login}
-          </div>
-          <div className="text-white font-semibold text-sm">Click To Visit Profile</div>
-        </div>
 
-        <div className="relative mb-4 group-hover:opacity-0 transition-opacity duration-500 ease-in-out">
-          <Image
-            src={contributor.avatar_url}
-            alt={`${contributor.login}'s avatar`}
-            width={96}
-            height={96}
-            className="rounded-full border-2 border-white/10"
-            loading="lazy"
-          />
-        </div>
+          <h2 className="text-lg font-semibold mb-2 text-foreground group-hover:opacity-0 transition-opacity duration-500 ease-in-out">{contributor.login}</h2>
 
-        <h2 className="text-lg font-semibold mb-2 text-foreground group-hover:opacity-0 transition-opacity duration-500 ease-in-out">{contributor.login}</h2>
-
-        <div className="text-sm text-foreground mb-4 space-y-1 flex-grow flex flex-col justify-start group-hover:opacity-0 transition-opacity duration-500 ease-in-out">{isProjectOwner ? (
+          <div className="text-sm text-foreground mb-4 space-y-1 flex-grow flex flex-col justify-start group-hover:opacity-0 transition-opacity duration-500 ease-in-out">{isProjectOwner ? (
             <>
               <div className="text-transparent bg-gradient-to-r from-emerald-400 to-yellow-400 bg-clip-text font-bold text-lg">
                 👑 Project Admin
@@ -254,8 +255,8 @@ const ContributorCard: React.FC<ContributorCardProps> = ({ contributor, index, t
               </div>
             </div>
           )}
+          </div>
         </div>
-      </div>
       </Link>
     </motion.div>
   );
@@ -267,6 +268,12 @@ export default function ContributorsPage() {
   const [streak, setStreak] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+
+  // const res = await fetch("https://api.github.com/repos/saumyayadav25/cpp-dsa-sheet-testing/contributors");
+  // const contributorsList = await res.json(); // 🔹 naam change kiya
+
+  // // Leaderboard ke liye points fetch karo
+  // const leaderboard = await fetchContributions("saumyayadav25", "cpp-dsa-sheet-testing");
 
   const fadeInUp = {
     hidden: { opacity: 0, y: 20 },
@@ -337,7 +344,7 @@ export default function ContributorsPage() {
   if (loading) {
     return (
       <>
-        <Navbar streak={streak} />
+        <Navbar />
         <main className="min-h-screen py-24 px-4 sm:px-8 lg:px-16 bg-background text-white">
           <div className="max-w-7xl mx-auto text-center">
             <div className="animate-pulse">
@@ -363,7 +370,7 @@ export default function ContributorsPage() {
   if (error) {
     return (
       <>
-        <Navbar streak={streak} />
+        <Navbar />
         <main className="min-h-screen py-24 px-4 sm:px-8 lg:px-16 bg-background text-white">
           <div className="max-w-7xl mx-auto text-center">
             <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-8">
@@ -381,9 +388,29 @@ export default function ContributorsPage() {
 
   return (
     <>
-      <Navbar streak={streak} />
+      <Navbar />
       <main className="min-h-screen py-24 px-4 sm:px-8 lg:px-16 bg-background transition-colors duration-300">
         <section aria-labelledby="contributors-heading" className="max-w-7xl mx-auto">
+
+          {/* <h1 className="text-2xl font-bold mb-4">Leaderboard</h1>
+          <table className="table-auto border-collapse border border-gray-400 w-full mb-8">
+            <thead>
+              <tr>
+                <th className="border px-4 py-2">Contributor</th>
+                <th className="border px-4 py-2">Points</th>
+              </tr>
+            </thead>
+            <tbody>
+              {Object.entries(leaderboard).map(([user, points]) => (
+                <tr key={user}>
+                  <td className="border px-4 py-2">{user}</td>
+                  <td className="border px-4 py-2">{points}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table> */}
+
+
           {/* Header Section */}
           <motion.div
             initial="hidden"
@@ -402,7 +429,7 @@ export default function ContributorsPage() {
               Every line of code, every fix, every idea — it all adds up. <br />
               <span className="text-yellow-400 font-medium">Grateful to have you building with us.</span> <br />
               You all are the heart of this community! 🌟 <br />
-             
+
             </p>
           </motion.div>
 
@@ -414,47 +441,47 @@ export default function ContributorsPage() {
             variants={fadeInUp}
             className="flex flex-wrap justify-center gap-4 text-sm md:text-base text-gray-400 mt-6 mb-12"
           >
-              <div className="bg-purple-500/10 px-4 py-2 rounded-full border border-purple-500/20">
-                <span className="text-purple-400 font-semibold">{stats?.totalContributors || contributors.length}</span> Contributors
-              </div>
-              {stats?.totalPoints && stats.totalPoints > 0 && (
-                <div className="bg-yellow-500/10 px-4 py-2 rounded-full border border-yellow-500/20">
-                  <span className="text-yellow-400 font-semibold">
-                    {stats.totalPoints.toLocaleString()}
-                  </span>{' '}
-                  Total Points
-                </div>
-              )}
-              {stats?.totalPRs && stats.totalPRs > 0 && (
-                <div className="bg-green-500/10 px-4 py-2 rounded-full border border-green-500/20">
-                  <span className="text-green-400 font-semibold">
-                    {stats.totalPRs.toLocaleString()}
-                  </span>{' '}
-                  Eligible PRs
-                </div>
-              )}
-              <div className="bg-blue-500/10 px-4 py-2 rounded-full border border-blue-500/20">
-                <span className="text-blue-400 font-semibold">
-                  {stats?.totalCommits?.toLocaleString() || contributors.reduce((sum, c) => sum + c.contributions, 0).toLocaleString()}
+            <div className="bg-purple-500/10 px-4 py-2 rounded-full border border-purple-500/20">
+              <span className="text-purple-400 font-semibold">{stats?.totalContributors || contributors.length}</span> Contributors
+            </div>
+            {stats?.totalPoints && stats.totalPoints > 0 && (
+              <div className="bg-yellow-500/10 px-4 py-2 rounded-full border border-yellow-500/20">
+                <span className="text-yellow-400 font-semibold">
+                  {stats.totalPoints.toLocaleString()}
                 </span>{' '}
-                Total Commits
+                Total Points
               </div>
-            </motion.div>
-
-            {stats?.totalPoints === 0 && (
-              <motion.div
-                initial="hidden"
-                animate="visible"
-                custom={2}
-                variants={fadeInUp}
-                className="mt-6 bg-amber-500/10 border border-amber-500/20 rounded-lg p-4 max-w-2xl mx-auto"
-              >
-                <p className="text-amber-400 text-sm">
-                  <strong>Note:</strong> No GSSoC'25 eligible PRs found with required labels (gssoc25 + level-1/2/3). 
-                  Showing all contributors sorted by commits as fallback.
-                </p>
-              </motion.div>
             )}
+            {stats?.totalPRs && stats.totalPRs > 0 && (
+              <div className="bg-green-500/10 px-4 py-2 rounded-full border border-green-500/20">
+                <span className="text-green-400 font-semibold">
+                  {stats.totalPRs.toLocaleString()}
+                </span>{' '}
+                Eligible PRs
+              </div>
+            )}
+            <div className="bg-blue-500/10 px-4 py-2 rounded-full border border-blue-500/20">
+              <span className="text-blue-400 font-semibold">
+                {stats?.totalCommits?.toLocaleString() || contributors.reduce((sum, c) => sum + c.contributions, 0).toLocaleString()}
+              </span>{' '}
+              Total Commits
+            </div>
+          </motion.div>
+
+          {stats?.totalPoints === 0 && (
+            <motion.div
+              initial="hidden"
+              animate="visible"
+              custom={2}
+              variants={fadeInUp}
+              className="mt-6 bg-amber-500/10 border border-amber-500/20 rounded-lg p-4 max-w-2xl mx-auto"
+            >
+              <p className="text-amber-400 text-sm">
+                <strong>Note:</strong> No GSSoC'25 eligible PRs found with required labels (gssoc25 + level-1/2/3).
+                Showing all contributors sorted by commits as fallback.
+              </p>
+            </motion.div>
+          )}
 
           {contributors.length === 0 ? (
             <motion.div
@@ -476,17 +503,17 @@ export default function ContributorsPage() {
             >
               {(() => {
                 const projectOwner = 'saumyayadav25';
-                
+
                 // Separate contributors into different categories
                 const ownerContributor = contributors.find(c => c.login === projectOwner);
-                const gssocContributors = contributors.filter(c => 
-                  c.login !== projectOwner && 
-                  c.points !== undefined && 
+                const gssocContributors = contributors.filter(c =>
+                  c.login !== projectOwner &&
+                  c.points !== undefined &&
                   c.points > 0
                 ).sort((a, b) => (b.points || 0) - (a.points || 0));
-                
-                const nonGssocContributors = contributors.filter(c => 
-                  c.login !== projectOwner && 
+
+                const nonGssocContributors = contributors.filter(c =>
+                  c.login !== projectOwner &&
                   (c.points === undefined || c.points === 0)
                 ).sort((a, b) => b.contributions - a.contributions);
 
@@ -498,10 +525,10 @@ export default function ContributorsPage() {
                 ];
 
                 return sortedContributors.map((contributor, index) => (
-                  <ContributorCard 
-                    key={contributor.login} 
-                    contributor={contributor} 
-                    index={index} 
+                  <ContributorCard
+                    key={contributor.login}
+                    contributor={contributor}
+                    index={index}
                     totalContributors={sortedContributors.length}
                     isProjectOwner={contributor.login === projectOwner}
                   />

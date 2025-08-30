@@ -11,7 +11,7 @@ import Link from "next/link";
 import { GoogleLoginButton } from "@/components/OAuthLogin";
 import { ToastContainer, toast, Slide } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
-
+import { motion } from "framer-motion";
 export default function SigninPage() {
   const [form, setForm] = useState({
     email: "",
@@ -90,8 +90,28 @@ export default function SigninPage() {
       }
     };
 
+  // Import motion from framer-motion at the top:
+  // import { motion } from "framer-motion";
+
   return (
-    <div className="w-full max-w-md mx-auto bg-white p-6 rounded-2xl shadow-lg space-y-6 animate-in fade-in slide-in-from-bottom-6">
+    <motion.div
+      className="w-full max-w-md mx-auto bg-blue-100 border-2 p-6 rounded-2xl shadow-lg space-y-6 animate-in fade-in slide-in-from-bottom-6 relative overflow-hidden"
+      initial={{ opacity: 0, y: 40 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, ease: "easeOut" }}
+    >
+      {/* Animated background blobs */}
+      <motion.div
+        className="absolute -top-16 -left-16 w-56 h-56 bg-blue-300 rounded-full opacity-30 z-0"
+        animate={{ scale: [1, 1.2, 1], rotate: [0, 30, 0] }}
+        transition={{ repeat: Infinity, duration: 6, ease: "easeInOut" }}
+      />
+      <motion.div
+        className="absolute -bottom-20 -right-20 w-72 h-72 bg-blue-500 rounded-full opacity-20 z-0"
+        animate={{ scale: [1, 1.1, 1], rotate: [0, -30, 0] }}
+        transition={{ repeat: Infinity, duration: 7, ease: "easeInOut" }}
+      />
+
       <ToastContainer
         position="top-right"
         autoClose={3000}
@@ -100,19 +120,18 @@ export default function SigninPage() {
         pauseOnHover
         transition={Slide}
         toastClassName="relative flex p-4 items-center rounded-xl bg-white text-black shadow-md"
-        //bodyClassName="text-sm font-medium"
         progressClassName="absolute bottom-0 left-0 h-1 rounded-b-xl bg-green-500"
       />
-      <div className="text-center">
+      <div className="text-center relative z-10">
         <h2 className="text-3xl font-bold text-gray-900 mb-1">
           Login to your account
         </h2>
         <p className="text-sm text-gray-500">
-          Explore DSAMate to enter the world of problem solving.
+          Explore <span className="text-blue-700">DSAMate</span> to enter the world of problem solving.
         </p>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-4 relative z-10">
         <div>
           <label
             htmlFor="email"
@@ -131,7 +150,7 @@ export default function SigninPage() {
         </div>
       </div>
 
-      <div className="relative">
+      <div className="relative z-10">
         <label
           htmlFor="password"
           className="block text-sm font-medium text-gray-700 mb-1"
@@ -148,16 +167,16 @@ export default function SigninPage() {
           required
         />
         <div className="text-right text-xs text-gray-700 mt-2 h-5">
-        <p>
-          Forgot Password?{" "}
-          <Link
-            href={"/resetPassword"}
-            className=" text-xs text-blue-600 hover:underline"
-          >
-            Reset Password
-          </Link>
-        </p>
-      </div>
+          <p>
+            Forgot Password?{" "}
+            <Link
+              href={"/resetPassword"}
+              className=" text-xs text-blue-600 hover:underline"
+            >
+              Reset Password
+            </Link>
+          </p>
+        </div>
         <div
           onClick={() => setSeePass(!seePass)}
           className="absolute top-[42px] -translate-y-1/2 right-3 text-gray-500 hover:text-gray-700 cursor-pointer"
@@ -173,7 +192,7 @@ export default function SigninPage() {
       <Button
         onClick={handleSubmit}
         disabled={loading}
-        className="w-full rounded-full bg-gradient-to-br from-slate-900 to-blue-600 hover:from-blue-700 hover:to-slate-900"
+        className="w-full rounded-lg text-white bg-gradient-to-br from-blue-900 to-blue-500 transition-colors duration-300 hover:from-blue-600 hover:to-blue-800 relative z-10"
       >
         {loading ? (
           <Loader2 className="animate-spin mr-2 h-4 w-4" />
@@ -182,16 +201,15 @@ export default function SigninPage() {
         )}
       </Button>
 
+      <div className="text-center font-bold text-blue-500 relative z-10">OR</div>
 
-      <div className="text-center font-bold text-blue-500">OR</div>
-
-      <div className="text-center">
+      <div className="text-center relative z-10">
         <GoogleLoginButton />
       </div>
 
-      <hr className="border-1" />
+      <hr className="border-1 relative z-10" />
 
-      <div className="text-center text-sm text-gray-700 mb-2">
+      <div className="text-center text-sm text-gray-700 mb-2 relative z-10">
         <p>
           Didn't have an account?{" "}
           <Link href={"/sign-up"} className="text-blue-600 hover:underline">
@@ -206,6 +224,6 @@ export default function SigninPage() {
         onClose={() => setOtpOpen(false)}
         onVerify={handleVerifyOtp}
       />
-    </div>
+    </motion.div>
   );
 }

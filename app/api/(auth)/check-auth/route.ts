@@ -5,7 +5,11 @@ import jwt from "jsonwebtoken";
 import { connect } from "@/db/config";
 
 export async function GET() {
-  await connect();
+  try {
+    await connect();
+  } catch (error) {
+    return NextResponse.json({ error: "Service unavailable" }, { status: 503 });
+  }
 
   const token = (await cookies()).get("session")?.value;
 

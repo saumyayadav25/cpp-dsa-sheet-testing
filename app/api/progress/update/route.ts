@@ -1,23 +1,31 @@
 import { NextResponse } from "next/server";
-import {connect} from "@/db/config";
+import { connect } from "@/db/config";
 import { Progress } from "@/models/Progress.model";
 import { Badge } from "@/models/Badge.model";
 import { awardBadges } from "@/lib/awardBadges";
 
+interface TopicProgress {
+  topicName: string;
+  solvedCount: number;
+  totalQuestions?: number;
+}
+
 export async function POST(req: Request) {
   try {
     await connect();
-    const { userId, questionDifficulty, topicCompleted } = await req.json();
+    const { userId, questionDifficulty, topicName, topicCompleted } = await req.json();
 
-    if (!userId)
+    if (!userId) {
       return NextResponse.json({ message: "UserId required" }, { status: 400 });
+    }
 
+    // --- Fetch or create progress ---
     let progress = await Progress.findOne({ userId });
     if (!progress) {
       progress = await Progress.create({ userId });
     }
 
-    // Update streak
+    // --- Streak Update ---
     const today = new Date();
     if (progress.lastVisited) {
       const diff = Math.floor(
@@ -30,19 +38,60 @@ export async function POST(req: Request) {
     }
     progress.lastVisited = today;
 
-    // Increment counters
-    progress.totalSolved += 1;
+    // --- Difficulty Counters ---
+    if (questionDifficulty === "easy") progress.easySolved += 1;
+    if (questionDifficulty === "medium") progress.mediumSolved += 1;
     if (questionDifficulty === "hard") progress.hardSolved += 1;
+
+    progress.totalSolved =
+      Number(progress.easySolved ?? 0) +
+      Number(progress.mediumSolved ?? 0) +
+      Number(progress.hardSolved ?? 0);
+
+    // --- Topic-wise Progress ---
+    if (topicName) {
+      const topicIndex = progress.topicsProgress.findIndex(
+        (t: TopicProgress) => t.topicName === topicName
+      );
+
+      if (topicIndex > -1) {
+        progress.topicsProgress[topicIndex].solvedCount += 1;
+        // Default totalQuestions to 5 if not set
+        if (!progress.topicsProgress[topicIndex].totalQuestions) {
+          progress.topicsProgress[topicIndex].totalQuestions = 5;
+        }
+      } else {
+        progress.topicsProgress.push({
+          topicName,
+          solvedCount: 1,
+          totalQuestions: 5 // Default value for testing
+        });
+      }
+    }
+
+    // --- Topic Completion ---
+    if (!progress.topicsCompleted) progress.topicsCompleted = [];
+
+    // Manual completion from frontend
     if (topicCompleted && !progress.topicsCompleted.includes(topicCompleted)) {
       progress.topicsCompleted.push(topicCompleted);
     }
+
+    // Auto-complete topics if solvedCount >= totalQuestions
+    progress.topicsProgress.forEach((topic) => {
+      const total = topic.totalQuestions || 5; // Default to 5 if missing
+      if (topic.solvedCount >= total && !progress.topicsCompleted.includes(topic.topicName)) {
+        progress.topicsCompleted.push(topic.topicName);
+      }
+    });
+
     await progress.save();
 
-    // Get existing badges
+    // --- Badges ---
     const badgeDoc = await Badge.findOne({ userId });
     const currentBadges = badgeDoc?.badges || [];
 
-    // Auto Award
+    // Award badges based on updated progress
     await awardBadges(userId, { ...progress.toObject(), badges: currentBadges });
 
     const updatedBadges = await Badge.findOne({ userId });

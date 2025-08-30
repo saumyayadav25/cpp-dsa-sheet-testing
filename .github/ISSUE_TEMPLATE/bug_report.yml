@@ -1,0 +1,60 @@
+name: "Bug report"
+description: "Report a reproducible problem"
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to file a bug! Please provide as much detail as possible.
+  - type: textarea
+    id: problem_statement
+    attributes:
+      label: Problem statement
+      description: Describe the bug clearly and concisely.
+      placeholder: "What happened? What did you expect to happen?"
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps_to_reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Provide the exact steps to reproduce the behavior.
+      placeholder: |
+        1. Go to '...'
+        2. Click on '...'
+        3. Scroll down to '...'
+        4. See error
+      render: bash
+    validations:
+      required: false
+
+  - type: textarea
+    id: expected_outcome
+    attributes:
+      label: Expected outcome
+      description: What did you expect to see?
+      placeholder: "Describe the expected behavior/output"
+    validations:
+      required: false
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots / recordings (if applicable)
+      description: Drag and drop images or paste screenshots that show the problem.
+    validations:
+      required: false
+
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checklist
+      options:
+        - label: I searched existing issues and did not find a duplicate
+          required: true
+        - label: I am willing to submit a PR to fix this
+          required: false

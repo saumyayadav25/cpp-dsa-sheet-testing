@@ -3,9 +3,12 @@ import { Geist, Geist_Mono } from "next/font/google";
 import Script from "next/script";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
-import Footer from "@/components/Footer";
+import FooterWrapper from "@/components/FooterWrapper"; 
 import BotWidget from "@/components/BotWidget";
 import { ThemeProvider } from "@/components/theme-provider";
+import ScrollToTop from "@/components/ScrollToTopBottom";
+import ScrollToTopBottom from "@/components/ScrollToTopBottom";
+
 const plusJakarta = Plus_Jakarta_Sans({
   variable: "--font-plus-jakarta",
   subsets: ["latin"],
@@ -45,16 +48,17 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${plusJakarta.variable} font-sans`}>
-        <ThemeProvider
+         <ThemeProvider
           attribute="class"
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
         >
           {children}
+          <ScrollToTopBottom/>
         </ThemeProvider>
         <BotWidget />
-        <Footer />
+        <FooterWrapper /> 
       </body>
     </html>
   );

@@ -1,7 +1,10 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { FaCode, FaRegListAlt, FaSortAlphaDown, FaLink, FaTree, FaProjectDiagram, FaBrain, FaChartLine, FaSitemap } from "react-icons/fa";
+import {
+  FaCode, FaRegListAlt, FaSortAlphaDown, FaLink, FaTree, FaProjectDiagram,
+  FaBrain, FaChartLine, FaSitemap, FaHeart
+} from "react-icons/fa";
 import { MdSort, MdOutlineLeaderboard } from "react-icons/md";
 import { GiPathDistance, GiStack, GiCycle } from "react-icons/gi";
 import { BsDiagram3, BsGrid3X3GapFill } from "react-icons/bs";
@@ -10,7 +13,6 @@ import { HiOutlineQueueList } from "react-icons/hi2";
 import { RiGitBranchLine } from "react-icons/ri";
 import { FiPackage } from "react-icons/fi";
 import { CgFileDocument } from "react-icons/cg";
-import Link from "next/link";
 import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
 
@@ -47,27 +49,54 @@ const notesList: NoteTopic[] = [
 
 export default function NotesPage() {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [favourites, setFavourites] = useState<string[]>([]);
+  const [showFavouritesOnly, setShowFavouritesOnly] = useState(false);
   const streak = 0;
-
-  useEffect(() => {
+useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+  useEffect(() => {
+    const savedFaves = localStorage.getItem("favourites");
+    if (savedFaves) {
+      setFavourites(JSON.parse(savedFaves));
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("favourites", JSON.stringify(favourites));
+  }, [favourites]);
+
+  const toggleFavourite = (title: string) => {
+    setFavourites((prev) =>
+      prev.includes(title)
+        ? prev.filter((t) => t !== title)
+        : [...prev, title]
+    );
+  };
+
+  const filteredNotes = notesList.filter(note => {
+    const matchesSearch = note.title.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesFav = showFavouritesOnly ? favourites.includes(note.title) : true;
+    return matchesSearch && matchesFav;
+  });
 
   return (
     <>
-      <Navbar streak={streak} />
+      <Navbar />
       <motion.main
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="min-h-screen bg-white dark:bg-[#0d0f16] text-gray-900 dark:text-white px-6 md:px-20 py-24 transition-colors duration-500"
+        className="min-h-screen bg-white dark:bg-[#0d0f16] text-gray-900 dark:text-white px-6 md:px-20 py-24"
       >
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
+          {/* Heading */}
+          <div className="text-center mb-10">
             <motion.h1
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -76,7 +105,7 @@ export default function NotesPage() {
             >
               Comprehensive DSA Notes
             </motion.h1>
-            <motion.p
+              <motion.p
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.2 }}
@@ -88,7 +117,7 @@ export default function NotesPage() {
               </span>{" "}
               to help you revise concepts quickly and effectively.
             </motion.p>
-            <motion.p 
+             <motion.p 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
@@ -99,109 +128,147 @@ export default function NotesPage() {
                 rel="noopener noreferrer"
                 className="underline hover:text-blue-100"
               >Fill out this quick form</a> 🙌
-            </motion.p>
+            </motion.p>     
+
+            {/* Search + Favourites Toggle */}
+            <div className="flex flex-col sm:flex-row gap-4 items-center justify-center">
+              <input
+                type="text"
+                placeholder="Search notes..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full sm:w-96 p-3 rounded-lg bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700"
+              />
+              <button
+                onClick={() => setShowFavouritesOnly(!showFavouritesOnly)}
+                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                  showFavouritesOnly
+                    ? "bg-pink-600 text-white"
+                    : "bg-gray-200 dark:bg-gray-700"
+                }`}
+              >
+                {showFavouritesOnly ? "Show All" : "Show Favourites"}
+              </button>
+            </div>
           </div>
 
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.3 }}
-            className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3"
-          >
-            {notesList.map(({ title, link, status, icon }, index) => (
-              <motion.div
-                key={title}
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 + 0.4 }}
-                whileHover={{
-                  y: -8,
-                  scale: 1.02,
-                  transition: { duration: 0.3, ease: "easeOut" },
-                }}
-                className="relative group cursor-pointer"
+          {/* Notes Grid */}
+<motion.div
+  initial={{ opacity: 0 }}
+  animate={{ opacity: 1 }}
+  transition={{ delay: 0.3 }}
+  className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3"
+>
+  {filteredNotes.length > 0 ? (
+    filteredNotes.map(({ title, link, status, icon }, index) => (
+      <motion.div
+        key={title}
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: index * 0.1 + 0.4 }}
+        whileHover={{
+          y: -8,
+          scale: 1.02,
+          transition: { duration: 0.3, ease: "easeOut" },
+        }}
+        className="relative group cursor-pointer"
+      >
+        {/* Heart Button */}
+        <button
+          onClick={() => toggleFavourite(title)}
+          className={`absolute top-4 right-4 text-xl z-20 ${
+            favourites.includes(title) ? "text-pink-500" : "text-gray-400"
+          } hover:scale-110 transition-transform`}
+        >
+          <FaHeart />
+        </button>
+
+        {/* Animated border gradient */}
+        <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-blue-500/20"></div>
+        <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-50 transition-opacity duration-500 animate-pulse bg-gradient-to-r from-blue-500/40 via-purple-500/40 to-blue-500/40"></div>
+
+        {/* Main card */}
+        <div className="relative bg-white dark:bg-[#181b27] h-52 border border-gray-300 dark:border-gray-800/50 group-hover:border-gray-400 dark:group-hover:border-gray-700 rounded-2xl p-7 shadow-md dark:shadow-xl dark:shadow-blue-500/10 group-hover:shadow-lg dark:group-hover:shadow-blue-500/20 transition-all duration-500 overflow-hidden">
+          {/* Background glow effect */}
+          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-500/30 to-transparent opacity-10 group-hover:opacity-100 transition-opacity duration-500"></div>
+
+          {/* Icon container with enhanced styling */}
+          <div className="flex items-start gap-5 mb-6">
+            <motion.div
+              whileHover={{ rotate: 5, scale: 1.1 }}
+              transition={{ type: "spring", stiffness: 300, damping: 20 }}
+              className="relative p-4 bg-gradient-to-br from-blue-600/10 to-blue-500/5 rounded-xl text-blue-600 dark:text-blue-400 group-hover:from-blue-600/20 group-hover:to-blue-500/10 group-hover:text-blue-400 transition-all duration-300 border border-blue-600/10 dark:border-blue-600/20 group-hover:border-blue-400/20"
+            >
+              {/* Icon glow effect */}
+              <div className="absolute inset-0 bg-blue-500/10 rounded-xl  group-hover:opacity-100 transition-opacity duration-300 blur-md"></div>
+              <div className="relative z-10">{icon}</div>
+            </motion.div>
+
+            <div className="flex-1">
+              <h2 className="text-xl font-bold mb-4 text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300 leading-tight">
+                {title}
+              </h2>
+            </div>
+          </div>
+
+          {/* Status or Link */}
+          <div className="mt-auto">
+            {status === "coming-soon" ? (
+              <div className="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-yellow-600/20 to-orange-600/20 text-yellow-500 rounded-xl text-sm font-medium border border-yellow-600/30">
+                <div className="w-2 h-2 bg-yellow-500 rounded-full animate-pulse"></div>
+                Coming Soon
+              </div>
+            ) : (
+              <motion.a
+                href={link}
+                target="_blank"
+                rel="noopener noreferrer"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.98 }}
+                className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 rounded-xl text-white text-sm font-semibold transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-blue-500/25"
               >
-                {/* Animated border gradient */}
-                <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-blue-500/20"></div>
-                <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-50 transition-opacity duration-500 animate-pulse bg-gradient-to-r from-blue-500/40 via-purple-500/40 to-blue-500/40"></div>
+                <span>View Notes</span>
+                <motion.svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-4 w-4 transition-transform group-hover:translate-x-1"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  whileHover={{ x: 2 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M14 5l7 7m0 0l-7 7m7-7H3"
+                  />
+                </motion.svg>
+              </motion.a>
+            )}
+          </div>
 
-                {/* Main card */}
-                <div className="relative bg-white dark:bg-[#181b27] h-52 border border-gray-300 dark:border-gray-800/50 group-hover:border-gray-400 dark:group-hover:border-gray-700 rounded-2xl p-7 shadow-md dark:shadow-xl dark:shadow-blue-500/10 group-hover:shadow-lg dark:group-hover:shadow-blue-500/20 transition-all duration-500 overflow-hidden">
-                  {/* Background glow effect */}
-                  <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-500/30 to-transparent opacity-10 group-hover:opacity-100 transition-opacity duration-500"></div>
-
-                  {/* Icon container with enhanced styling */}
-                  <div className="flex items-start gap-5 mb-6">
-                    <motion.div
-                      whileHover={{ rotate: 5, scale: 1.1 }}
-                      transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                      className="relative p-4 bg-gradient-to-br from-blue-600/10 to-blue-500/5 rounded-xl text-blue-600 dark:text-blue-400 group-hover:from-blue-600/20 group-hover:to-blue-500/10 group-hover:text-blue-400 transition-all duration-300 border border-blue-600/10 dark:border-blue-600/20 group-hover:border-blue-400/20"
-                    >
-                      {/* Icon glow effect */}
-                      <div className="absolute inset-0 bg-blue-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-md"></div>
-                      <div className="relative z-10">{icon}</div>
-                    </motion.div>
-
-                    <div className="flex-1">
-                      <h2 className="text-xl font-bold mb-4 text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300 leading-tight">
-                        {title}
-                      </h2>
-                    </div>
-                  </div>
-
-                  {/* Status or Link */}
-                  <div className="mt-auto">
-                    {status === "coming-soon" ? (
-                      <div className="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-yellow-600/20 to-orange-600/20 text-yellow-500 rounded-xl text-sm font-medium border border-yellow-600/30">
-                        <div className="w-2 h-2 bg-yellow-500 rounded-full animate-pulse"></div>
-                        Coming Soon
-                      </div>
-                    ) : (
-                      <motion.a
-                        href={link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.98 }}
-                        className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 rounded-xl text-white text-sm font-semibold transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-blue-500/25"
-                      >
-                        <span>View Notes</span>
-                        <motion.svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-4 w-4 transition-transform group-hover:translate-x-1"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                          whileHover={{ x: 2 }}
-                          transition={{ type: "spring", stiffness: 400, damping: 25 }}
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M14 5l7 7m0 0l-7 7m7-7H3"
-                          />
-                        </motion.svg>
-                      </motion.a>
-                    )}
-                  </div>
-
-                  {/* Subtle corner decoration */}
-                  <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-blue-500/5 to-transparent rounded-bl-full opacity-80 group-hover:opacity-100 transition-opacity duration-500"></div>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
-
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.4 }}
-            className="text-center text-gray-500 dark:text-gray-400 mt-12 text-sm transition-colors duration-300"
-          >
-            *These notes are completely optional resources to supplement your learning. Happy coding! 💙
-          </motion.p>
+          {/* Subtle corner decoration */}
+          <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-blue-500/5 to-transparent rounded-bl-full opacity-80 group-hover:opacity-100 transition-opacity duration-500"></div>
         </div>
+      </motion.div>
+    ))
+  ) : (
+    <p className="col-span-full text-center text-gray-500 dark:text-gray-400">
+      No notes found.
+    </p>
+  )}
+</motion.div>
+
+<motion.p
+  initial={{ opacity: 0 }}
+  animate={{ opacity: 1 }}
+  transition={{ delay: 0.4 }}
+  className="text-center text-gray-500 dark:text-gray-400 mt-12 text-sm transition-colors duration-300"
+>
+  *These notes are completely optional resources to supplement your learning. Happy coding! 💙
+</motion.p>
+          </div>
       </motion.main>
     </>
   );

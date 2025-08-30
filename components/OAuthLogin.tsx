@@ -19,16 +19,16 @@ export const GoogleLoginButton = () => {
     <div className="flex justify-center items-center gap-5">
       <Button
         onClick={handleGoogleLogin}
-        className="bg-gradient-to-br from-slate-800 to-blue-600 hover:from-blue-600 hover:to-slate-800 hover:scale-105 shadow-lg text-white px-4 py-2 rounded-full min-w-[40%]"
+        className="bg-white/80  text-white px-6 py-3 rounded-lg flex items-center justify-center transition-all duration-200 min-w-[160px] focus:outline-none focus:ring-2 focus:ring-blue-400"
       >
-        <Image src={"/assets/google.png"} alt="Google" width={25} height={25}/>
+        <Image src={"/assets/google.png"} alt="Google" width={28} height={28} />
       </Button>
-      <span className="text-gray-700">|</span>
+      <span className="mx-3 text-gray-400 font-semibold text-lg">|</span>
       <Button
         onClick={handleGithubLogin}
-        className="bg-gradient-to-br from-slate-800 to-blue-600 hover:from-blue-600 hover:to-slate-800 hover:scale-105 shadow-lg text-white px-4 py-2 rounded-full min-w-[40%]"
+        className="bg-white/80  text-white px-6 py-3 rounded-lg flex items-center justify-center transition-all duration-200 min-w-[160px] focus:outline-none focus:ring-2 focus:ring-blue-400"
       >
-        <Image src={"/assets/github.png"} alt="Github" width={25} height={25}/>
+        <Image src={"/assets/github.png"} alt="Github" width={28} height={28} />
       </Button>
     </div>
   );
