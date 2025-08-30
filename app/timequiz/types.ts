@@ -1,5 +1,3 @@
-import { Question } from './types';
-
 export type Question = {
   question: string;
   topic: string;
