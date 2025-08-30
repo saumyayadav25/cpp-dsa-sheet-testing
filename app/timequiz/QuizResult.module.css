@@ -1,0 +1,112 @@
+
+/* QuizResult.module.css */
+
+body {
+  background-color: #0e1525;
+  font-family: "Segoe UI", sans-serif;
+  color: #e4f1fe;
+  margin: 0;
+  padding: 0;
+}
+
+.quizContainer {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 30px;
+  background: #121e30;
+  border-radius: 16px;
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.05);
+}
+
+.quizTitle {
+  text-align: center;
+  font-size: 2.8rem;
+  color: #aeeefc;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+.quizScore {
+  text-align: center;
+  font-size: 1.6rem;
+  margin-bottom: 20px;
+}
+
+.quizScore span {
+  color: #aefcbd;
+  font-weight: bold;
+}
+
+.progressBar {
+  width: 100%;
+  background-color: #1e2c3f;
+  height: 14px;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 35px;
+}
+
+.progressFill {
+  height: 100%;
+  background-color: #aefcbd;
+  transition: width 0.4s ease-in-out;
+}
+
+.questionCard {
+  background-color: #0f1b2e;
+  border-radius: 12px;
+  padding: 18px 24px;
+  margin-bottom: 24px;
+  border-left: 5px solid transparent;
+  transition: border 0.3s;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.questionCard.correct {
+  border-color: #2ecc71;
+}
+
+.questionCard.incorrect {
+  border-color: #e74c3c;
+}
+
+.questionCard h3 {
+  margin-top: 0;
+  font-size: 1.2rem;
+}
+
+.correctText {
+  color: #2ecc71;
+  font-weight: bold;
+}
+
+.incorrectText {
+  color: #e74c3c;
+  font-weight: bold;
+}
+
+.explanation {
+  font-style: italic;
+  margin-top: 12px;
+  color: #bdc3c7;
+}
+
+.restartButton {
+  display: block;
+  margin: 40px auto 0;
+  padding: 14px 36px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  background: #3498db;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+  box-shadow: 0 6px 20px rgba(0, 123, 255, 0.25);
+}
+
+.restartButton:hover {
+  background: #217dbb;
+  transform: translateY(-2px);
+}
