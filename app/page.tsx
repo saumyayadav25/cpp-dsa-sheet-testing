@@ -14,6 +14,7 @@ import { BiSliderAlt } from "react-icons/bi";
 import ReportIssueButton from "@/components/ReportIssueButton";
 import Navbar from "@/components/Navbar";
 import { motion, useInView, AnimatePresence } from "framer-motion";
+import { Question } from './timequiz/types';
 
 // Custom hook for animated counting
 // Animates numbers from 1 to target value when element comes into view

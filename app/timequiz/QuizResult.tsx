@@ -7,7 +7,6 @@ type Question = {
   topic: string;
   userAnswer: string;
   correctAnswer: string;
-  explanation: string;
   isCorrect: boolean;
 };
 
