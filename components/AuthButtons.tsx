@@ -371,7 +371,7 @@ export default function AuthButtons() {
 
         <Link
           href={user ? `/profile/${encodeURIComponent(user._id)}` : "#"} //Redirects to user profile dashboard
-          className="relative flex items-center gap-2 px-3 py-2 bg-white/10 backdrop-blur-sm rounded-lg hover:bg-white/20 transition-all duration-200 text-white text-sm font-medium border border-white/10"
+          className="relative flex items-center gap-2 px-3 py-2 bg-muted/50 backdrop-blur-sm rounded-lg hover:bg-muted transition-all duration-200 text-foreground text-sm font-medium border border-border"
         >
           <motion.div
             whileHover={{ scale: 1.05 }}
@@ -434,7 +434,7 @@ export default function AuthButtons() {
       <div className="relative" ref={dropdownRef}>
         <motion.button
           onClick={() => setShowDropdown((prev) => !prev)}
-          className="relative p-3 rounded-xl transition-all duration-300 hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-blue-400/50"
+          className="relative p-3 rounded-xl transition-all duration-300 hover:bg-muted focus:outline-none focus:ring-2 focus:ring-blue-400/50"
           variants={hamburgerVariants}
           animate={showDropdown ? "open" : "closed"}
           whileHover={{ scale: 1.05 }}
@@ -463,17 +463,17 @@ export default function AuthButtons() {
               className="absolute right-0 mt-3 w-64 origin-top-right z-50"
               style={{ perspective: "1000px" }}
             >
-              {/* Glassmorphism backdrop */}
-              <div className="relative backdrop-blur-2xl bg-gradient-to-tl from-blue-950/90 via-neutral-950/90 to-neutral-950/90  drop-shadow-2xl border border-white/10 rounded-2xl shadow-2xl overflow-hidden">
+              {/* Glassmorphism backdrop with proper theme support */}
+              <div className="relative backdrop-blur-2xl bg-popover border border-border rounded-2xl shadow-2xl overflow-hidden">
                 {/* Gradient overlay */}
-                <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-br from-muted/20 to-transparent pointer-events-none" />
 
                 {/* Subtle animated border */}
                 <motion.div
                   className="absolute inset-0 rounded-2xl"
                   style={{
                     background:
-                      "linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent)",
+                      "linear-gradient(45deg, transparent, rgba(var(--border) / 0.3), transparent)",
                     backgroundSize: "300% 300%",
                   }}
                   animate={{
@@ -537,12 +537,12 @@ export default function AuthButtons() {
                       >
                         <Link
                           href={link.href}
-                          className={`relative px-3 py-2 rounded-lg transition-all duration-300 group hover:text-blue-400 hover:cursor-pointer hover:bg-white/5`}
+                          className={`relative px-3 py-2 rounded-lg transition-all duration-300 group hover:text-blue-400 hover:cursor-pointer hover:bg-muted/50`}
                         >
                           <span
                             className={`relative z-10 ${link.isActive
                               ? "text-blue-400"
-                              : "text-white hover:text-blue-400"
+                              : "text-foreground hover:text-blue-400"
                               }`}
                           >
                             {link.label}
@@ -566,7 +566,7 @@ export default function AuthButtons() {
                   </div>
                   {/* Bottom highlight */}
                   <motion.div
-                    className="h-px bg-gradient-to-r from-transparent via-white/20 to-transparent mt-2"
+                    className="h-px bg-gradient-to-r from-transparent via-border to-transparent mt-2"
                     initial={{ scaleX: 0 }}
                     animate={{ scaleX: 1 }}
                     transition={{ delay: 0.5, duration: 0.5 }}
@@ -577,7 +577,7 @@ export default function AuthButtons() {
                     <motion.div
                       key={index}
                       variants={itemVariants}
-                      className="group flex items-center gap-3 px-4 py-3 text-sm text-gray-200 rounded-xl transition-all duration-200 hover:bg-white/10 hover:text-white relative overflow-hidden cursor-pointer"
+                      className="group flex items-center gap-3 px-4 py-3 text-sm text-foreground rounded-xl transition-all duration-200 hover:bg-muted hover:text-foreground relative overflow-hidden cursor-pointer"
                       whileHover={{
                         scale: 1.02,
                         x: 4,
@@ -622,7 +622,7 @@ export default function AuthButtons() {
                       {/* External link indicator */}
                       {item.href.startsWith("http") && (
                         <motion.span
-                          className="ml-auto text-xs text-gray-400 opacity-0 group-hover:opacity-100 relative z-10"
+                          className="ml-auto text-xs text-muted-foreground opacity-0 group-hover:opacity-100 relative z-10"
                           initial={{ rotate: -45, scale: 0 }}
                           whileHover={{ rotate: 0, scale: 1 }}
                           transition={{
@@ -641,7 +641,7 @@ export default function AuthButtons() {
                   {isLoggedIn && (
                     <>
                       <motion.div
-                        className="h-px bg-gradient-to-r from-transparent via-white/20 to-transparent my-2"
+                        className="h-px bg-gradient-to-r from-transparent via-border to-transparent my-2"
                         initial={{ scaleX: 0 }}
                         animate={{ scaleX: 1 }}
                         transition={{ delay: 0.7, duration: 0.5 }}
@@ -650,7 +650,7 @@ export default function AuthButtons() {
                       <motion.div
                         onClick={handleLogout}
                         variants={itemVariants}
-                        className="group flex items-center gap-3 px-4 py-3 text-sm text-red-300 rounded-xl transition-all duration-200 hover:bg-red-500/10 hover:text-red-200 relative overflow-hidden w-full"
+                        className="group flex items-center gap-3 px-4 py-3 text-sm text-red-500 dark:text-red-400 rounded-xl transition-all duration-200 hover:bg-red-500/10 hover:text-red-600 dark:hover:text-red-300 relative overflow-hidden w-full"
                         whileHover={{
                           scale: 1.02,
                           x: 4,
@@ -686,7 +686,7 @@ export default function AuthButtons() {
 
                   {/* Bottom highlight */}
                   <motion.div
-                    className="h-px bg-gradient-to-r from-transparent via-white/20 to-transparent mt-2"
+                    className="h-px bg-gradient-to-r from-transparent via-border to-transparent mt-2"
                     initial={{ scaleX: 0 }}
                     animate={{ scaleX: 1 }}
                     transition={{ delay: 0.5, duration: 0.5 }}
@@ -713,7 +713,7 @@ export default function AuthButtons() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
               transition={{ type: "spring", duration: 0.5 }}
-              className="relative backdrop-blur-2xl bg-gradient-to-br from-white/90 via-white/80 to-white/70 dark:from-gray-900/90 dark:via-gray-900/80 dark:to-blue-900/70 rounded-2xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto custom-scrollbar border border-white/20 dark:border-gray-700/30 shadow-2xl"
+              className="relative backdrop-blur-2xl bg-popover border border-border rounded-2xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto custom-scrollbar shadow-2xl"
               onClick={(e) => e.stopPropagation()}
               style={{
                 scrollbarWidth: 'thin',
@@ -732,17 +732,17 @@ export default function AuthButtons() {
                 {/* Close button */}
                 <button
                   onClick={closeModal}
-                  className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-100/80 dark:hover:bg-gray-800/80 transition-colors backdrop-blur-sm z-20"
+                  className="absolute top-4 right-4 p-2 rounded-full hover:bg-muted transition-colors backdrop-blur-sm z-20"
                 >
                   <FiX size={20} />
                 </button>
 
                 {/* Form Header */}
                 <div className="text-center mb-8 pt-4">
-                  <h2 className="text-2xl font-bold text-white mb-2">
+                  <h2 className="text-2xl font-bold text-foreground mb-2">
                     Share Your Experience
                   </h2>
-                  <p className="text-gray-300">
+                  <p className="text-muted-foreground">
                     Help others by sharing how DSAMate helped you in your journey
                   </p>
                 </div>
@@ -751,7 +751,7 @@ export default function AuthButtons() {
                 <form onSubmit={handleSubmit} className="space-y-6">
                   {/* Name */}
                   <div>
-                    <label htmlFor="name" className="block text-sm font-medium text-gray-200 mb-2">
+                    <label htmlFor="name" className="block text-sm font-medium text-foreground mb-2">
                       Full Name *
                     </label>
                     <input
@@ -761,14 +761,14 @@ export default function AuthButtons() {
                       value={formData.name}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-4 py-3 rounded-lg border border-gray-600/30 bg-gray-800/40 backdrop-blur-md text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-blue-400/50 focus:border-blue-400/50 transition-all"
+                      className="w-full px-4 py-3 rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-blue-400/50 focus:border-blue-400/50 transition-all"
                       placeholder="Enter your full name"
                     />
                   </div>
 
                   {/* Email */}
                   <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-200 mb-2">
+                    <label htmlFor="email" className="block text-sm font-medium text-foreground mb-2">
                       Email Address *
                     </label>
                     <input
@@ -778,14 +778,14 @@ export default function AuthButtons() {
                       value={formData.email}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-4 py-3 rounded-lg border border-gray-600/30 bg-gray-800/40 backdrop-blur-md text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-blue-400/50 focus:border-blue-400/50 transition-all"
+                      className="w-full px-4 py-3 rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-blue-400/50 focus:border-blue-400/50 transition-all"
                       placeholder="Enter your email address"
                     />
                   </div>
 
                   {/* Designation */}
                   <div>
-                    <label htmlFor="designation" className="block text-sm font-medium text-gray-200 mb-2">
+                    <label htmlFor="designation" className="block text-sm font-medium text-foreground mb-2">
                       Designation *
                     </label>
                     <input
@@ -795,14 +795,14 @@ export default function AuthButtons() {
                       value={formData.designation}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-4 py-3 rounded-lg border border-gray-600/30 bg-gray-800/40 backdrop-blur-md text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-blue-400/50 focus:border-blue-400/50 transition-all"
+                      className="w-full px-4 py-3 rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-blue-400/50 focus:border-blue-400/50 transition-all"
                       placeholder="e.g., Student, Software Engineer, etc."
                     />
                   </div>
 
                   {/* Rating */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-200 mb-3">
+                    <label className="block text-sm font-medium text-foreground mb-3">
                       Overall Rating *
                     </label>
                     <div className="flex gap-2">
@@ -816,7 +816,7 @@ export default function AuthButtons() {
                           {star <= formData.rating ? (
                             <FaStar className="text-yellow-400" />
                           ) : (
-                            <FaRegStar className="text-gray-300 dark:text-gray-600" />
+                            <FaRegStar className="text-muted-foreground" />
                           )}
                         </button>
                       ))}
@@ -825,7 +825,7 @@ export default function AuthButtons() {
 
                   {/* What you liked most */}
                   <div>
-                    <label htmlFor="likedMost" className="block text-sm font-medium text-gray-200 mb-2">
+                    <label htmlFor="likedMost" className="block text-sm font-medium text-foreground mb-2">
                       What did you like most about DSAMate? *
                     </label>
                     <textarea
@@ -835,14 +835,14 @@ export default function AuthButtons() {
                       onChange={handleInputChange}
                       required
                       rows={3}
-                      className="w-full px-4 py-3 rounded-lg border border-gray-600/30 bg-gray-800/40 backdrop-blur-md text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-blue-400/50 focus:border-blue-400/50 transition-all resize-vertical custom-scrollbar"
+                      className="w-full px-4 py-3 rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-blue-400/50 focus:border-blue-400/50 transition-all resize-vertical custom-scrollbar"
                       placeholder="Share what features or aspects you found most valuable..."
                     />
                   </div>
 
                   {/* How it helped */}
                   <div>
-                    <label htmlFor="howHelped" className="block text-sm font-medium text-gray-200 mb-2">
+                    <label htmlFor="howHelped" className="block text-sm font-medium text-foreground mb-2">
                       How did DSAMate help you? *
                     </label>
                     <textarea
@@ -852,14 +852,14 @@ export default function AuthButtons() {
                       onChange={handleInputChange}
                       required
                       rows={3}
-                      className="w-full px-4 py-3 rounded-lg border border-gray-600/30 bg-gray-800/40 backdrop-blur-md text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-blue-400/50 focus:border-blue-400/50 transition-all resize-vertical custom-scrollbar"
+                      className="w-full px-4 py-3 rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-blue-400/50 focus:border-blue-400/50 transition-all resize-vertical custom-scrollbar"
                       placeholder="Share how DSAMate improved your learning journey..."
                     />
                   </div>
 
                   {/* Feedback */}
                   <div>
-                    <label htmlFor="feedback" className="block text-sm font-medium text-gray-200 mb-2">
+                    <label htmlFor="feedback" className="block text-sm font-medium text-foreground mb-2">
                       Additional Feedback *
                     </label>
                     <textarea
@@ -869,7 +869,7 @@ export default function AuthButtons() {
                       onChange={handleInputChange}
                       required
                       rows={4}
-                      className="w-full px-4 py-3 rounded-lg border border-gray-600/30 bg-gray-800/40 backdrop-blur-md text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-blue-400/50 focus:border-blue-400/50 transition-all resize-vertical custom-scrollbar"
+                      className="w-full px-4 py-3 rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-blue-400/50 focus:border-blue-400/50 transition-all resize-vertical custom-scrollbar"
                       placeholder="Any additional thoughts, suggestions, or experiences you'd like to share..."
                     />
                   </div>
@@ -882,9 +882,9 @@ export default function AuthButtons() {
                       name="canShow"
                       checked={formData.canShow}
                       onChange={handleInputChange}
-                      className="w-4 h-4 text-blue-400 bg-gray-800/60 border-gray-600/50 rounded focus:ring-blue-400 focus:ring-2 backdrop-blur-sm"
+                      className="w-4 h-4 text-blue-400 bg-background border-border rounded focus:ring-blue-400 focus:ring-2"
                     />
-                    <label htmlFor="canShow" className="text-sm text-gray-200">
+                    <label htmlFor="canShow" className="text-sm text-foreground">
                       I allow DSAMate to display this testimonial publicly
                     </label>
                   </div>
@@ -892,7 +892,7 @@ export default function AuthButtons() {
                   {/* Display Preference - Only show if canShow is true */}
                   {formData.canShow && (
                     <div>
-                      <label className="block text-sm font-medium text-gray-200 mb-3">
+                      <label className="block text-sm font-medium text-foreground mb-3">
                         If yes, how would you like your feedback to be shown? *
                       </label>
                       <div className="space-y-3">
@@ -904,9 +904,9 @@ export default function AuthButtons() {
                             value="nameAndDesignation"
                             checked={formData.displayPreference === "nameAndDesignation"}
                             onChange={handleInputChange}
-                            className="w-4 h-4 text-blue-400 bg-gray-800/60 border-gray-600/50 focus:ring-blue-400 focus:ring-2 backdrop-blur-sm"
+                            className="w-4 h-4 text-blue-400 bg-background border-border focus:ring-blue-400 focus:ring-2"
                           />
-                          <label htmlFor="nameAndDesignation" className="ml-2 text-sm text-gray-200">
+                          <label htmlFor="nameAndDesignation" className="ml-2 text-sm text-foreground">
                             Use my name and designation
                           </label>
                         </div>
@@ -918,9 +918,9 @@ export default function AuthButtons() {
                             value="nameOnly"
                             checked={formData.displayPreference === "nameOnly"}
                             onChange={handleInputChange}
-                            className="w-4 h-4 text-blue-400 bg-gray-800/60 border-gray-600/50 focus:ring-blue-400 focus:ring-2 backdrop-blur-sm"
+                            className="w-4 h-4 text-blue-400 bg-background border-border focus:ring-blue-400 focus:ring-2"
                           />
-                          <label htmlFor="nameOnly" className="ml-2 text-sm text-gray-200">
+                          <label htmlFor="nameOnly" className="ml-2 text-sm text-foreground">
                             Use my name only
                           </label>
                         </div>
@@ -932,9 +932,9 @@ export default function AuthButtons() {
                             value="anonymous"
                             checked={formData.displayPreference === "anonymous"}
                             onChange={handleInputChange}
-                            className="w-4 h-4 text-blue-400 bg-gray-800/60 border-gray-600/50 focus:ring-blue-400 focus:ring-2 backdrop-blur-sm"
+                            className="w-4 h-4 text-blue-400 bg-background border-border focus:ring-blue-400 focus:ring-2"
                           />
-                          <label htmlFor="anonymous" className="ml-2 text-sm text-gray-200">
+                          <label htmlFor="anonymous" className="ml-2 text-sm text-foreground">
                             As anonymous user
                           </label>
                         </div>
@@ -947,14 +947,14 @@ export default function AuthButtons() {
                     <button
                       type="button"
                       onClick={closeModal}
-                      className="flex-1 px-6 py-3 border border-gray-600/50 bg-gray-800/40 backdrop-blur-md text-gray-200 rounded-lg hover:bg-gray-700/60 transition-all font-medium"
+                      className="flex-1 px-6 py-3 border border-border bg-background text-foreground rounded-lg hover:bg-muted transition-all font-medium"
                     >
                       Cancel
                     </button>
                     <button
                       type="submit"
                       disabled={isSubmitting}
-                      className="flex-1 px-6 py-3 bg-blue-500/80 hover:bg-blue-500 disabled:bg-blue-500/40 backdrop-blur-md text-white rounded-lg transition-all font-medium disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                      className="flex-1 px-6 py-3 bg-blue-500 hover:bg-blue-600 disabled:bg-blue-500/40 text-white rounded-lg transition-all font-medium disabled:cursor-not-allowed flex items-center justify-center gap-2"
                     >
                       {isSubmitting ? (
                         <>
