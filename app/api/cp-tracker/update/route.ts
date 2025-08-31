@@ -12,12 +12,11 @@ import { fetchHackerEarthStats } from "@/lib/cp/fetchHackerEarth";
 //import { fetchCodeChefStats } from "../../../../lib/cp/fetchCodeChef";
 //import more platforms later...
 
-await connect(); // connect to MongoDB
-
 
 export async function POST(req: Request) {
   try {
-    
+    await connect(); // connect to MongoDB when needed
+
     const body = await req.json();
     const {
       userId, // You need to pass this from frontend
@@ -29,7 +28,7 @@ export async function POST(req: Request) {
       hackerearthUsername,
       // more platforms...
     } = body;
-    
+
     const stats: any = {};
 
     if (leetcodeUsername) {
@@ -48,14 +47,14 @@ export async function POST(req: Request) {
       }
     }
 
-    
+
     if (hackerearthUsername) {
-        try {
-            stats.hackerearth = await fetchHackerEarthStats(body.hackerearthUsername);
-        } catch (e) {
-            console.error("❌ Error fetching HackerEarth stats:", e);
-        }
-     }
+      try {
+        stats.hackerearth = await fetchHackerEarthStats(body.hackerearthUsername);
+      } catch (e) {
+        console.error("❌ Error fetching HackerEarth stats:", e);
+      }
+    }
 
     //  MongoDB persistence (add/update user's CP stats)
     if (userId) {
@@ -73,9 +72,9 @@ export async function POST(req: Request) {
     } else {
       console.warn("⚠️ No userId provided — skipping DB save.");
     }
-  
 
-    
+
+
 
 
     return NextResponse.json({ success: true, data: stats });

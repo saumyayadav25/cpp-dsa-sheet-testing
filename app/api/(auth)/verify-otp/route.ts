@@ -4,9 +4,8 @@ import { connect } from "@/db/config";
 import { apiLimiter, res } from "@/middleware/rateLiming";
 
 export async function POST(req: NextRequest) {
-  await connect();
-
   try {
+
     // Wait for the rate limiter to process the request
     const rateLimitResult = await new Promise((resolve) => {
       apiLimiter(req as any, res as any, (next: any) => {
@@ -22,6 +21,8 @@ export async function POST(req: NextRequest) {
         { status: 429 }
       );
     }
+
+    await connect();
     const body = await req.json();
     const { email, otp } = body;
 
