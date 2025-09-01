@@ -28,16 +28,6 @@ export default function Footer() {
     try {
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 1500));
-
-      // In a real implementation, you would call your newsletter API here
-      // const response = await fetch('/api/newsletter', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ email }),
-      // });
-
-      // if (!response.ok) throw new Error('Subscription failed');
-
       toast.success("Successfully subscribed to our newsletter!");
       setEmail("");
     } catch (error) {
@@ -54,28 +44,28 @@ export default function Footer() {
         toastOptions={{
           duration: 4000,
           style: {
-            background: "#1f2937", // dark gray
-            color: "#fff", // white text
-            border: "1px solid #374151", // subtle border
+            background: "#1f2937",
+            color: "#fff",
+            border: "1px solid #374151",
             borderRadius: "8px",
             padding: "12px 16px",
           },
         }}
       />
 
-      <footer className="relative bg-background border-t border-border px-6 md:px-20 py-16 text-foreground transition-colors duration-300 overflow-hidden">
+      <footer className="relative bg-background border-t border-border px-4 sm:px-6 py-12 text-foreground transition-colors duration-300 overflow-hidden">
         {/* Background decoration */}
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-muted/30 to-transparent pointer-events-none"></div>
 
-        <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-12 mx-auto max-w-7xl">
-          {/* About */}
+        <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6 sm:gap-8 mx-auto max-w-7xl">
+          {/* About - Span 3 columns */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="lg:col-span-1 flex flex-col items-center justify-center mx-auto md:justify-start md:items-start"
+            className="lg:col-span-3 flex flex-col"
           >
-            <h3 className="text-foreground text-xl font-bold mb-4 flex items-center gap-3">
+            <h3 className="text-foreground text-lg font-bold mb-4 flex items-center gap-2">
               <span className="bg-gradient-to-r from-blue-500 to-cyan-500 w-3 h-3 rounded-full"></span>
               About DSAMate
             </h3>
@@ -89,20 +79,20 @@ export default function Footer() {
               rel="noopener noreferrer"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="inline-flex items-center gap-2 bg-gradient-to-r from-yellow-500 to-orange-400 hover:from-yellow-600 hover:to-orange-500 text-white font-semibold px-4 py-2.5 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+              className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-yellow-500 to-orange-400 hover:from-yellow-600 hover:to-orange-500 text-white font-semibold px-4 py-2.5 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 w-fit"
             >
               ☕ Buy me a coffee
             </motion.a>
           </motion.div>
 
-          {/* Quick Links */}
+          {/* Quick Links - Span 2 columns */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="lg:col-span-1"
+            className="lg:col-span-2"
           >
-            <h3 className="text-foreground text-xl font-bold mb-4 flex items-center gap-3">
+            <h3 className="text-foreground text-lg font-bold mb-4 flex items-center gap-2">
               <span className="bg-gradient-to-r from-blue-500 to-cyan-500 w-3 h-3 rounded-full"></span>
               Quick Links
             </h3>
@@ -125,7 +115,7 @@ export default function Footer() {
                       target="_blank"
                       rel="noopener noreferrer"
                       whileHover={{ x: 4 }}
-                      className="text-muted-foreground hover:text-foreground flex items-center gap-3 transition-all duration-300 group"
+                      className="text-muted-foreground hover:text-foreground flex items-center gap-2 transition-all duration-300 group text-sm"
                     >
                       <span className="w-1.5 h-1.5 bg-muted-foreground group-hover:bg-blue-500 rounded-full transition-colors"></span>
                       {label}
@@ -134,7 +124,7 @@ export default function Footer() {
                     <motion.div whileHover={{ x: 4 }}>
                       <Link
                         href={href}
-                        className="text-muted-foreground hover:text-foreground flex items-center gap-3 transition-all duration-300 group"
+                        className="text-muted-foreground hover:text-foreground flex items-center gap-2 transition-all duration-300 group text-sm"
                       >
                         <span className="w-1.5 h-1.5 bg-muted-foreground group-hover:bg-blue-500 rounded-full transition-colors"></span>
                         {label}
@@ -146,14 +136,14 @@ export default function Footer() {
             </ul>
           </motion.div>
 
-          {/* Related Links */}
+          {/* Related Links - Span 2 columns */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="lg:col-span-1"
+            className="lg:col-span-2"
           >
-            <h3 className="text-foreground text-xl font-bold mb-4 flex items-center gap-3">
+            <h3 className="text-foreground text-lg font-bold mb-4 flex items-center gap-2">
               <span className="bg-gradient-to-r from-blue-500 to-cyan-500 w-3 h-3 rounded-full"></span>
               Related Links
             </h3>
@@ -187,7 +177,7 @@ export default function Footer() {
                       target="_blank"
                       rel="noopener noreferrer"
                       whileHover={{ x: 4 }}
-                      className="text-muted-foreground hover:text-foreground flex items-center gap-3 transition-all duration-300 group"
+                      className="text-muted-foreground hover:text-foreground flex items-center gap-2 transition-all duration-300 group text-sm"
                     >
                       <span className="w-1.5 h-1.5 bg-muted-foreground group-hover:bg-blue-500 rounded-full transition-colors"></span>
                       {label}
@@ -196,7 +186,7 @@ export default function Footer() {
                     <motion.div whileHover={{ x: 4 }}>
                       <Link
                         href={href}
-                        className="text-muted-foreground hover:text-foreground flex items-center gap-3 transition-all duration-300 group"
+                        className="text-muted-foreground hover:text-foreground flex items-center gap-2 transition-all duration-300 group text-sm"
                       >
                         <span className="w-1.5 h-1.5 bg-muted-foreground group-hover:bg-blue-500 rounded-full transition-colors"></span>
                         {label}
@@ -208,17 +198,18 @@ export default function Footer() {
             </ul>
           </motion.div>
 
-          {/* Contact */}
+          {/* Contact - Span 3 columns */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
-            className="lg:col-span-1 flex flex-col items-center justify-center mx-auto md:justify-start md:items-start"
+            className="lg:col-span-3 flex flex-col"
           >
-            <h3 className="text-foreground text-xl font-bold mb-4 flex items-center gap-3">
+            <h3 className="text-foreground text-lg font-bold mb-4 flex items-center gap-2">
               <span className="bg-gradient-to-r from-blue-500 to-cyan-500 w-3 h-3 rounded-full"></span>
               Contact Info
             </h3>
+
             <motion.div
               whileHover={{ scale: 1.02 }}
               className="mb-6 flex items-center gap-3 text-muted-foreground hover:text-foreground transition-colors duration-300"
@@ -245,70 +236,68 @@ export default function Footer() {
               </a>
             </motion.div>
 
-            <div className="flex flex-col items-center justify-center mx-auto md:justify-start md:items-start w-full">
-              <div className="flex gap-4 text-xl mb-6 text-muted-foreground">
-                {[
-                  {
-                    href: "https://x.com/SaumyaYadav817",
-                    icon: FaTwitter,
-                    label: "Twitter",
-                  },
-                  {
-                    href: "https://github.com/saumyayadav25",
-                    icon: FaGithub,
-                    label: "GitHub",
-                  },
-                  {
-                    href: "https://www.linkedin.com/in/saumya-yadav-/",
-                    icon: FaLinkedin,
-                    label: "LinkedIn",
-                  },
-                ].map(({ href, icon: Icon, label }) => (
-                  <motion.a
-                    key={href}
-                    href={href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    whileHover={{ scale: 1.1, y: -2 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="p-2 rounded-lg bg-muted/50 hover:bg-muted text-muted-foreground hover:text-foreground transition-all duration-300"
-                    title={label}
-                  >
-                    <Icon />
-                  </motion.a>
-                ))}
-              </div>
-
-              <div className="text-center md:text-left w-full">
-                <h4 className="text-sm font-semibold text-foreground mb-3">
-                  Support This Project
-                </h4>
-                <p className="text-xs text-muted-foreground mb-4 leading-relaxed">
-                  If you find these resources helpful, consider supporting to
-                  help maintain and improve them.
-                </p>
+            <div className="flex gap-4 text-xl mb-6 text-muted-foreground">
+              {[
+                {
+                  href: "https://x.com/SaumyaYadav817",
+                  icon: FaTwitter,
+                  label: "Twitter",
+                },
+                {
+                  href: "https://github.com/saumyayadav25",
+                  icon: FaGithub,
+                  label: "GitHub",
+                },
+                {
+                  href: "https://www.linkedin.com/in/saumya-yadav-/",
+                  icon: FaLinkedin,
+                  label: "LinkedIn",
+                },
+              ].map(({ href, icon: Icon, label }) => (
                 <motion.a
-                  href="https://github.com/sponsors/saumyayadav25"
+                  key={href}
+                  href={href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  whileHover={{ scale: 1.05 }}
+                  whileHover={{ scale: 1.1, y: -2 }}
                   whileTap={{ scale: 0.95 }}
-                  className="inline-flex items-center gap-2 bg-card hover:bg-muted border border-border px-4 py-2.5 rounded-xl text-sm text-foreground transition-all duration-300 shadow-sm hover:shadow-md"
+                  className="p-2 rounded-lg bg-muted/50 hover:bg-muted text-muted-foreground hover:text-foreground transition-all duration-300"
+                  title={label}
                 >
-                  <FaGithub /> Sponsor on GitHub
+                  <Icon />
                 </motion.a>
-              </div>
+              ))}
+            </div>
+
+            <div className="mt-auto">
+              <h4 className="text-sm font-semibold text-foreground mb-2">
+                Support This Project
+              </h4>
+              <p className="text-xs text-muted-foreground mb-3 leading-relaxed">
+                If you find these resources helpful, consider supporting to help
+                maintain and improve them.
+              </p>
+              <motion.a
+                href="https://github.com/sponsors/saumyayadav25"
+                target="_blank"
+                rel="noopener noreferrer"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="inline-flex items-center gap-2 bg-card hover:bg-muted border border-border px-3 py-2 rounded-lg text-sm text-foreground transition-all duration-300 shadow-sm hover:shadow-md w-fit"
+              >
+                <FaGithub /> Sponsor on GitHub
+              </motion.a>
             </div>
           </motion.div>
 
-          {/* Newsletter Section */}
+          {/* Newsletter Section - Span 2 columns */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="lg:col-span-1 flex flex-col items-center justify-center mx-auto md:justify-start md:items-start"
+            className="lg:col-span-2 flex flex-col"
           >
-            <h3 className="text-foreground text-xl font-bold mb-4 flex items-center gap-3">
+            <h3 className="text-foreground text-lg font-bold mb-4 flex items-center gap-2">
               <span className="bg-gradient-to-r from-blue-500 to-cyan-500 w-3 h-3 rounded-full"></span>
               Stay Updated
             </h3>
@@ -324,7 +313,7 @@ export default function Footer() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Enter your email"
-                  className="w-full px-4 py-3 bg-muted/50 border border-border rounded-lg text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                  className="w-full px-4 py-2.5 bg-muted/50 border border-border rounded-lg text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-sm"
                   disabled={isSubmitting}
                 />
               </div>
@@ -333,7 +322,7 @@ export default function Footer() {
                 disabled={isSubmitting}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-medium py-3 px-4 rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-medium py-2.5 px-4 rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
               >
                 {isSubmitting ? (
                   <span className="flex items-center justify-center">
@@ -376,9 +365,9 @@ export default function Footer() {
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.4 }}
-          className="relative z-10 border-t border-border mt-16 pt-8 text-center"
+          className="relative z-10 border-t border-border mt-12 pt-6 text-center"
         >
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-3">
             <p className="text-sm text-muted-foreground">
               &copy; {new Date().getFullYear()} DSA Practice. All Rights
               Reserved.
