@@ -6,9 +6,26 @@ import { sendOtpEmail } from "@/lib/sendOTP";
 import bcrypt from "bcryptjs";
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
+import { apiLimiter, res } from "@/middleware/rateLiming";
+
 
 export async function POST(req: Request) {
   try {
+    // Wait for the rate limiter to process the request
+    const rateLimitResult = await new Promise((resolve) => {
+      apiLimiter(req as any, res as any, (next: any) => {
+        resolve(next);
+      });
+    });
+
+    // If rateLimitResult is not undefined, it means the rate limit was hit
+    if (rateLimitResult) {
+      console.log("rate :", rateLimitResult);
+      return NextResponse.json(
+        { message: "Too many requests, please try again later." },
+        { status: 429 }
+      );
+    }
     await connect();
 
     const body = await req.json();
