@@ -67,13 +67,13 @@ export default function Footer() {
         {/* Background decoration */}
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-muted/30 to-transparent pointer-events-none"></div>
 
-        <div className="relative z-10 flex flex-col md:flex-row md:justify-between md:items-start gap-12 lg:gap-20 mx-auto max-w-7xl">
+        <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-12 mx-auto max-w-7xl">
           {/* About */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="max-w-xs flex flex-col items-center justify-center mx-auto md:justify-start md:items-start"
+            className="lg:col-span-1 flex flex-col items-center justify-center mx-auto md:justify-start md:items-start"
           >
             <h3 className="text-foreground text-xl font-bold mb-4 flex items-center gap-3">
               <span className="bg-gradient-to-r from-blue-500 to-cyan-500 w-3 h-3 rounded-full"></span>
@@ -100,6 +100,7 @@ export default function Footer() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
+            className="lg:col-span-1"
           >
             <h3 className="text-foreground text-xl font-bold mb-4 flex items-center gap-3">
               <span className="bg-gradient-to-r from-blue-500 to-cyan-500 w-3 h-3 rounded-full"></span>
@@ -145,12 +146,74 @@ export default function Footer() {
             </ul>
           </motion.div>
 
+          {/* Related Links */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="lg:col-span-1"
+          >
+            <h3 className="text-foreground text-xl font-bold mb-4 flex items-center gap-3">
+              <span className="bg-gradient-to-r from-blue-500 to-cyan-500 w-3 h-3 rounded-full"></span>
+              Related Links
+            </h3>
+            <ul className="space-y-3">
+              {[
+                { href: "/privacy-terms", label: "Privacy Policy" },
+                {
+                  href: "https://github.com/saumyayadav25/cpp-dsa-sheet-testing/blob/main/CODE_OF_CONDUCT.md",
+                  external: true,
+                  label: "Code of Conduct",
+                },
+                {
+                  href: "/privacy-terms?tab=terms",
+                  label: "Terms of Service",
+                },
+                {
+                  href: "https://github.com/saumyayadav25/cpp-dsa-sheet-testing/blob/main/LICENSE",
+                  external: true,
+                  label: "License",
+                },
+                {
+                  href: "https://forms.gle/bdwBp8oFRWugcrcg9",
+                  external: true,
+                  label: "Feedback",
+                },
+              ].map(({ href, label, external }) => (
+                <li key={href}>
+                  {external ? (
+                    <motion.a
+                      href={href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      whileHover={{ x: 4 }}
+                      className="text-muted-foreground hover:text-foreground flex items-center gap-3 transition-all duration-300 group"
+                    >
+                      <span className="w-1.5 h-1.5 bg-muted-foreground group-hover:bg-blue-500 rounded-full transition-colors"></span>
+                      {label}
+                    </motion.a>
+                  ) : (
+                    <motion.div whileHover={{ x: 4 }}>
+                      <Link
+                        href={href}
+                        className="text-muted-foreground hover:text-foreground flex items-center gap-3 transition-all duration-300 group"
+                      >
+                        <span className="w-1.5 h-1.5 bg-muted-foreground group-hover:bg-blue-500 rounded-full transition-colors"></span>
+                        {label}
+                      </Link>
+                    </motion.div>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </motion.div>
+
           {/* Contact */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
-            className="max-w-xs flex flex-col items-center justify-center mx-auto md:justify-start md:items-start"
+            className="lg:col-span-1 flex flex-col items-center justify-center mx-auto md:justify-start md:items-start"
           >
             <h3 className="text-foreground text-xl font-bold mb-4 flex items-center gap-3">
               <span className="bg-gradient-to-r from-blue-500 to-cyan-500 w-3 h-3 rounded-full"></span>
@@ -243,7 +306,7 @@ export default function Footer() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="max-w-xs flex flex-col items-center justify-center mx-auto md:justify-start md:items-start"
+            className="lg:col-span-1 flex flex-col items-center justify-center mx-auto md:justify-start md:items-start"
           >
             <h3 className="text-foreground text-xl font-bold mb-4 flex items-center gap-3">
               <span className="bg-gradient-to-r from-blue-500 to-cyan-500 w-3 h-3 rounded-full"></span>
