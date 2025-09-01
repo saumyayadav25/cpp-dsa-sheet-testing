@@ -133,7 +133,6 @@ export default function AuthButtons() {
     { href: "/", label: "Home", isActive: pathname === "/" },
     { href: "/notes", label: "Notes", isActive: pathname === "/notes" },
     { href: "/sheet", label: "Sheet", isActive: pathname === "/sheet" },
-    { href: "/flashcards", label: "Flashcards", isActive: pathname === "/flashcards" },
     {
       href: "/progress",
       label: "Progress",
@@ -145,9 +144,9 @@ export default function AuthButtons() {
       isActive: pathname === "/contributors",
     },
     {
-      href: "/cp-tracker",
-      label: "track Your CP",
-      isActive: pathname === "/cp-tracker",
+      href: "/timequiz",
+      label: "Timed Quiz",
+      isActive: pathname === "/timequiz",
     },
   ];
   const handleLogout = () => {
@@ -528,12 +527,12 @@ export default function AuthButtons() {
                       />
                     </>
                   )} */}
-                  <div className="md:hidden flex flex-wrap m-2 gap-3 justify-center items-center py-3 ">
+                    <div className="md:hidden flex flex-wrap justify-center items-center gap-2 py-3 ">
                     {navLinks.map((link, index) => (
                       <motion.div
-                        key={link.href}
-                        whileHover={{ y: -2 }}
-                        whileTap={{ y: 0 }}
+                      key={link.href}
+                      whileHover={{ y: -2 }}
+                      whileTap={{ y: 0 }}
                       >
                         <Link
                           href={link.href}
@@ -563,7 +562,7 @@ export default function AuthButtons() {
                         </Link>
                       </motion.div>
                     ))}
-                  </div>
+                    </div>
                   {/* Bottom highlight */}
                   <motion.div
                     className="h-px bg-gradient-to-r from-transparent via-white/20 to-transparent mt-2"
@@ -783,7 +782,6 @@ export default function AuthButtons() {
                     />
                   </div>
 
-                  {/* Designation */}
                   <div>
                     <label htmlFor="designation" className="block text-sm font-medium text-gray-200 mb-2">
                       Designation *
@@ -800,7 +798,6 @@ export default function AuthButtons() {
                     />
                   </div>
 
-                  {/* Rating */}
                   <div>
                     <label className="block text-sm font-medium text-gray-200 mb-3">
                       Overall Rating *
@@ -823,7 +820,6 @@ export default function AuthButtons() {
                     </div>
                   </div>
 
-                  {/* What you liked most */}
                   <div>
                     <label htmlFor="likedMost" className="block text-sm font-medium text-gray-200 mb-2">
                       What did you like most about DSAMate? *
@@ -840,7 +836,7 @@ export default function AuthButtons() {
                     />
                   </div>
 
-                  {/* How it helped */}
+
                   <div>
                     <label htmlFor="howHelped" className="block text-sm font-medium text-gray-200 mb-2">
                       How did DSAMate help you? *
@@ -874,7 +870,6 @@ export default function AuthButtons() {
                     />
                   </div>
 
-                  {/* Permission to show */}
                   <div className="flex items-center space-x-3">
                     <input
                       type="checkbox"
@@ -889,7 +884,6 @@ export default function AuthButtons() {
                     </label>
                   </div>
 
-                  {/* Display Preference - Only show if canShow is true */}
                   {formData.canShow && (
                     <div>
                       <label className="block text-sm font-medium text-gray-200 mb-3">
@@ -942,7 +936,6 @@ export default function AuthButtons() {
                     </div>
                   )}
 
-                  {/* Submit Button */}
                   <div className="flex gap-4 pt-4">
                     <button
                       type="button"
@@ -970,7 +963,7 @@ export default function AuthButtons() {
                     </button>
                   </div>
                 </form>
-              </div> {/* Close content wrapper */}
+              </div> 
             </motion.div>
           </motion.div>
         )}
