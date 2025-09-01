@@ -10,6 +10,7 @@ import {
   FaSearch,
   FaFire,
 } from "react-icons/fa";
+import { FiSearch, FiX } from "react-icons/fi";
 import { FaStar, FaRegStar, FaUserCircle } from "react-icons/fa";
 import { BiSliderAlt } from "react-icons/bi";
 import ReportIssueButton from "@/components/ReportIssueButton";
@@ -980,35 +981,50 @@ export default function Home() {
             onClick={closeModal}
           >
             <motion.div
-              initial={{ scale: 0.8, opacity: 0, y: 50 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.8, opacity: 0, y: 50 }}
-              transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto border border-gray-200 dark:border-gray-700"
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              transition={{ type: "spring", duration: 0.5 }}
+              className="relative backdrop-blur-2xl bg-gradient-to-br from-white/90 via-white/80 to-white/70 dark:from-gray-900/90 dark:via-gray-900/80 dark:to-blue-900/70 rounded-2xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto custom-scrollbar border border-white/20 dark:border-gray-700/30 shadow-2xl"
               onClick={(e) => e.stopPropagation()}
+              style={{
+                scrollbarWidth: 'thin',
+                scrollbarColor: '#94a3b8 transparent',
+                boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.1)',
+              }}
             >
-              {/* Modal Header */}
-              <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-                  Share Your Testimonial
-                </h2>
-                <button
-                  onClick={closeModal}
-                  className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
-                >
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
+
+              {/* Subtle animated border gradient */}
+              <div className="absolute inset-0 rounded-2xl p-[1px] pointer-events-none">
+                <div className="w-full h-full bg-transparent rounded-2xl" />
               </div>
 
-              {/* Modal Body */}
-              <form onSubmit={handleSubmit} className="p-6 space-y-6">
-                {/* Name and Email Row */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Content wrapper with proper z-index */}
+              <div className="relative z-10 w-full h-full">
+                {/* Close button */}
+                <button
+                  onClick={closeModal}
+                  className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-100/80 dark:hover:bg-gray-800/80 transition-colors backdrop-blur-sm z-20"
+                >
+                  <FiX size={20} />
+                </button>
+
+                {/* Form Header */}
+                <div className="text-center mb-8 pt-4">
+                  <h2 className="text-2xl font-bold text-white mb-2">
+                    Share Your Experience
+                  </h2>
+                  <p className="text-gray-300">
+                    Help others by sharing how DSAMate helped you in your journey
+                  </p>
+                </div>
+
+                {/* Form */}
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  {/* Name */}
                   <div>
-                    <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                      Name *
+                    <label htmlFor="name" className="block text-sm font-medium text-gray-200 mb-2">
+                      Full Name *
                     </label>
                     <input
                       type="text"
@@ -1017,13 +1033,15 @@ export default function Home() {
                       value={formData.name}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                      placeholder="Your full name"
+                      className="w-full px-4 py-3 rounded-lg border border-gray-600/30 bg-gray-800/40 backdrop-blur-md text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-blue-400/50 focus:border-blue-400/50 transition-all"
+                      placeholder="Enter your full name"
                     />
                   </div>
+
+                  {/* Email */}
                   <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                      Email *
+                    <label htmlFor="email" className="block text-sm font-medium text-gray-200 mb-2">
+                      Email Address *
                     </label>
                     <input
                       type="email"
@@ -1032,16 +1050,14 @@ export default function Home() {
                       value={formData.email}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                      placeholder="your.email@example.com"
+                      className="w-full px-4 py-3 rounded-lg border border-gray-600/30 bg-gray-800/40 backdrop-blur-md text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-blue-400/50 focus:border-blue-400/50 transition-all"
+                      placeholder="Enter your email address"
                     />
                   </div>
-                </div>
 
-                {/* Designation and Rating Row */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Designation */}
                   <div>
-                    <label htmlFor="designation" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    <label htmlFor="designation" className="block text-sm font-medium text-gray-200 mb-2">
                       Designation *
                     </label>
                     <input
@@ -1051,178 +1067,182 @@ export default function Home() {
                       value={formData.designation}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                      placeholder="e.g., Student, Software Engineer"
+                      className="w-full px-4 py-3 rounded-lg border border-gray-600/30 bg-gray-800/40 backdrop-blur-md text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-blue-400/50 focus:border-blue-400/50 transition-all"
+                      placeholder="e.g., Student, Software Engineer, etc."
                     />
                   </div>
+
+                  {/* Rating */}
                   <div>
-                    <label htmlFor="rating" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                      Rating *
+                    <label className="block text-sm font-medium text-gray-200 mb-3">
+                      Overall Rating *
                     </label>
-                    <select
-                      id="rating"
-                      name="rating"
-                      value={formData.rating}
-                      onChange={handleInputChange}
-                      required
-                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                    >
-                      {[5, 4, 3, 2, 1].map(num => (
-                        <option key={num} value={num}>
-                          {num} Star{num !== 1 ? 's' : ''}
-                        </option>
+                    <div className="flex gap-2">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <button
+                          key={star}
+                          type="button"
+                          onClick={() => setFormData(prev => ({ ...prev, rating: star }))}
+                          className="text-2xl transition-all hover:scale-110"
+                        >
+                          {star <= formData.rating ? (
+                            <FaStar className="text-yellow-400" />
+                          ) : (
+                            <FaRegStar className="text-gray-300 dark:text-gray-600" />
+                          )}
+                        </button>
                       ))}
-                    </select>
-                  </div>
-                </div>
-
-                {/* What you liked most */}
-                <div>
-                  <label htmlFor="likedMost" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    What did you like most about DSAMate? *
-                  </label>
-                  <textarea
-                    id="likedMost"
-                    name="likedMost"
-                    value={formData.likedMost}
-                    onChange={handleInputChange}
-                    required
-                    rows={3}
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-vertical"
-                    placeholder="Tell us about your favorite features..."
-                  />
-                </div>
-
-                {/* How it helped */}
-                <div>
-                  <label htmlFor="howHelped" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    How did DSAMate help you? *
-                  </label>
-                  <textarea
-                    id="howHelped"
-                    name="howHelped"
-                    value={formData.howHelped}
-                    onChange={handleInputChange}
-                    required
-                    rows={3}
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-vertical"
-                    placeholder="Share how DSAMate improved your learning journey..."
-                  />
-                </div>
-
-                {/* Feedback */}
-                <div>
-                  <label htmlFor="feedback" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Additional Feedback *
-                  </label>
-                  <textarea
-                    id="feedback"
-                    name="feedback"
-                    value={formData.feedback}
-                    onChange={handleInputChange}
-                    required
-                    rows={4}
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-vertical"
-                    placeholder="Any additional thoughts, suggestions, or experiences you'd like to share..."
-                  />
-                </div>
-
-                {/* Permission to show */}
-                <div className="flex items-center space-x-3">
-                  <input
-                    type="checkbox"
-                    id="canShow"
-                    name="canShow"
-                    checked={formData.canShow}
-                    onChange={handleInputChange}
-                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                  />
-                  <label htmlFor="canShow" className="text-sm text-gray-700 dark:text-gray-300">
-                    I allow DSAMate to display this testimonial publicly
-                  </label>
-                </div>
-
-                {/* Display Preference - Only show if canShow is true */}
-                {formData.canShow && (
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                      If yes, how would you like your feedback to be shown? *
-                    </label>
-                    <div className="space-y-3">
-                      <div className="flex items-center">
-                        <input
-                          type="radio"
-                          id="nameAndDesignation"
-                          name="displayPreference"
-                          value="nameAndDesignation"
-                          checked={formData.displayPreference === "nameAndDesignation"}
-                          onChange={handleInputChange}
-                          className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                        />
-                        <label htmlFor="nameAndDesignation" className="ml-2 text-sm text-gray-700 dark:text-gray-300">
-                          Use my name and designation
-                        </label>
-                      </div>
-                      <div className="flex items-center">
-                        <input
-                          type="radio"
-                          id="nameOnly"
-                          name="displayPreference"
-                          value="nameOnly"
-                          checked={formData.displayPreference === "nameOnly"}
-                          onChange={handleInputChange}
-                          className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                        />
-                        <label htmlFor="nameOnly" className="ml-2 text-sm text-gray-700 dark:text-gray-300">
-                          Use my name only
-                        </label>
-                      </div>
-                      <div className="flex items-center">
-                        <input
-                          type="radio"
-                          id="anonymous"
-                          name="displayPreference"
-                          value="anonymous"
-                          checked={formData.displayPreference === "anonymous"}
-                          onChange={handleInputChange}
-                          className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                        />
-                        <label htmlFor="anonymous" className="ml-2 text-sm text-gray-700 dark:text-gray-300">
-                          As anonymous user
-                        </label>
-                      </div>
                     </div>
                   </div>
-                )}
 
-                {/* Submit Button */}
-                <div className="flex gap-4 pt-4">
-                  <button
-                    type="button"
-                    onClick={closeModal}
-                    className="flex-1 px-6 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-all font-medium"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="flex-1 px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white rounded-lg transition-all font-medium disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                  >
-                    {isSubmitting ? (
-                      <>
-                        <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                        Submitting...
-                      </>
-                    ) : (
-                      'Submit Testimonial'
-                    )}
-                  </button>
-                </div>
-              </form>
+                  {/* What you liked most */}
+                  <div>
+                    <label htmlFor="likedMost" className="block text-sm font-medium text-gray-200 mb-2">
+                      What did you like most about DSAMate? *
+                    </label>
+                    <textarea
+                      id="likedMost"
+                      name="likedMost"
+                      value={formData.likedMost}
+                      onChange={handleInputChange}
+                      required
+                      rows={3}
+                      className="w-full px-4 py-3 rounded-lg border border-gray-600/30 bg-gray-800/40 backdrop-blur-md text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-blue-400/50 focus:border-blue-400/50 transition-all resize-vertical custom-scrollbar"
+                      placeholder="Share what features or aspects you found most valuable..."
+                    />
+                  </div>
+
+                  {/* How it helped */}
+                  <div>
+                    <label htmlFor="howHelped" className="block text-sm font-medium text-gray-200 mb-2">
+                      How did DSAMate help you? *
+                    </label>
+                    <textarea
+                      id="howHelped"
+                      name="howHelped"
+                      value={formData.howHelped}
+                      onChange={handleInputChange}
+                      required
+                      rows={3}
+                      className="w-full px-4 py-3 rounded-lg border border-gray-600/30 bg-gray-800/40 backdrop-blur-md text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-blue-400/50 focus:border-blue-400/50 transition-all resize-vertical custom-scrollbar"
+                      placeholder="Share how DSAMate improved your learning journey..."
+                    />
+                  </div>
+
+                  {/* Feedback */}
+                  <div>
+                    <label htmlFor="feedback" className="block text-sm font-medium text-gray-200 mb-2">
+                      Additional Feedback *
+                    </label>
+                    <textarea
+                      id="feedback"
+                      name="feedback"
+                      value={formData.feedback}
+                      onChange={handleInputChange}
+                      required
+                      rows={4}
+                      className="w-full px-4 py-3 rounded-lg border border-gray-600/30 bg-gray-800/40 backdrop-blur-md text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-blue-400/50 focus:border-blue-400/50 transition-all resize-vertical custom-scrollbar"
+                      placeholder="Any additional thoughts, suggestions, or experiences you'd like to share..."
+                    />
+                  </div>
+
+                  {/* Permission to show */}
+                  <div className="flex items-center space-x-3">
+                    <input
+                      type="checkbox"
+                      id="canShow"
+                      name="canShow"
+                      checked={formData.canShow}
+                      onChange={handleInputChange}
+                      className="w-4 h-4 text-blue-400 bg-gray-800/60 border-gray-600/50 rounded focus:ring-blue-400 focus:ring-2 backdrop-blur-sm"
+                    />
+                    <label htmlFor="canShow" className="text-sm text-gray-200">
+                      I allow DSAMate to display this testimonial publicly
+                    </label>
+                  </div>
+
+                  {/* Display Preference - Only show if canShow is true */}
+                  {formData.canShow && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-200 mb-3">
+                        If yes, how would you like your feedback to be shown? *
+                      </label>
+                      <div className="space-y-3">
+                        <div className="flex items-center">
+                          <input
+                            type="radio"
+                            id="nameAndDesignation"
+                            name="displayPreference"
+                            value="nameAndDesignation"
+                            checked={formData.displayPreference === "nameAndDesignation"}
+                            onChange={handleInputChange}
+                            className="w-4 h-4 text-blue-400 bg-gray-800/60 border-gray-600/50 focus:ring-blue-400 focus:ring-2 backdrop-blur-sm"
+                          />
+                          <label htmlFor="nameAndDesignation" className="ml-2 text-sm text-gray-200">
+                            Use my name and designation
+                          </label>
+                        </div>
+                        <div className="flex items-center">
+                          <input
+                            type="radio"
+                            id="nameOnly"
+                            name="displayPreference"
+                            value="nameOnly"
+                            checked={formData.displayPreference === "nameOnly"}
+                            onChange={handleInputChange}
+                            className="w-4 h-4 text-blue-400 bg-gray-800/60 border-gray-600/50 focus:ring-blue-400 focus:ring-2 backdrop-blur-sm"
+                          />
+                          <label htmlFor="nameOnly" className="ml-2 text-sm text-gray-200">
+                            Use my name only
+                          </label>
+                        </div>
+                        <div className="flex items-center">
+                          <input
+                            type="radio"
+                            id="anonymous"
+                            name="displayPreference"
+                            value="anonymous"
+                            checked={formData.displayPreference === "anonymous"}
+                            onChange={handleInputChange}
+                            className="w-4 h-4 text-blue-400 bg-gray-800/60 border-gray-600/50 focus:ring-blue-400 focus:ring-2 backdrop-blur-sm"
+                          />
+                          <label htmlFor="anonymous" className="ml-2 text-sm text-gray-200">
+                            As anonymous user
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Submit Button */}
+                  <div className="flex gap-4 pt-4">
+                    <button
+                      type="button"
+                      onClick={closeModal}
+                      className="flex-1 px-6 py-3 border border-gray-600/50 bg-gray-800/40 backdrop-blur-md text-gray-200 rounded-lg hover:bg-gray-700/60 transition-all font-medium"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="flex-1 px-6 py-3 bg-blue-500/80 hover:bg-blue-500 disabled:bg-blue-500/40 backdrop-blur-md text-white rounded-lg transition-all font-medium disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                          </svg>
+                          Submitting...
+                        </>
+                      ) : (
+                        'Submit Testimonial'
+                      )}
+                    </button>
+                  </div>
+                </form>
+              </div> {/* Close content wrapper */}
             </motion.div>
           </motion.div>
         )}

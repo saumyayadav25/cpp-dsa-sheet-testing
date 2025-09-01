@@ -130,15 +130,6 @@ Check out this blog to kickstart your open-source journey with GSSoC (no experie
 
 👉 [Kickstart Your Open Source Journey with GSSoC – No Experience Needed](https://medium.com/@saumyayadav213/kickstart-your-open-source-journey-with-gssoc-no-experience-needed-39f5934418a0)
 
-
-### 💬 Need Help?
-
-If you have any doubts or questions regarding the issues or pull requests, feel free to reach out to the mentors:
-
-👩‍💻 **Mentors**  
-- [Yash](https://github.com/yashjscoder) · [LinkedIn](https://www.linkedin.com/in/yash-vishnoi-22456a291/)
-- [Sumit Sagar](https://github.com/mostpalon3) · [LinkedIn](https://www.linkedin.com/in/sumit-sagar-8a8b39286/)
-
 We’re here to guide you — don’t hesitate to ask in the Discord group or comment directly on the GitHub issue!
 
 --- 
