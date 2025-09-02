@@ -17,6 +17,11 @@ export default function SheetPage() {
   const [platformFilter, setPlatformFilter] = useState('');
   const [companyFilter, setCompanyFilter] = useState('');
 
+  const [randomPick, setRandomPick] = useState<{
+    topicName: string;
+    question: Question;
+  } | null>(null);
+
   const [streak, setStreak] = useState(0);
   const [potd, setPotd] = useState<Question | null>(null);
 
@@ -41,6 +46,28 @@ export default function SheetPage() {
     setRevisionFilter('');
     setPlatformFilter('');
     setCompanyFilter('');
+  };
+
+  const pickRandomQuestion = () => {
+    const all = sampleTopics.flatMap((topic) =>
+      topic.questions.map((q) => ({ topicName: topic.name, question: q }))
+    );
+    if (all.length === 0) return;
+    let idx = Math.floor(Math.random() * all.length);
+    if (randomPick && all.length > 1) {
+      const lastId = `${randomPick.topicName}-${randomPick.question.id}`;
+      // Re-roll once if same as last shown
+      const candidateId = `${all[idx].topicName}-${all[idx].question.id}`;
+      if (candidateId === lastId) {
+        idx = (idx + 1) % all.length;
+      }
+    }
+    setRandomPick(all[idx]);
+    // Smooth scroll to the card for visibility on mobile
+    setTimeout(() => {
+      const el = document.getElementById('random-question-card');
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 0);
   };
 
   return (
@@ -177,6 +204,14 @@ export default function SheetPage() {
             Reset Filters
           </button>
 
+          {/* Pick Random Question */}
+          <button
+            onClick={pickRandomQuestion}
+            className="bg-blue-600 text-white rounded px-4 py-2 shadow-md hover:bg-blue-700 transition-colors duration-300"
+          >
+            🎲 Pick Random Question
+          </button>
+
           <a
             href="https://dsamate.vercel.app/sheet"
             target="_blank"
@@ -189,6 +224,58 @@ export default function SheetPage() {
 
         {/* POTD Section */}
         <POTD potd={potd} updateStreak={updateStreak} />
+
+        {/* Random Question Card */}
+        {randomPick && (
+          <div
+            id="random-question-card"
+            className="mt-6 mb-8 border border-blue-300 dark:border-blue-800 bg-blue-50/60 dark:bg-blue-900/20 rounded-lg p-4"
+          >
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <div className="text-xs uppercase tracking-wide text-blue-700 dark:text-blue-300 mb-1">Random Pick</div>
+                <div className="text-lg font-semibold text-gray-900 dark:text-white">
+                  {randomPick.question.title}
+                </div>
+                <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                  Topic: <span className="font-medium">{randomPick.topicName}</span> · Difficulty: <span className="font-medium capitalize">{randomPick.question.difficulty}</span>
+                </div>
+              </div>
+              <button
+                onClick={pickRandomQuestion}
+                className="shrink-0 bg-blue-600 text-white rounded px-3 py-2 text-sm hover:bg-blue-700"
+              >
+                Pick Another
+              </button>
+            </div>
+            {/* Links */}
+            <div className="mt-3 flex flex-wrap gap-2">
+              {Object.entries(randomPick.question.links || {}).map(([key, url]) => (
+                url ? (
+                  <a
+                    key={key}
+                    href={url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm px-3 py-1 rounded border border-blue-300 dark:border-blue-700 text-blue-700 dark:text-blue-300 hover:bg-blue-100/60 dark:hover:bg-blue-900/40"
+                  >
+                    {key}
+                  </a>
+                ) : null
+              ))}
+              {randomPick.question.solutionLink && (
+                <a
+                  href={randomPick.question.solutionLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm px-3 py-1 rounded border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100/60 dark:hover:bg-zinc-900"
+                >
+                  solution
+                </a>
+              )}
+            </div>
+          </div>
+        )}
 
         {/* SHEET CONTENT */}
         <SheetContent
