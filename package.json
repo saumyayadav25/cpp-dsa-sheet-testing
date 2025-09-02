@@ -55,7 +55,7 @@
     "@types/next-pwa": "^5.6.9",
     "@types/node": "^20.19.11",
     "@types/nodemailer": "^6.4.17",
-    "@types/react": "^19",
+    "@types/react": "^19.1.12",
     "@types/react-dom": "^19",
     "@types/react-toastify": "^4.0.2",
     "@types/recharts": "^1.8.29",
