@@ -130,6 +130,7 @@ export default function NavbarSheet({ searchTerm, setSearchTerm}: NavbarProps) {
     { href: "/", label: "Home", isActive: pathname === "/" },
     { href: "/notes", label: "Notes", isActive: pathname === "/notes" },
     { href: "/sheet", label: "Sheet", isActive: pathname === "/sheet" },
+    { href: "/code-analyzer", label: "Code Analyzer", isActive: pathname === "/code-analyzer" },
     { href: "/progress", label: "Progress", isActive: pathname === "/progress" },
     { href: "/contributors", label: "Contributors", isActive: pathname === "/contributors" },
   ];

@@ -134,6 +134,11 @@ export default function AuthButtons() {
     { href: "/notes", label: "Notes", isActive: pathname === "/notes" },
     { href: "/sheet", label: "Sheet", isActive: pathname === "/sheet" },
     {
+      href: "/code-analyzer",
+      label: "Code Analyzer",
+      isActive: pathname === "/code-analyzer",
+    },
+    {
       href: "/progress",
       label: "Progress",
       isActive: pathname === "/progress",
