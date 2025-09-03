@@ -73,6 +73,7 @@ export default function Navbar() {
     { href: "/", label: "Home", isActive: pathname === "/" },
     { href: "/notes", label: "Notes", isActive: pathname === "/notes" },
     { href: "/sheet", label: "Sheet", isActive: pathname === "/sheet" },
+    { href: "/companies", label: "Companies", isActive: pathname === "/companies" },
     { href: "/progress", label: "Progress", isActive: pathname === "/progress" },
     { href: "/contributors", label: "Contributors", isActive: pathname === "/contributors" },
     { href: "/timequiz", label: "Timed Quiz", isActive: pathname === "/timequiz" },
