@@ -32,7 +32,7 @@ function PrivacyTermsContent() {
     setStreak(savedStreak);
 
     // Check URL parameters to set active tab
-    const tab = searchParams.get('tab');
+    const tab = searchParams?.get('tab');
     if (tab === 'terms') {
       setActiveTab('terms');
     } else {

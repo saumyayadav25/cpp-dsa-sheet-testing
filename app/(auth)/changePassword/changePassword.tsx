@@ -15,7 +15,7 @@ export default function changePassword() {
   });
 
   const searchParams = useSearchParams();
-  const email = searchParams.get("email");
+  const email = searchParams?.get("email") || "";
 
   const [loading, setLoading] = useState(false);
   const [seePass, setSeePass] = useState(false);

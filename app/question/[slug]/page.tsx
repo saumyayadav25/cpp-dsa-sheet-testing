@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 
 export default function CustomQuestionPage() {
-  const { slug } = useParams();
+  const { slug } = useParams() as { slug: string };
   const [showHint, setShowHint] = useState(false);
 
   const questionMeta: Record<string, { title: string; description: string; hint: string }> = {

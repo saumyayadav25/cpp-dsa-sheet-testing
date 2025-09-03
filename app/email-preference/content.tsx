@@ -9,8 +9,8 @@ export default function EmailPreferencePage() {
   const [status, setStatus] = useState<"loading" | "success" | "error">("loading");
 
   useEffect(() => {
-    const action = searchParams.get("action");
-    const email = searchParams.get("email");
+    const action = searchParams?.get("action");
+    const email = searchParams?.get("email");
 
     if (!email || !action) {
       setMessage("Missing email or action.");
