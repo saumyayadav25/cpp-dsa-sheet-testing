@@ -1,0 +1,230 @@
+<!-- Progress Bar by Tanmai Kavuru -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Multi-Topic Progress Tracker</title>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<style>
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #f3f4f6;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 50px;
+    gap: 30px;
+  }
+
+  .topic-card {
+    background: linear-gradient(135deg, #4f46e5, #6366f1);
+    border-radius: 20px;
+    color: white;
+    padding: 30px;
+    width: 100%;
+    max-width: 600px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    transition: transform 0.3s, box-shadow 0.3s;
+    position: relative;
+  }
+
+  .topic-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+  }
+
+  h2 { margin-bottom: 15px; font-size: 22px; text-align: center; }
+
+  .checkboxes {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .checkboxes label {
+    display: flex;
+    align-items: center;
+    background: rgba(255,255,255,0.15);
+    padding: 10px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+
+  .checkboxes input[type="checkbox"] {
+    margin-right: 10px;
+    accent-color: #34d399;
+    transform: scale(1.2);
+    cursor: pointer;
+  }
+
+  .progress-container {
+    background: rgba(255,255,255,0.25);
+    border-radius: 9999px;
+    height: 20px;
+    overflow: hidden;
+    margin-bottom: 10px;
+    position: relative;
+  }
+
+  .progress-bar {
+    height: 100%;
+    width: 0%;
+    background: #22c55e;
+    border-radius: 9999px;
+    transition: width 0.5s ease;
+    position: relative;
+  }
+
+  /* Moving sparkle effect */
+  .sparkle {
+    position: absolute;
+    top: 50%;
+    width: 10px;
+    height: 10px;
+    background: yellow;
+    border-radius: 50%;
+    box-shadow: 0 0 8px 2px yellow;
+    transform: translateY(-50%);
+    animation: sparkleMove 1s linear infinite;
+  }
+
+  @keyframes sparkleMove {
+    0% { left: 0%; opacity: 1; }
+    50% { left: 50%; opacity: 0.8; }
+    100% { left: 100%; opacity: 0; }
+  }
+
+  .progress-text {
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .celebration-icon {
+    font-size: 24px;
+    animation: bounce 1s infinite;
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+  }
+
+  .toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #22c55e;
+    color: white;
+    padding: 14px 24px;
+    border-radius: 12px;
+    font-weight: bold;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    display: none;
+    z-index: 1000;
+  }
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast">Congrats! You've completed this topic 🎉</div>
+
+<script>
+const topics = [
+  { name: "Arrays", questions: 5 },
+  { name: "Linked Lists", questions: 4 },
+  { name: "Stacks", questions: 6 }
+];
+
+const body = document.body;
+const toast = document.getElementById('toast');
+
+function showToast(message) {
+  toast.textContent = message;
+  toast.style.display = 'block';
+  setTimeout(() => { toast.style.display = 'none'; }, 3000);
+}
+
+function celebrate() {
+  confetti({
+    particleCount: 300,
+    spread: 100,
+    origin: { y: 0.6 }
+  });
+}
+
+topics.forEach((topic) => {
+  const card = document.createElement('div');
+  card.className = 'topic-card';
+  card.innerHTML = `
+    <h2>Topic: ${topic.name}</h2>
+    <div class="checkboxes">
+      ${Array.from({length: topic.questions}).map((_, i) => 
+        `<label><input type="checkbox" class="q"> Question ${i+1}</label>`).join('')}
+    </div>
+    <div class="progress-text">
+      Completed: <span class="done-count">0</span>/${topic.questions}
+    </div>
+    <div class="progress-container">
+      <div class="progress-bar"></div>
+    </div>
+  `;
+  body.appendChild(card);
+
+  const checkboxes = card.querySelectorAll('.q');
+  const doneCountEl = card.querySelector('.done-count');
+  const progressBar = card.querySelector('.progress-bar');
+  const progressText = card.querySelector('.progress-text');
+  const total = checkboxes.length;
+
+  function updateProgress() {
+    const done = Array.from(checkboxes).filter(c => c.checked).length;
+    doneCountEl.textContent = done;
+    const percent = (done / total) * 100;
+    progressBar.style.width = percent + '%';
+
+    // Remove previous icon & sparkles if any
+    const existingIcon = progressText.querySelector('.celebration-icon');
+    const existingSparkles = progressBar.querySelectorAll('.sparkle');
+    if(existingIcon) existingIcon.remove();
+    existingSparkles.forEach(s => s.remove());
+
+    // Add celebration icon & moving sparkles when completed
+    
+    if(percent === 100) {
+        celebrate();
+        showToast(`Congrats! You completed "${topic.name}" 🎉`);
+
+        const icon = document.createElement('span');
+        icon.className = 'celebration-icon';
+        icon.textContent = '🎉';
+        progressText.appendChild(icon);
+
+        // Add multiple sparkles moving along the bar
+        for(let i=0; i<3; i++) {
+            const sparkle = document.createElement('div');
+            sparkle.className = 'sparkle';
+            sparkle.style.animationDelay = `${i*0.3}s`;
+            progressBar.appendChild(sparkle);
+
+            // Remove sparkle after 3 seconds
+            setTimeout(() => sparkle.remove(), 3000);
+        }
+    }
+
+}
+
+  checkboxes.forEach(cb => cb.addEventListener('change', updateProgress));
+});
+</script>
+
+</body>
+</html>
