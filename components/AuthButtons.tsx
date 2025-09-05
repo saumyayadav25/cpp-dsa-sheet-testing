@@ -149,6 +149,11 @@ export default function AuthButtons() {
       isActive: pathname === "/contributors",
     },
     {
+      href: "/companies",
+      label: "Companies",
+      isActive: pathname === "/companies",
+    },
+    {
       href: "/timequiz",
       label: "Timed Quiz",
       isActive: pathname === "/timequiz",
