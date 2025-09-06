@@ -1,4 +1,4 @@
-"use client";
+//frontend page is to share interview experience
 import Navbar from "@/components/ui/Navbar-interview";
 import { Share } from "lucide-react";
 import React, { useState } from "react";
@@ -64,46 +64,58 @@ const Page = () => {
     }, 5000);
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
 
-    const processedRounds = interviewRounds.map((round) => ({
-      round: round.id,
-      type: round.type,
-      duration: parseInt(round.duration.toString()),
-      questions: round.questions.split("\n").filter((q) => q.trim() !== ""),
-      experience: round.experience,
-    }));
+  const processedRounds = interviewRounds.map((round) => ({
+    round: round.id,
+    type: round.type,
+    duration: parseInt(round.duration.toString()),
+    questions: round.questions.split("\n").filter((q) => q.trim() !== ""),
+    experience: round.experience,
+  }));
 
-    const finalData = {
-      company: formData.company,
-      position: formData.position,
-      author: formData.author,
-      date: formData.date,
-      duration: parseInt(formData.duration.toString()),
-      rounds: parseInt(formData.rounds.toString()),
-      difficulty: formData.difficulty,
-      outcome: formData.outcome,
-      likes: 0,
-      comments: 0,
-      tags: formData.tags
-        .split(",")
-        .map((tag) => tag.trim())
-        .filter((tag) => tag !== ""),
-      preview: formData.overallExperience.substring(0, 100) + "...",
-      interview: {
-        rounds: processedRounds,
-        overallExperience: formData.overallExperience,
-        tips: formData.tips.split("\n").filter((tip) => tip.trim() !== ""),
-        finalOutcome: formData.outcome,
-      },
-    };
-
-    console.log("Captured Form Data:", JSON.stringify(finalData, null, 2));
-    showMessage(
-      "Form data submitted successfully! Check the console for the JSON output."
-    );
+  const finalData = {
+    company: formData.company,
+    position: formData.position,
+    author: formData.author,
+    date: formData.date,
+    duration: parseInt(formData.duration.toString()),
+    rounds: parseInt(formData.rounds.toString()),
+    level: formData.difficulty.toLowerCase(), 
+    result: formData.outcome.toLowerCase(),   
+    likes: 0,
+    comments: 0,
+    tags: formData.tags
+      .split(",")
+      .map((tag) => tag.trim())
+      .filter((tag) => tag !== ""),
+    preview: formData.overallExperience.substring(0, 100) + "...",
+    interview: {
+      rounds: processedRounds,
+      overallExperience: formData.overallExperience,
+      tips: formData.tips.split("\n").filter((tip) => tip.trim() !== ""),
+      finalOutcome: formData.outcome.toLowerCase(), // fix
+    },
   };
+
+  try {
+    const res = await fetch("/api/interview-experiences", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(finalData),
+    });
+
+    const result = await res.json();
+    if (result.success) {
+      showMessage("Interview Experience shared successfully!", "success");
+    } else {
+      showMessage("Error sharing experience!", "error");
+    }
+  } catch (error) {
+    showMessage("Something went wrong!", "error");
+  }
+};
 
   return (
     <div className="bg-background min-h-screen flex flex-col items-center gap-8">
@@ -240,7 +252,8 @@ const Page = () => {
                   name="difficulty"
                   value={formData.difficulty}
                   onChange={handleFormChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border-2 
+                  focus:ring-blue-500 focus:border-blue-500 bg-card text-white"
                   required
                 >
                   <option value="">Select a difficulty</option>
@@ -261,7 +274,8 @@ const Page = () => {
                   name="outcome"
                   value={formData.outcome}
                   onChange={handleFormChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border-2 
+                  focus:ring-blue-500 focus:border-blue-500 bg-card text-white"
                   required
                 >
                   <option value="">Select an outcome</option>
@@ -269,6 +283,7 @@ const Page = () => {
                   <option value="Rejected">Rejected</option>
                   <option value="Pending">Pending</option>
                 </select>
+
               </div>
             </div>
 
