@@ -77,6 +77,16 @@ export default function AuthButtons() {
 
   const menuItems = [
     {
+      label: "Interview Experiences",
+      href: "/interview-experiences",
+      icon: "🗣️",
+    },
+    {
+      label: "Theory Cheatsheets",
+      href: "/theory-cheatsheets",
+      icon: "📒",
+    },
+    {
       label: "Track Your Cp",
       href: "/cp-tracker",
       icon: "🎯",

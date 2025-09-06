@@ -1,12 +1,12 @@
+//page to list all interview experiences
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { motion } from "framer-motion";
 import {
-  ArrowLeft,
   Users,
   Building,
   Star,
@@ -19,215 +19,34 @@ import {
   Share2,
 } from "lucide-react";
 import Navbar from "@/components/ui/Navbar-interview";
+import { useRouter } from "next/navigation";
 
 const Experiences = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCompany, setSelectedCompany] = useState<string | null>(null);
+  const [experiences, setExperiences] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const experiences = [
-    {
-      id: 1,
-      company: "Google",
-      position: "Software Engineer",
-      author: "Alex Chen",
-      date: "2 days ago",
-      duration: "45 min",
-      rounds: 4,
-      difficulty: "Hard",
-      outcome: "Selected",
-      likes: 124,
-      comments: 18,
-      tags: ["Arrays", "System Design", "Behavioral"],
-      preview:
-        "Had 4 rounds - 2 coding, 1 system design, 1 behavioral. Coding questions were medium-hard level focusing on arrays and dynamic programming...",
-      interview: {
-        rounds: [
-          {
-            round: 1,
-            type: "Coding (DSA)",
-            duration: "60 min",
-            questions: [
-              "Given an unsorted array of integers, find the length of the longest consecutive sequence in O(n) time.",
-              "Implement an LRU (Least Recently Used) cache with get and put operations in O(1).",
-            ],
-            experience:
-              "The interviewer was friendly but strict on time. They focused heavily on coding efficiency and correctness. Follow-up questions included space complexity tradeoffs.",
-          },
-          {
-            round: 2,
-            type: "Coding (Dynamic Programming + Arrays)",
-            duration: "60 min",
-            questions: [
-              "You are given an array of integers, return the maximum sum of non-adjacent elements.",
-              "Given two strings, find the length of their longest common subsequence.",
-            ],
-            experience:
-              "This was a tough round. The interviewer pushed me to optimize my DP solution and also explain the recurrence relation clearly. They wanted clean code and edge case handling.",
-          },
-          {
-            round: 3,
-            type: "System Design",
-            duration: "75 min",
-            questions: [
-              "Design a URL Shortener (like bit.ly).",
-              "Scale the system to handle 1 billion requests per day.",
-            ],
-            experience:
-              "The system design round was open-ended. I had to talk about database choices, sharding, caching, load balancing, and failure handling. They were keen on my ability to break down the problem step by step.",
-          },
-          {
-            round: 4,
-            type: "Behavioral",
-            duration: "45 min",
-            questions: [
-              "Tell me about a time you had a conflict in your team and how you resolved it.",
-              "What motivates you to work at Google?",
-              "How do you handle failures or setbacks?",
-            ],
-            experience:
-              "The behavioral round was conversational. The interviewer wanted to understand my communication style, teamwork ability, and cultural fit at Google.",
-          },
-        ],
-        overallExperience:
-          "The interview process was challenging but fair. Google placed a strong emphasis on problem-solving skills, system design fundamentals, and communication. Each interviewer was professional and encouraged me to think aloud.",
-        tips: [
-          "Practice arrays and dynamic programming problems daily.",
-          "Focus on writing clean, efficient, and bug-free code.",
-          "Learn system design basics like load balancing, caching, and database sharding.",
-          "Prepare structured answers for behavioral questions using the STAR method.",
-        ],
-        finalOutcome: "Selected",
-      },
-    },
-    {
-      id: 2,
-      company: "Microsoft",
-      position: "SDE II",
-      author: "Sarah Johnson",
-      date: "5 days ago",
-      duration: "60 min",
-      rounds: 5,
-      difficulty: "Medium",
-      outcome: "Selected",
-      likes: 89,
-      comments: 12,
-      tags: ["Trees", "Graphs", "OOP"],
-      preview:
-        "Microsoft interview was well-structured. Started with easy warm-up, then moved to tree traversal and graph problems. System design was focused on scalability...",
-    },
-    {
-      id: 3,
-      company: "Amazon",
-      position: "Software Development Engineer",
-      author: "Raj Patel",
-      date: "1 week ago",
-      duration: "50 min",
-      rounds: 6,
-      difficulty: "Hard",
-      outcome: "Rejected",
-      likes: 156,
-      comments: 24,
-      tags: ["Dynamic Programming", "Leadership Principles", "System Design"],
-      preview:
-        "Amazon's bar is really high. They focus heavily on leadership principles. Technical rounds had challenging DP problems and system design for distributed systems...",
-    },
-    {
-      id: 4,
-      company: "Meta",
-      position: "Frontend Engineer",
-      author: "Emily Davis",
-      date: "1 week ago",
-      duration: "40 min",
-      rounds: 3,
-      difficulty: "Medium",
-      outcome: "Selected",
-      likes: 67,
-      comments: 9,
-      tags: ["JavaScript", "React", "Product Sense"],
-      preview:
-        "Meta frontend interview was focused on React concepts, state management, and building scalable UI components. Product sense round was interesting...",
-    },
-    {
-      id: 5,
-      company: "Apple",
-      position: "iOS Developer",
-      author: "Mike Wilson",
-      date: "2 weeks ago",
-      duration: "55 min",
-      rounds: 4,
-      difficulty: "Medium",
-      outcome: "Selected",
-      likes: 92,
-      comments: 15,
-      tags: ["Swift", "iOS", "Design Patterns"],
-      preview:
-        "Apple interview process was smooth. Heavy focus on iOS fundamentals, Swift language features, and mobile app architecture patterns...",
-    },
-    {
-  id: 2,
-  company: "JP Morgan",
-  position: "Software Developer Intern",
-  author: "Neha Kapoor",
-  date: "5 days ago",
-  duration: "60 min",
-  rounds: 3,
-  difficulty: "Medium",
-  outcome: "Selected",
-  likes: 89,
-  comments: 12,
-  tags: ["Linked List", "Trees", "Behavioral"],
-  preview:
-    "Had 3 rounds - 2 coding and 1 behavioral. Focused mainly on data structures like linked lists and binary trees. The final round tested cultural fit and teamwork...",
-  interview: {
-    rounds: [
-      {
-        round: 1,
-        type: "Coding (Data Structures)",
-        duration: "45 min",
-        questions: [
-          "Reverse a singly linked list iteratively and recursively.",
-          "Check if a given binary tree is height-balanced.",
-        ],
-        experience:
-          "The interviewer was patient and gave hints when I got stuck. They focused on explaining my approach and reasoning rather than just the final solution.",
-      },
-      {
-        round: 2,
-        type: "Coding (Problem Solving)",
-        duration: "60 min",
-        questions: [
-          "Find the diameter of a binary tree.",
-          "Implement a function to detect if a cycle exists in a linked list.",
-        ],
-        experience:
-          "This was a slightly more difficult round. The interviewer wanted optimized solutions and asked me to explain time and space complexity in detail.",
-      },
-      {
-        round: 3,
-        type: "Behavioral",
-        duration: "45 min",
-        questions: [
-          "Tell me about a time you had to quickly learn a new technology.",
-          "Describe a challenging project you worked on and how you managed it.",
-          "Why do you want to join Microsoft?",
-        ],
-        experience:
-          "The interviewer was very friendly and focused on my teamwork, leadership, and problem-solving outside of technical skills. They were testing cultural fit and growth mindset.",
-      },
-    ],
-    overallExperience:
-      "The overall interview process was smooth and well-structured. The technical rounds tested fundamental knowledge of data structures, while the behavioral round ensured cultural alignment. It felt supportive and less stressful compared to other big tech interviews.",
-    tips: [
-      "Revise core data structures like linked lists, trees, and graphs.",
-      "Practice explaining your thought process clearly.",
-      "Prepare examples of past experiences using STAR format.",
-      "Stay calm during behavioral rounds and show enthusiasm for the company.",
-    ],
-    finalOutcome: "Selected",
-  },
-}
+  const router = useRouter();
 
-  ];
+  // Fetch from DB
+  useEffect(() => {
+    const fetchExperiences = async () => {
+      try {
+        const res = await fetch("/api/interview-experiences");
+        const data = await res.json();
+        if (data.success) {
+          setExperiences(data.data);
+        }
+      } catch (error) {
+        console.error("Error fetching experiences:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchExperiences();
+  }, []);
 
   const companies = [...new Set(experiences.map((item) => item.company))];
 
@@ -235,7 +54,7 @@ const Experiences = () => {
     const matchesSearch =
       exp.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
       exp.position.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      exp.tags.some((tag) =>
+      exp.tags?.some((tag: string) =>
         tag.toLowerCase().includes(searchTerm.toLowerCase())
       );
     const matchesCompany = !selectedCompany || exp.company === selectedCompany;
@@ -249,12 +68,12 @@ const Experiences = () => {
       : `${rounded}+ Experiences`;
 
   const getDifficultyColor = (difficulty: string) => {
-    switch (difficulty) {
-      case "Easy":
+    switch (difficulty?.toLowerCase()) {
+      case "easy":
         return "bg-green-100 text-green-800";
-      case "Medium":
+      case "medium":
         return "bg-yellow-100 text-yellow-800";
-      case "Hard":
+      case "hard":
         return "bg-red-100 text-red-800";
       default:
         return "bg-gray-100 text-gray-800";
@@ -262,10 +81,14 @@ const Experiences = () => {
   };
 
   const getOutcomeColor = (outcome: string) => {
-    return outcome === "Selected"
+    return outcome?.toLowerCase() === "selected"
       ? "bg-green-100 text-green-800"
       : "bg-red-100 text-red-800";
   };
+
+  if (loading) {
+    return <div className="text-center mt-10 text-lg">Loading experiences...</div>;
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -357,7 +180,7 @@ const Experiences = () => {
         <div className="container mx-auto">
           <div className="max-w-4xl mx-auto space-y-6">
             {filteredExperiences.map((exp) => (
-              <div className="bg-card rounded-xl shadow-sm border" key={exp.id}>
+              <div className="bg-card rounded-xl shadow-sm border" key={exp._id}>
                 <div className="p-6 pb-2">
                   <div className="flex items-start justify-between">
                     <div className="flex items-center space-x-3">
@@ -370,8 +193,7 @@ const Experiences = () => {
                         }}
                         className="relative p-4 bg-gradient-to-br from-blue-600/10 to-blue-500/5 rounded-xl text-blue-600 dark:text-blue-400 group-hover:from-blue-600/20 group-hover:to-blue-500/10 group-hover:text-blue-400 transition-all duration-300 border border-blue-600/10 dark:border-blue-600/20 group-hover:border-blue-400/20"
                       >
-                        {/* Icon glow effect */}
-                        <div className="absolute inset-0 bg-blue-500/10 rounded-xl  group-hover:opacity-100 transition-opacity duration-300 blur-md"></div>
+                        <div className="absolute inset-0 bg-blue-500/10 rounded-xl transition-opacity duration-300 blur-md"></div>
                         <div className="relative z-10">
                           <Building />
                         </div>
@@ -388,17 +210,11 @@ const Experiences = () => {
                       </div>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <Badge
-                        className={`text-xs ${getDifficultyColor(
-                          exp.difficulty
-                        )}`}
-                      >
-                        {exp.difficulty}
+                      <Badge className={`text-xs ${getDifficultyColor(exp.level)}`}>
+                        {exp.level}
                       </Badge>
-                      <Badge
-                        className={`text-xs ${getOutcomeColor(exp.outcome)}`}
-                      >
-                        {exp.outcome}
+                      <Badge className={`text-xs ${getOutcomeColor(exp.result)}`}>
+                        {exp.result}
                       </Badge>
                     </div>
                   </div>
@@ -407,20 +223,20 @@ const Experiences = () => {
                   <div className="flex items-center space-x-6 text-sm text-muted-foreground mb-4">
                     <span className="flex items-center space-x-1">
                       <Clock className="h-4 w-4" />
-                      <span>{exp.duration}</span>
+                      <span>{exp.duration} min</span>
                     </span>
-                    <span>{exp.rounds} rounds</span>
+                    <span>{exp.interview?.rounds?.length || 0} rounds</span>
                   </div>
 
                   <div className="flex flex-wrap gap-2 mb-4">
-                    {exp.tags.map((tag, idx) => (
+                    {exp.tags?.map((tag: string, idx: number) => (
                       <Badge key={idx} variant="outline" className="text-xs">
                         {tag}
                       </Badge>
                     ))}
                   </div>
 
-                  <div className="text-muted-foreground text-sm  leading-relaxed mb-6">
+                  <div className="text-muted-foreground text-sm leading-relaxed mb-6">
                     {exp.preview}
                   </div>
 
@@ -428,11 +244,11 @@ const Experiences = () => {
                     <div className="flex items-center space-x-4 text-sm text-muted-foreground">
                       <button className="flex items-center space-x-1 hover:text-experience transition-colors">
                         <Heart className="h-4 w-4" />
-                        <span>{exp.likes}</span>
+                        <span>{exp.likes || 0}</span>
                       </button>
                       <button className="flex items-center space-x-1 hover:text-experience transition-colors">
                         <MessageSquare className="h-4 w-4" />
-                        <span>{exp.comments}</span>
+                        <span>{exp.comments || 0}</span>
                       </button>
                       <button className="flex items-center space-x-1 hover:text-experience transition-colors">
                         <Share2 className="h-4 w-4" />
@@ -442,8 +258,7 @@ const Experiences = () => {
                     <Button
                       variant="outline"
                       size="sm"
-                      className="hover:/10"
-                      onPush={`/interview-experiences/${exp.id}`}
+                      onClick={() => router.push(`/interview-experiences/${exp._id}`)}
                     >
                       Read Full Experience
                     </Button>
@@ -469,6 +284,7 @@ const Experiences = () => {
             <Button
               size="lg"
               className="bg-experience/10 transition-colors duration-300 hover:bg-gray-400"
+              onClick={() => router.push("/interview-experiences/share-experience")}
             >
               <Plus className="h-5 w-5 mr-2" />
               Submit Your Experience
