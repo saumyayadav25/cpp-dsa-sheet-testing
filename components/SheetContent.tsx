@@ -11,7 +11,7 @@ import {
   SiCodingninjas,
 } from "react-icons/si";
 import { sampleTopics, type Question } from "@/data/questions";
-import { Plus, StickyNote, X } from "lucide-react";
+import { Plus, StickyNote, X, ChevronDown, ChevronRight } from "lucide-react";
 import axios from "axios";
 
 interface User {
