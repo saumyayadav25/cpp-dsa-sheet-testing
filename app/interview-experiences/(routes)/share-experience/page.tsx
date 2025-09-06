@@ -1,4 +1,5 @@
 //frontend page is to share interview experience
+"use client";
 import Navbar from "@/components/ui/Navbar-interview";
 import { Share } from "lucide-react";
 import React, { useState } from "react";
