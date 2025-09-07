@@ -4,15 +4,12 @@ import { NextResponse } from "next/server";
 import InterviewExperience from "@/models/InterviewExperience.model";
 import { connect } from "@/db/config";
 
-export async function GET(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
+export async function GET(_req: Request, context: any) {
   try {
     await connect();
-    const { id } = params;
+    const { id } = context.params;
 
-    const experience = await InterviewExperience.findById(id);
+    const experience = await InterviewExperience.findById(id).lean();
 
     if (!experience) {
       return NextResponse.json(
@@ -21,7 +18,10 @@ export async function GET(
       );
     }
 
-    return NextResponse.json({ success: true, data: experience }, { status: 200 });
+    return NextResponse.json({
+      success: true,
+      data: experience
+    });
   } catch (error) {
     console.error("Error fetching interview by ID:", error);
     return NextResponse.json(
