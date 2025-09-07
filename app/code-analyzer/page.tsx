@@ -66,10 +66,10 @@ const CodeAnalyzerPage = () => {
             id="language"
             value={language}
             onChange={e => setLanguage(e.target.value)}
-            className="border rounded px-2 py-1 w-full"
+            className="border rounded px-2 py-1 w-full bg-gray-800 text-white"
           >
             {languages.map(l => (
-              <option key={l.value} value={l.value}>{l.label}</option>
+              <option key={l.value} value={l.value} className="bg-gray-800 text-white">{l.label}</option>
             ))}
           </select>
         </div>
@@ -78,10 +78,10 @@ const CodeAnalyzerPage = () => {
           <select
             value={mode}
             onChange={e => setMode(e.target.value as 'static' | 'ai')}
-            className="border rounded px-2 py-1 w-full"
+            className="border rounded px-2 py-1 w-full bg-gray-800 text-white"
           >
-            <option value="static">Heuristics (Fast)</option>
-            <option value="ai">AI (Best, may take a few seconds)</option>
+            <option value="static" className="bg-gray-800 text-white">Heuristics (Fast)</option>
+            <option value="ai" className="bg-gray-800 text-white">AI (Best, may take a few seconds)</option>
           </select>
         </div>
       </div>
