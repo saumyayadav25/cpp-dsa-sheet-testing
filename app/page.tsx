@@ -557,7 +557,7 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen bg-white dark:bg-black text-gray-900 dark:text-white transition-colors duration-500 relative">
+    <main className="min-h-screen bg-white dark:bg-black text-gray-900 dark:text-white transition-colors duration-500 relative overflow-x-hidden">
       <ReportIssueButton />
       <Navbar />
 
@@ -589,16 +589,16 @@ export default function Home() {
           <motion.div
             variants={fadeInUp}
             custom={2}
-            className="flex justify-center"
+            className="flex justify-center w-full"
           >
             <img
               src="dsa-hero.png"
               alt="DSA Mate Hero"
-              className="w-[40vw]"
+              className="w-full max-w-xs sm:max-w-md md:max-w-lg lg:max-w-2xl xl:max-w-3xl mx-auto"
               draggable="false"
+              style={{ objectFit: 'contain' }}
             />
-
-            <div className="absolute inset-0 -z-10 bg-gradient-to-r from-blue-500/20 via-blue-500/20 to-blue-500/20 rounded-full blur-3xl scale-110"></div>
+            <div className="absolute inset-0 -z-10 bg-gradient-to-r from-blue-500/20 via-blue-500/20 to-blue-500/20 rounded-full blur-3xl scale-110 pointer-events-none"></div>
           </motion.div>
 
           <motion.div variants={fadeInUp} custom={3} className="relative z-10">
@@ -614,17 +614,17 @@ export default function Home() {
             <motion.div
               variants={fadeInUp}
               custom={4}
-              className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center px-4 sm:px-0"
+              className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center px-4 sm:px-0 w-full"
             >
               <Link
                 href="/sheet"
-                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 sm:px-8 rounded-md transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 w-full sm:w-auto text-sm sm:text-base"
+                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 sm:px-8 rounded-md transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 w-full sm:w-auto text-sm sm:text-base whitespace-nowrap"
               >
                 🚀 Go to Practice Sheet
               </Link>
               <Link
                 href="/progress"
-                className="bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white font-semibold py-3 px-6 sm:px-8 rounded-md transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 w-full sm:w-auto text-sm sm:text-base"
+                className="bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white font-semibold py-3 px-6 sm:px-8 rounded-md transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 w-full sm:w-auto text-sm sm:text-base whitespace-nowrap"
               >
                 📊 Track Your Progress
               </Link>
@@ -632,13 +632,13 @@ export default function Home() {
                 href="https://dsamate.vercel.app"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-blue-700/70 dark:bg-blue-500 backdrop-blur-sm hover:bg-blue-500 text-blue-50 dark:hover:bg-blue-900/70 border border-white/30 hover:border-white/50 font-semibold py-3 px-6 sm:px-8 hover:scale-105 rounded-md transition-all duration-300 shadow-lg hover:shadow-xl transform hover:schover:bg-blue-50 dark:hover:bg-blue-900/20ale-105 w-full sm:w-auto text-sm sm:text-base"
+                className="bg-blue-700/70 dark:bg-blue-500 backdrop-blur-sm hover:bg-blue-500 text-blue-50 dark:hover:bg-blue-900/70 border border-white/30 hover:border-white/50 font-semibold py-3 px-6 sm:px-8 rounded-md transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 w-full sm:w-auto text-sm sm:text-base whitespace-nowrap"
               >
                 🔗 Visit Original DSAMate
               </Link>
               <Link
                 href="/cp-tracker"
-                className="bg-gradient-to-r from-indigo-600 to-purple-700 hover:from-indigo-700 hover:to-purple-800 text-white font-semibold py-3 px-6 sm:px-8 rounded-md transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 w-full sm:w-auto text-sm sm:text-base"
+                className="bg-gradient-to-r from-indigo-600 to-purple-700 hover:from-indigo-700 hover:to-purple-800 text-white font-semibold py-3 px-6 sm:px-8 rounded-md transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 w-full sm:w-auto text-sm sm:text-base whitespace-nowrap"
               >
                 🎯 Track Your CP
               </Link>
@@ -649,9 +649,14 @@ export default function Home() {
         <style jsx>{`
           @media (max-width: 640px) {
             section {
-              background-size: cover;
-              background-position: center center;
-              background-attachment: scroll;
+              background-size: cover !important;
+              background-position: center center !important;
+              background-attachment: scroll !important;
+            }
+            img {
+              max-width: 90vw !important;
+              width: 100% !important;
+              height: auto !important;
             }
           }
         `}</style>
@@ -663,7 +668,7 @@ export default function Home() {
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
         variants={containerVariants}
-        className="px-6 md:px-20 py-20 relative"
+        className="px-4 sm:px-6 md:px-20 py-20 relative"
       >
         {/* Subtle background decoration */}
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-blue-50/30 to-transparent dark:via-blue-900/10 pointer-events-none"></div>
@@ -680,7 +685,7 @@ export default function Home() {
 
           <motion.div
             variants={containerVariants}
-            className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8"
+            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 md:gap-8"
           >
             {[
               {
@@ -750,7 +755,7 @@ export default function Home() {
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
         viewport={{ once: true }}
-        className="px-6 md:px-20 py-20 relative overflow-hidden"
+        className="px-4 sm:px-6 md:px-20 py-20 relative overflow-hidden"
       >
         {/* Background decoration */}
         <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 via-transparent to-cyan-50/50 dark:from-blue-900/20 dark:via-transparent dark:to-cyan-900/20 pointer-events-none"></div>
@@ -792,7 +797,7 @@ export default function Home() {
         whileInView="visible"
         viewport={{ once: true, margin: "-50px" }}
         variants={containerVariants}
-        className="px-6 md:px-20 py-20 relative"
+        className="px-4 sm:px-6 md:px-20 py-20 relative"
       >
         {/* Background decoration */}
         <div className="absolute inset-0 bg-gradient-to-b from-gray-50/50 to-white/50 dark:from-gray-900/50 dark:to-black/50 pointer-events-none"></div>
@@ -809,7 +814,7 @@ export default function Home() {
 
           <motion.div
             variants={containerVariants}
-            className="grid gap-8 md:grid-cols-2 lg:grid-cols-3"
+            className="grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
           >
             {[
               {
@@ -891,7 +896,7 @@ export default function Home() {
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
         viewport={{ once: true }}
-        className="px-6 md:px-20 py-20 relative overflow-hidden"
+        className="px-4 sm:px-6 md:px-20 py-20 relative overflow-hidden"
       >
         {/* Background decoration */}
         <div className="absolute inset-0 bg-gradient-to-r from-blue-50/30 via-transparent to-blue-50/30 dark:from-blue-900/10 dark:via-transparent dark:to-blue-900/10 pointer-events-none"></div>
@@ -924,7 +929,7 @@ export default function Home() {
         whileInView="visible"
         viewport={{ once: true, margin: "-50px" }}
         variants={containerVariants}
-        className="px-6 md:px-20 py-20 relative"
+        className="px-4 sm:px-6 md:px-20 py-20 relative"
       >
         {/* Background decoration */}
         <div className="absolute inset-0 bg-gradient-to-b from-gray-50/50 to-white/50 dark:from-gray-900/50 dark:to-black/50 pointer-events-none"></div>
@@ -1255,7 +1260,7 @@ export default function Home() {
         whileInView="visible"
         viewport={{ once: true, margin: "-50px" }}
         variants={containerVariants}
-        className="px-6 md:px-20 py-20 relative"
+        className="px-4 sm:px-6 md:px-20 py-20 relative"
       >
         {/* Background decoration */}
         <div className="absolute inset-0 bg-gradient-to-b from-blue-50/30 via-transparent to-blue-50/30 dark:from-blue-900/10 dark:via-transparent dark:to-blue-900/10 pointer-events-none"></div>

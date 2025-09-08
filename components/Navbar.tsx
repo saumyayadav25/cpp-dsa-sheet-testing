@@ -98,92 +98,129 @@ export default function Navbar() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
       className={`fixed top-0 left-0 w-full z-50 h-16 flex items-center 
-        transition-all duration-300 border-b 
-        ${isScrolled ? "border-white/10" : "border-gray-800/50"} 
-        bg-background px-4 sm:px-10`}
+      transition-all duration-300 border-b 
+      ${isScrolled ? "border-white/10" : "border-gray-800/50"} 
+      bg-background px-4 lg:px-10`}
     >
-      <div className="max-w-7xl w-full mx-auto flex items-center justify-between gap-4">
+      <div className="max-w-7xl w-full mx-auto flex items-center justify-between gap-2 lg:gap-4">
 
-        {/* Logo */}
-        <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 1.0 }}>
-          <Link
-            href="/"
-            className="group relative text-xl sm:text-2xl font-bold text-foreground flex-shrink-0"
+      {/* Logo */}
+      <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 1.0 }} className="flex-shrink-0">
+        <Link
+        href="/"
+        className="group relative text-lg md:text-xl lg:text-2xl font-bold text-foreground"
+        >
+        <span className="relative z-10">
+          DSA
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-blue-500">
+          Mate
+          </span>{" "}
+          <span className="hidden sm:inline">Template</span>
+        </span>
+        </Link>
+      </motion.div>
+
+      {/* Desktop Links */}
+      <div className="hidden lg:flex items-center gap-4 xl:gap-6 text-foreground overflow-x-auto">
+
+        {/* Streak Icon */}
+        <motion.div
+        title={`Streak: ${streak} day${streak === 1 ? "" : "s"}`}
+        variants={streakVariants}
+        animate={streak > 0 ? "active" : "idle"}
+        transition={{
+          duration: 0.6,
+          repeat: streak > 0 ? Infinity : 0,
+          repeatDelay: 3,
+        }}
+        whileHover={{ scale: 1.1 }}
+        className="cursor-pointer flex-shrink-0"
+        >
+        <div
+          className={`flex items-center gap-2 px-2 xl:px-3 py-2 rounded-xl transition-all duration-300 ${streak > 0
+            ? "text-orange-400"
+            : "text-gray-400 opacity-50 hover:opacity-75"
+          }`}
+        >
+          <FaFire className="text-base xl:text-lg" />
+          {streak > 0 && (
+          <motion.span
+            className="text-xs xl:text-sm font-bold"
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ type: "spring", stiffness: 500, damping: 25 }}
           >
-            <span className="relative z-10">
-              DSA
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-blue-500">
-                Mate
-              </span>{" "}
-              Template
-            </span>
-          </Link>
+            {streak}
+          </motion.span>
+          )}
+        </div>
         </motion.div>
 
-        {/* Desktop Links */}
-        <div className="hidden sm:flex items-center gap-6 text-foreground flex-nowrap">
+        {/* Navigation Links */}
+        {navLinks.map((link) => (
+        <Link
+          key={link.href}
+          href={link.href}
+          className={`relative px-2 xl:px-3 py-2 rounded-lg whitespace-nowrap transition-all duration-300 text-sm xl:text-base flex-shrink-0 ${link.isActive
+            ? "text-blue-400 bg-blue-500/10 border border-blue-400/30"
+            : "text-foreground hover:text-blue-400"
+          }`}
+        >
+          <span>{link.label}</span>
+        </Link>
+        ))}
 
-          {/* Streak Icon */}
-          <motion.div
-            title={`Streak: ${streak} day${streak === 1 ? "" : "s"}`}
-            variants={streakVariants}
-            animate={streak > 0 ? "active" : "idle"}
-            transition={{
-              duration: 0.6,
-              repeat: streak > 0 ? Infinity : 0,
-              repeatDelay: 3,
-            }}
-            whileHover={{ scale: 1.1 }}
-            className="cursor-pointer"
-          >
-            <div
-              className={`flex items-center gap-2 px-3 py-2 rounded-xl transition-all duration-300 ${streak > 0
-                  ? "text-orange-400"
-                  : "text-gray-400 opacity-50 hover:opacity-75"
-                }`}
-            >
-              <FaFire className="text-lg" />
-              {streak > 0 && (
-                <motion.span
-                  className="text-sm font-bold"
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ type: "spring", stiffness: 500, damping: 25 }}
-                >
-                  {streak}
-                </motion.span>
-              )}
-            </div>
-          </motion.div>
-
-          {/* Navigation Links */}
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={`relative px-3 py-2 rounded-lg whitespace-nowrap transition-all duration-300 ${link.isActive
-                  ? "text-blue-400 bg-blue-500/10 border border-blue-400/30"
-                  : "text-foreground hover:text-blue-400"
-
-              }`}
-              // Added passHref and changed children to span to avoid nested anchor
-              
-
-            >
-              <span>{link.label}</span>
-            </Link>
-          ))}
-
-          {/* Right Icons */}
-          <AuthButtons />
-          <ModeToggle />
+        {/* Right Icons */}
+        <div className="flex items-center gap-2 xl:gap-3 flex-shrink-0">
+        <AuthButtons />
+        <ModeToggle />
         </div>
+      </div>
 
-        {/* Mobile Right Section */}
-        <div className="sm:hidden flex items-center gap-3">
-          <ModeToggle />
-          <AuthButtons />
+      {/* Tablet View (md to lg) */}
+      <div className="hidden md:flex lg:hidden items-center gap-3">
+        {/* Streak Icon */}
+        <motion.div
+        title={`Streak: ${streak} day${streak === 1 ? "" : "s"}`}
+        variants={streakVariants}
+        animate={streak > 0 ? "active" : "idle"}
+        transition={{
+          duration: 0.6,
+          repeat: streak > 0 ? Infinity : 0,
+          repeatDelay: 3,
+        }}
+        whileHover={{ scale: 1.1 }}
+        className="cursor-pointer"
+        >
+        <div
+          className={`flex items-center gap-1 px-2 py-1 rounded-lg transition-all duration-300 ${streak > 0
+            ? "text-orange-400"
+            : "text-gray-400 opacity-50"
+          }`}
+        >
+          <FaFire className="text-sm" />
+          {streak > 0 && (
+          <span className="text-xs font-bold">{streak}</span>
+          )}
         </div>
+        </motion.div>
+        
+        <ModeToggle />
+        <AuthButtons />
+      </div>
+
+      {/* Mobile Right Section */}
+      <div className="md:hidden flex items-center gap-2">
+        {/* Mobile Streak */}
+        {streak > 0 && (
+        <div className="flex items-center gap-1 text-orange-400">
+          <FaFire className="text-sm" />
+          <span className="text-xs font-bold">{streak}</span>
+        </div>
+        )}
+        <ModeToggle />
+        <AuthButtons />
+      </div>
       </div>
     </motion.nav>
   );
