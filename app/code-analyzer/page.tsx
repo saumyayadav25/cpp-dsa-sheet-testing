@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useState } from 'react';
 import { analyzeWithOpenAI } from '@/lib/openaiAnalyze';
 
@@ -10,7 +9,6 @@ const languages = [
 ];
 
 function estimateComplexity(code: string, language: string) {
-  // Simple heuristics for demonstration
   let time = 'O(1)';
   let space = 'O(1)';
   const loopPatterns = [/for\s*\(/g, /while\s*\(/g, /for\s+\w+\s*:/g];
@@ -27,7 +25,6 @@ function estimateComplexity(code: string, language: string) {
   if (/\bint\s+\w+\[.*\]/.test(code) || /\bvector<.*>\s+\w+/.test(code)) space = 'O(n) (array/vector detected)';
   return { time, space };
 }
-
 
 const CodeAnalyzerPage = () => {
   const [code, setCode] = useState('');
@@ -66,7 +63,7 @@ const CodeAnalyzerPage = () => {
             id="language"
             value={language}
             onChange={e => setLanguage(e.target.value)}
-            className="border rounded px-2 py-1 w-full"
+            className="border rounded px-2 py-1 w-full dropdown-visible"
           >
             {languages.map(l => (
               <option key={l.value} value={l.value}>{l.label}</option>
@@ -78,7 +75,7 @@ const CodeAnalyzerPage = () => {
           <select
             value={mode}
             onChange={e => setMode(e.target.value as 'static' | 'ai')}
-            className="border rounded px-2 py-1 w-full"
+            className="border rounded px-2 py-1 w-full dropdown-visible"
           >
             <option value="static">Heuristics (Fast)</option>
             <option value="ai">AI (Best, may take a few seconds)</option>
@@ -105,7 +102,7 @@ const CodeAnalyzerPage = () => {
       </button>
       {error && <div className="text-red-600">{error}</div>}
       {result && (
-        <div className="bg-white shadow rounded p-4 mt-4">
+        <div className="bg-white shadow rounded p-4 mt-4 dark:bg-gray-800">
           <h2 className="text-lg font-semibold mb-2">Estimated Complexity</h2>
           <div className="flex flex-col gap-1 mb-2">
             <span><strong>Time Complexity:</strong> {result.time}</span>
@@ -113,12 +110,22 @@ const CodeAnalyzerPage = () => {
           </div>
           {result.explanation && (
             <details className="mt-2 cursor-pointer">
-              <summary className="font-medium text-blue-700">Show AI Explanation</summary>
-              <pre className="whitespace-pre-wrap text-sm mt-2 bg-gray-50 p-2 rounded border overflow-x-auto">{result.explanation}</pre>
+              <summary className="font-medium text-blue-700 dark:text-blue-400">Show AI Explanation</summary>
+              <pre className="whitespace-pre-wrap text-sm mt-2 bg-gray-50 p-2 rounded border overflow-x-auto dark:bg-gray-900 dark:text-gray-100">{result.explanation}</pre>
             </details>
           )}
         </div>
       )}
+      <style jsx>{`
+        .dropdown-visible option {
+          color: black;
+          background-color: white;
+        }
+        .dark .dropdown-visible option {
+          color: white;
+          background-color: #374151;
+        }
+      `}</style>
     </div>
   );
 };
