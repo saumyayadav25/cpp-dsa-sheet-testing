@@ -13,6 +13,7 @@ import {
 import { sampleTopics, type Question } from "@/data/questions";
 import { Plus, StickyNote, X } from "lucide-react";
 import axios from "axios";
+import ProgressTracker from "./ProgressTracker";
 
 interface User {
   _id: string;
@@ -355,7 +356,12 @@ export default function SheetContent({
             >
               <span className="text-lg font-medium text-gray-900 dark:text-white">{topic.name}</span>
               <span className="text-sm text-gray-500 dark:text-gray-400 font-medium px-2 py-2 ml-auto">
-                {completed ? "🎉 Completed" : `✅ ${solvedQ}/${totalQ} solved`}
+              {<ProgressTracker
+                  totalQuestions={totalQ}
+                  solvedQuestions={solvedQ}
+                  topicName={topic.name}
+                  isCompleted={completed}
+                />}
               </span>
               <svg
                 className={`h-5 w-5 transition-transform ${openTopics.includes(topic.id) ? "rotate-180" : ""}`}
@@ -571,4 +577,4 @@ export default function SheetContent({
     </>
   );
 }
-  
+ 
