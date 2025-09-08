@@ -44,19 +44,19 @@
   --animate-marquee: marquee var(--duration) infinite linear;
   --animate-marquee-vertical: marquee-vertical var(--duration) linear infinite;
   @keyframes marquee {
-  from {
-    transform: translateX(0);
+    from {
+      transform: translateX(0);
     }
-  to {
-    transform: translateX(calc(-100% - var(--gap)));
+    to {
+      transform: translateX(calc(-100% - var(--gap)));
     }
   }
   @keyframes marquee-vertical {
-  from {
-    transform: translateY(0);
+    from {
+      transform: translateY(0);
     }
-  to {
-    transform: translateY(calc(-100% - var(--gap)));
+    to {
+      transform: translateY(calc(-100% - var(--gap)));
     }
   }
 }
@@ -207,6 +207,39 @@
   }
 }
 
+/* Navbar spacing utilities for fixed navbar */
+.navbar-offset {
+  padding-top: 5.5rem; /* 88px - accounts for py-4 (32px*2) + content height on mobile */
+}
+
+@media (min-width: 640px) {
+  .navbar-offset {
+    padding-top: 6.5rem; /* 104px - accounts for py-5 (40px*2) + content height on larger screens */
+  }
+}
+
+/* Specific utility for main page hero section with main Navbar (h-16) */
+.hero-navbar-offset {
+  padding-top: 5rem; /* 80px for mobile */
+}
+
+@media (min-width: 640px) {
+  .hero-navbar-offset {
+    padding-top: 6rem; /* 96px for larger screens */
+  }
+}
+
+/* Specific utility for sheet page with NavbarSheet (dynamic height) */
+.sheet-navbar-offset {
+  padding-top: 6rem; /* 96px for mobile - extra spacing for NavbarSheet */
+}
+
+@media (min-width: 640px) {
+  .sheet-navbar-offset {
+    padding-top: 7rem; /* 112px for larger screens */
+  }
+}
+
 /* Custom Scrollbar Styles */
 .custom-scrollbar {
   scrollbar-width: thin;
@@ -223,30 +256,50 @@
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.3), rgba(147, 51, 234, 0.3));
+  background: linear-gradient(
+    135deg,
+    rgba(59, 130, 246, 0.3),
+    rgba(147, 51, 234, 0.3)
+  );
   border-radius: 10px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   transition: all 0.3s ease;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.6), rgba(147, 51, 234, 0.6));
+  background: linear-gradient(
+    135deg,
+    rgba(59, 130, 246, 0.6),
+    rgba(147, 51, 234, 0.6)
+  );
   border: 1px solid rgba(255, 255, 255, 0.2);
   box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:active {
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.8), rgba(147, 51, 234, 0.8));
+  background: linear-gradient(
+    135deg,
+    rgba(59, 130, 246, 0.8),
+    rgba(147, 51, 234, 0.8)
+  );
 }
 
 /* Dark mode adjustments */
 .dark .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.4), rgba(147, 51, 234, 0.4));
+  background: linear-gradient(
+    135deg,
+    rgba(59, 130, 246, 0.4),
+    rgba(147, 51, 234, 0.4)
+  );
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.7), rgba(147, 51, 234, 0.7));
+  background: linear-gradient(
+    135deg,
+    rgba(59, 130, 246, 0.7),
+    rgba(147, 51, 234, 0.7)
+  );
   border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 0 10px rgba(59, 130, 246, 0.4);
 }
