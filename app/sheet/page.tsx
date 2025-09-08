@@ -1,21 +1,21 @@
-'use client';
+"use client";
 
-import Navbar from '@/components/NavbarSheet';
-import SheetContent from '@/components/SheetContent';
-import { sampleTopics, type Question } from '@/data/questions';
-import POTD from '@/components/POTD';
-import { getPOTD } from '@/utils/getPOTD';
-import { useState, useEffect } from 'react';
-import TestimonialPrompt from '@/components/TestimonialPrompt';
-import ReportIssueButton from '@/components/ReportIssueButton';
-import ProgressSummary from '@/components/ProgressSummary';
+import Navbar from "@/components/NavbarSheet";
+import SheetContent from "@/components/SheetContent";
+import { sampleTopics, type Question } from "@/data/questions";
+import POTD from "@/components/POTD";
+import { getPOTD } from "@/utils/getPOTD";
+import { useState, useEffect } from "react";
+import TestimonialPrompt from "@/components/TestimonialPrompt";
+import ReportIssueButton from "@/components/ReportIssueButton";
+import ProgressSummary from "@/components/ProgressSummary";
 
 export default function SheetPage() {
-  const [difficultyFilter, setDifficultyFilter] = useState('');
-  const [statusFilter, setStatusFilter] = useState('');
-  const [revisionFilter, setRevisionFilter] = useState('');
-  const [platformFilter, setPlatformFilter] = useState('');
-  const [companyFilter, setCompanyFilter] = useState('');
+  const [difficultyFilter, setDifficultyFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
+  const [revisionFilter, setRevisionFilter] = useState("");
+  const [platformFilter, setPlatformFilter] = useState("");
+  const [companyFilter, setCompanyFilter] = useState("");
 
   const [randomPick, setRandomPick] = useState<{
     topicName: string;
@@ -29,23 +29,23 @@ export default function SheetPage() {
     const potd = getPOTD();
     setPotd(potd);
 
-    const savedStreak = parseInt(localStorage.getItem('potd_streak') || '0');
+    const savedStreak = parseInt(localStorage.getItem("potd_streak") || "0");
     setStreak(savedStreak);
   }, []);
 
   const updateStreak = () => {
-    const updatedStreak = parseInt(localStorage.getItem('potd_streak') || '0');
+    const updatedStreak = parseInt(localStorage.getItem("potd_streak") || "0");
     setStreak(updatedStreak);
   };
 
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
 
   const resetFilters = () => {
-    setDifficultyFilter('');
-    setStatusFilter('');
-    setRevisionFilter('');
-    setPlatformFilter('');
-    setCompanyFilter('');
+    setDifficultyFilter("");
+    setStatusFilter("");
+    setRevisionFilter("");
+    setPlatformFilter("");
+    setCompanyFilter("");
   };
 
   const pickRandomQuestion = () => {
@@ -65,15 +65,15 @@ export default function SheetPage() {
     setRandomPick(all[idx]);
     // Smooth scroll to the card for visibility on mobile
     setTimeout(() => {
-      const el = document.getElementById('random-question-card');
-      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      const el = document.getElementById("random-question-card");
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
     }, 0);
   };
 
   return (
     <>
       <Navbar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
-      <main className="min-h-screen bg-white dark:bg-background text-gray-900 dark:text-white px-4 md:px-12 py-24 transition-colors duration-300">
+      <main className="min-h-screen bg-white dark:bg-background text-gray-900 dark:text-white px-4 md:px-12 sheet-navbar-offset pb-24 transition-colors duration-300">
         <ReportIssueButton />
 
         {/* Progress Summary */}
@@ -81,15 +81,28 @@ export default function SheetPage() {
 
         {/* HERO SECTION */}
         <div className="mb-8 text-center">
-          <h1 className="text-3xl md:text-4xl font-bold mb-4">DSA Practice Problems</h1>
+          <h1 className="text-3xl md:text-4xl font-bold mb-4">
+            DSA Practice Problems
+          </h1>
           <p className="text-sm md:text-base text-gray-600 dark:text-gray-400">
-            <strong>Note:</strong> Questions marked with the (for practice) tag do not include the exact solutions. The provided code solutions in this section serve as hints or are solutions to similar problems from platforms like{' '}
-            <span className="text-blue-600 dark:text-blue-400">LeetCode</span>,{' '}
-            <span className="text-green-600 dark:text-green-400">GeeksforGeeks</span>, or{' '}
-            <span className="text-yellow-500 dark:text-yellow-400">HackerRank</span> ...
+            <strong>Note:</strong> Questions marked with the (for practice) tag
+            do not include the exact solutions. The provided code solutions in
+            this section serve as hints or are solutions to similar problems
+            from platforms like{" "}
+            <span className="text-blue-600 dark:text-blue-400">LeetCode</span>,{" "}
+            <span className="text-green-600 dark:text-green-400">
+              GeeksforGeeks
+            </span>
+            , or{" "}
+            <span className="text-yellow-500 dark:text-yellow-400">
+              HackerRank
+            </span>{" "}
+            ...
           </p>
           <div className="mt-4 bg-gray-200 dark:bg-gray-800 border border-gray-400 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg px-4 py-3 inline-block text-sm md:text-base transition-colors duration-300">
-            ⚠️ Company-wise filtering is currently in progress. You might see incomplete or missing tags. Contribute company-specific questions via{' '}
+            ⚠️ Company-wise filtering is currently in progress. You might see
+            incomplete or missing tags. Contribute company-specific questions
+            via{" "}
             <a
               href="https://forms.gle/8WccErg3TBFTMPkj9"
               className="underline text-gray-900 dark:text-gray-100 hover:text-gray-700 dark:hover:text-gray-300 transition-colors duration-200"
@@ -233,12 +246,19 @@ export default function SheetPage() {
           >
             <div className="flex items-start justify-between gap-3">
               <div>
-                <div className="text-xs uppercase tracking-wide text-blue-700 dark:text-blue-300 mb-1">Random Pick</div>
+                <div className="text-xs uppercase tracking-wide text-blue-700 dark:text-blue-300 mb-1">
+                  Random Pick
+                </div>
                 <div className="text-lg font-semibold text-gray-900 dark:text-white">
                   {randomPick.question.title}
                 </div>
                 <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                  Topic: <span className="font-medium">{randomPick.topicName}</span> · Difficulty: <span className="font-medium capitalize">{randomPick.question.difficulty}</span>
+                  Topic:{" "}
+                  <span className="font-medium">{randomPick.topicName}</span> ·
+                  Difficulty:{" "}
+                  <span className="font-medium capitalize">
+                    {randomPick.question.difficulty}
+                  </span>
                 </div>
               </div>
               <button
@@ -250,19 +270,20 @@ export default function SheetPage() {
             </div>
             {/* Links */}
             <div className="mt-3 flex flex-wrap gap-2">
-              {Object.entries(randomPick.question.links || {}).map(([key, url]) => (
-                url ? (
-                  <a
-                    key={key}
-                    href={url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-sm px-3 py-1 rounded border border-blue-300 dark:border-blue-700 text-blue-700 dark:text-blue-300 hover:bg-blue-100/60 dark:hover:bg-blue-900/40"
-                  >
-                    {key}
-                  </a>
-                ) : null
-              ))}
+              {Object.entries(randomPick.question.links || {}).map(
+                ([key, url]) =>
+                  url ? (
+                    <a
+                      key={key}
+                      href={url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm px-3 py-1 rounded border border-blue-300 dark:border-blue-700 text-blue-700 dark:text-blue-300 hover:bg-blue-100/60 dark:hover:bg-blue-900/40"
+                    >
+                      {key}
+                    </a>
+                  ) : null
+              )}
               {randomPick.question.solutionLink && (
                 <a
                   href={randomPick.question.solutionLink}

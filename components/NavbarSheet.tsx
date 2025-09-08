@@ -51,9 +51,11 @@ const HamburgerIcon = ({ isOpen }: { isOpen: boolean }) => (
   </div>
 );
 
-export default function NavbarSheet({ searchTerm, setSearchTerm}: NavbarProps) {
+export default function NavbarSheet({
+  searchTerm,
+  setSearchTerm,
+}: NavbarProps) {
   const [showMobileSearch, setShowMobileSearch] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -61,49 +63,43 @@ export default function NavbarSheet({ searchTerm, setSearchTerm}: NavbarProps) {
   const pathname = usePathname();
 
   const toggleMobileSearch = () => {
-    if (isMobileMenuOpen) setIsMobileMenuOpen(false);
     setShowMobileSearch((v) => !v);
   };
-  const toggleMobileMenu = () => {
-    if (showMobileSearch) setShowMobileSearch(false);
-    setIsMobileMenuOpen((v) => !v);
-  };
-    const [streak, setStreak] = useState(0);
-      const [user, setUser] = useState<User | null>(null);
-  
-    // Check auth once
-    useEffect(() => {
-      const checkAuth = async () => {
-        try {
-          const res = await axios.get("/api/check-auth");
-          if (res.status === 200) {
-            setUser(res.data?.user);
-          }
-        } catch (err: any) {
-          if (err.response?.status === 401 || err.response?.status === 503) {
-            setUser(null);
-          } else {
-            setUser(null);
-          }
+  const [streak, setStreak] = useState(0);
+  const [user, setUser] = useState<User | null>(null);
+
+  // Check auth once
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const res = await axios.get("/api/check-auth");
+        if (res.status === 200) {
+          setUser(res.data?.user);
         }
-      };
-      checkAuth();
-    }, []);
-    useEffect(()=>{
-       if (!user?._id) return;
-      const fetchStreak = async () => {
-        try {
-          console.log("Fetching streak for user:", user?._id);
-          const response = await axios.get(`/api/progress/${user?._id}`);
-          console.log("Streak response:", response.data.progress.streakCount);
-          setStreak(response.data.progress.streakCount);
-        } catch (error) {
-          console.log(error);
+      } catch (err: any) {
+        if (err.response?.status === 401 || err.response?.status === 503) {
+          setUser(null);
+        } else {
+          setUser(null);
         }
-      };
-      fetchStreak();
-    }, [user?._id]);
-  
+      }
+    };
+    checkAuth();
+  }, []);
+  useEffect(() => {
+    if (!user?._id) return;
+    const fetchStreak = async () => {
+      try {
+        console.log("Fetching streak for user:", user?._id);
+        const response = await axios.get(`/api/progress/${user?._id}`);
+        console.log("Streak response:", response.data.progress.streakCount);
+        setStreak(response.data.progress.streakCount);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchStreak();
+  }, [user?._id]);
 
   useEffect(() => {
     let ticking = false;
@@ -130,10 +126,26 @@ export default function NavbarSheet({ searchTerm, setSearchTerm}: NavbarProps) {
     { href: "/", label: "Home", isActive: pathname === "/" },
     { href: "/notes", label: "Notes", isActive: pathname === "/notes" },
     { href: "/sheet", label: "Sheet", isActive: pathname === "/sheet" },
-    { href: "/code-analyzer", label: "Code Analyzer", isActive: pathname === "/code-analyzer" },
-    { href: "/progress", label: "Progress", isActive: pathname === "/progress" },
-    { href: "/contributors", label: "Contributors", isActive: pathname === "/contributors" },
-    { href: "/companies", label: "Companies", isActive: pathname === "/companies" },
+    {
+      href: "/code-analyzer",
+      label: "Code Analyzer",
+      isActive: pathname === "/code-analyzer",
+    },
+    {
+      href: "/progress",
+      label: "Progress",
+      isActive: pathname === "/progress",
+    },
+    {
+      href: "/contributors",
+      label: "Contributors",
+      isActive: pathname === "/contributors",
+    },
+    {
+      href: "/companies",
+      label: "Companies",
+      isActive: pathname === "/companies",
+    },
   ];
 
   const streakVariants = {
@@ -288,7 +300,9 @@ export default function NavbarSheet({ searchTerm, setSearchTerm}: NavbarProps) {
                 >
                   <span
                     className={`relative z-10 ${
-                      link.isActive ? "text-blue-400" : "text-gray-900 dark:text-white hover:text-blue-400"
+                      link.isActive
+                        ? "text-blue-400"
+                        : "text-gray-900 dark:text-white hover:text-blue-400"
                     }`}
                   >
                     {link.label}
@@ -298,7 +312,11 @@ export default function NavbarSheet({ searchTerm, setSearchTerm}: NavbarProps) {
                       layoutId="activeTab"
                       className="absolute inset-0 bg-blue-500/10 rounded-lg border border-blue-400/30"
                       initial={false}
-                      transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 500,
+                        damping: 30,
+                      }}
                     />
                   )}
                 </Link>
@@ -310,6 +328,23 @@ export default function NavbarSheet({ searchTerm, setSearchTerm}: NavbarProps) {
           <div className="shrink-0">
             <AuthButtons />
           </div>
+        </div>
+
+        {/* Mobile Right Section */}
+        <div className="sm:hidden flex items-center gap-3">
+          {/* Mobile Search Button */}
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={toggleMobileSearch}
+            className="p-2 rounded-lg hover:bg-white/10 transition-colors"
+            aria-label="Toggle search"
+          >
+            <FiSearch className="text-xl text-foreground" />
+          </motion.button>
+
+          {/* Auth Buttons with hamburger menu */}
+          <AuthButtons />
         </div>
       </div>
 
@@ -351,29 +386,7 @@ export default function NavbarSheet({ searchTerm, setSearchTerm}: NavbarProps) {
       </AnimatePresence>
 
       {/* Mobile Nav Links */}
-      <AnimatePresence>
-        {isMobileMenuOpen && (
-          <motion.nav
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            className="sm:hidden flex flex-col gap-2 mt-4 rounded-lg bg-background/90 backdrop-blur-md border border-white/20 px-4 py-4 shadow-lg"
-          >
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`block py-2 px-3 rounded-md transition-colors ${
-                  link.isActive ? "bg-blue-500/20 text-blue-400" : "hover:bg-white/10"
-                }`}
-                onClick={toggleMobileMenu}
-              >
-                {link.label}
-              </Link>
-            ))}
-          </motion.nav>
-        )}
-      </AnimatePresence>
+      {/* Navigation handled by AuthButtons hamburger menu */}
     </motion.nav>
   );
 }
