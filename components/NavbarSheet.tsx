@@ -33,6 +33,7 @@ export default function NavbarSheet({
 
   const searchInputRef = useRef<HTMLInputElement>(null);
   const pathname = usePathname();
+  const isSheetPage = pathname ? pathname.startsWith("/sheet") : false;
 
   const [streak, setStreak] = useState(0);
   const [user, setUser] = useState<User | null>(null);
@@ -163,52 +164,56 @@ export default function NavbarSheet({
               </span>
             </Link>
           </motion.div>
-          {/* Desktop Search Icon Only */}
-          <button
-            className="hidden lg:flex items-center justify-center p-2 rounded-xl bg-white/10 hover:bg-white/20 transition-colors ml-2"
-            aria-label="Open search bar"
-            onClick={() => setShowMobileSearch((v) => !v)}
-            style={{ minWidth: 44 }}
-          >
-            <FiSearch className="text-xl text-foreground" />
-          </button>
-        </div>
-        {/* Desktop Search Bar Expansion (below navbar) */}
-        <AnimatePresence>
-          {showMobileSearch && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              className="hidden lg:block w-full absolute left-0 top-full z-40"
+          {/* Desktop Search Icon Only (sheet page only) */}
+          {isSheetPage && (
+            <button
+              className="hidden lg:flex items-center justify-center p-2 rounded-xl bg-white/10 hover:bg-white/20 transition-colors ml-2"
+              aria-label="Open search bar"
+              onClick={() => setShowMobileSearch((v) => !v)}
+              style={{ minWidth: 44 }}
             >
-              <div className="max-w-2xl mx-auto mt-2 px-4">
-                <div className="backdrop-blur-xl bg-white/10 rounded-2xl shadow-xl border border-white/20 overflow-hidden px-5 py-4">
-                  <div className="flex items-center">
-                    <FiSearch className="mr-3 text-gray-400" />
-                    <input
-                      ref={searchInputRef}
-                      type="text"
-                      placeholder="Search questions..."
-                      value={searchTerm ?? ""}
-                      onChange={(e) => setSearchTerm?.(e.target.value)}
-                      className="bg-transparent focus:outline-none text-sm w-full text-white placeholder-gray-400"
-                    />
-                    {searchTerm && (
-                      <button
-                        onClick={() => setSearchTerm?.("")}
-                        className="ml-2 p-1 rounded-full hover:bg-white/20 transition-colors"
-                        aria-label="Clear search"
-                      >
-                        <FiX className="text-gray-400" />
-                      </button>
-                    )}
+              <FiSearch className="text-xl text-foreground" />
+            </button>
+          )}
+        </div>
+        {/* Desktop Search Bar Expansion (sheet page only) */}
+        {isSheetPage && (
+          <AnimatePresence>
+            {showMobileSearch && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                className="hidden lg:block w-full absolute left-0 top-full z-40"
+              >
+                <div className="max-w-2xl mx-auto mt-2 px-4">
+                  <div className="backdrop-blur-xl bg-white/10 rounded-2xl shadow-xl border border-white/20 overflow-hidden px-5 py-4">
+                    <div className="flex items-center">
+                      <FiSearch className="mr-3 text-gray-400" />
+                      <input
+                        ref={searchInputRef}
+                        type="text"
+                        placeholder="Search questions..."
+                        value={searchTerm ?? ""}
+                        onChange={(e) => setSearchTerm?.(e.target.value)}
+                        className="bg-transparent focus:outline-none text-sm w-full text-white placeholder-gray-400"
+                      />
+                      {searchTerm && (
+                        <button
+                          onClick={() => setSearchTerm?.("")}
+                          className="ml-2 p-1 rounded-full hover:bg-white/20 transition-colors"
+                          aria-label="Clear search"
+                        >
+                          <FiX className="text-gray-400" />
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        )}
 
         {/* Desktop Links */}
         <div className="hidden lg:flex flex-row items-center justify-end gap-6 xl:gap-2 text-white min-w-0 w-auto">
@@ -357,16 +362,18 @@ export default function NavbarSheet({
 
         {/* Mobile Right Section */}
         <div className="lg:hidden flex items-center gap-3">
-          {/* Mobile Search Button */}
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={toggleMobileSearch}
-            className="p-2 rounded-lg hover:bg-white/10 transition-colors"
-            aria-label="Toggle search"
-          >
-            <FiSearch className="text-xl text-foreground" />
-          </motion.button>
+          {/* Mobile Search Button (sheet page only) */}
+          {isSheetPage && (
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={toggleMobileSearch}
+              className="p-2 rounded-lg hover:bg-white/10 transition-colors"
+              aria-label="Toggle search"
+            >
+              <FiSearch className="text-xl text-foreground" />
+            </motion.button>
+          )}
 
           <ModeToggle />
 
@@ -386,41 +393,43 @@ export default function NavbarSheet({
       </div>
 
       {/* Mobile Search Bar */}
-      <AnimatePresence>
-        {showMobileSearch && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            className="lg:hidden mt-4 overflow-hidden"
-          >
-            <div className="backdrop-blur-xl bg-white/10 rounded-2xl shadow-xl border border-white/20 overflow-hidden px-4 py-3">
-              <div className="flex items-center">
-                <FiSearch className="mr-3 text-gray-400" />
-                <input
-                  ref={searchInputRef}
-                  type="text"
-                  placeholder="Search questions..."
-                  value={searchTerm ?? ""}
-                  onChange={(e) => setSearchTerm?.(e.target.value)}
-                  className="bg-transparent focus:outline-none text-sm w-full text-white placeholder-gray-400"
-                />
-                {searchTerm && (
-                  <motion.button
-                    initial={{ opacity: 0, scale: 0 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    onClick={() => setSearchTerm?.("")}
-                    className="ml-2 p-1 rounded-full hover:bg-white/20 transition-colors"
-                    aria-label="Clear search"
-                  >
-                    <FiX className="text-gray-400" />
-                  </motion.button>
-                )}
+      {isSheetPage && (
+        <AnimatePresence>
+          {showMobileSearch && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              className="lg:hidden mt-4 overflow-hidden"
+            >
+              <div className="backdrop-blur-xl bg-white/10 rounded-2xl shadow-xl border border-white/20 overflow-hidden px-4 py-3">
+                <div className="flex items-center">
+                  <FiSearch className="mr-3 text-gray-400" />
+                  <input
+                    ref={searchInputRef}
+                    type="text"
+                    placeholder="Search questions..."
+                    value={searchTerm ?? ""}
+                    onChange={(e) => setSearchTerm?.(e.target.value)}
+                    className="bg-transparent focus:outline-none text-sm w-full text-white placeholder-gray-400"
+                  />
+                  {searchTerm && (
+                    <motion.button
+                      initial={{ opacity: 0, scale: 0 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      onClick={() => setSearchTerm?.("")}
+                      className="ml-2 p-1 rounded-full hover:bg-white/20 transition-colors"
+                      aria-label="Clear search"
+                    >
+                      <FiX className="text-gray-400" />
+                    </motion.button>
+                  )}
+                </div>
               </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      )}
 
       {/* Mobile Menu */}
       <motion.div

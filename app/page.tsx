@@ -570,8 +570,8 @@ export default function Home() {
         className="relative bg-white dark:bg-black min-h-screen flex flex-col items-center justify-center text-center px-4 sm:px-6 py-8 sm:py-16 pt-16 sm:pt-24 bg-cover bg-center bg-no-repeat overflow-hidden"
         style={{ backgroundImage: "url(/bg.png)" }}
       >
-        hello
-        <div className="relative z-10 bg-red-500/50 max-w-6xl mx-auto w-full flex flex-col">
+     
+        <div className="relative z-10 max-w-6xl mx-auto w-full flex flex-col">
           <motion.h1
             variants={fadeInUp}
             custom={0}
