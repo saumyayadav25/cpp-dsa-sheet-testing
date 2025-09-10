@@ -25,3 +25,11 @@ jobs:
         run: |
           ls -l data/
           echo "questions.ts replaced with private version for runtime"
+
+      - name: Commit & Push updated questions.ts
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add data/questions.ts
+          git commit -m "Update questions.ts from private repo" || echo "No changes to commit"
+          git push origin main
