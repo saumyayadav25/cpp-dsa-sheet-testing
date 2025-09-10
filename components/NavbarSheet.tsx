@@ -3,10 +3,10 @@
 import { useState, useEffect, useRef } from "react";
 import { FiSearch, FiX } from "react-icons/fi";
 import { FaFire } from "react-icons/fa";
+import { ChevronDown, Menu, X } from "lucide-react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { usePathname } from "next/navigation";
-import AuthButtons from "@/components/AuthButtons";
 import { ModeToggle } from "./mode-toggle";
 import axios from "axios";
 
@@ -22,35 +22,6 @@ type NavbarProps = {
   setSearchTerm?: (term: string) => void;
 };
 
-const HamburgerIcon = ({ isOpen }: { isOpen: boolean }) => (
-  <div className="relative w-6 h-6 flex flex-col justify-center items-center">
-    <motion.span
-      animate={{
-        rotate: isOpen ? 45 : 0,
-        y: isOpen ? 0 : -4,
-      }}
-      transition={{ duration: 0.3, ease: "easeInOut" }}
-      className="block w-5 h-0.5 bg-foreground origin-center absolute"
-    />
-    <motion.span
-      animate={{
-        opacity: isOpen ? 0 : 1,
-        x: isOpen ? -10 : 0,
-      }}
-      transition={{ duration: 0.2, ease: "easeInOut" }}
-      className="block w-5 h-0.5 bg-foreground origin-center absolute"
-    />
-    <motion.span
-      animate={{
-        rotate: isOpen ? -45 : 0,
-        y: isOpen ? 0 : 4,
-      }}
-      transition={{ duration: 0.3, ease: "easeInOut" }}
-      className="block w-5 h-0.5 bg-foreground origin-center absolute"
-    />
-  </div>
-);
-
 export default function NavbarSheet({
   searchTerm,
   setSearchTerm,
@@ -58,13 +29,11 @@ export default function NavbarSheet({
   const [showMobileSearch, setShowMobileSearch] = useState(false);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const searchInputRef = useRef<HTMLInputElement>(null);
   const pathname = usePathname();
 
-  const toggleMobileSearch = () => {
-    setShowMobileSearch((v) => !v);
-  };
   const [streak, setStreak] = useState(0);
   const [user, setUser] = useState<User | null>(null);
 
@@ -86,6 +55,7 @@ export default function NavbarSheet({
     };
     checkAuth();
   }, []);
+
   useEffect(() => {
     if (!user?._id) return;
     const fetchStreak = async () => {
@@ -122,30 +92,38 @@ export default function NavbarSheet({
     }
   }, [showMobileSearch]);
 
-  const navLinks = [
-    { href: "/", label: "Home", isActive: pathname === "/" },
-    { href: "/notes", label: "Notes", isActive: pathname === "/notes" },
-    { href: "/sheet", label: "Sheet", isActive: pathname === "/sheet" },
-    {
-      href: "/code-analyzer",
-      label: "Code Analyzer",
-      isActive: pathname === "/code-analyzer",
-    },
-    {
-      href: "/progress",
-      label: "Progress",
-      isActive: pathname === "/progress",
-    },
-    {
-      href: "/contributors",
-      label: "Contributors",
-      isActive: pathname === "/contributors",
-    },
-    {
-      href: "/companies",
-      label: "Companies",
-      isActive: pathname === "/companies",
-    },
+  // Close mobile menu on route change
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+    setShowMobileSearch(false);
+  }, [pathname]);
+
+  const toggleMobileSearch = () => {
+    setShowMobileSearch((v) => !v);
+  };
+
+  // Dropdown menu structure
+  const learningLinks = [
+    { href: "/sheet", label: "Sheet", keepSearch: true },
+    { href: "/notes", label: "Notes" },
+    { href: "/companies", label: "Company-wise Sheet" },
+    { href: "/timequiz", label: "Timed Quiz" },
+    { href: "/theory-cheatsheets", label: "Theory Cheatsheets" },
+    { href: "/flashcards", label: "Flashcards" },
+    { href: "/interview-experiences", label: "Interview Experiences" },
+  ];
+
+  const codingLinks = [
+    { href: "/code-analyzer", label: "Code Analyzer" },
+    { href: "/cp-tracker", label: "Track Your CP" },
+  ];
+
+  const communityLinks = [
+    { href: "https://github.com/saumyayadav25/DSA-Supreme-3.0", label: "Star on GitHub", external: true },
+    { href: "/contributors", label: "Contributors" },
+    { href: "#", label: "Give Testimonial", onClick: () => window.dispatchEvent(new CustomEvent('openTestimonialModal')) },
+    { href: "https://forms.gle/bdwBp8oFRWugcrcg9", label: "Provide Feedback", external: true },
+    { href: "https://www.buymeacoffee.com/saumyayadav", label: "Support the Project", external: true },
   ];
 
   const streakVariants = {
@@ -153,104 +131,87 @@ export default function NavbarSheet({
     active: { scale: [1, 1.2, 1], rotate: [0, 10, -10, 0] },
   };
 
+  const handleLogout = async () => {
+    try {
+      await axios.post("/api/logout");
+      setUser(null);
+      window.location.href = "/";
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
+  };
+
   return (
     <motion.nav
-      initial={{ opacity: 0, y: -20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6 }}
-      className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 border-b ${
-        isScrolled ? "border-white/10" : "border-gray-800/50"
-      } bg-background px-4 sm:px-10 md:px-14 py-4 sm:py-5`}
+      className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 border-b ${isScrolled ? "border-white/10" : "border-gray-800/50"
+        } bg-background px-4 sm:px-6 lg:px-10 py-4 sm:py-5`}
     >
-      <div className="relative flex items-center justify-between gap-4">
-        {/* Logo */}
-        <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 1.0 }}>
-          <Link
-            href="/"
-            className="group relative text-2xl font-bold text-foreground hover:cursor-pointer"
-          >
-            <span className="relative z-10">
-              DSA
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-blue-500">
-                Mate
-              </span>{" "}
-              Template
-            </span>
-          </Link>
-        </motion.div>
-
-        {/* Desktop Search */}
-        <motion.div
-          className="hidden md:flex items-center relative group max-w-md flex-1 mx-8"
-          animate={{ scale: isSearchFocused ? 1.02 : 1 }}
-          transition={{ type: "spring", stiffness: 300, damping: 25 }}
-        >
-          <div
-            className={`relative w-full transition-all duration-300 ${
-              isSearchFocused ? "transform scale-105" : ""
-            }`}
-          >
-            <div
-              className={`relative backdrop-blur-xl rounded-2xl overflow-hidden transition-all duration-300 ${
-                isSearchFocused
-                  ? "bg-white/15 shadow-2xl ring-2 ring-blue-400/50"
-                  : "bg-white/10 shadow-lg hover:bg-white/12"
-              }`}
+      <div className="relative w-full flex flex-row items-center justify-between gap-8 lg:gap-12 xl:gap-16">
+        {/* Logo & Search Row */}
+        <div className="flex flex-row items-center gap-6 lg:gap-12 xl:gap-16 flex-shrink-0 min-w-[220px]">
+          <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 1.0 }}>
+            <Link
+              href="/"
+              className="group relative text-xl sm:text-2xl font-bold text-foreground hover:cursor-pointer flex-shrink-0 pr-2 lg:pr-6 xl:pr-8"
             >
-              <motion.div
-                className="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-cyan-500/5 to-neutral-500/10"
-                animate={{
-                  backgroundPosition: isSearchFocused
-                    ? ["0% 50%", "100% 50%", "0% 50%"]
-                    : "0% 50%",
-                }}
-                transition={{
-                  duration: 3,
-                  repeat: isSearchFocused ? Infinity : 0,
-                  ease: "linear",
-                }}
-                style={{ backgroundSize: "200% 200%" }}
-              />
-              <div className="relative flex items-center px-5 py-3">
-                <motion.div
-                  animate={{
-                    scale: isSearchFocused ? 1.1 : 1,
-                    color: isSearchFocused ? "#60a5fa" : "#9ca3af",
-                  }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <FiSearch className="mr-3 text-lg" />
-                </motion.div>
-                <input
-                  type="text"
-                  placeholder="Search questions..."
-                  value={searchTerm ?? ""}
-                  onChange={(e) => setSearchTerm?.(e.target.value)}
-                  onFocus={() => setIsSearchFocused(true)}
-                  onBlur={() => setIsSearchFocused(false)}
-                  className="bg-transparent focus:outline-none text-sm text-white placeholder-gray-400 w-full font-medium"
-                />
-                <AnimatePresence>
-                  {searchTerm && (
-                    <motion.button
-                      initial={{ opacity: 0, scale: 0 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0 }}
-                      onClick={() => setSearchTerm?.("")}
-                      className="ml-2 p-1 rounded-full hover:bg-white/20 transition-colors"
-                      aria-label="Clear search"
-                    >
-                      <FiX className="text-gray-400 hover:text-white" />
-                    </motion.button>
-                  )}
-                </AnimatePresence>
+              <span className="relative z-10">
+                DSA
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-blue-500">
+                  Mate
+                </span>{" "}
+                Template
+              </span>
+            </Link>
+          </motion.div>
+          {/* Desktop Search Icon Only */}
+          <button
+            className="hidden lg:flex items-center justify-center p-2 rounded-xl bg-white/10 hover:bg-white/20 transition-colors ml-2"
+            aria-label="Open search bar"
+            onClick={() => setShowMobileSearch((v) => !v)}
+            style={{ minWidth: 44 }}
+          >
+            <FiSearch className="text-xl text-foreground" />
+          </button>
+        </div>
+        {/* Desktop Search Bar Expansion (below navbar) */}
+        <AnimatePresence>
+          {showMobileSearch && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              className="hidden lg:block w-full absolute left-0 top-full z-40"
+            >
+              <div className="max-w-2xl mx-auto mt-2 px-4">
+                <div className="backdrop-blur-xl bg-white/10 rounded-2xl shadow-xl border border-white/20 overflow-hidden px-5 py-4">
+                  <div className="flex items-center">
+                    <FiSearch className="mr-3 text-gray-400" />
+                    <input
+                      ref={searchInputRef}
+                      type="text"
+                      placeholder="Search questions..."
+                      value={searchTerm ?? ""}
+                      onChange={(e) => setSearchTerm?.(e.target.value)}
+                      className="bg-transparent focus:outline-none text-sm w-full text-white placeholder-gray-400"
+                    />
+                    {searchTerm && (
+                      <button
+                        onClick={() => setSearchTerm?.("")}
+                        className="ml-2 p-1 rounded-full hover:bg-white/20 transition-colors"
+                        aria-label="Clear search"
+                      >
+                        <FiX className="text-gray-400" />
+                      </button>
+                    )}
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-        </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
-        {/* Desktop Links + Streak + Auth */}
-        <div className="hidden sm:flex flex-wrap items-center justify-end gap-4 text-white min-w-0">
+        {/* Desktop Links */}
+        <div className="hidden lg:flex flex-row items-center justify-end gap-6 xl:gap-2 text-white min-w-0 w-auto">
           {/* Streak Icon */}
           <motion.div
             title={`Streak: ${streak} day${streak === 1 ? "" : "s"}`}
@@ -262,14 +223,13 @@ export default function NavbarSheet({
               repeatDelay: 3,
             }}
             whileHover={{ scale: 1.1 }}
-            className="cursor-pointer shrink-0"
+            className="cursor-pointer"
           >
             <div
-              className={`flex items-center gap-2 px-3 py-2 rounded-xl transition-all duration-300 ${
-                streak > 0
-                  ? "text-orange-400 bg-orange-500/10 shadow-lg shadow-orange-500/20"
-                  : "text-gray-400 opacity-50 hover:opacity-75"
-              }`}
+              className={`flex items-center gap-2 px-3 py-2 rounded-xl transition-all duration-300 ${streak > 0
+                ? "text-orange-400"
+                : "text-gray-400 opacity-50 hover:opacity-75"
+                }`}
             >
               <FaFire className="text-lg" />
               {streak > 0 && (
@@ -285,53 +245,118 @@ export default function NavbarSheet({
             </div>
           </motion.div>
 
-          {/* Navigation Links */}
-          <div className="flex flex-wrap items-center gap-2 md:gap-4">
-            {navLinks.map((link) => (
-              <motion.div
-                key={link.href}
-                whileHover={{ y: -2 }}
-                whileTap={{ y: 0 }}
-                className="shrink-0"
-              >
-                <Link
-                  href={link.href}
-                  className="relative px-3 py-2 rounded-lg transition-all duration-300 group hover:text-blue-400 hover:cursor-pointer hover:bg-white/5"
-                >
-                  <span
-                    className={`relative z-10 ${
-                      link.isActive
-                        ? "text-blue-400"
-                        : "text-gray-900 dark:text-white hover:text-blue-400"
-                    }`}
-                  >
+          {/* Home (hide on homepage) */}
+          {pathname !== "/" && (
+            <Link href="/" className="relative px-3 py-2 rounded-lg whitespace-nowrap transition-all duration-300 text-foreground hover:text-blue-400">
+              Home
+            </Link>
+          )}
+
+          {/* Learning Tools Dropdown */}
+          <div className="relative group">
+            <button className="px-3 py-2 rounded-lg whitespace-nowrap transition-all duration-300 text-foreground hover:text-blue-400 flex items-center gap-1">
+              Learning Tools
+              <ChevronDown className="w-4 h-4 transition-transform duration-200 group-hover:rotate-180" />
+            </button>
+            <div className="absolute left-0 top-full mt-1 min-w-[200px] backdrop-blur-xl bg-gradient-to-br from-blue-900/20 via-blue-700/20 to-black/20 border border-blue-950 rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-40">
+              <div className="py-2">
+                {learningLinks.map(link => (
+                  <Link key={link.href} href={link.href} className="block px-4 py-2.5 text-sm text-foreground hover:bg-blue-800/40 hover:text-blue-300 transition-all">
                     {link.label}
-                  </span>
-                  {link.isActive && (
-                    <motion.div
-                      layoutId="activeTab"
-                      className="absolute inset-0 bg-blue-500/10 rounded-lg border border-blue-400/30"
-                      initial={false}
-                      transition={{
-                        type: "spring",
-                        stiffness: 500,
-                        damping: 30,
-                      }}
-                    />
-                  )}
-                </Link>
-              </motion.div>
-            ))}
+                  </Link>
+                ))}
+              </div>
+            </div>
           </div>
 
-          {/* Auth Buttons */}
-          <div className="shrink-0">
-            <AuthButtons />
+          {/* Coding Tools Dropdown */}
+          <div className="relative group">
+            <button className="px-3 py-2 rounded-lg whitespace-nowrap transition-all duration-300 text-foreground hover:text-blue-400 flex items-center gap-1">
+              Coding Tools
+              <ChevronDown className="w-4 h-4 transition-transform duration-200 group-hover:rotate-180" />
+            </button>
+            <div className="absolute left-0 top-full mt-1 min-w-[200px] backdrop-blur-xl bg-gradient-to-br from-blue-900/20 via-blue-700/20 to-black/20 border border-blue-950 rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-40">
+              <div className="py-2">
+                {codingLinks.map(link => (
+                  <Link key={link.href} href={link.href} className="block px-4 py-2.5 text-sm text-foreground hover:bg-blue-800/40 hover:text-blue-300 transition-all">
+                    {link.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
           </div>
+
+          {/* Community Dropdown */}
+          <div className="relative group">
+            <button className="px-3 py-2 rounded-lg whitespace-nowrap transition-all duration-300 text-foreground hover:text-blue-400 flex items-center gap-1">
+              Community
+              <ChevronDown className="w-4 h-4 transition-transform duration-200 group-hover:rotate-180" />
+            </button>
+            <div className="absolute left-0 top-full mt-1 min-w-[200px] backdrop-blur-xl bg-gradient-to-br from-blue-900/20 via-blue-700/20 to-black/20 border border-blue-950 rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-40">
+              <div className="py-2">
+                {communityLinks.map(link => link.external ? (
+                  <a key={link.href} href={link.href} target="_blank" rel="noopener noreferrer" className="block px-4 py-2.5 text-sm text-foreground hover:bg-blue-800/40 hover:text-blue-300 transition-all">
+                    {link.label}
+                  </a>
+                ) : link.onClick ? (
+                  <button key={link.label} onClick={link.onClick} className="block w-full text-left px-4 py-2.5 text-sm text-foreground hover:bg-blue-800/40 hover:text-blue-300 transition-all">
+                    {link.label}
+                  </button>
+                ) : (
+                  <Link key={link.href} href={link.href} className="block px-4 py-2.5 text-sm text-foreground hover:bg-blue-800/40 hover:text-blue-300 transition-all">
+                    {link.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* User Profile Dropdown */}
+          {user ? (
+            <div className="relative group">
+              <button className="flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-300 text-foreground hover:text-blue-400">
+                <img
+                  src={user.avatar}
+                  alt={user.full_name}
+                  className="w-8 h-8 rounded-full border-2 border-transparent group-hover:border-blue-400/50 transition-all"
+                />
+                <ChevronDown className="w-4 h-4 transition-transform duration-200 group-hover:rotate-180" />
+              </button>
+              <div className="absolute right-0 top-full mt-1 min-w-[180px] bg-background border border-border rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-40">
+                <div className="py-2">
+                  <div className="px-4 py-2 border-b border-border">
+                    <p className="text-sm font-medium text-foreground">{user.full_name}</p>
+                    <p className="text-xs text-muted-foreground">{user.email}</p>
+                  </div>
+                  <Link href="/profile" className="block px-4 py-2.5 text-sm text-foreground hover:bg-muted/50 hover:text-blue-400 transition-all">
+                    Profile
+                  </Link>
+                  <Link href="/dashboard" className="block px-4 py-2.5 text-sm text-foreground hover:bg-muted/50 hover:text-blue-400 transition-all">
+                    Dashboard
+                  </Link>
+                  <button onClick={handleLogout} className="block w-full text-left px-4 py-2.5 text-sm text-foreground hover:bg-muted/50 hover:text-red-400 transition-all">
+                    Logout
+                  </button>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="flex items-center gap-2">
+              <Link href="/sign-in" className="px-4 py-2 text-sm text-foreground hover:text-blue-400 transition-colors">
+                Login
+              </Link>
+              <Link href="/sign-up" className="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                Sign Up
+              </Link>
+            </div>
+          )}
+
+          {/* Mode Toggle */}
+          <ModeToggle />
         </div>
 
         {/* Mobile Right Section */}
-        <div className="sm:hidden flex items-center gap-3">
+        <div className="lg:hidden flex items-center gap-3">
           {/* Mobile Search Button */}
           <motion.button
             whileHover={{ scale: 1.05 }}
@@ -343,8 +368,20 @@ export default function NavbarSheet({
             <FiSearch className="text-xl text-foreground" />
           </motion.button>
 
-          {/* Auth Buttons with hamburger menu */}
-          <AuthButtons />
+          <ModeToggle />
+
+          {/* Mobile Menu Button */}
+          <button
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="p-2 rounded-lg text-foreground hover:bg-muted/50 transition-colors"
+            aria-label="Toggle mobile menu"
+          >
+            {isMobileMenuOpen ? (
+              <X className="w-6 h-6" />
+            ) : (
+              <Menu className="w-6 h-6" />
+            )}
+          </button>
         </div>
       </div>
 
@@ -355,7 +392,7 @@ export default function NavbarSheet({
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="sm:hidden mt-4 overflow-hidden"
+            className="lg:hidden mt-4 overflow-hidden"
           >
             <div className="backdrop-blur-xl bg-white/10 rounded-2xl shadow-xl border border-white/20 overflow-hidden px-4 py-3">
               <div className="flex items-center">
@@ -385,8 +422,126 @@ export default function NavbarSheet({
         )}
       </AnimatePresence>
 
-      {/* Mobile Nav Links */}
-      {/* Navigation handled by AuthButtons hamburger menu */}
+      {/* Mobile Menu */}
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{
+          opacity: isMobileMenuOpen ? 1 : 0,
+          y: isMobileMenuOpen ? 0 : -10,
+          pointerEvents: isMobileMenuOpen ? "auto" : "none"
+        }}
+        transition={{ duration: 0.2 }}
+        className="absolute top-full left-0 w-full bg-background border-b border-border shadow-lg lg:hidden"
+      >
+        <div className="max-w-7xl mx-auto px-4 py-4 space-y-4">
+          {/* Streak (Mobile) */}
+          <div className="flex items-center justify-center">
+            <motion.div
+              title={`Streak: ${streak} day${streak === 1 ? "" : "s"}`}
+              variants={streakVariants}
+              animate={streak > 0 ? "active" : "idle"}
+              transition={{
+                duration: 0.6,
+                repeat: streak > 0 ? Infinity : 0,
+                repeatDelay: 3,
+              }}
+              className="cursor-pointer"
+            >
+              <div
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all duration-300 ${streak > 0
+                  ? "text-orange-400"
+                  : "text-gray-400 opacity-50"
+                  }`}
+              >
+                <FaFire className="text-lg" />
+                {streak > 0 && (
+                  <span className="text-sm font-bold">{streak}</span>
+                )}
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Home Link (Mobile) */}
+          {pathname !== "/" && (
+            <Link href="/" className="block px-4 py-3 text-foreground hover:bg-muted/50 hover:text-blue-400 transition-all rounded-lg">
+              Home
+            </Link>
+          )}
+
+          {/* Learning Tools (Mobile) */}
+          <div className="space-y-1">
+            <div className="px-4 py-2 text-sm font-medium text-muted-foreground">Learning Tools</div>
+            {learningLinks.map(link => (
+              <Link key={link.href} href={link.href} className="block px-6 py-2.5 text-foreground hover:bg-muted/50 hover:text-blue-400 transition-all">
+                {link.label}
+              </Link>
+            ))}
+          </div>
+
+          {/* Coding Tools (Mobile) */}
+          <div className="space-y-1">
+            <div className="px-4 py-2 text-sm font-medium text-muted-foreground">Coding Tools</div>
+            {codingLinks.map(link => (
+              <Link key={link.href} href={link.href} className="block px-6 py-2.5 text-foreground hover:bg-muted/50 hover:text-blue-400 transition-all">
+                {link.label}
+              </Link>
+            ))}
+          </div>
+
+          {/* Community (Mobile) */}
+          <div className="space-y-1">
+            <div className="px-4 py-2 text-sm font-medium text-muted-foreground">Community</div>
+            {communityLinks.map(link => link.external ? (
+              <a key={link.href} href={link.href} target="_blank" rel="noopener noreferrer" className="block px-6 py-2.5 text-foreground hover:bg-muted/50 hover:text-blue-400 transition-all">
+                {link.label}
+              </a>
+            ) : link.onClick ? (
+              <button key={link.label} onClick={link.onClick} className="block w-full text-left px-6 py-2.5 text-foreground hover:bg-muted/50 hover:text-blue-400 transition-all">
+                {link.label}
+              </button>
+            ) : (
+              <Link key={link.href} href={link.href} className="block px-6 py-2.5 text-foreground hover:bg-muted/50 hover:text-blue-400 transition-all">
+                {link.label}
+              </Link>
+            ))}
+          </div>
+
+          {/* User Profile (Mobile) */}
+          {user ? (
+            <div className="space-y-1 border-t border-border pt-4">
+              <div className="flex items-center gap-3 px-4 py-2">
+                <img
+                  src={user.avatar}
+                  alt={user.full_name}
+                  className="w-10 h-10 rounded-full"
+                />
+                <div>
+                  <p className="text-sm font-medium text-foreground">{user.full_name}</p>
+                  <p className="text-xs text-muted-foreground">{user.email}</p>
+                </div>
+              </div>
+              <Link href="/profile" className="block px-6 py-2.5 text-foreground hover:bg-muted/50 hover:text-blue-400 transition-all">
+                Profile
+              </Link>
+              <Link href="/dashboard" className="block px-6 py-2.5 text-foreground hover:bg-muted/50 hover:text-blue-400 transition-all">
+                Dashboard
+              </Link>
+              <button onClick={handleLogout} className="block w-full text-left px-6 py-2.5 text-foreground hover:bg-muted/50 hover:text-red-400 transition-all">
+                Logout
+              </button>
+            </div>
+          ) : (
+            <div className="space-y-2 border-t border-border pt-4">
+              <Link href="/sign-in" className="block px-4 py-3 text-center text-foreground hover:bg-muted/50 hover:text-blue-400 transition-all rounded-lg border border-border">
+                Login
+              </Link>
+              <Link href="/sign-up" className="block px-4 py-3 text-center bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                Sign Up
+              </Link>
+            </div>
+          )}
+        </div>
+      </motion.div>
     </motion.nav>
   );
 }
