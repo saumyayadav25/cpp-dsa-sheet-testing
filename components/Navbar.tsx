@@ -80,7 +80,17 @@ export default function Navbar() {
     { href: "/", label: "Home", isActive: pathname === "/" },
     { href: "/notes", label: "Notes", isActive: pathname === "/notes" },
     { href: "/sheet", label: "Sheet", isActive: pathname === "/sheet" },
-    { href: "/code-analyzer", label: "Code Analyzer", isActive: pathname === "/code-analyzer" },
+    {
+      href: "/code-analyzer",
+      label: (
+        <span className="inline-flex items-center gap-1">
+          <svg width="18" height="18" viewBox="0 0 20 20" fill="none" className="inline-block"><path d="M10 2L12.09 7.26L17.66 7.27L13.28 10.97L15.36 16.23L10 12.53L4.64 16.23L6.72 10.97L2.34 7.27L7.91 7.26L10 2Z" fill="url(#paint0_linear)"/><defs><linearGradient id="paint0_linear" x1="2" y1="2" x2="18" y2="18" gradientUnits="userSpaceOnUse"><stop stop-color="#60A5FA"/><stop offset="1" stop-color="#818CF8"/></linearGradient></defs></svg>
+          <span>Code Analyzer</span>
+        </span>
+      ),
+      isActive: pathname === "/code-analyzer",
+      highlight: true,
+    },
     { href: "/progress", label: "Progress", isActive: pathname === "/progress" },
     { href: "/contributors", label: "Contributors", isActive: pathname === "/contributors" },
     { href: "/companies", label: "Companies", isActive: pathname === "/companies" },
@@ -161,14 +171,11 @@ export default function Navbar() {
             <Link
               key={link.href}
               href={link.href}
-              className={`relative px-3 py-2 rounded-lg whitespace-nowrap transition-all duration-300 ${link.isActive
-                  ? "text-blue-400 bg-blue-500/10 border border-blue-400/30"
-                  : "text-foreground hover:text-blue-400"
-
-              }`}
-              // Added passHref and changed children to span to avoid nested anchor
-              
-
+              className={`relative px-3 py-2 rounded-lg whitespace-nowrap transition-all duration-300
+                ${link.isActive ? "text-blue-400 bg-blue-500/10 border border-blue-400/30" : "text-foreground hover:text-blue-400"}
+                ${link.highlight ? 'bg-gradient-to-r from-blue-400/20 to-indigo-400/20 border border-blue-400/30 shadow-md text-blue-700 dark:text-blue-300 font-semibold' : ''}
+              `}
+              style={link.highlight ? { boxShadow: '0 2px 8px 0 rgba(59,130,246,0.10)' } : {}}
             >
               <span>{link.label}</span>
             </Link>
