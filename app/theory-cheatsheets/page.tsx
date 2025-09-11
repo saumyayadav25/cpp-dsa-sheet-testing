@@ -20,20 +20,10 @@ import Navbar from "@/components/ui/Navbar-interview";
 // Flashcards imports (migrated from former /flashcards page)
 import Navbar2 from "@/components/Navbar";
 import FlashcardComponent from "@/components/FlashcardComponent";
+import { motion, AnimatePresence } from "framer-motion";
 import { flashcards, categories, difficulties, type Flashcard } from "@/data/flashcards";
 import { ChevronLeft, ChevronRight, RotateCcw, Trophy } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
-const fadeInUp = {
-  hidden: { opacity: 0, y: 20 },
-  visible: (i: number) => ({
-    opacity: 1,
-    y: 0,
-    transition: {
-      delay: i * 0.1,
-      duration: 0.6,
-    },
-  }),
-};
+// ...removed framer-motion imports and animation configs...
 
 const coreConcept = [
   {
@@ -154,7 +144,7 @@ const displayQuestions =
 
 const page = () => {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<'cheatsheets' | 'flashcards'>('flashcards');
+  const [activeTab, setActiveTab] = useState<'cheatsheets' | 'flashcards'>('cheatsheets');
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
 
@@ -235,15 +225,18 @@ const page = () => {
     setDifficultyFilter("All");
   };
 
-  const filteredSubjects = coreConcept.filter((con) => {
-    const matchesSearch =
-      con.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      con.topic.some((tag) =>
-        tag.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    const matchesSubject = !selectedSubject || con.title === selectedSubject;
-    return matchesSearch && matchesSubject;
-  });
+  // Remove duplicacy in cheatsheets by filtering unique titles
+  const filteredSubjects = coreConcept
+    .filter((con, idx, arr) => arr.findIndex(c => c.title === con.title) === idx)
+    .filter((con) => {
+      const matchesSearch =
+        con.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        con.topic.some((tag) =>
+          tag.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+      const matchesSubject = !selectedSubject || con.title === selectedSubject;
+      return matchesSearch && matchesSubject;
+    });
 
   return (
     <div className="min-h-screen bg-background pt-12">
@@ -352,41 +345,42 @@ const page = () => {
       )}
 
       {activeTab === 'flashcards' && (
-        <div className="max-w-screen mt-6">
-                      {/* Control Buttons */}
-            <div className="flex gap-3">
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => setShowFilters(!showFilters)}
-                className={`flex items-center gap-2 px-2 h-12 py-1 rounded-xl font-medium transition-all ${
-                  showFilters 
-                    ? 'bg-blue-600 text-white shadow-lg' 
-                    : 'bg-white/70 dark:bg-white/5 border border-gray-200/50 dark:border-white/10 text-gray-700 dark:text-gray-300 hover:bg-white/80 dark:hover:bg-white/10'
+        <motion.div
+          className="max-w-screen mt-6"
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 40 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+        >
+          {/* Control Buttons */}
+          <div className="flex gap-3">
+            <button
+              onClick={() => setShowFilters(!showFilters)}
+              className={`flex items-center gap-2 px-2 h-12 py-1 rounded-xl font-medium transition-all ${showFilters
+                ? 'bg-blue-600 text-white shadow-lg'
+                : 'bg-white/70 dark:bg-white/5 border border-gray-200/50 dark:border-white/10 text-gray-700 dark:text-gray-300 hover:bg-white/80 dark:hover:bg-white/10'
                 }`}
-              >
-                <Filter size={18} />
-                Filters
-              </motion.button>
-              
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={resetProgress}
-                className="flex items-center gap-2 px-2 h-12 py-1 bg-white/70 dark:bg-white/5 border border-gray-200/50 dark:border-white/10 rounded-xl font-medium text-gray-700 dark:text-gray-300 hover:bg-white/80 dark:hover:bg-white/10 transition-all"
-              >
-                <RotateCcw size={18} />
-                Reset
-              </motion.button>
-            </div>
-                  {/* Stats and Controls */}
-          <motion.div variants={fadeInUp}  className="flex flex-col lg:flex-row gap-6 mb-8 ">
+            >
+              <Filter size={18} />
+              Filters
+            </button>
+
+            <button
+              onClick={resetProgress}
+              className="flex items-center gap-2 px-2 h-12 py-1 bg-white/70 dark:bg-white/5 border border-gray-200/50 dark:border-white/10 rounded-xl font-medium text-gray-700 dark:text-gray-300 hover:bg-white/80 dark:hover:bg-white/10 transition-all"
+            >
+              <RotateCcw size={18} />
+              Reset
+            </button>
+          </div>
+          {/* Stats and Controls */}
+          <div className="flex flex-col lg:flex-row gap-6 mb-8 ">
             {/* Progress Stats */}
             <div className="flex justify-center items-center flex-col min-w-full md:flex-row gap-4 ">
               <div className="bg-white/70 dark:bg-white/5 backdrop-blur-sm border w-40 border-gray-200/50 dark:border-white/10 rounded-xl p-4 text-center">
                 <div className="text-2xl font-bold text-blue-500">{currentIndex + 1}</div>
                 <div className="text-sm text-gray-600 dark:text-gray-400">Current</div>
-              
+
               </div>
               <div className="bg-white/70 dark:bg-white/5 backdrop-blur-sm border w-40 border-gray-200/50 dark:border-white/10 rounded-xl p-4 text-center">
                 <div className="text-2xl font-bold text-green-500">{reviewedCount}</div>
@@ -402,81 +396,67 @@ const page = () => {
               </div>
             </div>
 
-          </motion.div>
+          </div>
 
 
           {/* Filters */}
-          <AnimatePresence>
-            {showFilters && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                exit={{ opacity: 0, height: 0 }}
-                className="mb-8 overflow-hidden"
-              >
-                <div className="bg-white/70 dark:bg-white/5 backdrop-blur-sm border border-gray-200/50 dark:border-white/10 rounded-2xl p-6">
-                  <div className="grid md:grid-cols-2 gap-6">
-                    {/* Category Filter */}
-                    <div>
-                      <label className="block text-sm font-medium mb-3 text-gray-700 dark:text-gray-300">
-                        Category
-                      </label>
-                      <div className="flex flex-wrap gap-2">
-                        {categories.map((category) => (
-                          <button
-                            key={category}
-                            onClick={() => setCategoryFilter(category)}
-                            className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
-                              categoryFilter === category
-                                ? 'bg-blue-600 text-white shadow-lg'
-                                : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
+          {showFilters && (
+            <div className="mb-8 overflow-hidden">
+              <div className="bg-white/70 dark:bg-white/5 backdrop-blur-sm border border-gray-200/50 dark:border-white/10 rounded-2xl p-6">
+                <div className="grid md:grid-cols-2 gap-6">
+                  {/* Category Filter */}
+                  <div>
+                    <label className="block text-sm font-medium mb-3 text-gray-700 dark:text-gray-300">
+                      Category
+                    </label>
+                    <div className="flex flex-wrap gap-2">
+                      {categories.map((category) => (
+                        <button
+                          key={category}
+                          onClick={() => setCategoryFilter(category)}
+                          className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${categoryFilter === category
+                            ? 'bg-blue-600 text-white shadow-lg'
+                            : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
                             }`}
-                          >
-                            {category}
-                          </button>
-                        ))}
-                      </div>
+                        >
+                          {category}
+                        </button>
+                      ))}
                     </div>
+                  </div>
 
-                    {/* Difficulty Filter */}
-                    <div>
-                      <label className="block text-sm font-medium mb-3 text-gray-700 dark:text-gray-300">
-                        Difficulty
-                      </label>
-                      <div className="flex flex-wrap gap-2">
-                        {difficulties.map((difficulty) => (
-                          <button
-                            key={difficulty}
-                            onClick={() => setDifficultyFilter(difficulty)}
-                            className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
-                              difficultyFilter === difficulty
-                                ? 'bg-green-600 text-white shadow-lg'
-                                : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
+                  {/* Difficulty Filter */}
+                  <div>
+                    <label className="block text-sm font-medium mb-3 text-gray-700 dark:text-gray-300">
+                      Difficulty
+                    </label>
+                    <div className="flex flex-wrap gap-2">
+                      {difficulties.map((difficulty) => (
+                        <button
+                          key={difficulty}
+                          onClick={() => setDifficultyFilter(difficulty)}
+                          className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${difficultyFilter === difficulty
+                            ? 'bg-green-600 text-white shadow-lg'
+                            : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
                             }`}
-                          >
-                            {difficulty}
-                          </button>
-                        ))}
-                      </div>
+                        >
+                          {difficulty}
+                        </button>
+                      ))}
                     </div>
                   </div>
                 </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+              </div>
+            </div>
+          )}
+          {/* End Filters Section */}
 
           {/* Elegant Progress Design */}
-          <motion.div variants={fadeInUp} custom={2} className="mb-6">
+          <div className="mb-6">
             <div className="max-w-2xl mx-auto">
               {/* Minimalist Progress Header */}
               <div className="text-center mb-4">
-                <motion.div
-                  key={Math.round(progress)}
-                  initial={{ scale: 0.9, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ duration: 0.5, ease: "easeOut" }}
-                  className="inline-flex items-center gap-4 px-8 py-4 bg-white/60 dark:bg-white/5 backdrop-blur-xl border border-white/20 dark:border-white/10 rounded-2xl shadow-xl"
-                >
+                <div className="inline-flex items-center gap-4 px-8 py-4 bg-white/60 dark:bg-white/5 backdrop-blur-xl border border-white/20 dark:border-white/10 rounded-2xl shadow-xl">
                   <div className="text-4xl font-light text-gray-900 dark:text-white">
                     {Math.round(progress)}<span className="text-2xl text-gray-500 dark:text-gray-400">%</span>
                   </div>
@@ -489,7 +469,7 @@ const page = () => {
                       Mastered
                     </div>
                   </div>
-                </motion.div>
+                </div>
               </div>
 
               {/* Sophisticated Progress Bar */}
@@ -497,151 +477,128 @@ const page = () => {
                 {/* Background track */}
                 <div className="h-2 bg-gray-200/50 dark:bg-gray-800/50 rounded-full overflow-hidden backdrop-blur-sm">
                   {/* Progress fill with gradient */}
-                  <motion.div
+                  <div
                     className="h-full bg-gradient-to-r from-blue-500 via-purple-500 to-cyan-500 rounded-full relative overflow-hidden"
-                    initial={{ width: 0 }}
-                    animate={{ width: `${progress}%` }}
-                    transition={{ duration: 1.2, ease: "easeOut" }}
+                  // initial={{ width: 0 }}
+                  // animate={{ width: `${progress}%` }}
+                  // transition={{ duration: 1.2, ease: "easeOut" }}
                   >
                     {/* Shimmer effect */}
-                    <motion.div
-                      className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -skew-x-12"
-                      animate={{ x: ["-100%", "200%"] }}
-                      transition={{ 
-                        duration: 2, 
-                        repeat: Infinity, 
-                        repeatDelay: 3,
-                        ease: "easeInOut" 
-                      }}
-                    />
-                  </motion.div>
+                    {/* Removed shimmer effect */}
+                  </div>
                 </div>
 
                 {/* Progress milestones */}
                 <div className="absolute -top-1 left-0 right-0 flex justify-between">
                   {[0, 25, 50, 75, 100].map((milestone) => (
-                    <motion.div
+                    <div
                       key={milestone}
-                      className={`w-4 h-4 rounded-full border-2 transition-all duration-500 ${
-                        progress >= milestone
-                          ? 'bg-gradient-to-r from-blue-500 to-purple-500 border-white shadow-lg scale-110'
-                          : 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600'
-                      }`}
-                      animate={{
-                        scale: progress >= milestone ? 1.1 : 1,
-                        boxShadow: progress >= milestone 
-                          ? "0 0 20px rgba(59, 130, 246, 0.5)" 
-                          : "0 0 0px rgba(0, 0, 0, 0)"
-                      }}
-                      transition={{ duration: 0.3, delay: milestone * 0.02 }}
+                      className={`w-4 h-4 rounded-full border-2 transition-all duration-500 ${progress >= milestone
+                        ? 'bg-gradient-to-r from-blue-500 to-purple-500 border-white shadow-lg scale-110'
+                        : 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600'
+                        }`}
                     >
                       {progress >= milestone && (
-                        <motion.div
-                          initial={{ scale: 0, rotate: -180 }}
-                          animate={{ scale: 1, rotate: 0 }}
-                          className="absolute inset-0 flex items-center justify-center text-white text-xs font-bold"
-                        >
+                        <div className="absolute inset-0 flex items-center justify-center text-white text-xs font-bold">
                           ✓
-                        </motion.div>
+                        </div>
                       )}
-                    </motion.div>
+                    </div>
                   ))}
                 </div>
               </div>
 
               {/* Elegant completion message */}
-              <AnimatePresence>
-                {progress === 100 && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 20, scale: 0.9 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: -20, scale: 0.9 }}
-                    className="mt-8 text-center"
-                  >
-                    <div className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-green-500/20 to-blue-500/20 border border-green-500/30 rounded-full">
-                      <div className="text-2xl">🎉</div>
-                      <div className="text-lg font-medium text-green-600 dark:text-green-400">
-                        All concepts mastered!
-                      </div>
+              {progress === 100 && (
+                <div className="mt-8 text-center">
+                  <div className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-green-500/20 to-blue-500/20 border border-green-500/30 rounded-full">
+                    <div className="text-2xl">🎉</div>
+                    <div className="text-lg font-medium text-green-600 dark:text-green-400">
+                      All concepts mastered!
                     </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+                  </div>
+                </div>
+              )}
             </div>
-          </motion.div>
+          </div>
 
-          {/* Flashcard */}
-          <motion.div variants={fadeInUp} custom={3} className="mb-8">
+
+          {/* Flashcard section: Only show flashcards, not theory cheatsheets */}
+          <div className="mb-8">
             <AnimatePresence mode="wait">
-              <motion.div
-                key={currentCard.id}
-                initial={{ opacity: 0, x: 50 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -50 }}
-                transition={{ duration: 0.3 }}
-              >
-                <FlashcardComponent
-                  flashcard={currentCard}
-                  isFlipped={isFlipped}
-                  onFlip={handleFlip}
-                />
-              </motion.div>
+              {filteredCards.length > 0 && currentCard ? (
+                <motion.div
+                  key={currentCard.id}
+                  initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.95, y: -20 }}
+                  transition={{ duration: 0.4, ease: "easeOut" }}
+                >
+                  <FlashcardComponent
+                    flashcard={currentCard}
+                    isFlipped={isFlipped}
+                    onFlip={handleFlip}
+                  />
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="no-flashcard"
+                  initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.95, y: -20 }}
+                  transition={{ duration: 0.4, ease: "easeOut" }}
+                  className="w-full max-w-2xl mx-auto h-80 flex items-center justify-center bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-2xl"
+                >
+                  <div className="text-center p-8">
+                    <div className="text-4xl mb-4">⚠️</div>
+                    <h3 className="text-lg font-semibold text-red-700 dark:text-red-300 mb-2">
+                      No Flashcard Available
+                    </h3>
+                    <p className="text-red-600 dark:text-red-400">
+                      Filtered Cards: {filteredCards.length}, Current Index: {currentIndex}
+                    </p>
+                    <p className="text-red-600 dark:text-red-400">
+                      Please check your filters or flashcard data source.
+                    </p>
+                  </div>
+                </motion.div>
+              )}
             </AnimatePresence>
-          </motion.div>
+          </div>
 
           {/* Navigation Controls */}
-          <motion.div variants={fadeInUp} custom={4} className="flex justify-center items-center gap-6">
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+          <div className="flex justify-center items-center gap-6">
+            <button
               onClick={handlePrevious}
               disabled={filteredCards.length <= 1}
               className="flex items-center gap-2 px-6 py-3 bg-white/70 dark:bg-white/5 border border-gray-200/50 dark:border-white/10 rounded-xl font-medium text-gray-700 dark:text-gray-300 hover:bg-white/80 dark:hover:bg-white/10 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <ChevronLeft size={20} />
               Previous
-            </motion.button>
+            </button>
 
             <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-              {reviewedCards.has(currentCard.id) && (
-                <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  className="flex items-center gap-1 text-green-600 dark:text-green-400"
-                >
+              {currentCard && reviewedCards.has(currentCard.id) && (
+                <span className="flex items-center gap-1 text-green-600 dark:text-green-400">
                   <Trophy size={16} />
                   Reviewed
-                </motion.div>
+                </span>
               )}
             </div>
 
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+            <button
               onClick={handleNext}
               disabled={filteredCards.length <= 1}
               className="flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
             >
               Next
               <ChevronRight size={20} />
-            </motion.button>
-          </motion.div>
-        </div>
+            </button>
+          </div>
+        </motion.div>
       )}
 
-      {/* Concept Cards */}
-      <section className="flex items-center justify-around px-4  py-8">
-        {filteredSubjects.map((sub) => (
-          <ConceptCard
-            title={sub.title}
-            description={sub.description}
-            icon={sub.icon}
-            level={sub.level}
-            topic={sub.topic}
-            noOfQuestion={sub.questions.length}
-          />
-        ))}
-      </section>
+      {/* ...existing code... */}
     </div>
   );
 };
