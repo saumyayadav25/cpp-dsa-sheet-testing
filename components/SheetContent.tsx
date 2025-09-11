@@ -241,6 +241,26 @@ export default function SheetContent({
         if (!topic) continue;
 
         try {
+          // Fire celebration ONLY for brand-new completion (not stored previously)
+          // Confetti (dynamic import for CSR only)
+          import('canvas-confetti').then((confetti) => {
+            confetti.default({
+              particleCount: 250,
+              spread: 90,
+              origin: { y: 0.6 },
+            });
+          }).catch(() => { });
+
+          // Lightweight toast (no external lib; ephemeral div)
+          const toast = document.createElement('div');
+          toast.className = 'fixed top-5 right-5 bg-green-600 text-white px-4 py-2 rounded-lg shadow-md z-[9999] text-sm animate-fade-in';
+          toast.textContent = `Congrats! You've completed "${topic.name}" 🎉`;
+          document.body.appendChild(toast);
+          setTimeout(() => {
+            toast.classList.add('opacity-0', 'transition-opacity', 'duration-500');
+            setTimeout(() => toast.remove(), 600);
+          }, 2600);
+
           if (isLoggedIn && user) {
             await sendProgressUpdate({
               questionDifficulty: null,
@@ -356,7 +376,7 @@ export default function SheetContent({
             >
               <span className="text-lg font-medium text-gray-900 dark:text-white">{topic.name}</span>
               <span className="text-sm text-gray-500 dark:text-gray-400 font-medium px-2 py-2 ml-auto">
-              {<ProgressTracker
+                {<ProgressTracker
                   totalQuestions={totalQ}
                   solvedQuestions={solvedQ}
                   topicName={topic.name}
@@ -577,4 +597,3 @@ export default function SheetContent({
     </>
   );
 }
- 

@@ -16,26 +16,7 @@ const ProgressTracker: React.FC<ProgressTrackerProps> = ({
 }) => {
   const percent = (solvedQuestions / totalQuestions) * 100;
 
-  React.useEffect(() => {
-    if (isCompleted) {
-      // Dynamically import so it's only loaded in browser (fixes Vercel SSR issue)
-      import('canvas-confetti').then((confetti) => {
-        confetti.default({
-          particleCount: 300,
-          spread: 100,
-          origin: { y: 0.6 },
-        });
-      });
-
-      // Toast message
-      const toast = document.createElement('div');
-      toast.className =
-        'toast fixed top-5 right-5 bg-green-500 text-white px-4 py-2 rounded-lg shadow-md z-50';
-      toast.textContent = `Congrats! You've completed "${topicName}" 🎉`;
-      document.body.appendChild(toast);
-      setTimeout(() => toast.remove(), 3000);
-    }
-  }, [isCompleted, topicName]);
+  // Celebration side-effects moved to SheetContent to avoid firing on every page visit.
 
   return (
     <div className="mt-4">
