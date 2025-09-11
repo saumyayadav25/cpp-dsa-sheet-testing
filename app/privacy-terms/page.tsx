@@ -85,7 +85,7 @@ function PrivacyTermsContent() {
                 className={`px-6 py-3 rounded-lg font-medium transition-all duration-300 ${
                   activeTab === 'privacy'
                     ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg'
-                    : 'text-gray-400 hover:text-foreground dark:hover:text-white'
+                    : 'text-gray-800 hover:text-white'
                 }`}
               >
                 Privacy Policy
@@ -95,7 +95,7 @@ function PrivacyTermsContent() {
                 className={`px-6 py-3 rounded-lg font-medium transition-all duration-300 ${
                   activeTab === 'terms'
                     ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg'
-                    : 'text-gray-400 hover:text-foreground dark:hover:text-white'
+                    : 'text-gray-800 hover:text-white'
                 }`}
               >
                 Terms of Service
@@ -112,7 +112,7 @@ function PrivacyTermsContent() {
             className="bg-gradient-to-br from-purple-500/10 to-blue-500/10 rounded-2xl p-8 border border-white/10 dark:border-white/10 border-gray-200"
           >
             {activeTab === 'privacy' ? (
-              <div className="prose prose-gray dark:prose-invert max-w-none">
+              <div className="prose max-w-none text-foreground">
                 <h2 className="text-2xl font-bold mb-6 text-purple-600 dark:text-purple-400">Privacy Policy</h2>
                 <p className="text-gray-700 dark:text-gray-300 mb-4">
                   <strong>Last updated:</strong> {new Date().toLocaleDateString()}
