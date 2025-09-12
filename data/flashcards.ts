@@ -134,6 +134,13 @@ export const flashcards: Flashcard[] = [
     explanation: "Algorithmic approach that considers searching every possible combination to solve computational problems. Builds solution incrementally and abandons candidates that cannot lead to valid solution.",
     difficulty: "Intermediate",
     category: "Recursion"
+  },
+  {
+    id: 18,
+    term: "Recursive Tree",
+    explanation: "A diagram that represents how a recursive function expands into multiple subproblemsat each call",
+    difficulty: "Intermediate",
+    category: "Recursion"
   }
 ];
 
