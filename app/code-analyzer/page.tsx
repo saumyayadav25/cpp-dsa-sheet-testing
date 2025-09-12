@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from 'react';
+import { Loader2, ChevronDown } from 'lucide-react';
 import { analyzeWithOpenAI } from '@/lib/openaiAnalyze';
 
 const languages = [
@@ -54,78 +55,97 @@ const CodeAnalyzerPage = () => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-4 flex flex-col gap-6">
-      <h1 className="text-2xl font-bold text-center">Code Analyzer</h1>
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
-        <div className="flex-1">
-          <label htmlFor="language" className="font-medium">Language</label>
-          <select
-            id="language"
-            value={language}
-            onChange={e => setLanguage(e.target.value)}
-            className="border rounded px-2 py-1 w-full dropdown-visible"
-          >
-            {languages.map(l => (
-              <option key={l.value} value={l.value}>{l.label}</option>
-            ))}
-          </select>
-        </div>
-        <div className="flex-1">
-          <label className="font-medium">Analysis Mode</label>
-          <select
-            value={mode}
-            onChange={e => setMode(e.target.value as 'static' | 'ai')}
-            className="border rounded px-2 py-1 w-full dropdown-visible"
-          >
-            <option value="static">Heuristics (Fast)</option>
-            <option value="ai">AI (Best, may take a few seconds)</option>
-          </select>
-        </div>
+    <div className="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8 flex flex-col gap-8">
+      <div className="text-center">
+        <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">Code Analyzer</h1>
+        <p className="mt-2 text-lg text-muted-foreground">Estimate time and space complexity of your code.</p>
       </div>
-      <div className="flex flex-col gap-2">
-        <label htmlFor="code" className="font-medium">Paste your code</label>
-        <textarea
-          id="code"
-          value={code}
-          onChange={e => setCode(e.target.value)}
-          rows={10}
-          className="border rounded px-2 py-2 font-mono"
-          placeholder="Paste your code here..."
-        />
-      </div>
-      <button
-        onClick={handleAnalyze}
-        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition disabled:opacity-60"
-        disabled={loading || !code.trim()}
-      >
-        {loading ? 'Analyzing...' : 'Analyze'}
-      </button>
-      {error && <div className="text-red-600">{error}</div>}
-      {result && (
-        <div className="bg-white shadow rounded p-4 mt-4 dark:bg-gray-800">
-          <h2 className="text-lg font-semibold mb-2">Estimated Complexity</h2>
-          <div className="flex flex-col gap-1 mb-2">
-            <span><strong>Time Complexity:</strong> {result.time}</span>
-            <span><strong>Space Complexity:</strong> {result.space}</span>
+
+      <div className="bg-card border rounded-lg shadow-sm p-6 grid gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div className="flex flex-col gap-2">
+            <label htmlFor="language" className="text-sm font-medium text-muted-foreground">Language</label>
+            <select
+              id="language"
+              value={language}
+              onChange={e => setLanguage(e.target.value)}
+              className="bg-background border border-input rounded-md px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 w-full"
+            >
+              {languages.map(l => (
+                <option key={l.value} value={l.value}>{l.label}</option>
+              ))}
+            </select>
           </div>
+          <div className="flex flex-col gap-2">
+            <label htmlFor="mode" className="text-sm font-medium text-muted-foreground">Analysis Mode</label>
+            <select
+              id="mode"
+              value={mode}
+              onChange={e => setMode(e.target.value as 'static' | 'ai')}
+              className="bg-background border border-input rounded-md px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 w-full"
+            >
+              <option value="static">Heuristics (Fast)</option>
+              <option value="ai">AI (Best, may take a few seconds)</option>
+            </select>
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <label htmlFor="code" className="text-sm font-medium text-muted-foreground">Paste your code</label>
+          <textarea
+            id="code"
+            value={code}
+            onChange={e => setCode(e.target.value)}
+            rows={12}
+            className="bg-background border border-input rounded-md px-3 py-2 font-mono text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 w-full min-h-[200px]"
+            placeholder="Paste your code here..."
+          />
+        </div>
+
+        <button
+          onClick={handleAnalyze}
+          className="inline-flex items-center justify-center bg-primary text-primary-foreground h-10 px-6 py-2 rounded-md text-sm font-medium ring-offset-background transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
+          disabled={loading || !code.trim()}
+        >
+          {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+          {loading ? 'Analyzing...' : 'Analyze'}
+        </button>
+      </div>
+
+      {error && (
+        <div role="alert" className="bg-destructive/10 text-destructive border-l-4 border-destructive p-4 rounded-md">
+          <p className="font-semibold">Error</p>
+          <p>{error}</p>
+        </div>
+      )}
+
+      {result && (
+        <div className="bg-muted/50 rounded-xl p-6 mt-4 animate-in fade-in-50">
+          <h2 className="text-xl font-semibold mb-4 text-foreground">Analysis Result</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4 text-center">
+            <div className="bg-background/70 p-4 rounded-lg">
+              <h3 className="text-sm font-medium text-muted-foreground mb-1">Time Complexity</h3>
+              <p className="text-lg font-semibold text-primary">{result.time}</p>
+            </div>
+            <div className="bg-background/70 p-4 rounded-lg">
+              <h3 className="text-sm font-medium text-muted-foreground mb-1">Space Complexity</h3>
+              <p className="text-lg font-semibold text-primary">{result.space}</p>
+            </div>
+          </div>
+
           {result.explanation && (
-            <details className="mt-2 cursor-pointer">
-              <summary className="font-medium text-blue-700 dark:text-blue-400">Show AI Explanation</summary>
-              <pre className="whitespace-pre-wrap text-sm mt-2 bg-gray-50 p-2 rounded border overflow-x-auto dark:bg-gray-900 dark:text-gray-100">{result.explanation}</pre>
+            <details className="mt-4 bg-background/70 rounded-lg border open:ring-1 open:ring-inset open:ring-border transition-all">
+              <summary className="font-medium text-foreground p-4 cursor-pointer list-none flex justify-between items-center">
+                Show AI Explanation
+                <ChevronDown className="h-5 w-5 transition-transform duration-200 group-open:rotate-180" />
+              </summary>
+              <div className="p-4 border-t">
+                <pre className="whitespace-pre-wrap text-sm text-muted-foreground font-sans leading-relaxed">{result.explanation}</pre>
+              </div>
             </details>
           )}
         </div>
       )}
-      <style jsx>{`
-        .dropdown-visible option {
-          color: black;
-          background-color: white;
-        }
-        .dark .dropdown-visible option {
-          color: white;
-          background-color: #374151;
-        }
-      `}</style>
     </div>
   );
 };
