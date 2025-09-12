@@ -683,7 +683,7 @@ export default function Home() {
 
           <motion.div
             variants={containerVariants}
-            className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8"
+            className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 items-stretch"
           >
             {[
               {
@@ -725,9 +725,9 @@ export default function Home() {
                   key={title}
                   variants={itemVariants}
                   whileHover={{ scale: 1.05, y: -5 }}
-                  className="group relative"
+                  className="group relative h-full"
                 >
-                  <div className={`bg-white/70 dark:bg-white/5 backdrop-blur-sm border border-gray-200/50 dark:border-white/10 rounded-2xl p-6 text-center transition-all duration-300 hover:shadow-xl hover:bg-white/80 dark:hover:bg-white/10 ${isInView ? 'ring-2 ring-blue-500/20' : ''}`}>
+                  <div className={`flex flex-col justify-center h-full bg-white/70 dark:bg-white/5 backdrop-blur-sm border border-gray-200/50 dark:border-white/10 rounded-2xl p-6 text-center transition-all duration-300 hover:shadow-xl hover:bg-white/80 dark:hover:bg-white/10 ${isInView ? 'ring-2 ring-blue-500/20' : ''}`}>
                     <div className="relative">
                       <div className={`w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br ${gradient} flex items-center justify-center text-2xl shadow-lg group-hover:scale-110 transition-transform duration-300`}>
                         {icon}
