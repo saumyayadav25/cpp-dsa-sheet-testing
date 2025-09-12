@@ -1,6 +1,7 @@
 "use client";
 
-import { FaGithub, FaLinkedin, FaTwitter } from "react-icons/fa";
+import { FaGithub, FaLinkedin } from "react-icons/fa";
+import { FaXTwitter } from "react-icons/fa6";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useState } from "react";
@@ -240,8 +241,8 @@ export default function Footer() {
               {[
                 {
                   href: "https://x.com/SaumyaYadav817",
-                  icon: FaTwitter,
-                  label: "Twitter",
+                  icon: FaXTwitter,
+                  label: "X (Twitter)",
                 },
                 {
                   href: "https://github.com/saumyayadav25",
