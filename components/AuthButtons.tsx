@@ -91,11 +91,7 @@ export default function AuthButtons() {
       href: "/cp-tracker",
       icon: "🎯",
     },
-    {
-      label: "Flashcards",
-      href: "/flashcards",
-      icon: "🧠",
-    },
+    // Flashcards merged into theory-cheatsheets page (tabbed UI)
     {
       label: "Star on GitHub",
       href: "https://github.com/saumyayadav25/DSA-Supreme-3.0",
@@ -547,12 +543,12 @@ export default function AuthButtons() {
                       />
                     </>
                   )} */}
-                    <div className="md:hidden flex flex-wrap justify-center items-center gap-2 py-3 ">
+                  <div className="md:hidden flex flex-wrap justify-center items-center gap-2 py-3 ">
                     {navLinks.map((link, index) => (
                       <motion.div
-                      key={link.href}
-                      whileHover={{ y: -2 }}
-                      whileTap={{ y: 0 }}
+                        key={link.href}
+                        whileHover={{ y: -2 }}
+                        whileTap={{ y: 0 }}
                       >
                         <Link
                           href={link.href}
@@ -582,7 +578,7 @@ export default function AuthButtons() {
                         </Link>
                       </motion.div>
                     ))}
-                    </div>
+                  </div>
                   {/* Bottom highlight */}
                   <motion.div
                     className="h-px bg-gradient-to-r from-transparent via-border to-transparent mt-2"
@@ -983,7 +979,7 @@ export default function AuthButtons() {
                     </button>
                   </div>
                 </form>
-              </div> 
+              </div>
             </motion.div>
           </motion.div>
         )}
