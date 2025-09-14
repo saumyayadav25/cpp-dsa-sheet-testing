@@ -33,35 +33,65 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
   const [isEditorFocused, setIsEditorFocused] = useState(false);
   const [selectionFormats, setSelectionFormats] = useState<Record<string, boolean>>({});
   const changeBufferRef = useRef<number | null>(null);
+  const selectionRafRef = useRef<number | null>(null);
 
   // Allowed tags for sanitization
   const ALLOWED_BLOCK = new Set(['P','H1','H2','H3','UL','OL','LI','BLOCKQUOTE','PRE']);
-  const ALLOWED_INLINE = new Set(['STRONG','EM','U','CODE','BR']);
+  const ALLOWED_INLINE = new Set(['STRONG','EM','U','CODE','BR','A']);
 
   const sanitizeHTML = useCallback((html: string): string => {
-    const doc = new DOMParser().parseFromString(html, 'text/html');
-    const walker = doc.createTreeWalker(doc.body, NodeFilter.SHOW_ELEMENT, null);
-    const toRemove: Element[] = [];
-    while (walker.nextNode()) {
-      const el = walker.currentNode as HTMLElement;
-      const tag = el.tagName;
-      if (!ALLOWED_BLOCK.has(tag) && !ALLOWED_INLINE.has(tag)) {
-        if (tag === 'DIV') { // convert DIV to P
-          const p = doc.createElement('p');
+    if (!html) return '';
+    // Fast path: plain text only (no angle brackets) -> normalize newlines into paragraphs
+    if (!/<[a-zA-Z][\s\S]*?>/.test(html)) {
+      const lines = html.split(/\r?\n/).map(l => l.trim());
+      const filtered = lines.filter((l, idx, arr) => !(l === '' && (idx === 0 || arr[idx - 1] === ''))); // collapse leading & duplicate blanks
+      return filtered.map(l => l === '' ? '<p><br></p>' : `<p>${l.replace(/</g,'&lt;')}</p>`).join('');
+    }
+    try {
+      const doc = new DOMParser().parseFromString(html, 'text/html');
+      const walker = doc.createTreeWalker(doc.body, NodeFilter.SHOW_ELEMENT, null);
+      const toRemove: Element[] = [];
+      while (walker.nextNode()) {
+        const el = walker.currentNode as HTMLElement;
+        const tag = el.tagName;
+        if (!ALLOWED_BLOCK.has(tag) && !ALLOWED_INLINE.has(tag)) {
+          if (tag === 'DIV') { // convert DIV to P
+            const p = doc.createElement('p');
             p.innerHTML = el.innerHTML;
             el.replaceWith(p);
             continue;
+          }
+          toRemove.push(el);
+          continue;
         }
-        toRemove.push(el);
-        continue;
+        // Keep only href on anchors with safe protocol
+        if (el.tagName === 'A') {
+          const href = el.getAttribute('href') || '';
+          const safe = /^(https?:|mailto:|#|\/)/i.test(href);
+          if (!safe) {
+            el.removeAttribute('href');
+          } else {
+            // ensure rel & target sanitized (add later client side if needed)
+            el.removeAttribute('target');
+            el.removeAttribute('rel');
+          }
+          // Remove all other attributes
+          [...el.attributes].forEach(attr => { if (attr.name !== 'href') el.removeAttribute(attr.name); });
+        } else {
+          [...el.attributes].forEach(attr => { if (attr.name !== 'class') el.removeAttribute(attr.name); });
+        }
       }
-      // Strip all attributes except class (optional)
-      [...el.attributes].forEach(attr => {
-        if (attr.name !== 'class') el.removeAttribute(attr.name);
-      });
+      toRemove.forEach(el => el.replaceWith(...Array.from(el.childNodes)));
+      // Remove consecutive empty paragraphs
+      doc.querySelectorAll('p').forEach(p => { if (p.innerHTML.replace(/\u200B|&nbsp;|<br\s*\/?>(?=\s*)/gi,'').trim() === '') p.innerHTML = '<br>'; });
+      const cleaned = doc.body.innerHTML
+        .replace(/\u200B/g,'')
+        .replace(/(<p><br><\/p>){3,}/g,'<p><br></p><p><br></p>') // collapse 3+ blank paras to 2
+        .trim();
+      return cleaned;
+    } catch {
+      return html;
     }
-    toRemove.forEach(el => el.replaceWith(...Array.from(el.childNodes)));
-    return doc.body.innerHTML.replace(/\u200B/g,'').trim();
   }, []);
 
   // Initialize editor content
@@ -73,8 +103,8 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
     }
   }, [value, sanitizeHTML]);
 
-  const updateSelectionState = useCallback(() => {
-    const cmds = ['bold','italic','underline','insertUnorderedList','insertOrderedList'];
+  const updateSelectionStateImmediate = useCallback(() => {
+    const cmds = ['bold','italic','underline','insertUnorderedList','insertOrderedList','justifyLeft','justifyCenter','justifyRight'];
     const state: Record<string, boolean> = {};
     cmds.forEach(c => { try { state[c] = document.queryCommandState(c); } catch { state[c] = false; } });
     const sel = window.getSelection();
@@ -82,11 +112,17 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
       let node: Node | null = sel.anchorNode;
       while (node && node !== editorRef.current) {
         if (node instanceof HTMLElement) {
-          if (['H1','H2','H3'].includes(node.tagName)) {
-            state['h1'] = node.tagName === 'H1';
-            state['h2'] = node.tagName === 'H2';
-            state['h3'] = node.tagName === 'H3';
-            break;
+          const tag = node.tagName;
+          if (['H1','H2','H3'].includes(tag)) {
+            state['h1'] = tag === 'H1';
+            state['h2'] = tag === 'H2';
+            state['h3'] = tag === 'H3';
+          }
+          if (tag === 'CODE' && node.parentElement?.tagName !== 'PRE') {
+            state['inlineCode'] = true;
+          }
+          if (tag === 'A') {
+            state['link'] = true;
           }
         }
         node = node.parentNode;
@@ -95,9 +131,17 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
     setSelectionFormats(state);
   }, []);
 
+  const updateSelectionState = useCallback(() => {
+    if (selectionRafRef.current) cancelAnimationFrame(selectionRafRef.current);
+    selectionRafRef.current = requestAnimationFrame(updateSelectionStateImmediate);
+  }, [updateSelectionStateImmediate]);
+
   useEffect(() => {
     document.addEventListener('selectionchange', updateSelectionState);
-    return () => document.removeEventListener('selectionchange', updateSelectionState);
+    return () => {
+      document.removeEventListener('selectionchange', updateSelectionState);
+      if (selectionRafRef.current) cancelAnimationFrame(selectionRafRef.current);
+    };
   }, [updateSelectionState]);
 
   // Format text functions
@@ -125,11 +169,107 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
   };
 
   const insertHeading = (level: number) => {
-    formatText('formatBlock', `h${level}`);
+    // Toggle: if already that heading -> paragraph
+    const key = `h${level}`;
+    if (selectionFormats[key]) {
+      formatText('formatBlock', 'p');
+    } else {
+      formatText('formatBlock', `h${level}`);
+    }
   };
 
   const setTextAlign = (alignment: string) => {
     formatText(`justify${alignment.charAt(0).toUpperCase() + alignment.slice(1)}`);
+  };
+
+  // Inline code toggle (wrap/unwrap selection in <code> excluding code blocks)
+  const toggleInlineCode = () => {
+    const sel = window.getSelection();
+    if (!sel || sel.rangeCount === 0) return;
+    const range = sel.getRangeAt(0);
+    // If inside existing inline code, unwrap it
+    let node: Node | null = sel.anchorNode;
+    while (node && node !== editorRef.current) {
+      if (node instanceof HTMLElement && node.tagName === 'CODE' && node.parentElement?.tagName !== 'PRE') {
+        const codeEl = node as HTMLElement;
+        const parent = codeEl.parentNode as HTMLElement;
+        const frag = document.createDocumentFragment();
+        while (codeEl.firstChild) frag.appendChild(codeEl.firstChild);
+        parent.replaceChild(frag, codeEl);
+        scheduleCommit();
+        updateSelectionState();
+        return;
+      }
+      node = node.parentNode;
+    }
+    // If collapsed, expand to word boundaries
+    if (range.collapsed) {
+      const wordRange = range.cloneRange();
+      // Expand left
+      while (wordRange.startOffset > 0) {
+        wordRange.setStart(wordRange.startContainer, wordRange.startOffset - 1);
+        if (/\s/.test(wordRange.toString().charAt(0))) {
+          wordRange.setStart(wordRange.startContainer, wordRange.startOffset + 1);
+          break;
+        }
+      }
+      // Expand right
+      while (wordRange.endOffset < (wordRange.endContainer.textContent || '').length) {
+        wordRange.setEnd(wordRange.endContainer, wordRange.endOffset + 1);
+        if (/\s/.test(wordRange.toString().slice(-1))) {
+          wordRange.setEnd(wordRange.endContainer, wordRange.endOffset - 1);
+          break;
+        }
+      }
+      sel.removeAllRanges();
+      sel.addRange(wordRange);
+    }
+    const text = sel.toString();
+    if (text) {
+      document.execCommand('insertHTML', false, `<code>${text.replace(/</g,'&lt;')}</code>`);
+      scheduleCommit();
+      updateSelectionState();
+    }
+  };
+
+  const toggleLink = () => {
+    const sel = window.getSelection();
+    if (!sel || sel.rangeCount === 0) return;
+    // If inside link -> unlink (unwrap)
+    let node: Node | null = sel.anchorNode;
+    while (node && node !== editorRef.current) {
+      if (node instanceof HTMLElement && node.tagName === 'A') {
+        const aEl = node as HTMLAnchorElement;
+        const parent = aEl.parentNode as HTMLElement;
+        const frag = document.createDocumentFragment();
+        while (aEl.firstChild) frag.appendChild(aEl.firstChild);
+        parent.replaceChild(frag, aEl);
+        scheduleCommit();
+        updateSelectionState();
+        return;
+      }
+      node = node.parentNode;
+    }
+    const range = sel.getRangeAt(0);
+    if (range.collapsed) {
+      // nothing selected -> prompt for URL and insert as link text
+      const url = prompt('Enter URL');
+      if (!url) return;
+      const safe = /^(https?:|mailto:|#|\/)/i.test(url.trim()) ? url.trim() : null;
+      if (!safe) return;
+      document.execCommand('insertHTML', false, `<a href="${safe}">${safe}</a>`);
+      scheduleCommit();
+      updateSelectionState();
+      return;
+    }
+    const url = prompt('Enter URL');
+    if (!url) return;
+    const safe = /^(https?:|mailto:|#|\/)/i.test(url.trim()) ? url.trim() : null;
+    if (!safe) return;
+    document.execCommand('createLink', false, safe);
+    // sanitize any added attributes manually (target, etc.) by re-sanitizing affected links
+    scheduleCommit();
+    updateSelectionState();
   };
 
   const handleInput = () => { scheduleCommit(); };
@@ -167,7 +307,31 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
           document.execCommand('redo');
           scheduleCommit();
           break;
+        case 'k': // link toggle
+          e.preventDefault();
+          toggleLink();
+          break;
+        case '`': // inline code toggle
+          e.preventDefault();
+          toggleInlineCode();
+          break;
       }
+    }
+    // Ctrl+Alt+1/2/3 for headings
+    if ((e.ctrlKey || e.metaKey) && e.altKey) {
+      if (['1','2','3'].includes(e.key)) {
+        e.preventDefault();
+        insertHeading(parseInt(e.key,10));
+        return;
+      }
+    }
+    // Soft line break (Shift+Enter) -> insert <br> instead of new paragraph
+    if (e.key === 'Enter' && e.shiftKey) {
+      e.preventDefault();
+      // Use insertHTML to ensure <br> gets placed at cursor
+      document.execCommand('insertHTML', false, '<br>');
+      scheduleCommit();
+      return;
     }
     // Tab to indent/outdent inside lists
     if (e.key === 'Tab') {
@@ -189,6 +353,18 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
       title: "Bold (Ctrl+B)",
       onClick: () => formatText('bold'),
       command: 'bold'
+    },
+    {
+      icon: <span className="text-xs underline">Link</span>,
+      title: "Link (Ctrl+K)",
+      onClick: () => toggleLink(),
+      command: 'link'
+    },
+    {
+      icon: <span className="text-xs font-medium">P</span>,
+      title: "Paragraph",
+      onClick: () => formatText('formatBlock', 'p'),
+      command: 'p'
     },
     {
       icon: <Italic className="w-4 h-4" />,
@@ -245,6 +421,12 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
       command: 'pre'
     },
     {
+      icon: <span className="font-mono text-xs">`</span>,
+      title: "Inline Code (Ctrl+`)",
+      onClick: () => toggleInlineCode(),
+      command: 'inlineCode'
+    },
+    {
       icon: <AlignLeft className="w-4 h-4" />,
       title: "Align Left",
       onClick: () => setTextAlign('left'),
@@ -279,9 +461,40 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
       title: "Clear Formatting",
       onClick: () => {
         if (!editorRef.current) return;
-        const plain = editorRef.current.innerText;
-        editorRef.current.innerHTML = '';
-        document.execCommand('insertHTML', false, `<p>${plain.replace(/\n+/g,'</p><p>')}</p>`);
+        const sel = window.getSelection();
+        if (!sel || sel.rangeCount === 0) return;
+        const range = sel.getRangeAt(0);
+        // If selection spans multiple blocks, clone contents & strip inline tags/headings
+        const frag = range.cloneContents();
+        // Create container to manipulate
+        const container = document.createElement('div');
+        container.appendChild(frag);
+        // Replace heading tags with paragraphs
+        container.querySelectorAll('h1,h2,h3').forEach(h => {
+          const p = document.createElement('p');
+            p.innerHTML = h.innerHTML;
+            h.replaceWith(p);
+        });
+        // Unwrap inline formatting elements strong/em/u/code/a
+        container.querySelectorAll('strong,em,u,code,a').forEach(el => {
+          const parent = el.parentNode;
+          if (!parent) return;
+          while (el.firstChild) parent.insertBefore(el.firstChild, el);
+          parent.removeChild(el);
+        });
+        // Ensure each top-level text/inline becomes in a paragraph if not already block
+        const topNodes = Array.from(container.childNodes);
+        topNodes.forEach(node => {
+          if (node.nodeType === Node.TEXT_NODE && node.textContent?.trim()) {
+            const p = document.createElement('p');
+            p.textContent = node.textContent;
+            container.replaceChild(p, node);
+          }
+        });
+        const html = container.innerHTML
+          .replace(/<div>/g,'<p>')
+          .replace(/<\/div>/g,'</p>');
+        document.execCommand('insertHTML', false, html);
         scheduleCommit();
       },
       command: 'clear'
@@ -446,13 +659,10 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
 };
 
 export default RichTextEditor;
-
-// Optional helper to safely render stored notes (server/client usage)
-// Keeps only allowed tags already enforced in editor; strips others defensively.
 export function sanitizeStoredNote(html: string): string {
   try {
     const doc = new DOMParser().parseFromString(html, 'text/html');
-    const allowed = new Set(['P','H1','H2','H3','UL','OL','LI','BLOCKQUOTE','PRE','STRONG','EM','U','CODE','BR']);
+    const allowed = new Set(['P','H1','H2','H3','UL','OL','LI','BLOCKQUOTE','PRE','STRONG','EM','U','CODE','BR','A']);
     const walker = doc.createTreeWalker(doc.body, NodeFilter.SHOW_ELEMENT, null);
     const remove: Element[] = [];
     while (walker.nextNode()) {
@@ -461,7 +671,19 @@ export function sanitizeStoredNote(html: string): string {
         remove.push(el);
         continue;
       }
-      [...el.attributes].forEach(attr => el.removeAttribute(attr.name));
+      if (el.tagName === 'A') {
+        const href = el.getAttribute('href') || '';
+        if (!/^(https?:|mailto:|#|\/)/i.test(href)) {
+          el.removeAttribute('href');
+        } else {
+          // strip target/rel for consistency
+          el.removeAttribute('target');
+          el.removeAttribute('rel');
+        }
+        [...el.attributes].forEach(attr => { if (attr.name !== 'href') el.removeAttribute(attr.name); });
+      } else {
+        [...el.attributes].forEach(attr => el.removeAttribute(attr.name));
+      }
     }
     remove.forEach(el => el.replaceWith(...Array.from(el.childNodes)));
     return doc.body.innerHTML;
