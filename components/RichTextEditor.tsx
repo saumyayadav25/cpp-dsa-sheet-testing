@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { 
   Bold, 
   Italic, 
@@ -31,21 +31,92 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
 }) => {
   const editorRef = useRef<HTMLDivElement>(null);
   const [isEditorFocused, setIsEditorFocused] = useState(false);
+  const [selectionFormats, setSelectionFormats] = useState<Record<string, boolean>>({});
+  const changeBufferRef = useRef<number | null>(null);
+
+  // Allowed tags for sanitization
+  const ALLOWED_BLOCK = new Set(['P','H1','H2','H3','UL','OL','LI','BLOCKQUOTE','PRE']);
+  const ALLOWED_INLINE = new Set(['STRONG','EM','U','CODE','BR']);
+
+  const sanitizeHTML = useCallback((html: string): string => {
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    const walker = doc.createTreeWalker(doc.body, NodeFilter.SHOW_ELEMENT, null);
+    const toRemove: Element[] = [];
+    while (walker.nextNode()) {
+      const el = walker.currentNode as HTMLElement;
+      const tag = el.tagName;
+      if (!ALLOWED_BLOCK.has(tag) && !ALLOWED_INLINE.has(tag)) {
+        if (tag === 'DIV') { // convert DIV to P
+          const p = doc.createElement('p');
+            p.innerHTML = el.innerHTML;
+            el.replaceWith(p);
+            continue;
+        }
+        toRemove.push(el);
+        continue;
+      }
+      // Strip all attributes except class (optional)
+      [...el.attributes].forEach(attr => {
+        if (attr.name !== 'class') el.removeAttribute(attr.name);
+      });
+    }
+    toRemove.forEach(el => el.replaceWith(...Array.from(el.childNodes)));
+    return doc.body.innerHTML.replace(/\u200B/g,'').trim();
+  }, []);
 
   // Initialize editor content
   useEffect(() => {
-    if (editorRef.current && editorRef.current.innerHTML !== value) {
-      editorRef.current.innerHTML = value || '';
+    if (!editorRef.current) return;
+    const sanitized = sanitizeHTML(value || '');
+    if (editorRef.current.innerHTML !== sanitized) {
+      editorRef.current.innerHTML = sanitized;
     }
-  }, [value]);
+  }, [value, sanitizeHTML]);
+
+  const updateSelectionState = useCallback(() => {
+    const cmds = ['bold','italic','underline','insertUnorderedList','insertOrderedList'];
+    const state: Record<string, boolean> = {};
+    cmds.forEach(c => { try { state[c] = document.queryCommandState(c); } catch { state[c] = false; } });
+    const sel = window.getSelection();
+    if (sel && sel.anchorNode) {
+      let node: Node | null = sel.anchorNode;
+      while (node && node !== editorRef.current) {
+        if (node instanceof HTMLElement) {
+          if (['H1','H2','H3'].includes(node.tagName)) {
+            state['h1'] = node.tagName === 'H1';
+            state['h2'] = node.tagName === 'H2';
+            state['h3'] = node.tagName === 'H3';
+            break;
+          }
+        }
+        node = node.parentNode;
+      }
+    }
+    setSelectionFormats(state);
+  }, []);
+
+  useEffect(() => {
+    document.addEventListener('selectionchange', updateSelectionState);
+    return () => document.removeEventListener('selectionchange', updateSelectionState);
+  }, [updateSelectionState]);
 
   // Format text functions
-  const formatText = (command: string, value?: string) => {
-    document.execCommand(command, false, value);
-    if (editorRef.current) {
-      onChange(editorRef.current.innerHTML);
-    }
+  const commitChange = useCallback(() => {
+    if (!editorRef.current) return;
+    const cleaned = sanitizeHTML(editorRef.current.innerHTML || '');
+    if (cleaned !== value) onChange(cleaned);
+  }, [onChange, sanitizeHTML, value]);
+
+  const scheduleCommit = () => {
+    if (changeBufferRef.current) cancelAnimationFrame(changeBufferRef.current);
+    changeBufferRef.current = requestAnimationFrame(commitChange);
+  };
+
+  const formatText = (command: string, valueArg?: string) => {
+    document.execCommand(command, false, valueArg);
+    scheduleCommit();
     editorRef.current?.focus();
+    updateSelectionState();
   };
 
   const insertList = (ordered: boolean = false) => {
@@ -61,10 +132,13 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
     formatText(`justify${alignment.charAt(0).toUpperCase() + alignment.slice(1)}`);
   };
 
-  const handleInput = () => {
-    if (editorRef.current) {
-      onChange(editorRef.current.innerHTML);
-    }
+  const handleInput = () => { scheduleCommit(); };
+
+  const handlePaste = (e: React.ClipboardEvent) => {
+    e.preventDefault();
+    const text = e.clipboardData.getData('text/plain');
+    document.execCommand('insertText', false, text);
+    scheduleCommit();
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -83,6 +157,28 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
           e.preventDefault();
           formatText('underline');
           break;
+        case 'z':
+          e.preventDefault();
+          document.execCommand('undo');
+          scheduleCommit();
+          break;
+        case 'y':
+          e.preventDefault();
+          document.execCommand('redo');
+          scheduleCommit();
+          break;
+      }
+    }
+    // Tab to indent/outdent inside lists
+    if (e.key === 'Tab') {
+      const sel = window.getSelection();
+      if (sel && sel.anchorNode) {
+        const li = sel.anchorNode instanceof HTMLElement ? sel.anchorNode.closest('li') : sel.anchorNode.parentElement?.closest('li');
+        if (li) {
+          e.preventDefault();
+            if (e.shiftKey) document.execCommand('outdent'); else document.execCommand('indent');
+            scheduleCommit();
+        }
       }
     }
   };
@@ -165,6 +261,30 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
       title: "Align Right",
       onClick: () => setTextAlign('right'),
       command: 'justifyRight'
+    },
+    {
+      icon: <span className="font-mono text-xs">⤺</span>,
+      title: "Undo (Ctrl+Z)",
+      onClick: () => { document.execCommand('undo'); scheduleCommit(); },
+      command: 'undo'
+    },
+    {
+      icon: <span className="font-mono text-xs">⤻</span>,
+      title: "Redo (Ctrl+Y)",
+      onClick: () => { document.execCommand('redo'); scheduleCommit(); },
+      command: 'redo'
+    },
+    {
+      icon: <span className="text-xs">CLR</span>,
+      title: "Clear Formatting",
+      onClick: () => {
+        if (!editorRef.current) return;
+        const plain = editorRef.current.innerText;
+        editorRef.current.innerHTML = '';
+        document.execCommand('insertHTML', false, `<p>${plain.replace(/\n+/g,'</p><p>')}</p>`);
+        scheduleCommit();
+      },
+      command: 'clear'
     }
   ];
 
@@ -177,8 +297,9 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
             <button
               key={index}
               type="button"
-              className="toolbar-btn p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
+              className={`toolbar-btn p-2 rounded transition-colors duration-150 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-gray-700 ${selectionFormats[button.command] ? 'bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300' : ''}`}
               title={button.title}
+              aria-label={button.title}
               onClick={button.onClick}
               onMouseDown={(e: React.MouseEvent) => e.preventDefault()} // Prevent focus loss
             >
@@ -196,11 +317,15 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
           isEditorFocused ? 'ring-2 ring-blue-500 dark:ring-blue-400' : ''
         }`}
         onInput={handleInput}
+        onPaste={handlePaste}
         onFocus={() => setIsEditorFocused(true)}
         onBlur={() => setIsEditorFocused(false)}
         onKeyDown={handleKeyDown}
         style={{ minHeight: 'calc(100% - 60px)' }}
         data-placeholder={!value ? placeholder : ''}
+        role="textbox"
+        aria-multiline="true"
+        aria-label="Rich text editor"
       />
 
       {/* Custom styles for the editor */}
@@ -312,17 +437,34 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
           text-decoration: underline;
         }
 
-        .toolbar-btn:hover {
-          transform: scale(1.05);
-        }
-
-        .toolbar-btn:active {
-          transform: scale(0.95);
-        }
+        .toolbar-btn:active { transform: scale(0.95); }
+        .toolbar-btn { outline: none; }
+        .toolbar-btn:focus-visible { box-shadow: 0 0 0 2px rgba(59,130,246,0.6); }
       `}</style>
     </div>
   );
 };
 
 export default RichTextEditor;
+
+// Optional helper to safely render stored notes (server/client usage)
+// Keeps only allowed tags already enforced in editor; strips others defensively.
+export function sanitizeStoredNote(html: string): string {
+  try {
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    const allowed = new Set(['P','H1','H2','H3','UL','OL','LI','BLOCKQUOTE','PRE','STRONG','EM','U','CODE','BR']);
+    const walker = doc.createTreeWalker(doc.body, NodeFilter.SHOW_ELEMENT, null);
+    const remove: Element[] = [];
+    while (walker.nextNode()) {
+      const el = walker.currentNode as HTMLElement;
+      if (!allowed.has(el.tagName)) {
+        remove.push(el);
+        continue;
+      }
+      [...el.attributes].forEach(attr => el.removeAttribute(attr.name));
+    }
+    remove.forEach(el => el.replaceWith(...Array.from(el.childNodes)));
+    return doc.body.innerHTML;
+  } catch { return ''; }
+}
 
