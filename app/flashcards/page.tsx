@@ -8,6 +8,7 @@ import ReportIssueButton from "@/components/ReportIssueButton";
 import { flashcards, categories, difficulties, type Flashcard } from "@/data/flashcards";
 import { ChevronLeft, ChevronRight, RotateCcw, BookOpen, Filter, Trophy } from "lucide-react";
 
+
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
   visible: (i: number) => ({
@@ -37,6 +38,7 @@ export default function FlashcardsPage() {
   const [difficultyFilter, setDifficultyFilter] = useState("All");
   const [reviewedCards, setReviewedCards] = useState<Set<number>>(new Set());
   const [showFilters, setShowFilters] = useState(false);
+  
 
   // Load progress from localStorage
   useEffect(() => {

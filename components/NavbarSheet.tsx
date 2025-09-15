@@ -109,6 +109,7 @@ export default function NavbarSheet({
     { href: "/notes", label: "Notes" },
     { href: "/companies", label: "Company-wise Sheet" },
     { href: "/timequiz", label: "Timed Quiz" },
+    {href: "/flashcards/add", label: "Add Flashcard" },
     // Flashcards merged into theory-cheatsheets page (tabbed UI)
     { href: "/theory-cheatsheets", label: "Theory Cheatsheets & Flashcards" },
     { href: "/interview-experiences", label: "Interview Experiences" },
