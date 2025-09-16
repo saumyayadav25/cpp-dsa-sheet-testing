@@ -170,6 +170,14 @@ export default function Footer() {
                   external: true,
                   label: "Feedback",
                 },
+                // issue is shifted here
+                {
+                    href:"https://forms.gle/doYqjXbW7AisPP5x6",
+                    external: true,
+                    label: "Report an Issue",
+                    target:"_blank",
+                    rel:"noopener noreferrer"
+                },
               ].map(({ href, label, external }) => (
                 <li key={href}>
                   {external ? (

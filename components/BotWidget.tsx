@@ -72,10 +72,12 @@ export default function BotWidget() {
   };
 
   return (
-  <div ref={chatRef} className="fixed bottom-10 right-6 z-50">
+  <div ref={chatRef} className="fixed bottom-7 sm:bottom-24 right-4 sm:right-5 z-50">
       <button
         onClick={() => setOpen(!open)}
-        className="bg-blue-600 w-16 h-16 rounded-full shadow-lg flex items-center justify-center"
+        className="bg-blue-600 w-14 h-14 rounded-full shadow-lg flex items-center justify-center bottom-4
+         right-4 sm:w-15 sm:h-15 
+                cursor-pointer"
       >
         <Image
           src="/assets/bot.gif"
