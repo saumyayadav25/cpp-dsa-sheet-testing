@@ -19,7 +19,7 @@ export const connect = async () => {
 
         const connectionInstance = await mongoose.connect(mongoUri, {
             dbName: DB_NAME,
-            serverSelectionTimeoutMS: 5000,
+            serverSelectionTimeoutMS: 30000,
             socketTimeoutMS: 45000,
         });
         console.log(`MongoDB Connected! DB_Host: ${connectionInstance.connection.host}`);

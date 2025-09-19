@@ -1,58 +1,47 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connect } from "../../../db/config";
 import { Topic } from "../../../models/Question.model";
+import { sampleTopics } from "../../../data/questions";
 import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken';
 import { User } from "../../../models/User.model";
 
 export async function GET(request: NextRequest) {
     try {
-        // Connect to MongoDB
-        await connect();
-        console.log("Connected to MongoDB successfully");
-        console.log('Mongoose connection readyState:', mongoose.connection.readyState);
-
         // Get query parameters
         const { searchParams } = new URL(request.url);
         const topicId = searchParams.get('topicId');
         const difficulty = searchParams.get('difficulty');
         const company = searchParams.get('company');
 
-        let query: any = {};
+        let topics: any[] = [];
+        let usingFallback = false;
 
-        // If topicId is provided, filter by specific topic
-        if (topicId) {
-            query.id = parseInt(topicId);
-        }
+        try {
+            // Try to connect to MongoDB
+            await connect();
+            console.log("Connected to MongoDB successfully");
+            
+            // Try to fetch from database
+            const count = await Topic.countDocuments({});
+            console.log("Total documents in collection:", count);
 
-        console.log("Query:", query);
-
-        // Check what collection Mongoose is using
-        console.log("Collection name:", Topic.collection.name);
-
-        // Try to count documents first
-        const count = await Topic.countDocuments({});
-        console.log("Total documents in collection:", count);
-
-        // Try finding without any query first
-        let allTopics = await Topic.find({}).lean() as any;
-        console.log("All topics found:", allTopics.length);
-
-        // If no results with 'id' field, try finding all documents to see structure
-        if (allTopics.length === 0) {
-            console.log("No topics found with current schema, checking raw collection...");
-            const rawTopics = await Topic.collection.find({}).toArray();
-            console.log("Raw documents in collection:", rawTopics.length);
-            if (rawTopics.length > 0) {
-                console.log("First raw document:", JSON.stringify(rawTopics[0], null, 2));
+            if (count > 0) {
+                let query: any = {};
+                if (topicId) {
+                    query.id = parseInt(topicId);
+                }
+                topics = await Topic.find(query).lean() as any;
+                console.log("Topics found in database:", topics.length);
+            } else {
+                console.log("No data in database, using sample data");
+                usingFallback = true;
+                topics = sampleTopics;
             }
-        }
-
-        // Fetch topics with questions based on query
-        let topics = await Topic.find(query).lean() as any;
-        console.log("Topics found with query:", topics.length);
-        if (topics.length > 0) {
-            console.log("First topic:", JSON.stringify(topics[0], null, 2));
+        } catch (dbError: any) {
+            console.log("Database error, falling back to sample data:", dbError.message);
+            usingFallback = true;
+            topics = sampleTopics;
         }
 
         // Apply filters if provided
@@ -75,31 +64,36 @@ export async function GET(request: NextRequest) {
             }));
         }
 
-        // If fetching a specific topic, return just that topic
-        if (topicId && topics.length > 0) {
-            return NextResponse.json({
-                success: true,
-                data: topics[0]
-            });
+        // Filter by topicId if provided
+        if (topicId) {
+            const topicIdNum = parseInt(topicId);
+            topics = topics.filter(topic => topic.id === topicIdNum);
+            
+            if (topics.length > 0) {
+                return NextResponse.json({
+                    success: true,
+                    data: topics[0],
+                    usingFallback
+                });
+            }
         }
 
         // Return all topics
         return NextResponse.json({
             success: true,
-            data: topics
+            data: topics,
+            usingFallback
         });
 
     } catch (error: any) {
         console.error("Error fetching questions:", error);
-        if (error && error.stack) console.error(error.stack);
-        return NextResponse.json(
-            {
-                success: false,
-                error: "Failed to fetch questions",
-                message: error.message
-            },
-            { status: 500 }
-        );
+        // Final fallback - return sample data even if everything fails
+        return NextResponse.json({
+            success: true,
+            data: sampleTopics,
+            usingFallback: true,
+            message: "Using sample data due to database issues"
+        });
     }
 }
 

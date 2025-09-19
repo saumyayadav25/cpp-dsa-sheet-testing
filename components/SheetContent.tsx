@@ -13,6 +13,7 @@ import {
 import { Plus, StickyNote, X } from "lucide-react";
 import axios from "axios";
 import ProgressTracker from "./ProgressTracker";
+import RichTextEditor from "./RichTextEditor";
 
 // Types from the API
 interface Question {
@@ -619,36 +620,106 @@ export default function SheetContent({
                               )}
                             </button>
                             {openNoteId === key && (
-                              <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-md bg-black/50 dark:bg-black/80">
-                                <div className="bg-white dark:bg-zinc-900 w-full max-w-3xl h-[80vh] rounded-2xl border border-gray-300 dark:border-gray-700 shadow-2xl p-6 relative transition">
-                                  <button
-                                    onClick={() => setOpenNoteId(null)}
-                                    className="absolute top-4 right-4 hover:text-red-500 transition"
-                                    aria-label="Close notes"
-                                  >
-                                    <X className="w-6 h-6 text-gray-600 dark:text-white" />
-                                  </button>
-                                  <h2 className="text-2xl font-semibold text-center mb-4 text-gray-900 dark:text-white">
-                                    Notes for: {q.title}
-                                  </h2>
-                                  <textarea
-                                    className="w-full h-[calc(100%-100px)] p-4 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white rounded-md border border-blue-300 dark:border-blue-600 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition"
-                                    placeholder="Write your notes..."
-                                    value={local.note || ""}
-                                    onChange={(e) =>
-                                      setProgress((prev) => ({
-                                        ...prev,
-                                        [key]: { ...prev[key], note: e.target.value },
-                                      }))
-                                    }
-                                  />
-                                  <div className="flex justify-center mt-4">
-                                    <button
-                                      onClick={() => setOpenNoteId(null)}
-                                      className="px-6 py-2 bg-amber-700 hover:bg-amber-800 dark:bg-amber-800 dark:hover:bg-amber-700 text-white rounded-lg transition"
-                                    >
-                                      Close
-                                    </button>
+                              <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-lg bg-gradient-to-br from-black/60 via-black/50 to-black/70 dark:from-black/80 dark:via-black/70 dark:to-black/90 animate-in fade-in duration-300">
+                                <div className="bg-gradient-to-br from-white via-gray-50 to-white dark:from-zinc-900 dark:via-zinc-800 dark:to-zinc-900 w-full max-w-4xl h-[85vh] rounded-3xl border-2 border-blue-200/50 dark:border-blue-500/30 shadow-2xl shadow-blue-500/20 dark:shadow-blue-400/10 p-0 relative transition-all duration-300 hover:shadow-3xl hover:shadow-blue-500/30 dark:hover:shadow-blue-400/20 animate-in slide-in-from-bottom-4 zoom-in-95 duration-300">
+                                  
+                                  {/* Header with gradient background */}
+                                  <div className="bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-700 dark:from-blue-800 dark:via-blue-900 dark:to-indigo-900 rounded-t-3xl p-6 relative overflow-hidden">
+                                    {/* Decorative background pattern */}
+                                    <div className="absolute inset-0 bg-gradient-to-r from-blue-400/10 to-indigo-400/10 backdrop-blur-sm"></div>
+                                    <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-16 translate-x-16"></div>
+                                    <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full translate-y-12 -translate-x-12"></div>
+                                    
+                                    <div className="relative flex items-center justify-between">
+                                      <div className="flex items-center space-x-3">
+                                        <div className="p-2 bg-white/20 rounded-xl backdrop-blur-sm">
+                                          <StickyNote className="w-6 h-6 text-white" />
+                                        </div>
+                                        <div>
+                                          <h2 className="text-xl font-bold text-white mb-1">
+                                            Notes
+                                          </h2>
+                                          <p className="text-blue-100 text-sm font-medium truncate max-w-md">
+                                            {q.title}
+                                          </p>
+                                        </div>
+                                      </div>
+                                      
+                                      <button
+                                        onClick={() => setOpenNoteId(null)}
+                                        className="p-2 hover:bg-white/20 rounded-xl transition-all duration-200 group"
+                                        aria-label="Close notes"
+                                      >
+                                        <X className="w-5 h-5 text-white group-hover:text-red-200 transition-colors" />
+                                      </button>
+                                    </div>
+                                  </div>
+
+                                  {/* Content area */}
+                                  <div className="p-6 h-[calc(100%-140px)]">
+                                    <RichTextEditor
+                                      value={local.note || ""}
+                                      onChange={(value) =>
+                                        setProgress((prev) => ({
+                                          ...prev,
+                                          [key]: { ...prev[key], note: value },
+                                        }))
+                                      }
+                                      onSave={() => {
+                                        // Auto-save functionality - notes are already saved to localStorage
+                                        console.log('Notes saved for question:', q.title);
+                                        // You could add additional save logic here (e.g., save to server)
+                                      }}
+                                      placeholder="Start writing your notes... Use the toolbar above for formatting!"
+                                      className="h-full"
+                                    />
+                                  </div>
+
+                                  {/* Footer */}
+                                  <div className="border-t border-gray-200 dark:border-gray-700 p-4 rounded-b-3xl bg-gray-50/50 dark:bg-zinc-800/50 backdrop-blur-sm">
+                                    <div className="flex justify-between items-center">
+                                      <div className="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400">
+                                        <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                                        <span>Auto-saved to local storage</span>
+                                      </div>
+                                      
+                                      <div className="flex space-x-3">
+                                        <button
+                                          onClick={() => setOpenNoteId(null)}
+                                          className="px-6 py-2 bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-700 hover:to-gray-800 text-white rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl font-medium"
+                                        >
+                                          Close
+                                        </button>
+                                        <button
+                                          onClick={() => {
+                                            // Export notes functionality
+                                            const noteContent = local.note || '';
+                                            if (noteContent.trim()) {
+                                              // Create a temporary element to convert HTML to text
+                                              const tempDiv = document.createElement('div');
+                                              tempDiv.innerHTML = noteContent;
+                                              const textContent = tempDiv.textContent || tempDiv.innerText || '';
+                                              
+                                              // Create and download the file
+                                              const blob = new Blob([`Notes for: ${q.title}\n\n${textContent}`], { type: 'text/plain' });
+                                              const url = URL.createObjectURL(blob);
+                                              const a = document.createElement('a');
+                                              a.href = url;
+                                              a.download = `notes-${q.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.txt`;
+                                              document.body.appendChild(a);
+                                              a.click();
+                                              document.body.removeChild(a);
+                                              URL.revokeObjectURL(url);
+                                            } else {
+                                              alert('No notes to export for this question.');
+                                            }
+                                          }}
+                                          className="px-6 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl font-medium"
+                                        >
+                                          Export
+                                        </button>
+                                      </div>
+                                    </div>
                                   </div>
                                 </div>
                               </div>
