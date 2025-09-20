@@ -1,15 +1,13 @@
-# DSAMate Template – GSSoC '25
-
-🚀 This repository is a **template version** of [DSAMate](https://dsamate.vercel.app) — your all-in-one platform for practicing DSA (Data Structures & Algorithms) questions.  
-This version is open for contributions as a part of **GirlScript Summer of Code (GSSoC) 2025**.
-
-> ⚠️ **Note:** This is **not the original DSAMate sheet**. It is meant to serve as a public base for open-source contributions.
+# DSAMate v2 – GSSoC '25
 
 ---
 
 ## 🔍 About the Project
 
-DSAMate Template helps contributors explore the frontend logic, filters, UI components, and page structure of a full-featured DSA practice site.
+🚀 This repository is **DSAMate v2** — your all-in-one platform for practicing Data Structures & Algorithms (DSA) questions.
+It is open for contributions under **GirlScript Summer of Code (GSSoC) 2025**.
+
+The live project is available here [DSAMate v2](https://dsamate-v2.vercel.app)
 
 ---
 
@@ -38,13 +36,9 @@ Please read the [CONTRIBUTIONS](CONTRIBUTING.md) if you're a contributor.
 - **React Icons**
 ---
 
-## 🌐 Original DSAMate Website
+## 🌐 DSAMate v2 Website
 
-Looking for the actual live version with the complete list of real DSA questions and features?
-
----
-
-👉 [**Visit DSAMate Original**](https://dsamate.vercel.app)  
+👉 [**Visit DSAMate v2**](https://dsamate-v2.vercel.app)  
 _(Includes 450+ topic-wise questions with solutions, filters, and daily practice features.)_
 
 ---

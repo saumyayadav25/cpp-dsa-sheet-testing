@@ -20,17 +20,14 @@
   </p>
 </div>
 
-🚀 This repository is a **template version** of [DSAMate](https://dsamate.vercel.app) — your all-in-one platform for practicing DSA (Data Structures & Algorithms) questions.  
-This version is open for contributions as a part of **GirlScript Summer of Code (GSSoC) 2025**.
-
-> 🚧 **Disclaimer:** This repository is a **template clone** created for open-source learning under GSSoC '25.  
-> It uses only placeholder content and UI logic — **no real DSA questions are included**.  
-> The **real DSAMate site** with full question lists is live at [dsamate.vercel.app](https://dsamate.vercel.app).
-
-
 ## 🔍 About the Project
 
-DSAMate v2 helps contributors explore the frontend logic, filters, UI components, and page structure of a full-featured DSA practice site.
+**DSAMate v2** is a one-stop platform for practicing Data Structures & Algorithms (DSA) questions.
+Built with a focus on learning and contribution, this project offers an interactive UI, smart question filters, and daily practice features. It includes **450+ topic-wise questions with solutions** to help learners strengthen their DSA skills.
+
+As part of **GirlScript Summer of Code (GSSoC) 2025**, the project is open to contributors who want to explore, improve, and expand the features of DSAMate.
+
+The live project is available at [dsamate-v2.vercel.app](https://dsamate-v2.vercel.app).
 
 
 ### 🌟 Features
@@ -220,20 +217,6 @@ Please read the [CONTRIBUTING GUIDELINES](CONTRIBUTING.md) if you're a contribut
 └─ 📄 tsconfig.json          # TypeScript config
 
 ```
-
-
-## 🌐 Original DSAMate Website
-
-Looking for the actual live version with the complete list of real DSA questions and features?
-
-
----
-> ⚠️ **NOTE:** The link below is for the official, fully functional DSAMate site — not this template project.
-
-
-
-👉 [**Visit DSAMate Original**](https://dsamate.vercel.app)  
-_(Includes 450+ topic-wise questions with solutions, filters, and daily practice features.)_
 
 ---
 
