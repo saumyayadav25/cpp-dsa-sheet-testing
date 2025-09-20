@@ -219,7 +219,7 @@ export default function SignupPage() {
         onClick={() => setSeePass(!seePass)}
         className="absolute top-[42px] -translate-y-1/2 right-3 text-gray-500 hover:text-gray-700 cursor-pointer z-20"
         >
-        {seePass ? (
+        {!seePass ? (
           <EyeOff className="h-5 w-5" />
         ) : (
           <Eye className="h-5 w-5" />
