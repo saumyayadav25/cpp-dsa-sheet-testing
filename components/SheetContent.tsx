@@ -11,6 +11,7 @@ import {
   SiCodingninjas,
 } from "react-icons/si";
 import { Plus, StickyNote, X } from "lucide-react";
+import RichTextEditor from "./RichTextEditor";
 import axios from "axios";
 import ProgressTracker from "./ProgressTracker";
 
@@ -631,17 +632,19 @@ export default function SheetContent({
                                   <h2 className="text-2xl font-semibold text-center mb-4 text-gray-900 dark:text-white">
                                     Notes for: {q.title}
                                   </h2>
-                                  <textarea
-                                    className="w-full h-[calc(100%-100px)] p-4 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white rounded-md border border-blue-300 dark:border-blue-600 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition"
-                                    placeholder="Write your notes..."
-                                    value={local.note || ""}
-                                    onChange={(e) =>
-                                      setProgress((prev) => ({
-                                        ...prev,
-                                        [key]: { ...prev[key], note: e.target.value },
-                                      }))
-                                    }
-                                  />
+                                  <div className="h-[calc(100%-100px)]">
+                                    <RichTextEditor
+                                      value={local.note || ""}
+                                      onChange={(value) =>
+                                        setProgress((prev) => ({
+                                          ...prev,
+                                          [key]: { ...prev[key], note: value },
+                                        }))
+                                      }
+                                      placeholder="Write your notes with rich formatting..."
+                                      className="h-full"
+                                    />
+                                  </div>
                                   <div className="flex justify-center mt-4">
                                     <button
                                       onClick={() => setOpenNoteId(null)}
