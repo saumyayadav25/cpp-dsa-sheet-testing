@@ -902,14 +902,27 @@ export default function Home() {
             <h2 className="text-4xl md:text-5xl font-bold mb-8 text-gray-900 dark:text-white">
               Why <span className="text-blue-500 dark:text-blue-400">DSAMate</span>?
             </h2>
-            <p className="text-gray-600 dark:text-gray-300 text-lg md:text-xl leading-relaxed max-w-4xl mx-auto">
-              It's not just another practice sheet — it's your all-in-one platform
-              to solve topic-wise problems, apply smart filters, and track your
-              daily progress with the new streak feature. Whether you're revising
-              for interviews, trying to stay consistent, or looking to master DSA
-              with purpose — DSAMate helps you do it better. Mark questions, revisit
-              tough ones, solve a new problem every day, and keep your streak alive.
+      
+            <p className="text-gray-600 dark:text-gray-300 text-lg md:text-xl leading-relaxed max-w-4xl mx-auto text-center">
+            It's not just another practice sheet. It's your 
+            <span className="font-semibold text-blue-500"> all-in-one platform </span>
+            to solve <span className="font-semibold">topic-wise problems</span>, apply 
+            <span className="font-semibold"> smart filters</span>, and track your daily progress with the 
+            <span className="font-semibold"> new streak feature</span>.
+           <br /><br />
+            Whether you're <span className="font-semibold">revising for interviews</span>, 
+            trying to <span className="font-semibold">stay consistent</span>, or aiming to 
+            <span className="font-semibold"> master DSA with purpose, </span>
+            <span className="font-bold bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">
+            DSAMate helps you do it better
+            </span>.
+            <br /><br />
+            <span className="block bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 px-4 py-2 rounded-lg font-semibold text-white">
+            Mark questions, revisit tough ones, solve a new problem every day, 
+            and keep your streak alive.
+            </span>
             </p>
+
           </motion.div>
         </div>
       </motion.section>
