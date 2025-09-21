@@ -74,57 +74,51 @@ export default function SheetPage() {
   return (
     <>
       <Navbar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
-      <main className="min-h-screen bg-white dark:bg-background text-gray-900 dark:text-white px-4 md:px-12 sheet-navbar-offset pb-24 transition-colors duration-300">
-        <ReportIssueButton />
-
-        {/* Progress Summary */}
-        <ProgressSummary />
-
-        {/* HERO SECTION */}
-        <div className="mb-8 text-center">
-          <h1 className="text-3xl md:text-4xl font-bold mb-4">
-            DSA Practice Problems
-          </h1>
-          <p className="text-sm md:text-base text-gray-600 dark:text-gray-400">
-            <strong>Note:</strong> Questions marked with the (for practice) tag
-            do not include the exact solutions. The provided code solutions in
-            this section serve as hints or are solutions to similar problems
-            from platforms like{" "}
-            <span className="text-blue-600 dark:text-blue-400">LeetCode</span>,{" "}
-            <span className="text-green-600 dark:text-green-400">
-              GeeksforGeeks
-            </span>
-            , or{" "}
-            <span className="text-yellow-500 dark:text-yellow-400">
-              HackerRank
-            </span>{" "}
-            ...
-          </p>
-          <div className="mt-4 bg-gray-200 dark:bg-gray-800 border border-gray-400 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg px-4 py-3 inline-block text-sm md:text-base transition-colors duration-300">
-            ⚠️ Company-wise filtering is currently in progress. You might see
-            incomplete or missing tags. Contribute company-specific questions
-            via{" "}
-            <a
-              href="https://forms.gle/8WccErg3TBFTMPkj9"
-              className="underline text-gray-900 dark:text-gray-100 hover:text-gray-700 dark:hover:text-gray-300 transition-colors duration-200"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              this form
-            </a>
-            .
+      <main className="min-h-screen bg-neutral-50 dark:bg-background text-gray-900 dark:text-white px-2 md:px-0 sheet-navbar-offset pb-24 transition-colors duration-300 flex justify-center">
+  <div className="w-full max-w-5xl bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl px-6 sm:px-12 py-12 mt-6 mb-10 border border-gray-200 dark:border-zinc-800">
+          <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-6 gap-4">
+            <ReportIssueButton />
+            <div className="w-full flex justify-center">
+              <ProgressSummary />
+            </div>
           </div>
-        </div>
 
-        <ul className="text-sm md:text-base text-gray-600 dark:text-gray-400 mb-6">
-          <li className="mt-2">⚡: asked in 20+ companies</li>
-          <li className="mt-1">⚡🔥: asked in 50+ companies</li>
-          <li className="mt-1">⚡🔥🏆: asked in 80+ companies</li>
-          <li>(Based on data from LeetCode and GeeksforGeeks company tags)</li>
-        </ul>
+          {/* HERO SECTION */}
+          <div className="mb-8 text-center">
+            <h1 className="text-4xl md:text-5xl font-extrabold mb-3 tracking-tight text-gray-900 dark:text-white">
+              DSA Practice Problems
+            </h1>
+            <p className="text-base md:text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed">
+              <span className="font-semibold">Note:</span> Questions marked with the (for practice) tag do not include the exact solutions. The provided code solutions in this section serve as hints or are solutions to similar problems from platforms like <span className="text-blue-600 dark:text-blue-400 font-medium">LeetCode</span>, <span className="text-green-600 dark:text-green-400 font-medium">GeeksforGeeks</span>, or <span className="text-yellow-500 dark:text-yellow-400 font-medium">HackerRank</span> ...
+            </p>
+            <div className="mt-4 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-lg px-4 py-3 text-sm md:text-base transition-colors duration-300 flex items-start gap-2">
+              <span className="pt-0.5 flex-shrink-0">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M12 20a8 8 0 100-16 8 8 0 000 16z" /></svg>
+              </span>
+              <span>
+                <span className="font-semibold">Heads up:</span> Company-wise filtering is currently in progress. You might see incomplete or missing tags. Want to help us improve? Contribute company-specific questions via{' '}
+                <a
+                  href="https://forms.gle/8WccErg3TBFTMPkj9"
+                  className="underline text-gray-900 dark:text-gray-100 hover:text-gray-700 dark:hover:text-gray-300 transition-colors duration-200"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  this form
+                </a>
+                .
+              </span>
+            </div>
+          </div>
 
-        {/* FILTERS */}
-        <div className="mb-6 flex flex-wrap md:flex-row gap-4 md:items-center">
+          <ul className="text-sm md:text-base text-gray-600 dark:text-gray-400 mb-8 flex flex-wrap justify-center gap-x-8 gap-y-1">
+            <li className="flex items-start gap-1"><span className="pt-1 flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-blue-500" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.967a1 1 0 00.95.69h4.175c.969 0 1.371 1.24.588 1.81l-3.38 2.455a1 1 0 00-.364 1.118l1.287 3.966c.3.922-.755 1.688-1.54 1.118l-3.38-2.454a1 1 0 00-1.175 0l-3.38 2.454c-.784.57-1.838-.196-1.54-1.118l1.287-3.966a1 1 0 00-.364-1.118L2.05 9.394c-.783-.57-.38-1.81.588-1.81h4.175a1 1 0 00.95-.69l1.286-3.967z" /></svg></span>Asked in 20+ companies</li>
+            <li className="flex items-start gap-1"><span className="pt-1 flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-purple-500" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 01.894.553l1.382 2.764 3.05.444a1 1 0 01.554 1.706l-2.206 2.15.521 3.037a1 1 0 01-1.451 1.054L10 12.347l-2.744 1.443a1 1 0 01-1.451-1.054l.521-3.037-2.206-2.15a1 1 0 01.554-1.706l3.05-.444L9.106 2.553A1 1 0 0110 2z" /></svg></span>Asked in 50+ companies</li>
+            <li className="flex items-start gap-1"><span className="pt-1 flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-amber-500" fill="currentColor" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.122-6.545L.488 6.91l6.564-.955L10 0l2.948 5.955 6.564.955-4.756 4.635 1.122 6.545z" /></svg></span>Asked in 80+ companies</li>
+            <li className="font-medium">(Based on data from LeetCode and GeeksforGeeks company tags)</li>
+          </ul>
+
+          {/* FILTERS */}
+          <div className="mb-8 flex flex-wrap md:flex-row gap-4 md:items-center justify-center">
           {/* Difficulty Filter */}
           <select
             value={difficultyFilter}
@@ -229,78 +223,77 @@ export default function SheetPage() {
         
         </div>
 
-        {/* POTD Section */}
-        <POTD potd={potd} updateStreak={updateStreak} />
 
-        {/* Random Question Card */}
-        {randomPick && (
-          <div
-            id="random-question-card"
-            className="mt-6 mb-8 border border-blue-300 dark:border-blue-800 bg-blue-50/60 dark:bg-blue-900/20 rounded-lg p-4"
-          >
-            <div className="flex items-start justify-between gap-3">
-              <div>
-                <div className="text-xs uppercase tracking-wide text-blue-700 dark:text-blue-300 mb-1">
-                  Random Pick
-                </div>
-                <div className="text-lg font-semibold text-gray-900 dark:text-white">
-                  {randomPick.question.title}
-                </div>
-                <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                  Topic:{" "}
-                  <span className="font-medium">{randomPick.topicName}</span> ·
-                  Difficulty:{" "}
-                  <span className="font-medium capitalize">
-                    {randomPick.question.difficulty}
-                  </span>
-                </div>
-              </div>
-              <button
-                onClick={pickRandomQuestion}
-                className="shrink-0 bg-blue-600 text-white rounded px-3 py-2 text-sm hover:bg-blue-700"
-              >
-                Pick Another
-              </button>
-            </div>
-            {/* Links */}
-            <div className="mt-3 flex flex-wrap gap-2">
-              {Object.entries(randomPick.question.links || {}).map(
-                ([key, url]) =>
-                  url ? (
-                    <a
-                      key={key}
-                      href={url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-sm px-3 py-1 rounded border border-blue-300 dark:border-blue-700 text-blue-700 dark:text-blue-300 hover:bg-blue-100/60 dark:hover:bg-blue-900/40"
-                    >
-                      {key}
-                    </a>
-                  ) : null
-              )}
-              {randomPick.question.solutionLink && (
-                <a
-                  href={randomPick.question.solutionLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm px-3 py-1 rounded border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100/60 dark:hover:bg-zinc-900"
-                >
-                  solution
-                </a>
-              )}
-            </div>
+          {/* POTD Section */}
+          <div className="mb-8">
+            <POTD potd={potd} updateStreak={updateStreak} />
           </div>
-        )}
 
-        {/* SHEET CONTENT */}
-        <SheetContent
-          difficultyFilter={difficultyFilter}
-          statusFilter={statusFilter}
-          revisionFilter={revisionFilter}
-          searchTerm={searchTerm}
-          platformFilter={platformFilter}
-          companyFilter={companyFilter}
-        />
+          {/* Random Question Card */}
+          {randomPick && (
+            <div
+              id="random-question-card"
+              className="mb-8 border border-blue-300 dark:border-blue-800 bg-blue-50/60 dark:bg-blue-900/20 rounded-lg p-5 shadow-sm"
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <div className="text-xs uppercase tracking-wide text-blue-700 dark:text-blue-300 mb-1 font-semibold">
+                    Random Pick
+                  </div>
+                  <div className="text-xl font-bold text-gray-900 dark:text-white">
+                    {randomPick.question.title}
+                  </div>
+                  <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                    Topic: <span className="font-medium">{randomPick.topicName}</span> · Difficulty: <span className="font-medium capitalize">{randomPick.question.difficulty}</span>
+                  </div>
+                </div>
+                <button
+                  onClick={pickRandomQuestion}
+                  className="shrink-0 bg-blue-600 text-white rounded px-3 py-2 text-sm hover:bg-blue-700"
+                >
+                  Pick Another
+                </button>
+              </div>
+              {/* Links */}
+              <div className="mt-3 flex flex-wrap gap-2">
+                {Object.entries(randomPick.question.links || {}).map(
+                  ([key, url]) =>
+                    url ? (
+                      <a
+                        key={key}
+                        href={url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm px-3 py-1 rounded border border-blue-300 dark:border-blue-700 text-blue-700 dark:text-blue-300 hover:bg-blue-100/60 dark:hover:bg-blue-900/40"
+                      >
+                        {key}
+                      </a>
+                    ) : null
+                )}
+                {randomPick.question.solutionLink && (
+                  <a
+                    href={randomPick.question.solutionLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm px-3 py-1 rounded border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100/60 dark:hover:bg-zinc-900"
+                  >
+                    solution
+                  </a>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* SHEET CONTENT */}
+          <SheetContent
+            difficultyFilter={difficultyFilter}
+            statusFilter={statusFilter}
+            revisionFilter={revisionFilter}
+            searchTerm={searchTerm}
+            platformFilter={platformFilter}
+            companyFilter={companyFilter}
+          />
+        </div>
       </main>
 
       <TestimonialPrompt />
