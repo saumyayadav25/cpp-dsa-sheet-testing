@@ -66,61 +66,65 @@ const Page = () => {
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  const processedRounds = interviewRounds.map((round) => ({
-    round: round.id,
-    type: round.type,
-    duration: parseInt(round.duration.toString()),
-    questions: round.questions.split("\n").filter((q) => q.trim() !== ""),
-    experience: round.experience,
-  }));
+    const processedRounds = interviewRounds.map((round) => ({
+      round: round.id,
+      type: round.type,
+      duration: parseInt(round.duration.toString()),
+      questions: round.questions.split("\n").filter((q) => q.trim() !== ""),
+      experience: round.experience,
+    }));
 
-  const finalData = {
-    company: formData.company,
-    position: formData.position,
-    author: formData.author,
-    date: formData.date,
-    duration: parseInt(formData.duration.toString()),
-    rounds: parseInt(formData.rounds.toString()),
-    level: formData.difficulty.toLowerCase(), 
-    result: formData.outcome.toLowerCase(),   
-    likes: 0,
-    comments: 0,
-    tags: formData.tags
-      .split(",")
-      .map((tag) => tag.trim())
-      .filter((tag) => tag !== ""),
-    preview: formData.overallExperience.substring(0, 100) + "...",
-    interview: {
-      rounds: processedRounds,
-      overallExperience: formData.overallExperience,
-      tips: formData.tips.split("\n").filter((tip) => tip.trim() !== ""),
-      finalOutcome: formData.outcome.toLowerCase(), // fix
-    },
-  };
+    const finalData = {
+      company: formData.company,
+      position: formData.position,
+      author: formData.author,
+      date: formData.date,
+      duration: parseInt(formData.duration.toString()),
+      rounds: parseInt(formData.rounds.toString()),
+      level: formData.difficulty.toLowerCase(),
+      result: formData.outcome.toLowerCase(),
+      likes: 0,
+      comments: 0,
+      tags: formData.tags
+        .split(",")
+        .map((tag) => tag.trim())
+        .filter((tag) => tag !== ""),
+      preview: formData.overallExperience.substring(0, 100) + "...",
+      interview: {
+        rounds: processedRounds,
+        overallExperience: formData.overallExperience,
+        tips: formData.tips.split("\n").filter((tip) => tip.trim() !== ""),
+        finalOutcome: formData.outcome.toLowerCase(), // fix
+      },
+    };
 
-  try {
-    const res = await fetch("/api/interview-experiences", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(finalData),
-    });
+    try {
+      const res = await fetch("/api/interview-experiences", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(finalData),
+      });
 
-    const result = await res.json();
-    if (result.success) {
-      showMessage("Interview Experience shared successfully!", "success");
-    } else {
-      showMessage("Error sharing experience!", "error");
+      const result = await res.json();
+      if (result.success) {
+        showMessage("Interview Experience shared successfully!", "success");
+      } else {
+        showMessage("Error sharing experience!", "error");
+      }
+    } catch (error) {
+      showMessage("Something went wrong!", "error");
     }
-  } catch (error) {
-    showMessage("Something went wrong!", "error");
-  }
-};
+  };
 
   return (
     <div className="bg-background min-h-screen flex flex-col items-center gap-8">
-      <Navbar icon={<Share />} pageTitle="Share Experience" onBack="/interview-experiences" />
+      <Navbar
+        icon={<Share />}
+        pageTitle="Share Experience"
+        onBack="/interview-experiences"
+      />
       <div className="bg-card p-8 rounded-xl shadow-lg w-full max-w-2xl">
         <h1 className="text-2xl md:text-3xl text-center font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
           Interview Feedback
@@ -248,20 +252,34 @@ const Page = () => {
                 >
                   Difficulty
                 </label>
-                <select
-                  id="difficulty"
-                  name="difficulty"
-                  value={formData.difficulty}
-                  onChange={handleFormChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border-2 
-                  focus:ring-blue-500 focus:border-blue-500 bg-card text-white"
-                  required
-                >
-                  <option value="">Select a difficulty</option>
-                  <option value="Easy">Easy</option>
-                  <option value="Medium">Medium</option>
-                  <option value="Hard">Hard</option>
-                </select>
+                <div className="relative">
+                  <select
+                    id="difficulty"
+                    name="difficulty"
+                    value={formData.difficulty}
+                    onChange={handleFormChange}
+                    className="appearance-none mt-1 block w-full bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2.5 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-gray-400 dark:hover:border-gray-500 transition-all duration-200 cursor-pointer shadow-sm hover:shadow-md"
+                    required
+                  >
+                    <option value="">Select a difficulty</option>
+                    <option value="Easy">Easy</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Hard">Hard</option>
+                  </select>
+                  <svg
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500 dark:text-gray-400 pointer-events-none"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                </div>
               </div>
               <div>
                 <label
@@ -270,21 +288,34 @@ const Page = () => {
                 >
                   Outcome
                 </label>
-                <select
-                  id="outcome"
-                  name="outcome"
-                  value={formData.outcome}
-                  onChange={handleFormChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border-2 
-                  focus:ring-blue-500 focus:border-blue-500 bg-card text-white"
-                  required
-                >
-                  <option value="">Select an outcome</option>
-                  <option value="Selected">Selected</option>
-                  <option value="Rejected">Rejected</option>
-                  <option value="Pending">Pending</option>
-                </select>
-
+                <div className="relative">
+                  <select
+                    id="outcome"
+                    name="outcome"
+                    value={formData.outcome}
+                    onChange={handleFormChange}
+                    className="appearance-none mt-1 block w-full bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2.5 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-gray-400 dark:hover:border-gray-500 transition-all duration-200 cursor-pointer shadow-sm hover:shadow-md"
+                    required
+                  >
+                    <option value="">Select an outcome</option>
+                    <option value="Selected">Selected</option>
+                    <option value="Rejected">Rejected</option>
+                    <option value="Pending">Pending</option>
+                  </select>
+                  <svg
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500 dark:text-gray-400 pointer-events-none"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                </div>
               </div>
             </div>
 
