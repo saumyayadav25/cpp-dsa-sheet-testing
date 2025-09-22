@@ -5,8 +5,86 @@ import { motion, AnimatePresence } from "framer-motion";
 import Navbar from "@/components/Navbar";
 import FlashcardComponent from "@/components/FlashcardComponent";
 import ReportIssueButton from "@/components/ReportIssueButton";
-import { flashcards, categories, difficulties, type Flashcard } from "@/data/flashcards";
 import { ChevronLeft, ChevronRight, RotateCcw, BookOpen, Filter, Trophy } from "lucide-react";
+
+// new state hooks for dynamic flashcards
+
+
+
+type Flashcard = {
+  id: number;
+  term: string;
+  explanation: string;
+  difficulty: string;
+  category: string;
+};
+
+
+
+export default function FlashcardsPage() {
+  const [flashcards, setFlashcards] = useState<Flashcard[]>([]);
+const [categories, setCategories] = useState<string[]>(["All"]);
+const [difficulties, setDifficulties] = useState<string[]>(["All"]);
+const [loading, setLoading] = useState<boolean>(true);
+  
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isFlipped, setIsFlipped] = useState(false);
+  const [categoryFilter, setCategoryFilter] = useState("All");
+  const [difficultyFilter, setDifficultyFilter] = useState("All");
+  const [reviewedCards, setReviewedCards] = useState<Set<number>>(new Set());
+  const [showFilters, setShowFilters] = useState(false);
+  
+  useEffect(() => {
+  let mounted = true;
+
+  async function fetchFlashcards() {
+    setLoading(true);
+    try {
+      const res = await fetch("/api/flashcards", { cache: "no-store" });
+      if (!res.ok) throw new Error(`Failed to fetch flashcards (${res.status})`);
+
+      const json: unknown = await res.json();
+
+      if (!Array.isArray(json)) {
+        throw new Error("Invalid response format: expected an array");
+      }
+
+      
+
+      // Coerce/normalize items into Flashcard[] safely
+      const cards: Flashcard[] = (json as unknown[]).map((item) => {
+        const obj: any = item ?? {};
+        return {
+          id: Number(obj.id ?? NaN),
+          term: String(obj.term ?? ""),
+          explanation: String(obj.explanation ?? ""),
+          difficulty: String(obj.difficulty ?? "Basic"),
+          category: String(obj.category ?? "Uncategorized"),
+        };
+      });
+
+      // filter out totally invalid rows (e.g., missing id or term)
+      const validCards = cards.filter((c) => !Number.isNaN(c.id) && c.term.length > 0);
+
+      if (!mounted) return;
+
+      setFlashcards(validCards);
+      setCategories(["All", ...Array.from(new Set(validCards.map((c) => c.category)))]);
+      setDifficulties(["All", ...Array.from(new Set(validCards.map((c) => c.difficulty)))]);
+    } catch (err) {
+      console.error("Error loading flashcards:", err);
+      //  setFlashcards([]) or show an error state
+    } finally {
+      if (mounted) setLoading(false);
+    }
+  }
+
+  fetchFlashcards();
+  return () => {
+    mounted = false;
+  };
+}, []);
+
 
 
 const fadeInUp = {
@@ -31,15 +109,6 @@ const containerVariants = {
   },
 };
 
-export default function FlashcardsPage() {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isFlipped, setIsFlipped] = useState(false);
-  const [categoryFilter, setCategoryFilter] = useState("All");
-  const [difficultyFilter, setDifficultyFilter] = useState("All");
-  const [reviewedCards, setReviewedCards] = useState<Set<number>>(new Set());
-  const [showFilters, setShowFilters] = useState(false);
-  
-
   // Load progress from localStorage
   useEffect(() => {
     const savedIndex = localStorage.getItem('flashcard_current_index');
@@ -52,6 +121,7 @@ export default function FlashcardsPage() {
     if (savedCategoryFilter) setCategoryFilter(savedCategoryFilter);
     if (savedDifficultyFilter) setDifficultyFilter(savedDifficultyFilter);
   }, []);
+  
 
   // Filter flashcards
   const filteredCards = flashcards.filter(card => {
@@ -123,6 +193,14 @@ export default function FlashcardsPage() {
     setCategoryFilter("All");
     setDifficultyFilter("All");
   };
+
+  if (loading) {
+  return (
+    <main className="min-h-screen bg-white dark:bg-black flex items-center justify-center">
+      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div>
+    </main>
+  );
+}
 
   if (filteredCards.length === 0) {
     return (

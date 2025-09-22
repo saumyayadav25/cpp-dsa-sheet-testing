@@ -21,35 +21,35 @@ export default function AddFlashcard() {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
+  e.preventDefault();
+  setLoading(true);
 
-    try {
-      const res = await fetch("/api/add-flashcard", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
+  try {
+    const res = await fetch("/api/flashcards", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData),
+    });
 
-      const data = await res.json();
-
-      if (data.success) {
-        // show popup
-        alert("✅ Flashcard added successfully!");
-
-        // redirect after short delay
-        setTimeout(() => {
-          router.push("/flashcards");
-        }, 200); // 0.2s delay
-      } else {
-        alert("❌ Error: " + data.error);
-      }
-    } catch (error) {
-      alert("❌ Something went wrong. Please try again.");
-    } finally {
-      setLoading(false);
+    if (!res.ok) {
+      throw new Error("Failed to add flashcard");
     }
-  };
+
+    //  Wait for DB confirmation
+    const newCard = await res.json();
+    alert(`Flashcard "${newCard.term}" added!`);
+
+    //  Redirect only after DB success
+    router.push("/flashcards");
+  } catch (err) {
+    console.error(err);
+    alert("Error adding flashcard.");
+  } finally {
+    setLoading(false);
+  }
+};
+
+
 
   return (
     <div className="max-w-lg mx-auto p-6 bg-white rounded-2xl shadow-md">
