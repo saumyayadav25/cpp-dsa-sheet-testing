@@ -126,89 +126,114 @@ export default function SheetPage() {
         {/* FILTERS */}
         <div className="mb-6 flex flex-wrap md:flex-row gap-4 md:items-center">
           {/* Difficulty Filter */}
-          <select
-            value={difficultyFilter}
-            onChange={(e) => setDifficultyFilter(e.target.value)}
-            className="bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded px-4 py-2 focus:outline-none transition-colors duration-300"
-          >
-            <option value="">Difficulties</option>
-            <option value="easy">Easy</option>
-            <option value="medium">Medium</option>
-            <option value="hard">Hard</option>
-          </select>
+          <div className="relative">
+            <select
+              value={difficultyFilter}
+              onChange={(e) => setDifficultyFilter(e.target.value)}
+              className="appearance-none bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2.5 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-gray-400 dark:hover:border-gray-500 transition-all duration-200 cursor-pointer shadow-sm hover:shadow-md min-w-[140px]"
+            >
+              <option value="">Difficulties</option>
+              <option value="easy">Easy</option>
+              <option value="medium">Medium</option>
+              <option value="hard">Hard</option>
+            </select>
+            <svg className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500 dark:text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </div>
 
           {/* Solved Status Filter */}
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-            className="bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded px-4 py-2 focus:outline-none transition-colors duration-300"
-          >
-            <option value="">Solved Status</option>
-            <option value="solved">Solved</option>
-            <option value="unsolved">Unsolved</option>
-          </select>
+          <div className="relative">
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="appearance-none bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2.5 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-gray-400 dark:hover:border-gray-500 transition-all duration-200 cursor-pointer shadow-sm hover:shadow-md min-w-[150px]"
+            >
+              <option value="">Solved Status</option>
+              <option value="solved">Solved</option>
+              <option value="unsolved">Unsolved</option>
+            </select>
+            <svg className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500 dark:text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </div>
 
           {/* Revision Filter */}
-          <select
-            value={revisionFilter}
-            onChange={(e) => setRevisionFilter(e.target.value)}
-            className="bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded px-4 py-2 focus:outline-none transition-colors duration-300"
-          >
-            <option value="">Revision Status</option>
-            <option value="marked">Marked for Revision</option>
-            <option value="unmarked">Not Marked</option>
-          </select>
+          <div className="relative">
+            <select
+              value={revisionFilter}
+              onChange={(e) => setRevisionFilter(e.target.value)}
+              className="appearance-none bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2.5 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-gray-400 dark:hover:border-gray-500 transition-all duration-200 cursor-pointer shadow-sm hover:shadow-md min-w-[160px]"
+            >
+              <option value="">Revision Status</option>
+              <option value="marked">Marked for Revision</option>
+              <option value="unmarked">Not Marked</option>
+            </select>
+            <svg className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500 dark:text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </div>
 
           {/* Platform Filter */}
-          <select
-            value={platformFilter}
-            onChange={(e) => setPlatformFilter(e.target.value)}
-            className="bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded px-4 py-2 focus:outline-none transition-colors duration-300"
-          >
-            <option value="">Platform</option>
-            <option value="leetcode">LeetCode</option>
-            <option value="gfg">GeeksforGeeks</option>
-            <option value="hackerrank">HackerRank</option>
-            <option value="spoj">SPOJ</option>
-            <option value="ninja">Coding Ninjas</option>
-            <option value="code">Others</option>
-          </select>
+          <div className="relative">
+            <select
+              value={platformFilter}
+              onChange={(e) => setPlatformFilter(e.target.value)}
+              className="appearance-none bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2.5 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-gray-400 dark:hover:border-gray-500 transition-all duration-200 cursor-pointer shadow-sm hover:shadow-md min-w-[130px]"
+            >
+              <option value="">Platform</option>
+              <option value="leetcode">LeetCode</option>
+              <option value="gfg">GeeksforGeeks</option>
+              <option value="hackerrank">HackerRank</option>
+              <option value="spoj">SPOJ</option>
+              <option value="ninja">Coding Ninjas</option>
+              <option value="code">Others</option>
+            </select>
+            <svg className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500 dark:text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </div>
 
           {/* Company Filter */}
-          <select
-            value={companyFilter}
-            onChange={(e) => setCompanyFilter(e.target.value)}
-            className="bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded px-4 py-2 focus:outline-none transition-colors duration-300"
-          >
-            <option value="">All Companies</option>
-            <option value="Adobe">Adobe</option>
-            <option value="Amazon">Amazon</option>
-            <option value="Apple">Apple</option>
-            <option value="Cisco">Cisco</option>
-            <option value="DE shaw">DE shaw</option>
-            <option value="Flipkart">Flipkart</option>
-            <option value="Google">Google</option>
-            <option value="Intuit">Intuit</option>
-            <option value="MakeMyTrip">MakeMyTrip</option>
-            <option value="Meta">Meta</option>
-            <option value="Microsoft">Microsoft</option>
-            <option value="Morgan Stanley">Morgan Stanley</option>
-            <option value="Nvidia">Nvidia</option>
-            <option value="Oracle">Oracle</option>
-            <option value="Paypal">PayPal</option>
-            <option value="Paytm">Paytm</option>
-            <option value="PhonePe">PhonePe</option>
-            <option value="Salesforce">Salesforce</option>
-            <option value="Samsung">Samsung</option>
-            <option value="Sprinklr">Sprinklr</option>
-            <option value="Swiggy">Swiggy</option>
-            <option value="Tesla">Tesla</option>
-            <option value="Walmart">Walmart</option>
-            <option value="Uber">Uber</option>
-            <option value="Visa">Visa</option>
-            <option value="WITCH">WITCH</option>
-            {/* Add more as needed */}
-          </select>
+          <div className="relative">
+            <select
+              value={companyFilter}
+              onChange={(e) => setCompanyFilter(e.target.value)}
+              className="appearance-none bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2.5 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-gray-400 dark:hover:border-gray-500 transition-all duration-200 cursor-pointer shadow-sm hover:shadow-md min-w-[160px]"
+            >
+              <option value="">All Companies</option>
+              <option value="Adobe">Adobe</option>
+              <option value="Amazon">Amazon</option>
+              <option value="Apple">Apple</option>
+              <option value="Cisco">Cisco</option>
+              <option value="DE shaw">DE shaw</option>
+              <option value="Flipkart">Flipkart</option>
+              <option value="Google">Google</option>
+              <option value="Intuit">Intuit</option>
+              <option value="MakeMyTrip">MakeMyTrip</option>
+              <option value="Meta">Meta</option>
+              <option value="Microsoft">Microsoft</option>
+              <option value="Morgan Stanley">Morgan Stanley</option>
+              <option value="Nvidia">Nvidia</option>
+              <option value="Oracle">Oracle</option>
+              <option value="Paypal">PayPal</option>
+              <option value="Paytm">Paytm</option>
+              <option value="PhonePe">PhonePe</option>
+              <option value="Salesforce">Salesforce</option>
+              <option value="Samsung">Samsung</option>
+              <option value="Sprinklr">Sprinklr</option>
+              <option value="Swiggy">Swiggy</option>
+              <option value="Tesla">Tesla</option>
+              <option value="Walmart">Walmart</option>
+              <option value="Uber">Uber</option>
+              <option value="Visa">Visa</option>
+              <option value="WITCH">WITCH</option>
+              {/* Add more as needed */}
+            </select>
+            <svg className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500 dark:text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </div>
 
           {/* Reset Button */}
           <button
