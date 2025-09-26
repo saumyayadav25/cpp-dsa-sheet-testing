@@ -90,11 +90,30 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
-      { url: "/icons/icon-512.png", sizes: "512x512", type: "image/png" },
+
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon-48x48.png", sizes: "48x48", type: "image/png" },
+      { url: "/icons/icon-192x192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icons/icon-512x512.png", sizes: "512x512", type: "image/png" },
     ],
     apple: [
+      { url: "/icons/apple/apple-touch-icon-57x57.png", sizes: "57x57", type: "image/png" },
+      { url: "/icons/apple/apple-touch-icon-60x60.png", sizes: "60x60", type: "image/png" },
+      { url: "/icons/apple/apple-touch-icon-72x72.png", sizes: "72x72", type: "image/png" },
+      { url: "/icons/apple/apple-touch-icon-76x76.png", sizes: "76x76", type: "image/png" },
+      { url: "/icons/apple/apple-touch-icon-114x114.png", sizes: "114x114", type: "image/png" },
+      { url: "/icons/apple/apple-touch-icon-120x120.png", sizes: "120x120", type: "image/png" },
+      { url: "/icons/apple/apple-touch-icon-144x144.png", sizes: "144x144", type: "image/png" },
+      { url: "/icons/apple/apple-touch-icon-152x152.png", sizes: "152x152", type: "image/png" },
+      { url: "/icons/apple/apple-touch-icon-180x180.png", sizes: "180x180", type: "image/png" },
+    ],
+    other: [
+      { rel: "mask-icon", url: "/favicon.svg", color: "#3b82f6" },
       { url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icons/icon-512.png", sizes: "512x512", type: "image/png" },
     ],
   },
   manifest: "/manifest.json",
@@ -108,8 +127,13 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#0A0A0A" },
+    { media: "(prefers-color-scheme: dark)", color: "#0f172a" },
   ],
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({
@@ -121,6 +145,45 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        {/* PWA Meta Tags */}
+        <meta name="application-name" content="DSAMate v2" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="apple-mobile-web-app-title" content="DSAMate v2" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="msapplication-config" content="/browserconfig.xml" />
+        <meta name="msapplication-TileColor" content="#0f172a" />
+        <meta name="msapplication-tap-highlight" content="no" />
+        
+        {/* Additional Favicon Links */}
+        <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+        <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png" />
+        
+        {/* Apple Touch Icons */}
+        <link rel="apple-touch-icon" sizes="57x57" href="/icons/apple/apple-touch-icon-57x57.png" />
+        <link rel="apple-touch-icon" sizes="60x60" href="/icons/apple/apple-touch-icon-60x60.png" />
+        <link rel="apple-touch-icon" sizes="72x72" href="/icons/apple/apple-touch-icon-72x72.png" />
+        <link rel="apple-touch-icon" sizes="76x76" href="/icons/apple/apple-touch-icon-76x76.png" />
+        <link rel="apple-touch-icon" sizes="114x114" href="/icons/apple/apple-touch-icon-114x114.png" />
+        <link rel="apple-touch-icon" sizes="120x120" href="/icons/apple/apple-touch-icon-120x120.png" />
+        <link rel="apple-touch-icon" sizes="144x144" href="/icons/apple/apple-touch-icon-144x144.png" />
+        <link rel="apple-touch-icon" sizes="152x152" href="/icons/apple/apple-touch-icon-152x152.png" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple/apple-touch-icon-180x180.png" />
+        
+        {/* Microsoft Tiles */}
+        <meta name="msapplication-TileImage" content="/icons/microsoft/mstile-144x144.png" />
+        <meta name="msapplication-square70x70logo" content="/icons/microsoft/mstile-70x70.png" />
+        <meta name="msapplication-square150x150logo" content="/icons/microsoft/mstile-150x150.png" />
+        <meta name="msapplication-wide310x150logo" content="/icons/microsoft/mstile-310x150.png" />
+        <meta name="msapplication-square310x310logo" content="/icons/microsoft/mstile-310x310.png" />
+        
+        {/* Safari Pinned Tab */}
+        <link rel="mask-icon" href="/favicon.svg" color="#3b82f6" />
+        
         {gaId && (
           <>
             <Script
