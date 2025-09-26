@@ -7,7 +7,13 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "seed:questions": "npx tsx scripts/seedQuestions.ts"
+    "seed:questions": "npx tsx scripts/seedQuestions.ts",
+    "generate:icons": "node scripts/generate-icons-from-fav.js",
+    "generate:icons:legacy": "node scripts/generate-icons.js",
+    "generate:icons:enhanced": "node scripts/generate-icons-enhanced.js",
+    "pwa:setup": "npm run generate:icons && echo 'PWA setup complete! High-quality icons generated successfully.'",
+    "pwa:validate": "node scripts/pwa-validator.js",
+    "pwa:test": "npm run pwa:validate && echo 'PWA validation complete! Check the report for details.'"
   },
   "dependencies": {
     "@auth/supabase-adapter": "^1.9.1",

@@ -1,0 +1,62 @@
+{
+  "name": "DSAMate v2",
+  "description": "Ultimate DSA Practice Platform",
+  "version": "2.0.0",
+  "icons": {
+    "favicon": {
+      "ico": "/favicon.ico",
+      "svg": "/favicon.svg",
+      "svg_dark": "/favicon-dark.svg",
+      "sizes": ["16x16", "32x32", "48x48"]
+    },
+    "apple": {
+      "touch_icons": [
+        { "size": "57x57", "url": "/icons/apple/apple-touch-icon-57x57.png" },
+        { "size": "60x60", "url": "/icons/apple/apple-touch-icon-60x60.png" },
+        { "size": "72x72", "url": "/icons/apple/apple-touch-icon-72x72.png" },
+        { "size": "76x76", "url": "/icons/apple/apple-touch-icon-76x76.png" },
+        { "size": "114x114", "url": "/icons/apple/apple-touch-icon-114x114.png" },
+        { "size": "120x120", "url": "/icons/apple/apple-touch-icon-120x120.png" },
+        { "size": "144x144", "url": "/icons/apple/apple-touch-icon-144x144.png" },
+        { "size": "152x152", "url": "/icons/apple/apple-touch-icon-152x152.png" },
+        { "size": "180x180", "url": "/icons/apple/apple-touch-icon-180x180.png" }
+      ],
+      "startup_images": [
+        { "size": "1024x1024", "url": "/icons/apple/apple-startup-1024x1024.png" }
+      ]
+    },
+    "android": {
+      "chrome_icons": [
+        { "size": "192x192", "url": "/icons/icon-192x192.png" },
+        { "size": "512x512", "url": "/icons/icon-512x512.png" }
+      ],
+      "maskable_icons": [
+        { "size": "192x192", "url": "/icons/icon-192x192-maskable.png" },
+        { "size": "512x512", "url": "/icons/icon-512x512-maskable.png" }
+      ]
+    },
+    "microsoft": {
+      "tile_icons": [
+        { "size": "70x70", "url": "/icons/microsoft/mstile-70x70.png" },
+        { "size": "144x144", "url": "/icons/microsoft/mstile-144x144.png" },
+        { "size": "150x150", "url": "/icons/microsoft/mstile-150x150.png" },
+        { "size": "310x150", "url": "/icons/microsoft/mstile-310x150.png" },
+        { "size": "310x310", "url": "/icons/microsoft/mstile-310x310.png" }
+      ]
+    }
+  },
+  "browserconfig": {
+    "tile_color": "#0f172a",
+    "theme_color": "#3b82f6"
+  },
+  "apple_web_app": {
+    "capable": true,
+    "status_bar_style": "default",
+    "title": "DSAMate v2"
+  },
+  "theme_colors": {
+    "light": "#ffffff",
+    "dark": "#0f172a",
+    "primary": "#3b82f6"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "manifest": {
+    "passed": 12,
+    "failed": 0,
+    "warnings": 0,
+    "issues": []
+  },
+  "icons": {
+    "passed": 27,
+    "failed": 0,
+    "warnings": 1,
+    "issues": [
+      "⚠️ Consider adding SVG favicon for better scalability"
+    ]
+  },
+  "serviceWorker": {
+    "passed": 2,
+    "failed": 0,
+    "warnings": 0,
+    "issues": []
+  },
+  "metaTags": {
+    "passed": 10,
+    "failed": 0,
+    "warnings": 0,
+    "issues": []
+  },
+  "overall": {
+    "score": 98,
+    "grade": "A"
+  }
+}
