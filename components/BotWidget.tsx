@@ -11,7 +11,7 @@ export default function BotWidget() {
   const [messages, setMessages] = useState([
     {
       role: "bot",
-      content: "👋 Hi! I’m your DSAMate Bot. Tell me what you’ve done so far!",
+      content: "👋 Hi! I'm your DSAMate Bot. Tell me what you've done so far!",
     },
   ]);
   const [loading, setLoading] = useState(false);
@@ -72,88 +72,101 @@ export default function BotWidget() {
   };
 
   return (
-  <div ref={chatRef} className="fixed bottom-10 right-6 z-50">
+    <div ref={chatRef} className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40">
+      {/* Bot Button - Responsive sizing */}
       <button
         onClick={() => setOpen(!open)}
-        className="bg-blue-600 w-16 h-16 rounded-full shadow-lg flex items-center justify-center"
+        className="w-12 h-12 sm:w-16 sm:h-16 md:w-16 md:h-16 lg:w-16 lg:h-16 
+                   bg-blue-600 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 
+                   flex items-center justify-center hover:bg-blue-700 active:scale-95"
       >
         <Image
           src="/assets/bot.gif"
           alt="BOT"
           width={80}
           height={80}
-          className="object-contain"
+          className="w-full h-full object-contain p-1"
           unoptimized
         />
       </button>
 
+      {/* Chat Window - Responsive positioning and sizing */}
       {open && (
-        <div className="mt-2 w-96 bg-white rounded-xl shadow-md border max-h-[70vh] flex flex-col">
-          <div className="flex-1 p-4 overflow-y-auto max-h-[50vh] space-y-2">
+        <div className="absolute bottom-16 right-0 sm:bottom-20 sm:right-0
+                        w-72 sm:w-80 md:w-96 lg:w-[400px] xl:w-[420px]
+                        h-[50vh] sm:h-[60vh] md:h-[65vh] max-h-[450px]
+                        bg-white rounded-xl shadow-lg border flex flex-col">
+          
+          {/* Messages Container - Responsive padding and text sizing */}
+          <div className="flex-1 p-3 sm:p-4 md:p-5 overflow-y-auto space-y-3">
             {messages.map((msg, i) => {
-  let contentElement;
+              let contentElement;
 
-  // Try to parse JSON
-  try {
-    const data = JSON.parse(msg.content);
-    if (Array.isArray(data) && data[0]?.title && data[0]?.description) {
-      // Render as question cards
-      contentElement = (
-        <div className="space-y-3">
-          {data.map((q, idx) => (
-            <div
-              key={idx}
-              className="border rounded-lg p-3 bg-white text-black shadow-sm"
-            >
-              <h3 className="font-bold text-blue-600">{q.title}</h3>
-              <p className="text-sm mt-1">{q.description}</p>
-              <p className="text-xs mt-2 text-gray-500">
-                <b>Topic:</b> {q.topic} | <b>Level:</b> {q.level}
-              </p>
-            </div>
-          ))}
-        </div>
-      );
-    } else {
-      contentElement = <span>{msg.content}</span>;
-    }
-  } catch {
-    // Parse markdown-style formatting
-    const formattedContent = msg.content
-      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // **bold**
-      .replace(/\*(.*?)\*/g, '<em>$1</em>') // *italic*
-      .replace(/^(\d+\.)\s/gm, '<strong>$1</strong> '); // numbered lists
-    
-    contentElement = (
-      <span 
-        dangerouslySetInnerHTML={{ __html: formattedContent }}
-      />
-    );
-  }
+              // Try to parse JSON
+              try {
+                const data = JSON.parse(msg.content);
+                if (Array.isArray(data) && data[0]?.title && data[0]?.description) {
+                  // Render as question cards
+                  contentElement = (
+                    <div className="space-y-2 sm:space-y-3">
+                      {data.map((q, idx) => (
+                        <div
+                          key={idx}
+                          className="border rounded-lg p-3 sm:p-4 bg-white text-black shadow-sm hover:shadow-md transition-shadow"
+                        >
+                          <h3 className="font-bold text-blue-600 text-sm sm:text-base md:text-lg">{q.title}</h3>
+                          <p className="text-sm sm:text-base md:text-lg mt-1">{q.description}</p>
+                          <p className="text-xs sm:text-sm md:text-base mt-2 text-gray-500">
+                            <b>Topic:</b> {q.topic} | <b>Level:</b> {q.level}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  );
+                } else {
+                  contentElement = <span>{msg.content}</span>;
+                }
+              } catch {
+                // Parse markdown-style formatting
+                const formattedContent = msg.content
+                  .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // **bold**
+                  .replace(/\*(.*?)\*/g, '<em>$1</em>') // *italic*
+                  .replace(/^(\d+\.)\s/gm, '<strong>$1</strong> '); // numbered lists
+                
+                contentElement = (
+                  <span 
+                    dangerouslySetInnerHTML={{ __html: formattedContent }}
+                  />
+                );
+              }
 
-  return (
-    <div
-      key={i}
-      className={`p-2 rounded text-black text-sm whitespace-pre-line ${
-        msg.role === "user"
-          ? "bg-blue-100 text-right"
-          : "bg-gray-100 text-left"
-      }`}
-    >
-      {contentElement}
-    </div>
-  );
-})}
+              return (
+                <div
+                  key={i}
+                  className={`rounded-lg text-black whitespace-pre-line transition-all 
+                             p-3 sm:p-4
+                             text-sm sm:text-base
+                             ${msg.role === "user"
+                               ? "bg-blue-100 text-right ml-4"
+                               : "bg-gray-100 text-left mr-4"
+                             }`}
+                >
+                  {contentElement}
+                </div>
+              );
+            })}
             <div ref={messagesEndRef} />
           </div>
 
-          <div className="p-4 border-t">
-            <div className="flex items-center gap-2">
+          {/* Input Area - Responsive padding and sizing */}
+          <div className="p-3 sm:p-4 border-t bg-gray-50">
+            <div className="flex items-center gap-2 sm:gap-3">
               <Input
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="What have you covered so far?"
-                className="flex-grow border p-2 rounded text-black"
+                className="flex-grow border p-2 sm:p-3 rounded-lg text-black focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all
+                          text-sm sm:text-base"
                 disabled={loading}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && !loading) {
@@ -164,17 +177,21 @@ export default function BotWidget() {
               <button
                 onClick={handleSend}
                 disabled={loading}
-                className={`p-2 rounded text-white ${
+                className={`p-2 sm:p-3 rounded-lg text-white transition-all duration-200 ${
                   loading 
                     ? "bg-gray-400 cursor-not-allowed" 
-                    : "bg-blue-600 hover:bg-blue-700"
+                    : "bg-blue-600 hover:bg-blue-700 hover:scale-105 active:scale-95 shadow-md hover:shadow-lg"
                 }`}
               >
-                <SendHorizonal size={16} />
+                <SendHorizonal 
+                  className="w-4 h-4 sm:w-5 sm:h-5" 
+                />
               </button>
             </div>
             {loading && (
-              <p className="text-sm text-gray-500 mt-2">🤖 Thinking...</p>
+              <p className="text-gray-500 mt-2 animate-pulse text-sm">
+                🤖 Thinking...
+              </p>
             )}
           </div>
         </div>
