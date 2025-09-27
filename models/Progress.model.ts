@@ -4,6 +4,7 @@ export interface TopicProgress {
   topicName: string;
   solvedCount: number;
   totalQuestions: number;
+  markedForRevision: number;
 }
 
 export interface ProgressType extends Document {
@@ -16,12 +17,14 @@ export interface ProgressType extends Document {
   totalSolved: number;
   topicsProgress: TopicProgress[];
   topicsCompleted: string[];
+  markedForRevision: number,
 }
 
 const TopicProgressSchema = new Schema<TopicProgress>({
   topicName: { type: String, required: true },
   solvedCount: { type: Number, default: 0 },
   totalQuestions: { type: Number, default: 0 },
+  markedForRevision: { type: Number, default: 0 },
 });
 
 const ProgressSchema = new Schema<ProgressType>({
@@ -33,7 +36,8 @@ const ProgressSchema = new Schema<ProgressType>({
   hardSolved: { type: Number, default: 0 },
   totalSolved: { type: Number, default: 0 },
   topicsProgress: { type: [TopicProgressSchema], default: [] },
-  topicsCompleted: { type: [String], default: [] }, 
+  topicsCompleted: { type: [String], default: [] },
+  markedForRevision: { type: Number, default: 0 }, 
 });
 
 export const Progress: Model<ProgressType> =

@@ -22,6 +22,7 @@ export async function GET(_req: Request, context: any) {
           hardSolved: 0,
           totalSolved: 0,
           streakCount: 0,
+          markedForRevision:0,
           topicsCompleted: [],
           topicsProgress: [],
           lastVisited: null
@@ -53,8 +54,13 @@ export async function GET(_req: Request, context: any) {
         hardSolved: progressDoc.hardSolved,
         totalSolved: progressDoc.totalSolved,
         streakCount: progressDoc.streakCount,
+        markedForRevision: progressDoc.markedForRevision,
         topicsCompleted, // ✅ send to frontend
-        topicsProgress: progressDoc.topicsProgress || [],
+        topicsProgress: progress.topicsProgress.map((t: { topicName: any; solvedCount: any; totalQuestions: any; }) => ({
+          topicName: t.topicName,
+          solvedCount: t.solvedCount,
+          totalQuestions: t.totalQuestions // Make sure this field exists
+        })),
         lastVisited: progressDoc.lastVisited
       },
       badges: badgeDoc?.badges || []
@@ -64,5 +70,3 @@ export async function GET(_req: Request, context: any) {
     return NextResponse.json({ message: "Server Error" }, { status: 500 });
   }
 }
-
-

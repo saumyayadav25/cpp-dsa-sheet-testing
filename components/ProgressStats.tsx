@@ -11,6 +11,7 @@ type TopicProgress = {
 };
 
 type StatsType = {
+  firstVisited: any;
   easySolved: number;
   mediumSolved: number;
   hardSolved: number;
@@ -48,15 +49,29 @@ export default function ProgressStats({ stats }: ProgressStatsProps) {
 
   const getAveragePerDay = () => {
     // Placeholder: could be based on totalSolved over last N days
-    return Math.round((stats.totalSolved / 30) * 10) / 10;
+      // Convert lastVisited string to a Date object
+      const lastVisitedDate = new Date(stats.lastVisited);
+      const firstVisitDate = stats.firstVisited ? new Date(stats.firstVisited) : lastVisitedDate; // fallback
+      const diffInTime = lastVisitedDate.getTime() - firstVisitDate.getTime();
+      const diffInDays = Math.max(Math.ceil(diffInTime / (1000 * 3600 * 24)), 1); // at least 1 day
+      return Math.round((stats.totalSolved / diffInDays) * 10) / 10;
+    
   };
 
+  
   const getBestTopic = () => {
-    if (topicStats.length === 0) return { name: 'N/A', percentage: 0 };
-    return topicStats.reduce((best, current) =>
+    if (!topicStats || topicStats.length === 0) return { name: 'N/A', percentage: 0 };
+  
+    // Filter out topics with 0 total questions
+    const validTopics = topicStats.filter(topic => topic.percentage > 0);
+    if (validTopics.length === 0) return { name: 'N/A', percentage: 0 };
+  
+    // Reduce to find the topic with the highest percentage
+    return validTopics.reduce((best, current) =>
       current.percentage > best.percentage ? current : best
     );
   };
+  
 
   const weeklyGoalProgress = Math.min(
     Math.round((getCurrentWeekProgress() / 7) * 100),

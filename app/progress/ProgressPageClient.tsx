@@ -72,12 +72,17 @@ const fetchProgress = async () => {
     const data = res.data;
     const progress = data.progress;
 
+    // 
+    console.log("Raw progress data:", progress);
+  
+    // 
     setprostats(progress);
 
     // Build topicStats with default total = 5
     const topicStats = (progress.topicsProgress || []).map((t: any) => ({
       name: t.topicName || "Unnamed Topic",
       solved: t.solvedCount ?? 0, // default 0
+      totalQuestions: t.totalQuestions ?? 5,
     }));
 
     interface DifficultyStat {
@@ -105,9 +110,11 @@ const fetchProgress = async () => {
     }
 
     setStats({
-      totalQuestions: topicStats.length * 5,
-      solvedQuestions: topicStats.reduce((sum: number, t: TopicStat) => sum + t.solved, 0),
-      markedForRevision: progress.markedForRevision || 0,
+      totalQuestions: topicStats.reduce((sum: any, t: { totalQuestions: any; }) => sum + t.totalQuestions, 0),
+      solvedQuestions: topicStats.reduce((sum: any, t: { solved: any; }) => sum + t.solved, 0),
+      markedForRevision: (progress.topicsProgress || []).reduce(
+        (sum: number, t: any) => sum + (t.revisionCount ?? 0),
+        0),
       percentage: topicStats.length
         ? Math.round(topicStats.reduce((sum: number, t: TopicStat) => sum + t.solved, 0) / (topicStats.length * 5) * 100)
         : 0,

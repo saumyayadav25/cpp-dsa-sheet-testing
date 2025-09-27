@@ -6,6 +6,7 @@ import { FaLayerGroup, FaCheckCircle } from 'react-icons/fa';
 type TopicStat = {
   name: string;
   solved: number;
+  totalQuestions: number;
   percentage?: number; // optional because we'll calculate it
 };
 
@@ -15,6 +16,7 @@ type TopicProgressProps = {
 
 export default function TopicProgress({ topicStats }: TopicProgressProps) {
   console.log("Raw topicStats:", topicStats);
+  // const percentage = (solved / totalQuestions) * 100;
 
   const getProgressColor = (percentage: number) => {
     if (percentage >= 80) return 'bg-green-500';
@@ -31,15 +33,14 @@ export default function TopicProgress({ topicStats }: TopicProgressProps) {
   };
 
   // Default total questions per topic to 5
-  const TOTAL_PER_TOPIC = 5;
+  // const TOTAL_PER_TOPIC = 5;
 
   // Calculate percentage
   const topicsWithPercentage = topicStats.map(t => ({
     ...t,
-    total: TOTAL_PER_TOPIC,
     percentage: t.percentage !== undefined
       ? t.percentage
-      : Math.round((t.solved / TOTAL_PER_TOPIC) * 100)
+      : Math.round((t.solved / t.totalQuestions) * 100)
   }));
 
   console.log("Topics with percentage:", topicsWithPercentage);
@@ -85,7 +86,7 @@ export default function TopicProgress({ topicStats }: TopicProgressProps) {
               </div>
               <div className="text-right flex-shrink-0">
                 <span className={`font-bold text-sm ${getProgressTextColor(topic.percentage)}`}>
-                  {topic.solved}/{topic.total}
+                  {topic.solved}/{topic.totalQuestions}
                 </span>
                 <span className="text-gray-500 dark:text-gray-400 text-xs ml-1">
                   ({topic.percentage}%)

@@ -76,7 +76,19 @@ export default function SheetContent({
       note?: string;
       solvedAt?: string;
     };
-  }>({});
+  }>(() => {
+    // Ensure this runs only on the client
+    if (typeof window === 'undefined') {
+      return {};
+    }
+    try {
+      const stored = localStorage.getItem("dsa-progress");
+      return stored ? JSON.parse(stored) : {};
+    } catch (e) {
+      console.error("Failed to parse dsa-progress from localStorage", e);
+      return {};
+    }
+  });
   const [openNoteId, setOpenNoteId] = useState<string | null>(null);
   const [showSignInModal, setShowSignInModal] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -182,6 +194,7 @@ export default function SheetContent({
   useEffect(() => {
     try {
       const stored = localStorage.getItem("dsa-progress");
+      // console.log("stored",stored);
       if (stored) setProgress(JSON.parse(stored));
     } catch (e) {
       console.error("Failed to parse dsa-progress from localStorage", e);
@@ -232,6 +245,9 @@ export default function SheetContent({
   };
 
   async function sendProgressUpdate(payload: {
+    questionId: string;
+    isSolved: boolean;
+    isMarkedForRevision: boolean;
     questionDifficulty?: string | null;
     topicName?: string | null;
     topicCompleted?: string | null;
@@ -242,12 +258,12 @@ export default function SheetContent({
 
       const body = {
         userId: user._id,
-        questionDifficulty: payload.questionDifficulty ?? null,
-        topicName: payload.topicName ?? null,
-        topicCompleted: payload.topicCompleted ?? null,
+        ...payload,
+        // topicName: currentQuestion.topic, // Ensure this is being sent
       };
 
       const res = await axios.post("/api/progress/update", body);
+      console.log("Progress update response:", res.data);
       return res.data;
     } catch (err) {
       console.error("Error sending progress update:", err);
@@ -262,7 +278,6 @@ export default function SheetContent({
     topicName?: string
   ) => {
     console.log("Auth state:", { isLoggedIn, user });
-
     // Check if user is authenticated before allowing any changes
     if (!isLoggedIn || !user) {
       console.log("User not authenticated, showing modal");
@@ -276,7 +291,7 @@ export default function SheetContent({
 
     // Fail-safe: recover topicName if missing
     if (!topicName) {
-      const [topicIdStr] = id.split("-");
+      const [topicIdStr,questionId] = id.split("-");
       const topicId = parseInt(topicIdStr);
       const topic = topics.find((t: Topic) => t.id === topicId);
       topicName = topic?.name || undefined;
@@ -288,22 +303,32 @@ export default function SheetContent({
       if (field === "isSolved" && !currentFieldValue) {
         updated.solvedAt = new Date().toISOString();
       }
+      console.log("updated",{ ...prev, [id]: updated });
       return { ...prev, [id]: updated };
     });
 
-    if (field === "isSolved" && !currentFieldValue) {
+      if (field === "isSolved" || field === "isMarkedForRevision") {
       try {
+        const updatedValue = !currentFieldValue;
         await sendProgressUpdate({
+          questionId: id,
+          isSolved: field === "isSolved" ? updatedValue : progress[id]?.isSolved ?? false,
+          isMarkedForRevision: field === "isMarkedForRevision" ? updatedValue : progress[id]?.isMarkedForRevision ?? false,
           questionDifficulty: questionDifficulty ?? null,
           topicName: topicName ?? null,
+          // topicCompleted: topicName ?? null,
         });
-
-        const audio = new Audio("/sounds/done.mp3");
-        audio.play().catch((err) => console.log("Audio play blocked or failed", err));
+    
+        if (field === "isSolved" && updatedValue) {
+          const audio = new Audio("/sounds/done.mp3");
+          audio.play().catch((err) => console.log("Audio play blocked or failed", err));
+        }
       } catch (err) {
-        console.error("Error updating progress for solved question:", err);
+        console.error(`Error updating progress for ${field}:`, err);
       }
     }
+
+    
   };
 
   useEffect(() => {
@@ -329,7 +354,7 @@ export default function SheetContent({
       for (const topicId of newCompletions) {
         const topic = topics.find((t: Topic) => t.id === topicId);
         if (!topic) continue;
-
+        
         try {
           // Fire celebration ONLY for brand-new completion (not stored previously)
           // Confetti (dynamic import for CSR only)
@@ -355,6 +380,9 @@ export default function SheetContent({
             await sendProgressUpdate({
               questionDifficulty: null,
               topicCompleted: topic.name,
+              questionId: "",
+              isSolved: false,
+              isMarkedForRevision: false
             });
           } else {
             console.log(`Guest completed topic "${topic.name}" — persisting locally only`);

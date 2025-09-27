@@ -17,6 +17,29 @@ export default function SheetPageClient() {
   const [platformFilter, setPlatformFilter] = useState("");
   const [companyFilter, setCompanyFilter] = useState("");
 
+  // 
+  const [progress, setProgress] = useState(() => {
+    if (typeof window === "undefined") {
+      return {};
+    }
+    try {
+      const savedProgress = localStorage.getItem("dsa-progress");
+      return savedProgress ? JSON.parse(savedProgress) : {};
+    } catch (error) {
+      console.error("Error reading progress from localStorage", error);
+      return {};
+    }
+  });
+  useEffect(() => {
+    try {
+      localStorage.setItem("dsa-progress", JSON.stringify(progress));
+    } catch (error) {
+      console.error("Error saving progress to localStorage", error);
+    }
+  }, [progress]);
+
+  
+
   const [randomPick, setRandomPick] = useState<{
     topicName: string;
     question: Question;
@@ -79,6 +102,7 @@ export default function SheetPageClient() {
 
         {/* Progress Summary */}
         <ProgressSummary />
+        
 
         {/* HERO SECTION */}
         <div className="mb-8 text-center">
@@ -129,8 +153,7 @@ export default function SheetPageClient() {
           <select
             value={difficultyFilter}
             onChange={(e) => setDifficultyFilter(e.target.value)}
-            className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded px-2 py-2  focus:outline-none transition-colors duration-300 ease-in-out 
-               hover:bg-gray-100 dark:hover:bg-gray-700 dark:focus:bg-gray-700 focus:bg-gray-100"
+            className="bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded px-4 py-2 focus:outline-none transition-colors duration-300"
           >
             <option value="">Difficulties</option>
             <option value="easy">Easy</option>
@@ -142,8 +165,7 @@ export default function SheetPageClient() {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded px-2 py-2 focus:outline-none transition-colors duration-300 ease-in-out 
-               hover:bg-gray-100 dark:hover:bg-gray-700 dark:focus:bg-gray-700 focus:bg-gray-100"
+            className="bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded px-4 py-2 focus:outline-none transition-colors duration-300"
           >
             <option value="">Solved Status</option>
             <option value="solved">Solved</option>
@@ -154,8 +176,7 @@ export default function SheetPageClient() {
           <select
             value={revisionFilter}
             onChange={(e) => setRevisionFilter(e.target.value)}
-            className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded px-2 py-2 focus:outline-none transition-colors duration-300 ease-in-out 
-               hover:bg-gray-100 dark:hover:bg-gray-700 dark:focus:bg-gray-700 focus:bg-gray-100"
+            className="bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded px-4 py-2 focus:outline-none transition-colors duration-300"
           >
             <option value="">Revision Status</option>
             <option value="marked">Marked for Revision</option>
@@ -166,8 +187,7 @@ export default function SheetPageClient() {
           <select
             value={platformFilter}
             onChange={(e) => setPlatformFilter(e.target.value)}
-            className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded px-2 py-2 focus:outline-none transition-colors duration-300 ease-in-out 
-               hover:bg-gray-100 dark:hover:bg-gray-700 dark:focus:bg-gray-700 focus:bg-gray-100"
+            className="bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded px-4 py-2 focus:outline-none transition-colors duration-300"
           >
             <option value="">Platform</option>
             <option value="leetcode">LeetCode</option>
@@ -182,8 +202,7 @@ export default function SheetPageClient() {
           <select
             value={companyFilter}
             onChange={(e) => setCompanyFilter(e.target.value)}
-            className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded px-2 py-2 focus:outline-none transition-colors duration-300 ease-in-out 
-               hover:bg-gray-100 dark:hover:bg-gray-700 dark:focus:bg-gray-700 focus:bg-gray-100"
+            className="bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded px-4 py-2 focus:outline-none transition-colors duration-300"
           >
             <option value="">All Companies</option>
             <option value="Adobe">Adobe</option>
