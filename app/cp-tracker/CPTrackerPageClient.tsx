@@ -121,20 +121,25 @@ export default function CPTrackerPageClient() {
     }
   };
   
-  // Corrected this hook to use the right data structure
+  // Corrected this hook to use the right data structure.
   const combinedStats = useMemo(() => {
-    const initial = { Easy: 0, Medium: 0, Hard: 0, ActiveDays: 0 };
+    const initial = { Easy: 0, Medium: 0, Hard: 0, TotalSubmissions: 0 , ActiveDays: 0};
     for (const [platform, stat] of Object.entries(stats)) {
       if (!stat) continue;
       if (platform === 'codeforces') {
         initial.Easy += stat.Easy || 0;
         initial.Medium += stat.Medium || 0;
         initial.Hard += stat.Hard || 0;
-        initial.ActiveDays = Math.max(initial.ActiveDays || 0, stat.ActiveDays || 0);
+      initial.TotalSubmissions += (stat.Easy || 0) + (stat.Medium || 0) + (stat.Hard || 0);
       } else if (platform === 'leetcode' && stat.submissionCounts) {
+        const easy = stat.submissionCounts.easy?.solved || 0;
+      const medium = stat.submissionCounts.medium?.solved || 0;
+      const hard = stat.submissionCounts.hard?.solved || 0;
         initial.Easy += stat.submissionCounts.easy?.solved || 0;
         initial.Medium += stat.submissionCounts.medium?.solved || 0;
         initial.Hard += stat.submissionCounts.hard?.solved || 0;
+        initial.TotalSubmissions += easy + medium + hard;
+
       }
     }
     return initial;
@@ -163,7 +168,7 @@ export default function CPTrackerPageClient() {
             <StatCard color="green" label="Solved Easy" value={combinedStats.Easy} />
             <StatCard color="yellow" label="Solved Medium" value={combinedStats.Medium} />
             <StatCard color="red" label="Solved Hard" value={combinedStats.Hard} />
-            <StatCard color="blue" label="Total Active Days" value={combinedStats.ActiveDays} />
+            <StatCard color="blue" label="Total Submissions" value={combinedStats.TotalSubmissions} />
         </motion.div>
 
         <div className="max-w-md mx-auto">
