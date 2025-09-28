@@ -30,7 +30,6 @@ export default function NavbarSheet({
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
 
   const searchInputRef = useRef<HTMLInputElement>(null);
   const pathname = usePathname();
@@ -100,40 +99,9 @@ export default function NavbarSheet({
     setShowMobileSearch(false);
   }, [pathname]);
 
-  // Prevent body scroll when mobile menu is open
-  useEffect(() => {
-    if (isMobileMenuOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
-    
-    // Cleanup on unmount
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
-  }, [isMobileMenuOpen]);
-
   const toggleMobileSearch = () => {
     setShowMobileSearch((v) => !v);
   };
-
-  const toggleDropdown = (dropdownName: string) => {
-    setOpenDropdown(openDropdown === dropdownName ? null : dropdownName);
-  };
-
-  // Close dropdowns when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as Element;
-      if (!target.closest('.dropdown-container')) {
-        setOpenDropdown(null);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
 
   // Dropdown menu structure
   const learningLinks = [
@@ -141,6 +109,7 @@ export default function NavbarSheet({
     { href: "/notes", label: "Notes" },
     { href: "/companies", label: "Company-wise Sheet" },
     { href: "/timequiz", label: "Timed Quiz" },
+    {href: "/flashcards/add", label: "Add Flashcard" },
     // Flashcards merged into theory-cheatsheets page (tabbed UI)
     { href: "/theory-cheatsheets", label: "Theory Cheatsheets & Flashcards" },
     { href: "/interview-experiences", label: "Interview Experiences" },
@@ -192,7 +161,7 @@ export default function NavbarSheet({
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-blue-500">
                   Mate
                 </span>{" "}
-                v2
+                Template
               </span>
             </Link>
           </motion.div>
@@ -290,23 +259,15 @@ export default function NavbarSheet({
           )}
 
           {/* Learning Tools Dropdown */}
-          <div className="relative dropdown-container">
-            <button 
-              onClick={() => toggleDropdown('learning')}
-              className="px-3 py-2 rounded-lg whitespace-nowrap transition-all duration-300 text-foreground hover:text-blue-400 flex items-center gap-1"
-            >
+          <div className="relative group">
+            <button className="px-3 py-2 rounded-lg whitespace-nowrap transition-all duration-300 text-foreground hover:text-blue-400 flex items-center gap-1">
               Learning Tools
-              <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${openDropdown === 'learning' ? 'rotate-180' : ''}`} />
+              <ChevronDown className="w-4 h-4 transition-transform duration-200 group-hover:rotate-180" />
             </button>
-            <div className={`absolute left-0 top-full mt-1 min-w-[200px] backdrop-blur-xl bg-gradient-to-br from-blue-900/20 via-blue-700/20 to-black/20 border border-blue-950 rounded-2xl shadow-2xl transition-all duration-200 z-40 ${openDropdown === 'learning' ? 'opacity-100 visible' : 'opacity-0 invisible'}`}>
+            <div className="absolute left-0 top-full mt-1 min-w-[200px] backdrop-blur-xl bg-gradient-to-br from-blue-900/20 via-blue-700/20 to-black/20 border border-blue-950 rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-40">
               <div className="py-2">
                 {learningLinks.map(link => (
-                  <Link 
-                    key={link.href} 
-                    href={link.href} 
-                    onClick={() => setOpenDropdown(null)}
-                    className="block px-4 py-2.5 text-sm text-foreground hover:bg-blue-800/40 hover:text-blue-300 transition-all"
-                  >
+                  <Link key={link.href} href={link.href} className="block px-4 py-2.5 text-sm text-foreground hover:bg-blue-800/40 hover:text-blue-300 transition-all">
                     {link.label}
                   </Link>
                 ))}
@@ -315,23 +276,15 @@ export default function NavbarSheet({
           </div>
 
           {/* Coding Tools Dropdown */}
-          <div className="relative dropdown-container">
-            <button 
-              onClick={() => toggleDropdown('coding')}
-              className="px-3 py-2 rounded-lg whitespace-nowrap transition-all duration-300 text-foreground hover:text-blue-400 flex items-center gap-1"
-            >
+          <div className="relative group">
+            <button className="px-3 py-2 rounded-lg whitespace-nowrap transition-all duration-300 text-foreground hover:text-blue-400 flex items-center gap-1">
               Coding Tools
-              <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${openDropdown === 'coding' ? 'rotate-180' : ''}`} />
+              <ChevronDown className="w-4 h-4 transition-transform duration-200 group-hover:rotate-180" />
             </button>
-            <div className={`absolute left-0 top-full mt-1 min-w-[200px] backdrop-blur-xl bg-gradient-to-br from-blue-900/20 via-blue-700/20 to-black/20 border border-blue-950 rounded-2xl shadow-2xl transition-all duration-200 z-40 ${openDropdown === 'coding' ? 'opacity-100 visible' : 'opacity-0 invisible'}`}>
+            <div className="absolute left-0 top-full mt-1 min-w-[200px] backdrop-blur-xl bg-gradient-to-br from-blue-900/20 via-blue-700/20 to-black/20 border border-blue-950 rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-40">
               <div className="py-2">
                 {codingLinks.map(link => (
-                  <Link 
-                    key={link.href} 
-                    href={link.href} 
-                    onClick={() => setOpenDropdown(null)}
-                    className="block px-4 py-2.5 text-sm text-foreground hover:bg-blue-800/40 hover:text-blue-300 transition-all"
-                  >
+                  <Link key={link.href} href={link.href} className="block px-4 py-2.5 text-sm text-foreground hover:bg-blue-800/40 hover:text-blue-300 transition-all">
                     {link.label}
                   </Link>
                 ))}
@@ -340,45 +293,23 @@ export default function NavbarSheet({
           </div>
 
           {/* Community Dropdown */}
-          <div className="relative dropdown-container">
-            <button 
-              onClick={() => toggleDropdown('community')}
-              className="px-3 py-2 rounded-lg whitespace-nowrap transition-all duration-300 text-foreground hover:text-blue-400 flex items-center gap-1"
-            >
+          <div className="relative group">
+            <button className="px-3 py-2 rounded-lg whitespace-nowrap transition-all duration-300 text-foreground hover:text-blue-400 flex items-center gap-1">
               Community
-              <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${openDropdown === 'community' ? 'rotate-180' : ''}`} />
+              <ChevronDown className="w-4 h-4 transition-transform duration-200 group-hover:rotate-180" />
             </button>
-            <div className={`absolute left-0 top-full mt-1 min-w-[200px] backdrop-blur-xl bg-gradient-to-br from-blue-900/20 via-blue-700/20 to-black/20 border border-blue-950 rounded-2xl shadow-2xl transition-all duration-200 z-40 ${openDropdown === 'community' ? 'opacity-100 visible' : 'opacity-0 invisible'}`}>
+            <div className="absolute left-0 top-full mt-1 min-w-[200px] backdrop-blur-xl bg-gradient-to-br from-blue-900/20 via-blue-700/20 to-black/20 border border-blue-950 rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-40">
               <div className="py-2">
                 {communityLinks.map(link => link.external ? (
-                  <a 
-                    key={link.href} 
-                    href={link.href} 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
-                    onClick={() => setOpenDropdown(null)}
-                    className="block px-4 py-2.5 text-sm text-foreground hover:bg-blue-800/40 hover:text-blue-300 transition-all"
-                  >
+                  <a key={link.href} href={link.href} target="_blank" rel="noopener noreferrer" className="block px-4 py-2.5 text-sm text-foreground hover:bg-blue-800/40 hover:text-blue-300 transition-all">
                     {link.label}
                   </a>
                 ) : link.onClick ? (
-                  <button 
-                    key={link.label} 
-                    onClick={() => {
-                      link.onClick?.();
-                      setOpenDropdown(null);
-                    }} 
-                    className="block w-full text-left px-4 py-2.5 text-sm text-foreground hover:bg-blue-800/40 hover:text-blue-300 transition-all"
-                  >
+                  <button key={link.label} onClick={link.onClick} className="block w-full text-left px-4 py-2.5 text-sm text-foreground hover:bg-blue-800/40 hover:text-blue-300 transition-all">
                     {link.label}
                   </button>
                 ) : (
-                  <Link 
-                    key={link.href} 
-                    href={link.href} 
-                    onClick={() => setOpenDropdown(null)}
-                    className="block px-4 py-2.5 text-sm text-foreground hover:bg-blue-800/40 hover:text-blue-300 transition-all"
-                  >
+                  <Link key={link.href} href={link.href} className="block px-4 py-2.5 text-sm text-foreground hover:bg-blue-800/40 hover:text-blue-300 transition-all">
                     {link.label}
                   </Link>
                 ))}
@@ -388,45 +319,28 @@ export default function NavbarSheet({
 
           {/* User Profile Dropdown */}
           {user ? (
-            <div className="relative dropdown-container">
-              <button 
-                onClick={() => toggleDropdown('profile')}
-                className="flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-300 text-foreground hover:text-blue-400"
-              >
+            <div className="relative group">
+              <button className="flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-300 text-foreground hover:text-blue-400">
                 <img
                   src={user.avatar}
                   alt={user.full_name}
-                  className={`w-8 h-8 rounded-full border-2 transition-all ${openDropdown === 'profile' ? 'border-blue-400/50' : 'border-transparent'}`}
+                  className="w-8 h-8 rounded-full border-2 border-transparent group-hover:border-blue-400/50 transition-all"
                 />
-                <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${openDropdown === 'profile' ? 'rotate-180' : ''}`} />
+                <ChevronDown className="w-4 h-4 transition-transform duration-200 group-hover:rotate-180" />
               </button>
-              <div className={`absolute right-0 top-full mt-1 min-w-[180px] bg-background border border-border rounded-lg shadow-lg transition-all duration-200 z-40 ${openDropdown === 'profile' ? 'opacity-100 visible' : 'opacity-0 invisible'}`}>
+              <div className="absolute right-0 top-full mt-1 min-w-[180px] bg-background border border-border rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-40">
                 <div className="py-2">
                   <div className="px-4 py-2 border-b border-border">
                     <p className="text-sm font-medium text-foreground">{user.full_name}</p>
                     <p className="text-xs text-muted-foreground">{user.email}</p>
                   </div>
-                  <Link 
-                    href="/profile" 
-                    onClick={() => setOpenDropdown(null)}
-                    className="block px-4 py-2.5 text-sm text-foreground hover:bg-muted/50 hover:text-blue-400 transition-all"
-                  >
+                  <Link href="/profile" className="block px-4 py-2.5 text-sm text-foreground hover:bg-muted/50 hover:text-blue-400 transition-all">
                     Profile
                   </Link>
-                  <Link 
-                    href="/dashboard" 
-                    onClick={() => setOpenDropdown(null)}
-                    className="block px-4 py-2.5 text-sm text-foreground hover:bg-muted/50 hover:text-blue-400 transition-all"
-                  >
+                  <Link href="/dashboard" className="block px-4 py-2.5 text-sm text-foreground hover:bg-muted/50 hover:text-blue-400 transition-all">
                     Dashboard
                   </Link>
-                  <button 
-                    onClick={() => {
-                      handleLogout();
-                      setOpenDropdown(null);
-                    }} 
-                    className="block w-full text-left px-4 py-2.5 text-sm text-foreground hover:bg-muted/50 hover:text-red-400 transition-all"
-                  >
+                  <button onClick={handleLogout} className="block w-full text-left px-4 py-2.5 text-sm text-foreground hover:bg-muted/50 hover:text-red-400 transition-all">
                     Logout
                   </button>
                 </div>
@@ -466,10 +380,7 @@ export default function NavbarSheet({
 
           {/* Mobile Menu Button */}
           <button
-            onClick={() => {
-              setIsMobileMenuOpen(!isMobileMenuOpen);
-              setOpenDropdown(null); // Close any open dropdowns
-            }}
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             className="p-2 rounded-lg text-foreground hover:bg-muted/50 transition-colors"
             aria-label="Toggle mobile menu"
           >
@@ -521,14 +432,6 @@ export default function NavbarSheet({
         </AnimatePresence>
       )}
 
-      {/* Mobile Menu Backdrop */}
-      {isMobileMenuOpen && (
-        <div 
-          className="fixed top-[80px] left-0 right-0 bottom-0 bg-black/20 z-40 lg:hidden"
-          onClick={() => setIsMobileMenuOpen(false)}
-        />
-      )}
-
       {/* Mobile Menu */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
@@ -538,7 +441,7 @@ export default function NavbarSheet({
           pointerEvents: isMobileMenuOpen ? "auto" : "none"
         }}
         transition={{ duration: 0.2 }}
-        className="absolute top-full left-0 w-full bg-background border-b border-border shadow-lg lg:hidden max-h-[calc(100vh-80px)] overflow-y-auto z-50"
+        className="absolute top-full left-0 w-full bg-background border-b border-border shadow-lg lg:hidden"
       >
         <div className="max-w-7xl mx-auto px-4 py-4 space-y-4">
           {/* Streak (Mobile) */}
