@@ -192,10 +192,10 @@ export default function SigninPage() {
       <Button
         onClick={handleSubmit}
         disabled={loading}
-        className="w-full rounded-lg text-white bg-gradient-to-br from-blue-900 to-blue-500 transition-colors duration-300 hover:from-blue-600 hover:to-blue-800 relative z-10"
+        className="w-25 h-10 rounded-lg ml-35 text-white text-lg bg-gradient-to-br from-blue-900 to-blue-500 transition-colors duration-300 hover:from-blue-600 hover:to-blue-800 relative z-10 "
       >
         {loading ? (
-          <Loader2 className="animate-spin mr-2 h-4 w-4" />
+          <Loader2 className="animate-spin  mr-2 h-8 w-4" />
         ) : (
           "Sign In"
         )}
@@ -203,7 +203,7 @@ export default function SigninPage() {
 
       <div className="text-center font-bold text-blue-500 relative z-10">OR</div>
 
-      <div className="text-center relative z-10">
+      <div className="text-center relative z-10 ">
         <GoogleLoginButton />
       </div>
 
