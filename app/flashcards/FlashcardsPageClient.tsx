@@ -5,8 +5,16 @@ import { motion, AnimatePresence } from "framer-motion";
 import Navbar from "@/components/Navbar";
 import FlashcardComponent from "@/components/FlashcardComponent";
 import ReportIssueButton from "@/components/ReportIssueButton";
-import { flashcards, categories, difficulties, type Flashcard } from "@/data/flashcards";
 import { ChevronLeft, ChevronRight, RotateCcw, BookOpen, Filter, Trophy } from "lucide-react";
+import { useRouter } from "next/navigation";
+
+type Flashcard = {
+  id: number;
+  term: string;
+  explanation: string;
+  difficulty: string;
+  category: string;
+};
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
@@ -37,6 +45,30 @@ export default function FlashcardsPageClient() {
   const [difficultyFilter, setDifficultyFilter] = useState("All");
   const [reviewedCards, setReviewedCards] = useState<Set<number>>(new Set());
   const [showFilters, setShowFilters] = useState(false);
+
+  const [flashcards, setFlashcards] = useState<Flashcard[]>([]);
+const [loading, setLoading] = useState(true);
+
+useEffect(() => {
+  async function fetchFlashcards() {
+    try {
+      const res = await fetch("/api/flashcards");
+      if (!res.ok) throw new Error("Failed to fetch flashcards");
+
+      const data: Flashcard[] = await res.json();
+      setFlashcards(data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  }
+  fetchFlashcards();
+}, []);
+
+const categories = ["All", ...Array.from(new Set(flashcards.map(f => f.category)))];
+const difficulties = ["All", "Basic", "Intermediate", "Advanced"];
+
 
   // Load progress from localStorage
   useEffect(() => {
