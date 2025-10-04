@@ -493,9 +493,9 @@ export default function Home() {
 
     try {
       // Validate required fields
-      if (!formData.name.trim() || !formData.email.trim() || !formData.designation.trim() ||
-        !formData.likedMost.trim() || !formData.howHelped.trim() || !formData.feedback.trim() ||
-        (formData.canShow && !formData.displayPreference)) {
+       if (!formData.name.trim() || !formData.email.trim() || !formData.designation.trim() ||
+         !formData.likedMost.trim() || !formData.howHelped.trim() ||
+         (formData.canShow && !formData.displayPreference)) {
         alert('Please fill in all required fields.');
         setIsSubmitting(false);
         return;
@@ -1132,18 +1132,17 @@ export default function Home() {
                   {/* Feedback */}
                   <div>
                      <label htmlFor="feedback" className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-                      Additional Feedback *
-                    </label>
-                    <textarea
-                      id="feedback"
-                      name="feedback"
-                      value={formData.feedback}
-                      onChange={handleInputChange}
-                      required
-                      rows={4}
+                       Additional Feedback
+                     </label>
+                     <textarea
+                       id="feedback"
+                       name="feedback"
+                       value={formData.feedback}
+                       onChange={handleInputChange}
+                       rows={4}
                        className="w-full px-4 py-3 rounded-lg border border-gray-300/50 dark:border-gray-600/30 bg-white/60 dark:bg-gray-800/40 backdrop-blur-md text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-400/50 focus:border-blue-400/50 transition-all resize-vertical custom-scrollbar"
-                      placeholder="Any additional thoughts, suggestions, or experiences you'd like to share..."
-                    />
+                       placeholder="Any additional thoughts, suggestions, or experiences you'd like to share..."
+                     />
                   </div>
 
                   {/* Permission to show */}
