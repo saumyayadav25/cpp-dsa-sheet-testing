@@ -8,7 +8,7 @@ export async function POST(request: NextRequest) {
         const { name, email, designation, rating, likedMost, howHelped, feedback, canShow, displayPreference, date } = await request.json();
 
         // Basic field validation
-        if (!name || !email || !designation || !rating || !likedMost || !howHelped || !feedback || canShow === undefined || !date) {
+        if (!name || !email || !designation || !rating || !likedMost || !howHelped || canShow === undefined || !date) {
             return NextResponse.json({ error: "All required fields must be provided" }, { status: 400 });
         }
 
