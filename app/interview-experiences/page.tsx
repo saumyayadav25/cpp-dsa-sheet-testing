@@ -18,7 +18,8 @@ import {
   Heart,
   Share2,
 } from "lucide-react";
-import Navbar from "@/components/ui/Navbar-interview";
+import NavbarInterview from "@/components/ui/Navbar-interview";
+
 import { useRouter } from "next/navigation";
 
 const Experiences = () => {
@@ -29,7 +30,7 @@ const Experiences = () => {
 
   const router = useRouter();
 
-  // Fetch from DB
+  // Fetch from DBF
   useEffect(() => {
     const fetchExperiences = async () => {
       try {
@@ -87,28 +88,23 @@ const Experiences = () => {
   };
 
   if (loading) {
-    return <div className="text-center mt-10 text-lg">Loading experiences...</div>;
+    return (
+      <div className="text-center mt-10 text-lg">Loading experiences...</div>
+    );
   }
 
   return (
     <div className="min-h-screen bg-background">
-      <Navbar
-        icon={<Users />}
-        onBack="/"
-        page1="Theory-cheatSheets"
-        page1Link="/theory-cheatsheets"
-        pageTitle="Interview Experiences"
-        page3={"Share Experience"}
-        page3Link="/interview-experiences/share-experience"
-      />
+      <NavbarInterview />
 
       {/* Hero Section */}
-      <section className="py-16 px-4 bg-gradient-to-r from-experience/10 to-experience/5">
+      <section className="py-16 px-4 mt-13 bg-gradient-to-r from-experience/10 to-experience/5">
         <div className="container mx-auto text-center">
           <div className="max-w-3xl mx-auto">
-            <h1 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+            <h1 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent leading-tight pb-1">
               Interview Experiences
             </h1>
+
             <p className="text-lg text-muted-foreground mb-8">
               Learn from real interview experiences shared by the community. Get
               insights into company processes, questions asked, and preparation
@@ -180,7 +176,10 @@ const Experiences = () => {
         <div className="container mx-auto">
           <div className="max-w-4xl mx-auto space-y-6">
             {filteredExperiences.map((exp) => (
-              <div className="bg-card rounded-xl shadow-sm border" key={exp._id}>
+              <div
+                className="bg-card rounded-xl shadow-sm border"
+                key={exp._id}
+              >
                 <div className="p-6 pb-2">
                   <div className="flex items-start justify-between">
                     <div className="flex items-center space-x-3">
@@ -210,10 +209,14 @@ const Experiences = () => {
                       </div>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <Badge className={`text-xs ${getDifficultyColor(exp.level)}`}>
+                      <Badge
+                        className={`text-xs ${getDifficultyColor(exp.level)}`}
+                      >
                         {exp.level}
                       </Badge>
-                      <Badge className={`text-xs ${getOutcomeColor(exp.result)}`}>
+                      <Badge
+                        className={`text-xs ${getOutcomeColor(exp.result)}`}
+                      >
                         {exp.result}
                       </Badge>
                     </div>
@@ -258,7 +261,9 @@ const Experiences = () => {
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => router.push(`/interview-experiences/${exp._id}`)}
+                      onClick={() =>
+                        router.push(`/interview-experiences/${exp._id}`)
+                      }
                     >
                       Read Full Experience
                     </Button>
@@ -284,7 +289,9 @@ const Experiences = () => {
             <Button
               size="lg"
               className="bg-experience/10 transition-colors duration-300 hover:bg-gray-400"
-              onClick={() => router.push("/interview-experiences/share-experience")}
+              onClick={() =>
+                router.push("/interview-experiences/share-experience")
+              }
             >
               <Plus className="h-5 w-5 mr-2" />
               Submit Your Experience

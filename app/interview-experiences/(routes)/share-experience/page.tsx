@@ -1,7 +1,6 @@
 //frontend page is to share interview experience
 "use client";
-import Navbar from "@/components/ui/Navbar-interview";
-import { Share } from "lucide-react";
+import NavbarInterview from "@/components/ui/Navbar-interview";
 import React, { useState } from "react";
 
 const Page = () => {
@@ -120,8 +119,8 @@ const Page = () => {
 
   return (
     <div className="bg-background min-h-screen flex flex-col items-center gap-8">
-      <Navbar icon={<Share />} pageTitle="Share Experience" onBack="/interview-experiences" />
-      <div className="bg-card p-8 rounded-xl shadow-lg w-full max-w-2xl">
+      <NavbarInterview  />
+      <div className="bg-card p-8 rounded-xl shadow-lg w-full max-w-2xl mt-30">
         <h1 className="text-2xl md:text-3xl text-center font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
           Interview Feedback
         </h1>
