@@ -186,19 +186,33 @@ export default function CPTrackerPageClient() {
               </motion.button>
             ))}
           </motion.div>
+          {/* Show a helper input when no platform is selected so users know how to proceed */}
+          {!selectedPlatform && (
+            <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }} className="mb-6 flex flex-col items-center">
+              <label className="block text-sm font-semibold mb-2 text-center text-gray-700 dark:text-gray-300">
+                Please select a platform to enter your username
+              </label>
+              <input type="text" disabled
+                className="w-full max-w-xs px-4 py-2 rounded-xl border border-gray-200 bg-gray-300 text-black placeholder-gray-700 text-center disabled:opacity-90 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-zinc-900/40 dark:text-gray-200 dark:placeholder-gray-400 dark:border-gray-700"
+                placeholder={`Select a platform above to enter your username`} />
+              <p className="text-xs text-gray-600 dark:text-gray-500 mt-2 text-center max-w-xs">
+                Tip: click any platform button to reveal the username input. After selecting, type your handle and press Enter or click "Fetch Stats".
+              </p>
+            </motion.div>
+          )}
 
           <AnimatePresence>
             {selectedPlatform && (
               <motion.div initial={{ opacity: 0, y: -20, height: 0 }} animate={{ opacity: 1, y: 0, height: 'auto' }} exit={{ opacity: 0, y: -20, height: 0 }} transition={{ duration: 0.3 }} className="mb-8 flex flex-col items-center">
-                <label className="block text-sm font-semibold mb-2 text-center capitalize">
+                <label className="block text-sm font-semibold mb-2 text-center capitalize bg-gray text-gray-700 dark:text-gray-300">
                   {selectedPlatform} Username
                 </label>
                 <input type="text"
                   value={usernames[selectedPlatform] || ''}
                   onChange={(e) => handleChange(selectedPlatform, e.target.value)}
-                  className="w-full max-w-xs px-4 py-2 rounded-xl border border-gray-700 bg-zinc-800 text-white text-center focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full max-w-xs px-4 py-2 rounded-xl border border-gray-400 bg-gray-100 text-black placeholder-gray-600 text-center focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-zinc-800 dark:text-white dark:placeholder-gray-400 dark:border-gray-700"
                   placeholder={`Enter your ${selectedPlatform} handle`}
-                  onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
+                  onKeyDown={(e) => (e as any).key === 'Enter' && handleSubmit()}
                 />
               </motion.div>
             )}

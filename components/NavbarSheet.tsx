@@ -151,13 +151,13 @@ export default function NavbarSheet({
     { href: "/cp-tracker", label: "Track Your CP" },
   ];
 
-  const communityLinks = [
-    { href: "https://github.com/saumyayadav25/DSA-Supreme-3.0", label: "Star on GitHub", external: true },
-    { href: "/contributors", label: "Contributors" },
-    { href: "#", label: "Give Testimonial", onClick: () => window.dispatchEvent(new CustomEvent('openTestimonialModal')) },
-    { href: "https://forms.gle/bdwBp8oFRWugcrcg9", label: "Provide Feedback", external: true },
-    { href: "https://www.buymeacoffee.com/saumyayadav", label: "Support the Project", external: true },
-  ];
+  const communityLinks: Array<{ href: string; label: string; external?: boolean; onClick?: () => void }> = [
+      { href: "https://github.com/saumyayadav25/DSA-Supreme-3.0", label: "Star on GitHub", external: true },
+      { href: "/contributors", label: "Contributors" },
+      { href: "https://docs.google.com/forms/d/e/1FAIpQLSeA-HAYbE6S4sZnH74P9ZnYkk3omgW58h6lXDAUpo9lzvAHPA/viewform", label: "Give Testimonial", external: true },
+      { href: "https://forms.gle/bdwBp8oFRWugcrcg9", label: "Provide Feedback", external: true },
+      { href: "https://www.buymeacoffee.com/saumyayadav", label: "Support the Project", external: true },
+    ];
 
   const streakVariants = {
     idle: { scale: 1, rotate: 0 },
@@ -298,14 +298,14 @@ export default function NavbarSheet({
               Learning Tools
               <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${openDropdown === 'learning' ? 'rotate-180' : ''}`} />
             </button>
-            <div className={`absolute left-0 top-full mt-1 min-w-[200px] backdrop-blur-xl bg-gradient-to-br from-blue-900/20 via-blue-700/20 to-black/20 border border-blue-950 rounded-2xl shadow-2xl transition-all duration-200 z-40 ${openDropdown === 'learning' ? 'opacity-100 visible' : 'opacity-0 invisible'}`}>
+            <div className={`absolute left-0 top-full mt-1 min-w-[200px] backdrop-blur-xl bg-gradient-to-br  from-white via-gray-500/30  border-gray-200  dark:from-blue-900/20 dark:via-blue-700/20 dark:to-black/20 border dark:border-blue-950 rounded-2xl shadow-2xl transition-all duration-200 z-40 ${openDropdown === 'learning' ? 'opacity-100 visible' : 'opacity-0 invisible'}`}>
               <div className="py-2">
                 {learningLinks.map(link => (
                   <Link 
                     key={link.href} 
                     href={link.href} 
                     onClick={() => setOpenDropdown(null)}
-                    className="block px-4 py-2.5 text-sm text-foreground hover:bg-blue-800/40 hover:text-blue-300 transition-all"
+                    className="block px-4 py-2.5 text-sm text-foreground hover:bg-gray-500/20 dark:hover:bg-blue-800/40   dark:hover:text-blue-300 transition-all"
                   >
                     {link.label}
                   </Link>
@@ -323,14 +323,14 @@ export default function NavbarSheet({
               Coding Tools
               <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${openDropdown === 'coding' ? 'rotate-180' : ''}`} />
             </button>
-            <div className={`absolute left-0 top-full mt-1 min-w-[200px] backdrop-blur-xl bg-gradient-to-br from-blue-900/20 via-blue-700/20 to-black/20 border border-blue-950 rounded-2xl shadow-2xl transition-all duration-200 z-40 ${openDropdown === 'coding' ? 'opacity-100 visible' : 'opacity-0 invisible'}`}>
+            <div className={`absolute left-0 top-full mt-1 min-w-[200px] backdrop-blur-xl bg-gradient-to-br  from-white via-gray-500/30  border-gray-200  dark:from-blue-900/20 dark:via-blue-700/20 dark:to-black/20 border dark:border-blue-950 rounded-2xl shadow-2xl transition-all duration-200 z-40  ${openDropdown === 'coding' ? 'opacity-100 visible' : 'opacity-0 invisible'}`}>
               <div className="py-2">
                 {codingLinks.map(link => (
                   <Link 
                     key={link.href} 
                     href={link.href} 
                     onClick={() => setOpenDropdown(null)}
-                    className="block px-4 py-2.5 text-sm text-foreground hover:bg-blue-800/40 hover:text-blue-300 transition-all"
+                    className="block px-4 py-2.5 text-sm text-foreground hover:bg-gray-500/20 dark:hover:bg-blue-800/40   dark:hover:text-blue-300 transition-all"
                   >
                     {link.label}
                   </Link>
@@ -348,7 +348,7 @@ export default function NavbarSheet({
               Community
               <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${openDropdown === 'community' ? 'rotate-180' : ''}`} />
             </button>
-            <div className={`absolute left-0 top-full mt-1 min-w-[200px] backdrop-blur-xl bg-gradient-to-br from-blue-900/20 via-blue-700/20 to-black/20 border border-blue-950 rounded-2xl shadow-2xl transition-all duration-200 z-40 ${openDropdown === 'community' ? 'opacity-100 visible' : 'opacity-0 invisible'}`}>
+            <div className={`absolute left-0 top-full mt-1 min-w-[200px] backdrop-blur-xl bg-gradient-to-br  from-white via-gray-500/30  border-gray-200  dark:from-blue-900/20 dark:via-blue-700/20 dark:to-black/20 border dark:border-blue-950 rounded-2xl shadow-2xl transition-all duration-200 z-40  ${openDropdown === 'community' ? 'opacity-100 visible' : 'opacity-0 invisible'}`}>
               <div className="py-2">
                 {communityLinks.map(link => link.external ? (
                   <a 
@@ -357,7 +357,7 @@ export default function NavbarSheet({
                     target="_blank" 
                     rel="noopener noreferrer" 
                     onClick={() => setOpenDropdown(null)}
-                    className="block px-4 py-2.5 text-sm text-foreground hover:bg-blue-800/40 hover:text-blue-300 transition-all"
+                    className="block px-4 py-2.5 text-sm text-foreground hover:bg-gray-500/20 dark:hover:bg-blue-800/40   dark:hover:text-blue-300 transition-all"
                   >
                     {link.label}
                   </a>
@@ -377,7 +377,7 @@ export default function NavbarSheet({
                     key={link.href} 
                     href={link.href} 
                     onClick={() => setOpenDropdown(null)}
-                    className="block px-4 py-2.5 text-sm text-foreground hover:bg-blue-800/40 hover:text-blue-300 transition-all"
+                    className="block px-4 py-2.5 text-sm text-foreground hover:bg-gray-500/20 dark:hover:bg-blue-800/40   dark:hover:text-blue-300 transition-all"
                   >
                     {link.label}
                   </Link>
@@ -407,14 +407,14 @@ export default function NavbarSheet({
                     <p className="text-xs text-muted-foreground">{user.email}</p>
                   </div>
                   <Link 
-                    href="/profile" 
+                    href={user?`/profile/${encodeURIComponent(user._id)}`:"#"} 
                     onClick={() => setOpenDropdown(null)}
                     className="block px-4 py-2.5 text-sm text-foreground hover:bg-muted/50 hover:text-blue-400 transition-all"
                   >
                     Profile
                   </Link>
                   <Link 
-                    href="/dashboard" 
+                    href="/progress" 
                     onClick={() => setOpenDropdown(null)}
                     className="block px-4 py-2.5 text-sm text-foreground hover:bg-muted/50 hover:text-blue-400 transition-all"
                   >
@@ -627,10 +627,10 @@ export default function NavbarSheet({
                   <p className="text-xs text-muted-foreground">{user.email}</p>
                 </div>
               </div>
-              <Link href="/profile" className="block px-6 py-2.5 text-foreground hover:bg-muted/50 hover:text-blue-400 transition-all">
+              <Link href={user?`/profile/${encodeURIComponent(user._id)}`:"#"} className="block px-6 py-2.5 text-foreground hover:bg-muted/50 hover:text-blue-400 transition-all">
                 Profile
               </Link>
-              <Link href="/dashboard" className="block px-6 py-2.5 text-foreground hover:bg-muted/50 hover:text-blue-400 transition-all">
+              <Link href="/progress" className="block px-6 py-2.5 text-foreground hover:bg-muted/50 hover:text-blue-400 transition-all">
                 Dashboard
               </Link>
               <button onClick={handleLogout} className="block w-full text-left px-6 py-2.5 text-foreground hover:bg-muted/50 hover:text-red-400 transition-all">

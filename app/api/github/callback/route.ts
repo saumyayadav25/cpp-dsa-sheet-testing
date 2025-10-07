@@ -74,7 +74,7 @@ export async function GET(req: Request) {
     const res = NextResponse.redirect(`${process.env.NEXT_PUBLIC_BASE_URL}/`);
     res.cookies.set("session", token, {
       httpOnly: true,
-      secure: true,
+      secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
       path: "/",
       maxAge: 60 * 60 * 24 * 7,

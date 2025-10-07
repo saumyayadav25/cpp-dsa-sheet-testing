@@ -167,261 +167,102 @@ const FAQItem = ({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30, scale: 0.95 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ duration: 0.5, ease: "easeOut" }}
-      className="group relative overflow-hidden"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, ease: "easeOut" }}
+      className="group relative w-full"
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
     >
-    
-      {/* Animated background with moving gradient */}
-      <motion.div
-        className="absolute inset-0 bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 opacity-0 rounded-2xl"
-        animate={{
-          opacity: isHovered ? 0.15 : 0,
-          backgroundPosition: isHovered ? "100% 100%" : "0% 0%",
-        }}
-        transition={{ duration: 0.6, ease: "easeInOut" }}
-        style={{
-          backgroundSize: "200% 200%",
-        }}
-      />
-
-      {/* Glowing border effect */}
-      <motion.div
-        className="absolute inset-0 rounded-2xl"
-        animate={{
-          boxShadow: isOpen
-            ? "0 0 0 2px rgba(59, 130, 246, 0.5), 0 0 20px rgba(59, 130, 246, 0.3), 0 0 40px rgba(59, 130, 246, 0.1)"
-            : isHovered
-              ? "0 0 0 1px rgba(139, 92, 246, 0.4), 0 0 15px rgba(139, 92, 246, 0.2)"
-              : "0 0 0 1px rgba(229, 231, 235, 0.3)"
-        }}
-        transition={{ duration: 0.3 }}
-      />
-
-      {/* Floating particles effect */}
-      {isHovered && (
-        <div className="absolute inset-0 pointer-events-none">
-          {[...Array(6)].map((_, i) => (
-            <motion.div
-              key={i}
-              className="absolute w-1 h-1 bg-blue-400 rounded-full"
-              initial={{
-                x: Math.random() * 100 + "%",
-                y: "100%",
-                opacity: 0,
-                scale: 0
-              }}
-              animate={{
-                y: "-20%",
-                opacity: [0, 1, 0],
-                scale: [0, 1, 0]
-              }}
-              transition={{
-                duration: 2,
-                delay: i * 0.2,
-                repeat: Infinity,
-                ease: "easeOut"
-              }}
-            />
-          ))}
-        </div>
-      )}
-
       {/* Main card */}
       <motion.div
-        className="relative bg-white dark:bg-gray-900 rounded-2xl cursor-pointer overflow-hidden backdrop-blur-sm"
-        whileHover={{
-          scale: 1.03,
-          rotateY: 2,
-          rotateX: 1,
-        }}
-        whileTap={{
-          scale: 0.97,
-          rotateY: 0,
-          rotateX: 0,
-        }}
-        transition={{
-          type: "spring",
-          stiffness: 300,
-          damping: 20
-        }}
+        className="relative w-full bg-white dark:bg-gray-900 rounded-lg sm:rounded-xl cursor-pointer overflow-hidden border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-lg dark:shadow-black/10 dark:hover:shadow-black/20 transition-all duration-300 backdrop-blur-sm"
+        whileHover={{ scale: 1.005 }}
+        whileTap={{ scale: 0.995 }}
+        transition={{ duration: 0.2 }}
         onClick={onToggle}
-        style={{
-          transformStyle: "preserve-3d",
-        }}
       >
-        {/* Shimmer effect overlay */}
+        {/* Subtle hover background */}
         <motion.div
-          className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12"
-          initial={{ x: "-100%" }}
-          animate={{ x: isHovered ? "200%" : "-100%" }}
-          transition={{ duration: 0.8, ease: "easeInOut" }}
+          className="absolute inset-0 bg-gradient-to-r from-blue-50/60 to-blue-100/40 dark:from-blue-950/20 dark:to-blue-900/30"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: isHovered ? 1 : 0 }}
+          transition={{ duration: 0.3 }}
         />
 
         {/* Content */}
         <div className="relative z-10">
           {/* Question header */}
-          <div className="flex items-center justify-between p-8">
-            <motion.h3
-              className="text-lg font-bold text-gray-900 dark:text-white pr-8 relative"
-              animate={{
-                color: isOpen
-                  ? "#3B82F6"
-                  : isHovered
-                    ? "#8B5CF6"
-                    : undefined
-              }}
-              transition={{ duration: 0.3 }}
-            >
-              {/* Animated underline */}
-              <motion.div
-                className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500"
-                initial={{ width: 0 }}
-                animate={{ width: isHovered || isOpen ? "100%" : 0 }}
-                transition={{ duration: 0.4, ease: "easeOut" }}
-              />
+          <div className="flex items-start sm:items-center justify-between p-4 sm:p-6 gap-3 sm:gap-4">
+            <h3 className="text-sm sm:text-base md:text-lg font-semibold text-gray-900 dark:text-white leading-tight sm:leading-snug flex-1 min-w-0 pr-2">
               {question}
-            </motion.h3>
+            </h3>
 
-            {/* 3D Rotating chevron with glow */}
+            {/* Chevron arrow */}
             <motion.div
-              className="flex-shrink-0 w-8 h-8 relative"
-              animate={{
-                rotateX: isOpen ? 180 : 0,
-                scale: isHovered ? 1.2 : 1,
-              }}
-              transition={{
-                duration: 0.4,
-                ease: "easeInOut",
-                type: "spring",
-                stiffness: 200
-              }}
-              style={{ transformStyle: "preserve-3d" }}
+              className="flex-shrink-0 w-5 h-5 sm:w-6 sm:h-6 mt-0.5 sm:mt-0"
+              animate={{ rotate: isOpen ? 180 : 0 }}
+              transition={{ duration: 0.25, ease: "easeInOut" }}
             >
-              {/* Glow effect behind chevron */}
-              <motion.div
-                className="absolute inset-0 bg-blue-500 rounded-full blur-md"
-                animate={{
-                  opacity: isHovered ? 0.4 : 0,
-                  scale: isHovered ? 1.5 : 1,
-                }}
-                transition={{ duration: 0.3 }}
-              />
-
               <svg
-                className="w-full h-full text-gray-600 dark:text-gray-400 relative z-10"
-                style={{
-                  filter: isOpen ? "drop-shadow(0 0 8px rgba(59, 130, 246, 0.5))" : "none"
-                }}
+                className={`w-full h-full transition-colors duration-300 ${isOpen
+                    ? "text-blue-600 dark:text-blue-400"
+                    : isHovered
+                      ? "text-gray-700 dark:text-gray-200"
+                      : "text-gray-500 dark:text-gray-400"
+                  }`}
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
+                strokeWidth={2.5}
               >
-                <motion.path
+                <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  strokeWidth={3}
                   d="M19 9l-7 7-7-7"
-                  animate={{
-                    stroke: isOpen ? "#3B82F6" : isHovered ? "#8B5CF6" : undefined
-                  }}
                 />
               </svg>
             </motion.div>
           </div>
 
-          {/* Answer with dramatic reveal */}
+          {/* Answer */}
           <AnimatePresence>
             {isOpen && (
               <motion.div
-                initial={{
-                  height: 0,
-                  opacity: 0,
-                  rotateX: -90,
-                }}
-                animate={{
-                  height: "auto",
-                  opacity: 1,
-                  rotateX: 0,
-                }}
-                exit={{
-                  height: 0,
-                  opacity: 0,
-                  rotateX: -90,
-                }}
-                transition={{
-                  duration: 0.5,
-                  ease: "easeOut",
-                  opacity: { delay: 0.1 }
-                }}
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
                 className="overflow-hidden"
-                style={{ transformOrigin: "top" }}
               >
-                <motion.div
-                  initial={{ y: -20, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  exit={{ y: -20, opacity: 0 }}
-                  transition={{ duration: 0.3, delay: 0.2 }}
-                  className="px-8 pb-8"
-                >
-                  {/* Animated divider */}
-                  <motion.div
-                    className="relative mb-6"
-                    initial={{ width: 0 }}
-                    animate={{ width: "100%" }}
-                    transition={{ duration: 0.6, delay: 0.3 }}
-                  >
-                    <div className="h-px bg-gradient-to-r from-transparent via-blue-500 to-transparent" />
-                    <motion.div
-                      className="absolute top-0 left-1/2 w-2 h-2 bg-blue-500 rounded-full transform -translate-x-1/2 -translate-y-1/2"
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      transition={{ delay: 0.5, type: "spring" }}
-                    />
-                  </motion.div>
-
-                  {/* Answer text with typewriter effect simulation */}
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.5, delay: 0.4 }}
-                    className="relative"
-                  >
-                    <motion.p
-                      className="text-gray-700 dark:text-gray-300 leading-relaxed text-base"
-                      initial={{ filter: "blur(2px)" }}
-                      animate={{ filter: "blur(0px)" }}
-                      transition={{ duration: 0.4, delay: 0.5 }}
-                    >
-                      {answer}
-                    </motion.p>
-
-                    {/* Subtle background highlight */}
-                    <motion.div
-                      className="absolute inset-0 bg-gradient-to-r from-blue-50/50 to-purple-50/50 dark:from-blue-900/10 dark:to-purple-900/10 rounded-lg -z-10"
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ duration: 0.5, delay: 0.6 }}
-                    />
-                  </motion.div>
-                </motion.div>
+                <div className="px-4 sm:px-6 pb-4 sm:pb-6">
+                  <div className="h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent dark:via-gray-600 mb-3 sm:mb-4" />
+                  <p className="text-sm sm:text-base text-gray-700 dark:text-gray-200 leading-relaxed sm:leading-loose">
+                    {answer}
+                  </p>
+                </div>
               </motion.div>
             )}
           </AnimatePresence>
         </div>
 
-        {/* Interactive ripple effect on click */}
+        {/* Border highlight on open */}
         <motion.div
-          className="absolute inset-0 bg-blue-400 rounded-2xl pointer-events-none"
-          initial={{ scale: 0, opacity: 0.3 }}
+          className="absolute inset-0 rounded-lg sm:rounded-xl border-2 border-blue-500 dark:border-blue-400 pointer-events-none"
+          initial={{ opacity: 0, scale: 1.02 }}
           animate={{
-            scale: isOpen ? [0, 1.2, 0] : 0,
-            opacity: isOpen ? [0.3, 0.1, 0] : 0
+            opacity: isOpen ? 1 : 0,
+            scale: isOpen ? 1 : 1.02
           }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.3 }}
+        />
+
+        {/* Subtle glow effect when open */}
+        <motion.div
+          className="absolute inset-0 rounded-lg sm:rounded-xl bg-gradient-to-r from-blue-500/10 to-blue-600/10 dark:from-blue-400/10 dark:to-blue-500/10 pointer-events-none"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: isOpen ? 1 : 0 }}
+          transition={{ duration: 0.3 }}
         />
       </motion.div>
     </motion.div>
@@ -570,14 +411,14 @@ export default function Home() {
         className="relative bg-white dark:bg-black min-h-screen flex flex-col items-center justify-center text-center px-4 sm:px-6 py-8 sm:py-16 pt-16 sm:pt-24 bg-cover bg-center bg-no-repeat overflow-hidden"
         style={{ backgroundImage: "url(/bg.png)" }}
       >
-     
+
         <div className="relative z-10 max-w-6xl mx-auto w-full flex flex-col">
           <motion.h1
             variants={fadeInUp}
             custom={0}
             className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold text-foreground drop-shadow-lg mt-6"
           >
-          
+
             DSA<span className="text-blue-400">Mate</span> v2
           </motion.h1>
 
@@ -631,7 +472,7 @@ export default function Home() {
               >
                 📊 Track Your Progress
               </Link>
-             
+
               <Link
                 href="/cp-tracker"
                 className="bg-gradient-to-r from-indigo-600 to-purple-700 hover:from-indigo-700 hover:to-purple-800 text-white font-semibold py-3 px-6 sm:px-8 rounded-md transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 w-full sm:w-auto text-sm sm:text-base"
@@ -902,25 +743,25 @@ export default function Home() {
             <h2 className="text-4xl md:text-5xl font-bold mb-8 text-gray-900 dark:text-white">
               Why <span className="text-blue-500 dark:text-blue-400">DSAMate</span>?
             </h2>
-      
+
             <p className="text-gray-600 dark:text-gray-300 text-lg md:text-xl leading-relaxed max-w-4xl mx-auto text-center">
-            It's not just another practice sheet. It's your 
-            <span className="font-semibold text-blue-500"> all-in-one platform </span>
-            to solve <span className="font-semibold">topic-wise problems</span>, apply 
-            <span className="font-semibold"> smart filters</span>, and track your daily progress with the 
-            <span className="font-semibold"> new streak feature</span>.
-           <br /><br />
-            Whether you're <span className="font-semibold">revising for interviews</span>, 
-            trying to <span className="font-semibold">stay consistent</span>, or aiming to 
-            <span className="font-semibold"> master DSA with purpose, </span>
-            <span className="font-bold bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">
-            DSAMate helps you do it better
-            </span>.
-            <br /><br />
-            <span className="block bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 px-4 py-2 rounded-lg font-semibold text-white">
-            Mark questions, revisit tough ones, solve a new problem every day, 
-            and keep your streak alive.
-            </span>
+              It's not just another practice sheet. It's your
+              <span className="font-semibold text-blue-500"> all-in-one platform </span>
+              to solve <span className="font-semibold">topic-wise problems</span>, apply
+              <span className="font-semibold"> smart filters</span>, and track your daily progress with the
+              <span className="font-semibold"> new streak feature</span>.
+              <br /><br />
+              Whether you're <span className="font-semibold">revising for interviews</span>,
+              trying to <span className="font-semibold">stay consistent</span>, or aiming to
+              <span className="font-semibold"> master DSA with purpose, </span>
+              <span className="font-bold bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">
+                DSAMate helps you do it better
+              </span>.
+              <br /><br />
+              <span className="block bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 px-4 py-2 rounded-lg font-semibold text-white">
+                Mark questions, revisit tough ones, solve a new problem every day,
+                and keep your streak alive.
+              </span>
             </p>
 
           </motion.div>
@@ -956,7 +797,7 @@ export default function Home() {
               >
                 💬 Give a Testimonial
               </motion.button>
-             
+
             </div>
           </motion.div>
           <div className="flex flex-row items-center justify-center mb-10">
@@ -1132,7 +973,7 @@ export default function Home() {
                   {/* Feedback */}
                   <div>
                     <label htmlFor="feedback" className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-                      Additional Feedback 
+                      Additional Feedback
                     </label>
                     <textarea
                       id="feedback"
@@ -1254,27 +1095,27 @@ export default function Home() {
         whileInView="visible"
         viewport={{ once: true, margin: "-50px" }}
         variants={containerVariants}
-        className="px-6 md:px-20 py-20 relative"
+        className="px-4 sm:px-6 md:px-12 lg:px-20 py-16 sm:py-20 relative"
       >
         {/* Background decoration */}
         <div className="absolute inset-0 bg-gradient-to-b from-blue-50/30 via-transparent to-blue-50/30 dark:from-blue-900/10 dark:via-transparent dark:to-blue-900/10 pointer-events-none"></div>
 
         <div className="relative z-10 max-w-4xl mx-auto">
-          <motion.div variants={itemVariants} className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-              Frequently Asked <span className="text-blue-500">Questions</span>
+          <motion.div variants={itemVariants} className="text-center mb-12 sm:mb-16">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-3 sm:mb-4 px-4">
+              Frequently Asked <span className="text-blue-500 dark:text-blue-400">Questions</span>
             </h2>
-            <p className="text-gray-600 dark:text-gray-400 text-lg max-w-2xl mx-auto">
+            <p className="text-gray-600 dark:text-gray-400 text-base sm:text-lg max-w-2xl mx-auto px-4">
               Get answers to common questions about DSAMate
             </p>
           </motion.div>
 
           <motion.div
             variants={containerVariants}
-            className="space-y-4"
+            className="space-y-3 sm:space-y-4"
           >
             {faqData.map((faq, index) => (
-              <motion.div key={index} variants={itemVariants}>
+              <motion.div key={index} variants={itemVariants} className="w-full">
                 <FAQItem
                   question={faq.question}
                   answer={faq.answer}

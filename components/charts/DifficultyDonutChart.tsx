@@ -4,6 +4,7 @@ import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recha
 interface DonutChartData {
   name: string;
   value: number;
+  [key: string]: string | number; // Add index signature to match ChartDataInput
 }
 
 interface DifficultyDonutChartProps {
