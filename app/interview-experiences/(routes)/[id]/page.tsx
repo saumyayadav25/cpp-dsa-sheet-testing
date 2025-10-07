@@ -1,5 +1,5 @@
 // Function to show each interview experience details individually
-"use client"
+"use client";
 import React, { useState, useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -19,8 +19,8 @@ import {
   NotebookPen,
   Users,
 } from "lucide-react";
-import Navbar from "@/components/ui/Navbar-interview";
 import { useParams } from "next/navigation";
+import NavbarInterview from "@/components/ui/Navbar-interview";
 
 const InterviewDetailPage = () => {
   const params = useParams();
@@ -29,34 +29,36 @@ const InterviewDetailPage = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-  const fetchInterview = async () => {
-    try {
-      const res = await fetch(`/api/interview-experiences/${id}`, {
-        method: "GET",
-        cache: "no-store",   // prevents static caching
-      });
-      const result = await res.json();
-      if (result.success) {
-        setInterviewData(result.data);
+    const fetchInterview = async () => {
+      try {
+        const res = await fetch(`/api/interview-experiences/${id}`, {
+          method: "GET",
+          cache: "no-store", // prevents static caching
+        });
+        const result = await res.json();
+        if (result.success) {
+          setInterviewData(result.data);
+        }
+      } catch (error) {
+        console.error("Error fetching interview:", error);
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.error("Error fetching interview:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    };
 
-  if (id) fetchInterview();
-}, [id]);
-
-  
+    if (id) fetchInterview();
+  }, [id]);
 
   if (loading) {
-    return <div className="text-center mt-10 text-lg">Loading interview...</div>;
+    return (
+      <div className="text-center mt-10 text-lg">Loading interview...</div>
+    );
   }
 
   if (!interviewData) {
-    return <div className="text-center mt-10 text-red-500">Interview not found</div>;
+    return (
+      <div className="text-center mt-10 text-red-500">Interview not found</div>
+    );
   }
 
   const getOutcomeStyle = (result: string) => {
@@ -92,16 +94,9 @@ const InterviewDetailPage = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navbar
-        onBack="/interview-experiences"
-        page3={"Share Experience"}
-        page3Link="/interview-experiences/share-experience"
-        pageTitle="Interview Experiences"
-        icon={<Users />}
-      />
+      <NavbarInterview />
 
-<div className="relative rounded-4xl my-6 bg-card max-w-6xl mx-auto px-6 md:px-10 py-8">
-
+      <div className="relative rounded-4xl my-6 bg-card max-w-6xl mx-auto px-6 md:px-10 py-8">
         <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-blue-500/5 to-transparent rounded-bl-full opacity-80 group-hover:opacity-100 transition-opacity duration-500"></div>
 
         <div className="max-w-4xl mx-auto p-6 space-y-8">
@@ -190,46 +185,56 @@ const InterviewDetailPage = () => {
           {/* Interview Rounds */}
           <div className="space-y-6">
             <h3 className="text-2xl font-bold">Interview Rounds</h3>
-            {interviewData.interview?.rounds?.map((round: any, index: number) => (
-              <div
-                key={index}
-                className="shadow-card hover:shadow-elevated transition-shadow border-t-2 border-white p-4 duration-300"
-              >
-                <div className="flex items-center space-x-3">
-                  <span className="text-xl p-2 rounded-full border-gray-400 border-2 flex items-center justify-center">
-                    {getRoundIcon(round.type)}
-                  </span>
-                  <div>
-                    <span className="text-lg">
-                      Round {round.round}: {round.type}
+            {interviewData.interview?.rounds?.map(
+              (round: any, index: number) => (
+                <div
+                  key={index}
+                  className="shadow-card hover:shadow-elevated transition-shadow border-t-2 border-white p-4 duration-300"
+                >
+                  <div className="flex items-center space-x-3">
+                    <span className="text-xl p-2 rounded-full border-gray-400 border-2 flex items-center justify-center">
+                      {getRoundIcon(round.type)}
                     </span>
-                    <p className="text-sm text-muted-foreground font-normal">
-                      {round.duration} min
-                    </p>
+                    <div>
+                      <span className="text-lg">
+                        Round {round.round}: {round.type}
+                      </span>
+                      <p className="text-sm text-muted-foreground font-normal">
+                        {round.duration} min
+                      </p>
+                    </div>
                   </div>
-                </div>
 
-                <div className="space-y-4 mt-4">
-                  <div>
-                    <h4 className="font-semibold text-foreground">Questions Asked:</h4>
-                    <ul className="space-y-2">
-                      {round.questions?.map((q: string, i: number) => (
-                        <li key={i} className="flex items-start space-x-2">
-                          <span className="text-tech-blue font-bold mt-1">•</span>
-                          <span className="text-foreground leading-relaxed">{q}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-foreground">Experience:</h4>
-                    <p className="text-muted-foreground leading-relaxed">
-                      {round.experience}
-                    </p>
+                  <div className="space-y-4 mt-4">
+                    <div>
+                      <h4 className="font-semibold text-foreground">
+                        Questions Asked:
+                      </h4>
+                      <ul className="space-y-2">
+                        {round.questions?.map((q: string, i: number) => (
+                          <li key={i} className="flex items-start space-x-2">
+                            <span className="text-tech-blue font-bold mt-1">
+                              •
+                            </span>
+                            <span className="text-foreground leading-relaxed">
+                              {q}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-foreground">
+                        Experience:
+                      </h4>
+                      <p className="text-muted-foreground leading-relaxed">
+                        {round.experience}
+                      </p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              )
+            )}
           </div>
 
           {/* Overall Experience */}
@@ -250,12 +255,16 @@ const InterviewDetailPage = () => {
               <span>Tips for Success</span>
             </div>
             <ul className="space-y-3 mt-2">
-              {interviewData.interview?.tips?.map((tip: string, index: number) => (
-                <li key={index} className="flex items-start space-x-3">
-                  <span className="text-tech-blue font-bold mt-1">✓</span>
-                  <span className="text-foreground leading-relaxed">{tip}</span>
-                </li>
-              ))}
+              {interviewData.interview?.tips?.map(
+                (tip: string, index: number) => (
+                  <li key={index} className="flex items-start space-x-3">
+                    <span className="text-tech-blue font-bold mt-1">✓</span>
+                    <span className="text-foreground leading-relaxed">
+                      {tip}
+                    </span>
+                  </li>
+                )
+              )}
             </ul>
           </div>
 
@@ -273,4 +282,3 @@ const InterviewDetailPage = () => {
 };
 
 export default InterviewDetailPage;
-
