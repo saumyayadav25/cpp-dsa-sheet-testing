@@ -26,7 +26,6 @@ export default function TestimonialPrompt() {
     px-3 py-2 rounded-lg shadow-md 
     w-[85vw] max-w-[300px] sm:px-4 sm:py-3"
 >
-  console.log('Testimonials:', testimonials);
 
       <div className="relative">
         {/* Close Button */}
