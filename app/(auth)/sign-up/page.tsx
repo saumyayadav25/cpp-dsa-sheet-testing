@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import axios from "axios";
-import { Loader2, Eye, EyeOff } from "lucide-react";
+import { Loader2, Eye, EyeOff, KeyRound } from "lucide-react";
 import OtpInput from "@/components/verify-otp";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -12,6 +12,39 @@ import { GoogleLoginButton } from "@/components/OAuthLogin";
 import { ToastContainer, toast, Slide } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 import { motion } from "framer-motion";
+
+const PasswordStrengthIndicator = ({ strength }: { strength: number }) => {
+    const strengthLevels = [
+        { label: "Weak", color: "bg-red-500" },
+        { label: "Medium", color: "bg-orange-500" },
+        { label: "Strong", color: "bg-yellow-500" },
+        { label: "Very Strong", color: "bg-green-500" },
+    ];
+
+    const getColor = (levelColor: string) => {
+        const colorMap: { [key: string]: string } = {
+            'bg-red-500': '#ef4444',
+            'bg-orange-500': '#f97316',
+            'bg-yellow-500': '#eab308',
+            'bg-green-500': '#22c55e',
+        };
+        return colorMap[levelColor] || '#e5e7eb';
+    };
+
+    return (
+        <div className="flex items-center space-x-2 mt-2">
+            {strengthLevels.map((level, index) => (
+                <div 
+                    key={level.label} 
+                    className="w-1/4 h-2 rounded-full transition-colors duration-300 ease-in-out"
+                    style={{ backgroundColor: strength > index ? getColor(level.color) : '#e5e7eb' }}
+                >
+                </div>
+            ))}
+        </div>
+    );
+};
+
 export default function SignupPage() {
   const [form, setForm] = useState({
     fullName: "",
@@ -26,9 +59,53 @@ export default function SignupPage() {
   const [isPassCorrect, setIsPassCorrect] = useState(false);
   const [isConfirmPassCorrect, setConfirmIsPassCorrect] = useState(false);
   const router = useRouter();
+  const [strength, setStrength] = useState(0);
+
+  const generateStrongPassword = () => {
+    const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const lowercase = 'abcdefghijklmnopqrstuvwxyz';
+    const numbers = '0123456789';
+    const symbols = '!@#$%^&*()_+~`|}{[]:;?><,./-=';
+    const allChars = uppercase + lowercase + numbers + symbols;
+    
+    let password = '';
+    password += uppercase[Math.floor(Math.random() * uppercase.length)];
+    password += lowercase[Math.floor(Math.random() * lowercase.length)];
+    password += numbers[Math.floor(Math.random() * numbers.length)];
+    password += symbols[Math.floor(Math.random() * symbols.length)];
+
+    for (let i = 4; i < 12; i++) {
+        password += allChars[Math.floor(Math.random() * allChars.length)];
+    }
+
+    return password.split('').sort(() => 0.5 - Math.random()).join('');
+  };
+
+  const calculateStrength = (password: string): number => {
+    let score = 0;
+    if (!password) return 0;
+
+    const hasLower = /[a-z]/.test(password);
+    const hasUpper = /[A-Z]/.test(password);
+    const hasDigit = /\d/.test(password);
+    const hasSymbol = /[!@#$%^&*()_+]/.test(password);
+
+    if (password.length >= 8) score++;
+    if (hasLower && hasUpper) score++;
+    if (hasDigit) score++;
+    if (hasSymbol) score++;
+
+    return score;
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+
+    if (name === "password") {
+        const newStrength = calculateStrength(value);
+        setStrength(newStrength);
+    }
   };
 
   const validatePassword = (password: string) => {
@@ -215,6 +292,26 @@ export default function SignupPage() {
         value={form.password}
         required
         />
+
+        <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            className="absolute top-[42px] -translate-y-1/2 right-10 text-gray-500 hover:text-gray-700 cursor-pointer z-20 h-7 w-7"
+            title="Generate strong password"
+            onClick={() => {
+              const newPassword = generateStrongPassword();
+              setForm(prev => ({
+                ...prev,
+                password: newPassword,
+                confirmPassword: newPassword
+              }));
+              setStrength(calculateStrength(newPassword));
+            }}
+          >
+            <KeyRound className="h-5 w-5" />
+        </Button>
+
         <div
         onClick={() => setSeePass(!seePass)}
         className="absolute top-[42px] -translate-y-1/2 right-3 text-gray-500 hover:text-gray-700 cursor-pointer z-20"
@@ -225,6 +322,9 @@ export default function SignupPage() {
           <Eye className="h-5 w-5" />
         )}
         </div>
+
+        <PasswordStrengthIndicator strength={strength} />
+
         {isPassCorrect && (
         <div className="mt-1 text-xs text-blue-600 space-y-0.5">
           <p>
