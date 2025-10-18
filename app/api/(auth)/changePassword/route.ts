@@ -61,3 +61,60 @@ export async function POST(req: NextRequest) {
     );
   }
 }
+
+function PasswordGenerator() {
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+
+  const generatePassword = () => {
+    const length = 12;
+    const chars =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+";
+    let pass = "";
+    for (let i = 0; i < length; i++) {
+      pass += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    setPassword(pass);
+  };
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(password);
+    alert("Password copied!");
+  };
+
+  return (
+    <div className="flex flex-col gap-3">
+      <label>Password</label>
+      <div className="flex items-center gap-2">
+        <input
+          type={showPassword ? "text" : "password"}
+          value={password}
+          readOnly
+          className="border rounded px-3 py-2 w-64"
+        />
+        <button
+          onClick={generatePassword}
+          title="Generate strong password"
+          className="bg-blue-500 text-white px-3 py-1 rounded"
+        >
+          🔑 Generate
+        </button>
+        <button
+          onClick={copyToClipboard}
+          title="Copy password"
+          className="bg-gray-500 text-white px-3 py-1 rounded"
+        >
+          📋 Copy
+        </button>
+        <button
+          onClick={() => setShowPassword(!showPassword)}
+          className="bg-gray-300 text-black px-3 py-1 rounded"
+        >
+          {showPassword ? "🙈 Hide" : "👁️ Show"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+export default PasswordGenerator;
