@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useStreak } from "@/lib/useStreak";
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
@@ -10,7 +11,7 @@ import { Suspense } from 'react';
 
 // Create a separate component for the content that uses useSearchParams
 function PrivacyTermsContent() {
-  const [streak, setStreak] = useState<number>(0);
+  const { streak } = useStreak();
   const [activeTab, setActiveTab] = useState<'privacy' | 'terms'>('privacy');
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -28,9 +29,6 @@ function PrivacyTermsContent() {
   };
 
   useEffect(() => {
-    const savedStreak = parseInt(localStorage.getItem('potd_streak') || '0');
-    setStreak(savedStreak);
-
     // Check URL parameters to set active tab
     const tab = searchParams?.get('tab');
     if (tab === 'terms') {
@@ -82,21 +80,19 @@ function PrivacyTermsContent() {
             <div className="bg-gray-800/50 p-1 rounded-xl border border-white/10">
               <button
                 onClick={() => handleTabChange('privacy')}
-                className={`px-6 py-3 rounded-lg font-medium transition-all duration-300 ${
-                  activeTab === 'privacy'
+                className={`px-6 py-3 rounded-lg font-medium transition-all duration-300 ${activeTab === 'privacy'
                     ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg'
                     : 'text-gray-950 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-300'
-                }`}
+                  }`}
               >
                 Privacy Policy
               </button>
               <button
                 onClick={() => handleTabChange('terms')}
-                className={`px-6 py-3 rounded-lg font-medium transition-all duration-300 ${
-                  activeTab === 'terms'
+                className={`px-6 py-3 rounded-lg font-medium transition-all duration-300 ${activeTab === 'terms'
                     ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg'
                     : 'text-gray-950 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-300'
-                }`}
+                  }`}
               >
                 Terms of Service
               </button>
@@ -109,7 +105,7 @@ function PrivacyTermsContent() {
             animate="visible"
             custom={2}
             variants={fadeInUp}
-            className="bg-gradient-to-br from-purple-500/10 to-blue-500/10 rounded-2xl p-8 border border-white/10 dark:border-white/10 border-gray-200"
+            className="bg-gradient-to-br from-purple-500/10 to-blue-500/10 rounded-2xl p-8 border border-gray-200 dark:border-white/10"
           >
             {activeTab === 'privacy' ? (
               <div className="prose prose-gray dark:prose-invert max-w-none">
@@ -194,7 +190,7 @@ function PrivacyTermsContent() {
                   <section>
                     <h3 className="text-xl font-semibold mb-3 text-blue-600 dark:text-blue-400">1. Acceptance of Terms</h3>
                     <p>
-                      By accessing and using DSAMate v2, you accept and agree to be bound by the terms and provision of this agreement. 
+                      By accessing and using DSAMate v2, you accept and agree to be bound by the terms and provision of this agreement.
                       This is a template project created for educational purposes under GirlScript Summer of Code (GSSoC) 2025.
                     </p>
                   </section>
@@ -257,7 +253,7 @@ function PrivacyTermsContent() {
                   <section>
                     <h3 className="text-xl font-semibold mb-3 text-blue-600 dark:text-blue-400">7. Modifications</h3>
                     <p>
-                      We reserve the right to modify these terms at any time. Changes will be posted in this document 
+                      We reserve the right to modify these terms at any time. Changes will be posted in this document
                       and the "Last updated" date will be revised. Continued use of the service constitutes acceptance of modified terms.
                     </p>
                   </section>
@@ -293,7 +289,7 @@ function PrivacyTermsContent() {
                 </span>
               </h3>
               <p className="text-foreground mb-4">
-                If you have any questions about our Privacy Policy or Terms of Service, 
+                If you have any questions about our Privacy Policy or Terms of Service,
                 we're here to help! Feel free to reach out through our GitHub repository.
               </p>
               <Button asChild size="lg" className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600">

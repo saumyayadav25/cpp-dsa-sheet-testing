@@ -10,6 +10,8 @@ import { ModeToggle } from "@/components/mode-toggle";
 import axios from "axios";
 import { useEffect, useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
+import { useStreak } from "@/lib/useStreak";
+import { reconcileWithServer } from "@/utils/streak";
 
 interface User {
   _id: string;
@@ -28,19 +30,19 @@ export default function NavbarInterview({
   setSearchTerm,
 }: NavbarProps) {
   const [showMobileSearch, setShowMobileSearch] = useState(false);
-    const [isSearchFocused, setIsSearchFocused] = useState(false);
-    const [isScrolled, setIsScrolled] = useState(false);
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-    const [openDropdown, setOpenDropdown] = useState<string | null>(null);
-  
-    const searchInputRef = useRef<HTMLInputElement>(null);
-    const pathname = usePathname();
-    const isSheetPage = pathname ? pathname.startsWith("/sheet") : false;
-    const isInterviewPage = pathname?.startsWith("/interview-experiences");
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const pathname = usePathname();
+  const isSheetPage = pathname ? pathname.startsWith("/sheet") : false;
+  const isInterviewPage = pathname?.startsWith("/interview-experiences");
 
 
-    const [streak, setStreak] = useState(0);
-    const [user, setUser] = useState<User | null>(null);
+  const { streak } = useStreak();
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -48,6 +50,17 @@ export default function NavbarInterview({
         const res = await axios.get("/api/check-auth");
         if (res.status === 200) {
           setUser(res.data?.user);
+          // Hydrate client streak from backend progress after auth
+          try {
+            const p = await axios.get(`/api/progress/${res.data?.user?._id}`);
+            const s = p.data?.progress;
+            if (s) {
+              const lastFromServer = (s as any).lastDayId || s.lastVisited || null;
+              reconcileWithServer(s.streakCount ?? 0, lastFromServer);
+            }
+          } catch (e) {
+            // ignore
+          }
         }
       } catch (err: any) {
         if (err.response?.status === 401 || err.response?.status === 503) {
@@ -60,20 +73,7 @@ export default function NavbarInterview({
     checkAuth();
   }, []);
 
-  useEffect(() => {
-    if (!user?._id) return;
-    const fetchStreak = async () => {
-      try {
-        console.log("Fetching streak for user:", user?._id);
-        const response = await axios.get(`/api/progress/${user?._id}`);
-        console.log("Streak response:", response.data.progress.streakCount);
-        setStreak(response.data.progress.streakCount);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchStreak();
-  }, [user?._id]);
+  // Streak is managed client-side via useStreak() for live updates and midnight resets
 
   useEffect(() => {
     let ticking = false;
@@ -109,7 +109,7 @@ export default function NavbarInterview({
     } else {
       document.body.style.overflow = 'unset';
     }
-    
+
     // Cleanup on unmount
     return () => {
       document.body.style.overflow = 'unset';
@@ -175,7 +175,7 @@ export default function NavbarInterview({
       console.error("Logout error:", error);
     }
   };
-   return (
+  return (
     <motion.nav
       className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 border-b ${isScrolled ? "border-white/10" : "border-gray-800/50"
         } bg-background px-4 sm:px-6 lg:px-10 py-4 sm:py-5`}
@@ -292,7 +292,7 @@ export default function NavbarInterview({
 
           {/* Learning Tools Dropdown */}
           <div className="relative dropdown-container">
-            <button 
+            <button
               onClick={() => toggleDropdown('learning')}
               className="px-3 py-2 rounded-lg whitespace-nowrap transition-all duration-300 text-foreground hover:text-blue-400 flex items-center gap-1"
             >
@@ -302,9 +302,9 @@ export default function NavbarInterview({
             <div className={`absolute left-0 top-full mt-1 min-w-[200px] backdrop-blur-xl bg-gradient-to-br from-blue-900/20 via-blue-700/20 to-black/20 border border-blue-950 rounded-2xl shadow-2xl transition-all duration-200 z-40 ${openDropdown === 'learning' ? 'opacity-100 visible' : 'opacity-0 invisible'}`}>
               <div className="py-2">
                 {learningLinks.map(link => (
-                  <Link 
-                    key={link.href} 
-                    href={link.href} 
+                  <Link
+                    key={link.href}
+                    href={link.href}
                     onClick={() => setOpenDropdown(null)}
                     className="block px-4 py-2.5 text-sm text-foreground hover:bg-blue-800/40 hover:text-blue-300 transition-all"
                   >
@@ -317,7 +317,7 @@ export default function NavbarInterview({
 
           {/* Coding Tools Dropdown */}
           <div className="relative dropdown-container">
-            <button 
+            <button
               onClick={() => toggleDropdown('coding')}
               className="px-3 py-2 rounded-lg whitespace-nowrap transition-all duration-300 text-foreground hover:text-blue-400 flex items-center gap-1"
             >
@@ -327,9 +327,9 @@ export default function NavbarInterview({
             <div className={`absolute left-0 top-full mt-1 min-w-[200px] backdrop-blur-xl bg-gradient-to-br from-blue-900/20 via-blue-700/20 to-black/20 border border-blue-950 rounded-2xl shadow-2xl transition-all duration-200 z-40 ${openDropdown === 'coding' ? 'opacity-100 visible' : 'opacity-0 invisible'}`}>
               <div className="py-2">
                 {codingLinks.map(link => (
-                  <Link 
-                    key={link.href} 
-                    href={link.href} 
+                  <Link
+                    key={link.href}
+                    href={link.href}
                     onClick={() => setOpenDropdown(null)}
                     className="block px-4 py-2.5 text-sm text-foreground hover:bg-blue-800/40 hover:text-blue-300 transition-all"
                   >
@@ -342,7 +342,7 @@ export default function NavbarInterview({
 
           {/* Community Dropdown */}
           <div className="relative dropdown-container">
-            <button 
+            <button
               onClick={() => toggleDropdown('community')}
               className="px-3 py-2 rounded-lg whitespace-nowrap transition-all duration-300 text-foreground hover:text-blue-400 flex items-center gap-1"
             >
@@ -352,31 +352,31 @@ export default function NavbarInterview({
             <div className={`absolute left-0 top-full mt-1 min-w-[200px] backdrop-blur-xl bg-gradient-to-br from-blue-900/20 via-blue-700/20 to-black/20 border border-blue-950 rounded-2xl shadow-2xl transition-all duration-200 z-40 ${openDropdown === 'community' ? 'opacity-100 visible' : 'opacity-0 invisible'}`}>
               <div className="py-2">
                 {communityLinks.map(link => link.external ? (
-                  <a 
-                    key={link.href} 
-                    href={link.href} 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
+                  <a
+                    key={link.href}
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     onClick={() => setOpenDropdown(null)}
                     className="block px-4 py-2.5 text-sm text-foreground hover:bg-blue-800/40 hover:text-blue-300 transition-all"
                   >
                     {link.label}
                   </a>
                 ) : link.onClick ? (
-                  <button 
-                    key={link.label} 
+                  <button
+                    key={link.label}
                     onClick={() => {
                       link.onClick?.();
                       setOpenDropdown(null);
-                    }} 
+                    }}
                     className="block w-full text-left px-4 py-2.5 text-sm text-foreground hover:bg-blue-800/40 hover:text-blue-300 transition-all"
                   >
                     {link.label}
                   </button>
                 ) : (
-                  <Link 
-                    key={link.href} 
-                    href={link.href} 
+                  <Link
+                    key={link.href}
+                    href={link.href}
                     onClick={() => setOpenDropdown(null)}
                     className="block px-4 py-2.5 text-sm text-foreground hover:bg-blue-800/40 hover:text-blue-300 transition-all"
                   >
@@ -389,24 +389,24 @@ export default function NavbarInterview({
 
           <div>
             {isInterviewPage && (
-            <Link href="/interview-experiences/share-experience">
-              <Button
-                size="sm"
-                variant="outline"
-                className="flex items-center gap-2 border-blue-500 text-blue-400 hover:bg-blue-500/20"
-              >
-                <Plus className="h-4 w-4" /> Share Experience
-              </Button>
-            </Link>
-          )}
+              <Link href="/interview-experiences/share-experience">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="flex items-center gap-2 border-blue-500 text-blue-400 hover:bg-blue-500/20"
+                >
+                  <Plus className="h-4 w-4" /> Share Experience
+                </Button>
+              </Link>
+            )}
           </div>
 
-          
+
 
           {/* User Profile Dropdown */}
           {user ? (
             <div className="relative dropdown-container">
-              <button 
+              <button
                 onClick={() => toggleDropdown('profile')}
                 className="flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-300 text-foreground hover:text-blue-400"
               >
@@ -423,25 +423,25 @@ export default function NavbarInterview({
                     <p className="text-sm font-medium text-foreground">{user.full_name}</p>
                     <p className="text-xs text-muted-foreground">{user.email}</p>
                   </div>
-                  <Link 
-                    href="/profile" 
+                  <Link
+                    href="/profile"
                     onClick={() => setOpenDropdown(null)}
                     className="block px-4 py-2.5 text-sm text-foreground hover:bg-muted/50 hover:text-blue-400 transition-all"
                   >
                     Profile
                   </Link>
-                  <Link 
-                    href="/dashboard" 
+                  <Link
+                    href="/dashboard"
                     onClick={() => setOpenDropdown(null)}
                     className="block px-4 py-2.5 text-sm text-foreground hover:bg-muted/50 hover:text-blue-400 transition-all"
                   >
                     Dashboard
                   </Link>
-                  <button 
+                  <button
                     onClick={() => {
                       handleLogout();
                       setOpenDropdown(null);
-                    }} 
+                    }}
                     className="block w-full text-left px-4 py-2.5 text-sm text-foreground hover:bg-muted/50 hover:text-red-400 transition-all"
                   >
                     Logout
@@ -540,7 +540,7 @@ export default function NavbarInterview({
 
       {/* Mobile Menu Backdrop */}
       {isMobileMenuOpen && (
-        <div 
+        <div
           className="fixed top-[80px] left-0 right-0 bottom-0 bg-black/20 z-40 lg:hidden"
           onClick={() => setIsMobileMenuOpen(false)}
         />

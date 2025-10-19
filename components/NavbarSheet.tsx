@@ -9,6 +9,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { usePathname } from "next/navigation";
 import { ModeToggle } from "./mode-toggle";
 import axios from "axios";
+import { useStreak } from "@/lib/useStreak";
+import { reconcileWithServer } from "@/utils/streak";
 
 interface User {
   _id: string;
@@ -36,7 +38,7 @@ export default function NavbarSheet({
   const pathname = usePathname();
   const isSheetPage = pathname ? pathname.startsWith("/sheet") : false;
 
-  const [streak, setStreak] = useState(0);
+  const { streak } = useStreak();
   const [user, setUser] = useState<User | null>(null);
 
   // Check auth once
@@ -46,6 +48,17 @@ export default function NavbarSheet({
         const res = await axios.get("/api/check-auth");
         if (res.status === 200) {
           setUser(res.data?.user);
+          // After auth, hydrate streak from backend
+          try {
+            const p = await axios.get(`/api/progress/${res.data?.user?._id}`);
+            const s = p.data?.progress;
+            if (s) {
+              const lastFromServer = s.lastDayId || s.lastVisited || null;
+              reconcileWithServer(s.streakCount ?? 0, lastFromServer);
+            }
+          } catch (e) {
+            // non-blocking
+          }
         }
       } catch (err: any) {
         if (err.response?.status === 401 || err.response?.status === 503) {
@@ -58,20 +71,7 @@ export default function NavbarSheet({
     checkAuth();
   }, []);
 
-  useEffect(() => {
-    if (!user?._id) return;
-    const fetchStreak = async () => {
-      try {
-        console.log("Fetching streak for user:", user?._id);
-        const response = await axios.get(`/api/progress/${user?._id}`);
-        console.log("Streak response:", response.data.progress.streakCount);
-        setStreak(response.data.progress.streakCount);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchStreak();
-  }, [user?._id]);
+  // Streak is managed client-side via useStreak() for live updates and midnight resets
 
   useEffect(() => {
     let ticking = false;
@@ -107,7 +107,7 @@ export default function NavbarSheet({
     } else {
       document.body.style.overflow = 'unset';
     }
-    
+
     // Cleanup on unmount
     return () => {
       document.body.style.overflow = 'unset';
@@ -153,12 +153,12 @@ export default function NavbarSheet({
   ];
 
   const communityLinks: Array<{ href: string; label: string; external?: boolean; onClick?: () => void }> = [
-      { href: "https://github.com/saumyayadav25/DSA-Supreme-3.0", label: "Star on GitHub", external: true },
-      { href: "/contributors", label: "Contributors" },
-      { href: "https://docs.google.com/forms/d/e/1FAIpQLSeA-HAYbE6S4sZnH74P9ZnYkk3omgW58h6lXDAUpo9lzvAHPA/viewform", label: "Give Testimonial", external: true },
-      { href: "https://forms.gle/bdwBp8oFRWugcrcg9", label: "Provide Feedback", external: true },
-      { href: "https://www.buymeacoffee.com/saumyayadav", label: "Support the Project", external: true },
-    ];
+    { href: "https://github.com/saumyayadav25/DSA-Supreme-3.0", label: "Star on GitHub", external: true },
+    { href: "/contributors", label: "Contributors" },
+    { href: "https://docs.google.com/forms/d/e/1FAIpQLSeA-HAYbE6S4sZnH74P9ZnYkk3omgW58h6lXDAUpo9lzvAHPA/viewform", label: "Give Testimonial", external: true },
+    { href: "https://forms.gle/bdwBp8oFRWugcrcg9", label: "Provide Feedback", external: true },
+    { href: "https://www.buymeacoffee.com/saumyayadav", label: "Support the Project", external: true },
+  ];
 
   const streakVariants = {
     idle: { scale: 1, rotate: 0 },
@@ -292,7 +292,7 @@ export default function NavbarSheet({
 
           {/* Learning Tools Dropdown */}
           <div className="relative dropdown-container">
-            <button 
+            <button
               onClick={() => toggleDropdown('learning')}
               className="px-3 py-2 rounded-lg whitespace-nowrap transition-all duration-300 text-foreground hover:text-blue-400 flex items-center gap-1"
             >
@@ -302,9 +302,9 @@ export default function NavbarSheet({
             <div className={`absolute left-0 top-full mt-1 min-w-[200px] backdrop-blur-xl bg-gradient-to-br  from-white via-gray-500/30  border-gray-200  dark:from-blue-900/20 dark:via-blue-700/20 dark:to-black/20 border dark:border-blue-950 rounded-2xl shadow-2xl transition-all duration-200 z-40 ${openDropdown === 'learning' ? 'opacity-100 visible' : 'opacity-0 invisible'}`}>
               <div className="py-2">
                 {learningLinks.map(link => (
-                  <Link 
-                    key={link.href} 
-                    href={link.href} 
+                  <Link
+                    key={link.href}
+                    href={link.href}
                     onClick={() => setOpenDropdown(null)}
                     className="block px-4 py-2.5 text-sm text-foreground hover:bg-gray-500/20 dark:hover:bg-blue-800/40   dark:hover:text-blue-300 transition-all"
                   >
@@ -317,7 +317,7 @@ export default function NavbarSheet({
 
           {/* Coding Tools Dropdown */}
           <div className="relative dropdown-container">
-            <button 
+            <button
               onClick={() => toggleDropdown('coding')}
               className="px-3 py-2 rounded-lg whitespace-nowrap transition-all duration-300 text-foreground hover:text-blue-400 flex items-center gap-1"
             >
@@ -327,9 +327,9 @@ export default function NavbarSheet({
             <div className={`absolute left-0 top-full mt-1 min-w-[200px] backdrop-blur-xl bg-gradient-to-br  from-white via-gray-500/30  border-gray-200  dark:from-blue-900/20 dark:via-blue-700/20 dark:to-black/20 border dark:border-blue-950 rounded-2xl shadow-2xl transition-all duration-200 z-40  ${openDropdown === 'coding' ? 'opacity-100 visible' : 'opacity-0 invisible'}`}>
               <div className="py-2">
                 {codingLinks.map(link => (
-                  <Link 
-                    key={link.href} 
-                    href={link.href} 
+                  <Link
+                    key={link.href}
+                    href={link.href}
                     onClick={() => setOpenDropdown(null)}
                     className="block px-4 py-2.5 text-sm text-foreground hover:bg-gray-500/20 dark:hover:bg-blue-800/40   dark:hover:text-blue-300 transition-all"
                   >
@@ -342,7 +342,7 @@ export default function NavbarSheet({
 
           {/* Community Dropdown */}
           <div className="relative dropdown-container">
-            <button 
+            <button
               onClick={() => toggleDropdown('community')}
               className="px-3 py-2 rounded-lg whitespace-nowrap transition-all duration-300 text-foreground hover:text-blue-400 flex items-center gap-1"
             >
@@ -352,31 +352,31 @@ export default function NavbarSheet({
             <div className={`absolute left-0 top-full mt-1 min-w-[200px] backdrop-blur-xl bg-gradient-to-br  from-white via-gray-500/30  border-gray-200  dark:from-blue-900/20 dark:via-blue-700/20 dark:to-black/20 border dark:border-blue-950 rounded-2xl shadow-2xl transition-all duration-200 z-40  ${openDropdown === 'community' ? 'opacity-100 visible' : 'opacity-0 invisible'}`}>
               <div className="py-2">
                 {communityLinks.map(link => link.external ? (
-                  <a 
-                    key={link.href} 
-                    href={link.href} 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
+                  <a
+                    key={link.href}
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     onClick={() => setOpenDropdown(null)}
                     className="block px-4 py-2.5 text-sm text-foreground hover:bg-gray-500/20 dark:hover:bg-blue-800/40   dark:hover:text-blue-300 transition-all"
                   >
                     {link.label}
                   </a>
                 ) : link.onClick ? (
-                  <button 
-                    key={link.label} 
+                  <button
+                    key={link.label}
                     onClick={() => {
                       link.onClick?.();
                       setOpenDropdown(null);
-                    }} 
+                    }}
                     className="block w-full text-left px-4 py-2.5 text-sm text-foreground hover:bg-blue-800/40 hover:text-blue-300 transition-all"
                   >
                     {link.label}
                   </button>
                 ) : (
-                  <Link 
-                    key={link.href} 
-                    href={link.href} 
+                  <Link
+                    key={link.href}
+                    href={link.href}
                     onClick={() => setOpenDropdown(null)}
                     className="block px-4 py-2.5 text-sm text-foreground hover:bg-gray-500/20 dark:hover:bg-blue-800/40   dark:hover:text-blue-300 transition-all"
                   >
@@ -390,7 +390,7 @@ export default function NavbarSheet({
           {/* User Profile Dropdown */}
           {user ? (
             <div className="relative dropdown-container">
-              <button 
+              <button
                 onClick={() => toggleDropdown('profile')}
                 className="flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-300 text-foreground hover:text-blue-400"
               >
@@ -407,25 +407,25 @@ export default function NavbarSheet({
                     <p className="text-sm font-medium text-foreground">{user.full_name}</p>
                     <p className="text-xs text-muted-foreground">{user.email}</p>
                   </div>
-                  <Link 
-                    href={user?`/profile/${encodeURIComponent(user._id)}`:"#"} 
+                  <Link
+                    href={user ? `/profile/${encodeURIComponent(user._id)}` : "#"}
                     onClick={() => setOpenDropdown(null)}
                     className="block px-4 py-2.5 text-sm text-foreground hover:bg-muted/50 hover:text-blue-400 transition-all"
                   >
                     Profile
                   </Link>
-                  <Link 
-                    href="/progress" 
+                  <Link
+                    href="/progress"
                     onClick={() => setOpenDropdown(null)}
                     className="block px-4 py-2.5 text-sm text-foreground hover:bg-muted/50 hover:text-blue-400 transition-all"
                   >
                     Dashboard
                   </Link>
-                  <button 
+                  <button
                     onClick={() => {
                       handleLogout();
                       setOpenDropdown(null);
-                    }} 
+                    }}
                     className="block w-full text-left px-4 py-2.5 text-sm text-foreground hover:bg-muted/50 hover:text-red-400 transition-all"
                   >
                     Logout
@@ -524,7 +524,7 @@ export default function NavbarSheet({
 
       {/* Mobile Menu Backdrop */}
       {isMobileMenuOpen && (
-        <div 
+        <div
           className="fixed top-[80px] left-0 right-0 bottom-0 bg-black/20 z-40 lg:hidden"
           onClick={() => setIsMobileMenuOpen(false)}
         />
@@ -628,7 +628,7 @@ export default function NavbarSheet({
                   <p className="text-xs text-muted-foreground">{user.email}</p>
                 </div>
               </div>
-              <Link href={user?`/profile/${encodeURIComponent(user._id)}`:"#"} className="block px-6 py-2.5 text-foreground hover:bg-muted/50 hover:text-blue-400 transition-all">
+              <Link href={user ? `/profile/${encodeURIComponent(user._id)}` : "#"} className="block px-6 py-2.5 text-foreground hover:bg-muted/50 hover:text-blue-400 transition-all">
                 Profile
               </Link>
               <Link href="/progress" className="block px-6 py-2.5 text-foreground hover:bg-muted/50 hover:text-blue-400 transition-all">

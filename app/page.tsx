@@ -2,6 +2,7 @@
 import { CardSpotlight } from "@/components/ui/card-spotlight";
 import { AnimatedTooltip } from "@/components/ui/animated-tooltip";
 import React, { useState, useEffect, useRef } from "react";
+import { useStreak } from "@/lib/useStreak";
 import Link from "next/link";
 import {
   FaListUl,
@@ -206,10 +207,10 @@ const FAQItem = ({
             >
               <svg
                 className={`w-full h-full transition-colors duration-300 ${isOpen
-                    ? "text-blue-600 dark:text-blue-400"
-                    : isHovered
-                      ? "text-gray-700 dark:text-gray-200"
-                      : "text-gray-500 dark:text-gray-400"
+                  ? "text-blue-600 dark:text-blue-400"
+                  : isHovered
+                    ? "text-gray-700 dark:text-gray-200"
+                    : "text-gray-500 dark:text-gray-400"
                   }`}
                 fill="none"
                 stroke="currentColor"
@@ -271,7 +272,7 @@ const FAQItem = ({
 
 export default function Home() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [streak, setStreak] = useState(0);
+  const { streak } = useStreak();
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -289,12 +290,7 @@ export default function Home() {
     displayPreference: "nameAndDesignation"
   });
 
-  useEffect(() => {
-    const savedStreak = localStorage.getItem("userStreak");
-    if (savedStreak) {
-      setStreak(parseInt(savedStreak, 10));
-    }
-  }, []);
+  // streak is managed globally via hook; removed legacy localStorage read
 
   const toggleFaq = (index: number) => {
     setOpenFaqIndex(openFaqIndex === index ? null : index);
@@ -411,7 +407,7 @@ export default function Home() {
         className="relative bg-white dark:bg-black min-h-screen flex flex-col items-center justify-center text-center px-4 sm:px-6 py-8 sm:py-16 pt-16 sm:pt-24 bg-cover bg-center bg-no-repeat overflow-hidden"
         style={{ backgroundImage: "url(/bg.png)" }}
       >
-        
+
         <div className="relative z-10 max-w-6xl mx-auto w-full flex flex-col">
           <motion.h1
             variants={fadeInUp}
