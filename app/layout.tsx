@@ -9,6 +9,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import ScrollToTop from "@/components/ScrollToTopBottom";
 import ScrollToTopBottom from "@/components/ScrollToTopBottom";
 import { QuestionProvider } from "@/contexts/QuestionContext";
+import StreakProvider from "@/components/StreakProvider";
 
 const plusJakarta = Plus_Jakarta_Sans({
   variable: "--font-plus-jakarta",
@@ -210,6 +211,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <QuestionProvider>
+            <StreakProvider />
             {children}
             <ScrollToTopBottom />
           </QuestionProvider>

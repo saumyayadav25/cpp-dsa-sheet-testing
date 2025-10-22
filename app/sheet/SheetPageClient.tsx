@@ -6,6 +6,7 @@ import { sampleTopics, type Question } from "@/data/questions";
 import POTD from "@/components/POTD";
 import { getPOTD } from "@/utils/getPOTD";
 import { useState, useEffect } from "react";
+import { useStreak } from "@/lib/useStreak";
 import { useSearchParams } from "next/navigation";
 import TestimonialPrompt from "@/components/TestimonialPrompt";
 import ReportIssueButton from "@/components/ReportIssueButton";
@@ -46,15 +47,15 @@ export default function SheetPageClient() {
     question: Question;
   } | null>(null);
 
-  const [streak, setStreak] = useState(0);
+  const streakState = useStreak();
+  const streak = streakState.streak;
   const [potd, setPotd] = useState<Question | null>(null);
 
   useEffect(() => {
     const potd = getPOTD();
     setPotd(potd);
 
-    const savedStreak = parseInt(localStorage.getItem("potd_streak") || "0");
-    setStreak(savedStreak);
+    // streak handled via useStreak hook
 
     // Check for roadmap filter in URL params
     const filterParam = searchParams?.get("filter") ?? null;
@@ -64,8 +65,7 @@ export default function SheetPageClient() {
   }, [searchParams]);
 
   const updateStreak = () => {
-    const updatedStreak = parseInt(localStorage.getItem("potd_streak") || "0");
-    setStreak(updatedStreak);
+    // no-op retained for POTD prop compatibility; state updates via events
   };
 
   const [searchTerm, setSearchTerm] = useState("");

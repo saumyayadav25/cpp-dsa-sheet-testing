@@ -22,10 +22,11 @@ export async function GET(_req: Request, context: any) {
           hardSolved: 0,
           totalSolved: 0,
           streakCount: 0,
-          markedForRevision:0,
+          markedForRevision: 0,
           topicsCompleted: [],
           topicsProgress: [],
-          lastVisited: null
+          lastVisited: null,
+          lastDayId: null
         },
         badges: badgeDoc && 'badges' in badgeDoc ? badgeDoc.badges : []
       });
@@ -54,6 +55,7 @@ export async function GET(_req: Request, context: any) {
         hardSolved: progressDoc.hardSolved,
         totalSolved: progressDoc.totalSolved,
         streakCount: progressDoc.streakCount,
+        lastDayId: progressDoc.lastDayId,
         markedForRevision: progressDoc.markedForRevision,
         topicsCompleted, // ✅ send to frontend
         topicsProgress: progress.topicsProgress.map((t: { topicName: any; solvedCount: any; totalQuestions: any; }) => ({
