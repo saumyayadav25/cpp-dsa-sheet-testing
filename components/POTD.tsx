@@ -24,6 +24,7 @@
  */
 
 import { useState, useEffect } from "react";
+import { markPotdCompletedToday, readStreakState, reconcileWithServer } from "@/utils/streak";
 import { Question, sampleTopics } from "@/data/questions";
 import axios from "axios";
 import { useRouter } from "next/navigation";
@@ -147,19 +148,16 @@ export default function POTD({ potd, updateStreak }: POTDProps) {
 
   //  Check if today's POTD is already done (independent of DSA sheet progress)
   useEffect(() => {
-    const currentDate = new Date().toDateString();
-    setToday(currentDate);
+    const state = readStreakState();
+    setToday(state.today);
+    setIsSolved(state.lastDoneDay === state.today);
 
-    // IMPORTANT: POTD status is date-based, NOT question-based
-    // This ensures repeated questions appear unchecked in POTD
-    const lastDone = localStorage.getItem("potd_last_done");
-    setIsSolved(currentDate === lastDone);
-
-    console.log(`📅 POTD status check for ${currentDate}:`, {
-      lastDone,
-      isSolved: currentDate === lastDone,
-      potdTitle: potd?.title
-    });
+    const onUpdate = () => {
+      const s = readStreakState();
+      setIsSolved(s.lastDoneDay === s.today);
+    };
+    window.addEventListener("streak:updated", onUpdate as EventListener);
+    return () => window.removeEventListener("streak:updated", onUpdate as EventListener);
   }, [potd]);
 
   //  Mark POTD as done and update backend progress + ONE-WAY sync with DSA sheet
@@ -175,14 +173,21 @@ export default function POTD({ potd, updateStreak }: POTDProps) {
         userId: user._id, // Required by backend
         questionDifficulty: potd?.difficulty || "medium", // Use actual difficulty
         topicCompleted: null, // Pass topic name if applicable
+        clientDayId: today || undefined,
       });
 
       if (res.status === 200) {
         console.log(" Backend progress updated:", res.data);
 
-        // Mark POTD as done for today (date-based, not question-based)
-        localStorage.setItem("potd_last_done", today);
+        // Mark POTD as done for today & update streak centrally
+        const newState = markPotdCompletedToday();
         setIsSolved(true);
+
+        // Reconcile local state with server's latest streak and lastVisited
+        try {
+          const s = res.data?.progress;
+          if (s) reconcileWithServer(s.streakCount ?? 0, s.lastVisited ?? null);
+        } catch { }
 
         //  ACCEPTANCE CRITERIA #1: ONE-WAY SYNC to DSA sheet
         // When POTD is marked as done, also mark the corresponding DSA list question as done
@@ -196,7 +201,7 @@ export default function POTD({ potd, updateStreak }: POTDProps) {
           }
         }
 
-        // Update streak UI
+        // Update streak UI for legacy consumers
         updateStreak();
 
         // Play success sound

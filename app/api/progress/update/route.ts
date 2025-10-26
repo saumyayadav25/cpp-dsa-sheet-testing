@@ -16,7 +16,7 @@ interface TopicProgress {
 export async function POST(req: Request) {
   try {
     await connect();
-    const { userId, questionDifficulty, questionId, isSolved, topicName, topicCompleted, } = await req.json();
+    const { userId, questionDifficulty, questionId, isSolved, topicName, topicCompleted, clientDayId } = await req.json();
 
     if (!userId) {
       return NextResponse.json({ message: "UserId required" }, { status: 400 });
@@ -26,16 +26,33 @@ export async function POST(req: Request) {
     let progress = await Progress.findOne({ userId });
     if (!progress) progress = await Progress.create({ userId });
 
-    // --- Streak Update ---
-    const today = new Date();
-    if (progress.lastVisited) {
-      const diff = Math.floor((today.getTime() - progress.lastVisited.getTime()) / (1000 * 60 * 60 * 24));
-      if (diff === 1) progress.streakCount += 1;
-      else if (diff > 1) progress.streakCount = 1;
-    } else progress.streakCount = 1;
-    progress.lastVisited = today;
+    // --- Streak Update (day-id based, timezone-safe) ---
+    const now = new Date();
+    const serverDayId = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+    const dayId = typeof clientDayId === 'string' && /\d{4}-\d{2}-\d{2}/.test(clientDayId) ? clientDayId : serverDayId;
+    if (progress.lastDayId) {
+      // Compare ISO day strings lexically is fine for YYYY-MM-DD separated dates
+      // Compute difference in days by simple relation of consecutive dates
+      // We convert to Date to get exact difference
+      const [y, m, d] = progress.lastDayId.split('-').map(Number);
+      const last = new Date(y, (m || 1) - 1, d || 1);
+      const [cy, cm, cd] = dayId.split('-').map(Number);
+      const cur = new Date(cy, (cm || 1) - 1, cd || 1);
+      const diffDays = Math.floor((cur.getTime() - last.getTime()) / (1000 * 60 * 60 * 24));
+      if (diffDays === 0) {
+        // same day - leave streakCount as-is
+      } else if (diffDays === 1) {
+        progress.streakCount = Math.max(1, (progress.streakCount || 0) + 1);
+      } else if (diffDays > 1) {
+        progress.streakCount = 1;
+      } // if negative, don't modify (client clock weird); keep previous
+    } else {
+      progress.streakCount = Math.max(1, progress.streakCount || 1);
+    }
+    progress.lastDayId = dayId;
+    progress.lastVisited = now;
 
- 
+
 
     // --- Difficulty Counters ---
     if (questionDifficulty) {
@@ -56,7 +73,7 @@ export async function POST(req: Request) {
       Number(progress.mediumSolved ?? 0) +
       Number(progress.hardSolved ?? 0);
 
-      
+
     // // --- Topic-wise Progress ---
     if (topicName) {
       const topicIndex = progress.topicsProgress.findIndex((t: TopicProgress) => t.topicName === topicName);
@@ -93,7 +110,7 @@ export async function POST(req: Request) {
         progress.topicsCompleted.push(topic.topicName);
       }
     });
-  
+
     await progress.save();
 
     // --- Badges ---
