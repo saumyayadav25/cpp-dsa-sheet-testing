@@ -3,7 +3,7 @@ import { connect } from "@/db/config";
 import { Progress } from "@/models/Progress.model";
 import { Badge } from "@/models/Badge.model";
 import { awardBadges } from "@/lib/awardBadges";
-import { SolvedQuestion } from "@/models/SolvedQuestion.model"; // Import the new model
+import { SolvedQuestion } from "@/models/SolvedQuestion.model";
 
 interface TopicProgress {
   topicName: string;
@@ -14,7 +14,7 @@ interface TopicProgress {
 export async function POST(req: Request) {
   try {
     await connect();
-    //Add language and solutionCode to destructuring
+
     const {
       userId,
       questionDifficulty,
@@ -24,32 +24,45 @@ export async function POST(req: Request) {
       topicCompleted,
       language,
       solutionCode,
+      clientDayId,
     } = await req.json();
 
     if (!userId) {
       return NextResponse.json({ message: "UserId required" }, { status: 400 });
     }
 
-    // --- Fetch or create progress ---
     let progress = await Progress.findOne({ userId });
     if (!progress) progress = await Progress.create({ userId });
 
-    // --- Streak Update ---
-    const today = new Date();
-    if (progress.lastVisited) {
-      const diff = Math.floor(
-        (today.getTime() - progress.lastVisited.getTime()) /
-          (1000 * 60 * 60 * 24)
+    const now = new Date();
+    const serverDayId = `${now.getFullYear()}-${String(
+      now.getMonth() + 1
+    ).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+    const dayId =
+      typeof clientDayId === "string" && /\d{4}-\d{2}-\d{2}/.test(clientDayId)
+        ? clientDayId
+        : serverDayId;
+    if (progress.lastDayId) {
+      const [y, m, d] = progress.lastDayId.split("-").map(Number);
+      const last = new Date(y, (m || 1) - 1, d || 1);
+      const [cy, cm, cd] = dayId.split("-").map(Number);
+      const cur = new Date(cy, (cm || 1) - 1, cd || 1);
+      const diffDays = Math.floor(
+        (cur.getTime() - last.getTime()) / (1000 * 60 * 60 * 24)
       );
-      if (diff === 1) progress.streakCount += 1;
-      else if (diff > 1) progress.streakCount = 1;
-    } else progress.streakCount = 1;
-    progress.lastVisited = today;
+      if (diffDays === 0) {
+      } else if (diffDays === 1) {
+        progress.streakCount = Math.max(1, (progress.streakCount || 0) + 1);
+      } else if (diffDays > 1) {
+        progress.streakCount = 1;
+      }
+    } else {
+      progress.streakCount = Math.max(1, progress.streakCount || 1);
+    }
+    progress.lastDayId = dayId;
+    progress.lastVisited = now;
 
-    // --- Difficulty Counters ---
     if (questionDifficulty) {
-      // Note: This logic for tracking previously solved questions might need refinement
-      // For now, assuming it works as intended for aggregate counts.
       if (isSolved) {
         if (questionDifficulty === "easy") progress.easySolved += 1;
         if (questionDifficulty === "medium") progress.mediumSolved += 1;
@@ -62,7 +75,6 @@ export async function POST(req: Request) {
       Number(progress.mediumSolved ?? 0) +
       Number(progress.hardSolved ?? 0);
 
-    // --- Topic-wise Progress ---
     if (topicName) {
       const topicIndex = progress.topicsProgress.findIndex(
         (t: TopicProgress) => t.topicName === topicName
@@ -76,13 +88,12 @@ export async function POST(req: Request) {
         progress.topicsProgress.push({
           topicName,
           solvedCount: 1,
-          totalQuestions: 5, // This could be made dynamic
+          totalQuestions: 5,
           markedForRevision: 0,
         });
       }
     }
 
-    // --- Topic Completion ---
     if (!progress.topicsCompleted) progress.topicsCompleted = [];
 
     if (topicCompleted && !progress.topicsCompleted.includes(topicCompleted)) {
@@ -101,7 +112,6 @@ export async function POST(req: Request) {
 
     await progress.save();
 
-    // --- NEW: Save the specific code solution ---
     if (isSolved && language && solutionCode && questionId) {
       await SolvedQuestion.create({
         userId,
@@ -111,7 +121,6 @@ export async function POST(req: Request) {
       });
     }
 
-    // --- Badges ---
     const badgeDoc = await Badge.findOne({ userId });
     const currentBadges = badgeDoc?.badges || [];
 

@@ -1,0 +1,67 @@
+{
+  "metrics": {
+    "best_model": "LinearRegression",
+    "r2": 0.7936434429016315,
+    "mae": 2.4668476473484313,
+    "mse": 9.29573694332618,
+    "all_models": {
+      "LinearRegression": {
+        "r2": 0.7936434429016315,
+        "mae": 2.4668476473484313,
+        "mse": 9.29573694332618
+      },
+      "DecisionTree": {
+        "r2": 0.7245303666533764,
+        "mae": 2.770476733583109,
+        "mse": 12.409071383392305
+      }
+    }
+  },
+  "example_predictions": [
+    {
+      "label": "casual_user",
+      "streak": 0,
+      "avg_daily_solved": 0.3,
+      "weekly_active_days": 1,
+      "current_progress": 12.0,
+      "total_solved": 15,
+      "predicted_next_7_days": 3.92
+    },
+    {
+      "label": "consistent_beginner",
+      "streak": 5,
+      "avg_daily_solved": 0.8,
+      "weekly_active_days": 4,
+      "current_progress": 30.0,
+      "total_solved": 60,
+      "predicted_next_7_days": 9.24
+    },
+    {
+      "label": "fast_learner",
+      "streak": 12,
+      "avg_daily_solved": 3.0,
+      "weekly_active_days": 7,
+      "current_progress": 55.0,
+      "total_solved": 300,
+      "predicted_next_7_days": 24.97
+    },
+    {
+      "label": "power_user",
+      "streak": 25,
+      "avg_daily_solved": 5.2,
+      "weekly_active_days": 7,
+      "current_progress": 85.0,
+      "total_solved": 1200,
+      "predicted_next_7_days": 37.16
+    },
+    {
+      "label": "current_user_example",
+      "streak": 3,
+      "avg_daily_solved": 1.5,
+      "weekly_active_days": 3,
+      "current_progress": 22.0,
+      "total_solved": 80,
+      "predicted_next_7_days": 12.85
+    }
+  ]
+}

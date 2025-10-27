@@ -2,6 +2,7 @@
 import { CardSpotlight } from "@/components/ui/card-spotlight";
 import { AnimatedTooltip } from "@/components/ui/animated-tooltip";
 import React, { useState, useEffect, useRef } from "react";
+import { useStreak } from "@/lib/useStreak";
 import Link from "next/link";
 import {
   FaListUl,
@@ -18,6 +19,7 @@ import Navbar from "@/components/Navbar";
 import ScrollToTopBottom from "@/components/ScrollToTopBottom";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import { MarqueeDemo } from "@/components/MarqueeDemo";
+import { CheckCircle2 } from "lucide-react";
 
 // Custom hook for animated counting
 // Animates numbers from 1 to target value when element comes into view
@@ -206,10 +208,10 @@ const FAQItem = ({
             >
               <svg
                 className={`w-full h-full transition-colors duration-300 ${isOpen
-                    ? "text-blue-600 dark:text-blue-400"
-                    : isHovered
-                      ? "text-gray-700 dark:text-gray-200"
-                      : "text-gray-500 dark:text-gray-400"
+                  ? "text-blue-600 dark:text-blue-400"
+                  : isHovered
+                    ? "text-gray-700 dark:text-gray-200"
+                    : "text-gray-500 dark:text-gray-400"
                   }`}
                 fill="none"
                 stroke="currentColor"
@@ -271,7 +273,7 @@ const FAQItem = ({
 
 export default function Home() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [streak, setStreak] = useState(0);
+  const { streak } = useStreak();
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -289,12 +291,7 @@ export default function Home() {
     displayPreference: "nameAndDesignation"
   });
 
-  useEffect(() => {
-    const savedStreak = localStorage.getItem("userStreak");
-    if (savedStreak) {
-      setStreak(parseInt(savedStreak, 10));
-    }
-  }, []);
+  // streak is managed globally via hook; removed legacy localStorage read
 
   const toggleFaq = (index: number) => {
     setOpenFaqIndex(openFaqIndex === index ? null : index);
@@ -411,7 +408,7 @@ export default function Home() {
         className="relative bg-white dark:bg-black min-h-screen flex flex-col items-center justify-center text-center px-4 sm:px-6 py-8 sm:py-16 pt-16 sm:pt-24 bg-cover bg-center bg-no-repeat overflow-hidden"
         style={{ backgroundImage: "url(/bg.png)" }}
       >
-        
+
         <div className="relative z-10 max-w-6xl mx-auto w-full flex flex-col">
           <motion.h1
             variants={fadeInUp}
@@ -724,49 +721,65 @@ export default function Home() {
 
       {/* WHY DSA MATE SECTION */}
       <motion.section
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-        viewport={{ once: true }}
-        className="px-6 md:px-20 py-20 relative overflow-hidden"
-      >
-        {/* Background decoration */}
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-50/30 via-transparent to-blue-50/30 dark:from-blue-900/10 dark:via-transparent dark:to-blue-900/10 pointer-events-none"></div>
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8 }}
+      viewport={{ once: true }}
+      className="px-6 md:px-20 py-20 relative overflow-hidden"
+    >
+      {/* Background decoration */}
+      <div className="absolute inset-0 bg-gradient-to-r from-blue-50/30 via-transparent to-blue-50/30 dark:from-blue-900/10 dark:via-transparent dark:to-blue-900/10 pointer-events-none"></div>
 
-        <div className="relative z-10 max-w-5xl mx-auto text-center">
-          <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
-            whileInView={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.6 }}
-            className="bg-white/70 dark:bg-white/5 backdrop-blur-sm border border-gray-200/50 dark:border-white/10 rounded-3xl p-8 md:p-12 shadow-2xl"
-          >
-            <h2 className="text-4xl md:text-5xl font-bold mb-8 text-gray-900 dark:text-white">
-              Why <span className="text-blue-500 dark:text-blue-400">DSAMate</span>?
-            </h2>
+      <div className="relative z-10 max-w-5xl mx-auto text-center">
+        <motion.div
+          initial={{ scale: 0.9, opacity: 0 }}
+          whileInView={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.6 }}
+          className="bg-white/70 dark:bg-white/5 backdrop-blur-sm border border-gray-200/50 dark:border-white/10 rounded-3xl p-8 md:p-12 shadow-2xl"
+        >
+          <h2 className="text-4xl md:text-5xl font-bold mb-8 text-gray-900 dark:text-white">
+            Why <span className="text-blue-500 dark:text-blue-400">DSAMate</span>?
+          </h2>
 
-            <p className="text-gray-600 dark:text-gray-300 text-lg md:text-xl leading-relaxed max-w-4xl mx-auto text-center">
-              It's not just another practice sheet. It's your
-              <span className="font-semibold text-blue-500"> all-in-one platform </span>
-              to solve <span className="font-semibold">topic-wise problems</span>, apply
-              <span className="font-semibold"> smart filters</span>, and track your daily progress with the
-              <span className="font-semibold"> new streak feature</span>.
-              <br /><br />
-              Whether you're <span className="font-semibold">revising for interviews</span>,
-              trying to <span className="font-semibold">stay consistent</span>, or aiming to
-              <span className="font-semibold"> master DSA with purpose, </span>
-              <span className="font-bold bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">
-                DSAMate helps you do it better
-              </span>.
-              <br /><br />
-              <span className="block bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 px-4 py-2 rounded-lg font-semibold text-white">
-                Mark questions, revisit tough ones, solve a new problem every day,
-                and keep your streak alive.
-              </span>
-            </p>
+          <p className="text-gray-600 dark:text-gray-300 text-sm md:text-lg leading-relaxed max-w-4xl mx-auto text-center">
+            It's not just another practice sheet. It's your
+            <span className="font-semibold text-blue-500"> all-in-one platform </span>
+            to solve <span className="font-semibold">topic-wise problems</span>, apply
+            <span className="font-semibold"> smart filters</span>, and track your daily progress with the
+            <span className="font-semibold"> new streak feature</span>.
+            <br /><br />
+            Whether you're <span className="font-semibold">revising for interviews</span>,
+            trying to <span className="font-semibold">stay consistent</span>, or aiming to
+            <span className="font-semibold"> master DSA with purpose, </span>
+            <span className="font-bold bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">
+              DSAMate helps you do it better.
+            </span>
+          </p>
 
-          </motion.div>
-        </div>
-      </motion.section>
+          {/* Modern two-column icon list */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-10 text-left max-w-2xl mx-auto">
+            {[
+              "Mark questions to revisit later",
+              "Revisit tough problems anytime",
+              "Solve a new problem every day",
+              "Keep your streak alive and track progress",
+            ].map((item, i) => (
+              <div
+                key={i}
+                className="flex items-center gap-3 rounded-xl px-4 py-3 shadow-sm hover:shadow-md transition-all duration-300"
+              >
+                <div className="flex-shrink-0">
+                  <CheckCircle2 className="w-5 h-5 text-blue-500 dark:text-blue-400" />
+                </div>
+                <p className="text-gray-700 dark:text-gray-200 text-sm md:text-base font-medium">
+                  {item}
+                </p>
+              </div>
+            ))}
+          </div>
+        </motion.div>
+      </div>
+    </motion.section>
 
       {/* TESTIMONIALS */}
       <motion.section

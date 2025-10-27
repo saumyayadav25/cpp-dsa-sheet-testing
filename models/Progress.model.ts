@@ -10,6 +10,7 @@ export interface TopicProgress {
 export interface ProgressType extends Document {
   userId: string;
   lastVisited?: Date;
+  lastDayId?: string;
   streakCount: number;
   easySolved: number;
   mediumSolved: number;
@@ -30,6 +31,7 @@ const TopicProgressSchema = new Schema<TopicProgress>({
 const ProgressSchema = new Schema<ProgressType>({
   userId: { type: String, required: true, unique: true },
   lastVisited: { type: Date, default: null },
+  lastDayId: { type: String, default: null },
   streakCount: { type: Number, default: 0 },
   easySolved: { type: Number, default: 0 },
   mediumSolved: { type: Number, default: 0 },
@@ -37,7 +39,7 @@ const ProgressSchema = new Schema<ProgressType>({
   totalSolved: { type: Number, default: 0 },
   topicsProgress: { type: [TopicProgressSchema], default: [] },
   topicsCompleted: { type: [String], default: [] },
-  markedForRevision: { type: Number, default: 0 }, 
+  markedForRevision: { type: Number, default: 0 },
 });
 
 export const Progress: Model<ProgressType> =

@@ -9,6 +9,7 @@ import 'react-toastify/dist/ReactToastify.css';
 // Import both utility functions
 import { fetchCodeforcesStats } from '../../utils/codeforces';
 import { fetchLeetCodeStats } from '../../utils/leetcode';
+import { fetchHackerEarthStats } from '../../utils/hackerearth';
 
 // Import all chart and dashboard components
 import LeetCodeDashboard from '../../components/LeetCodeDashboard';
@@ -16,6 +17,7 @@ import RatingChart from '../../components/charts/RatingChart';
 import DifficultyBarChart from '../../components/charts/DifficultyBarChart';
 import TopicRadarChart from '../../components/charts/TopicRadarChart';
 import RatingProgression from '../../components/charts/RatingProgression';
+import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 30 },
@@ -92,11 +94,13 @@ export default function CPTrackerPageClient() {
     setStats(newStats);
 
     try {
-        let newData = null;
+        let newData = null as any;
         if (selectedPlatform === 'codeforces') {
             newData = await fetchCodeforcesStats(handle);
         } else if (selectedPlatform === 'leetcode') {
             newData = await fetchLeetCodeStats(handle);
+        } else if (selectedPlatform === 'hackerearth') {
+            newData = await fetchHackerEarthStats(handle);
         } else {
             toast.info(`Fetching for ${selectedPlatform} requires a backend.`);
             setLoading(false);
@@ -105,11 +109,12 @@ export default function CPTrackerPageClient() {
 
         if (newData) {
             // Use a functional update to prevent race conditions with the clear operation
-            setStats(prevStats => ({ ...prevStats, [selectedPlatform]: newData }));
+            const updatedStats = { ...stats, [selectedPlatform]: newData };
+            setStats(updatedStats);
             toast.success(`Successfully fetched stats for ${handle}!`);
             if (userId) {
               localStorage.setItem(`cp-stats-${userId}`, JSON.stringify({
-                stats: { ...stats, [selectedPlatform]: newData },
+                stats: updatedStats,
                 usernames: { ...usernames },
               }));
             }
@@ -253,7 +258,7 @@ export default function CPTrackerPageClient() {
           <div className="flex justify-center mb-16">
             <button onClick={handleSubmit} disabled={loading} className={`max-w-xs px-6 py-3 rounded-full font-semibold flex items-center justify-center gap-2 transition-all duration-300 ${loading ? 'bg-gray-500 cursor-not-allowed' : 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700'} text-white shadow-lg hover:shadow-xl`}>
               {loading && <svg className="animate-spin h-5 w-5 text-white" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" strokeWidth="4" d="M12 2v2m0 16v2m8.4-18.4l-1.4 1.4M5 19l-1.4 1.4m16.8 0l-1.4-1.4M5 5L3.6 3.6 M22 12h-2M4 12H2"/></svg>}
-              {loading ? 'Fetching...' : 'Fetch Stats'}
+              {loading ? 'Fetching... (might take a minute)' : 'Fetch Stats'}
             </button>
           </div>
         </div>
@@ -300,6 +305,163 @@ export default function CPTrackerPageClient() {
                 </motion.div>
             )}
         </AnimatePresence>
+
+        {/* --- EXCLUSIVE HACKEREARTH DASHBOARD --- */}
+        <AnimatePresence>
+          {stats.hackerearth && selectedPlatform === 'hackerearth' && (
+            <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.5 }}>
+              <h2 className="text-2xl text-center font-bold mb-8 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                HackerEarth Stats for {usernames.hackerearth}
+              </h2>
+
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                <StatCard
+                  color="blue"
+                  label="Points"
+                  value={Number(stats.hackerearth?.Points ?? 0)}
+                  icon={
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5">
+                      <path d="M6 3h12l4 6-10 13L2 9Z"></path>
+                      <path d="M11 3 8 9l4 13 4-13-3-6"></path>
+                      <path d="M2 9h20"></path>
+                    </svg>
+                  }
+                />
+                <StatCard
+                  color="purple"
+                  label="Contest Rating"
+                  value={Number(stats.hackerearth?.ContestRating ?? 0)}
+                  icon={
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5">
+                      <path d="M3 3v16a2 2 0 0 0 2 2h16"></path>
+                      <path d="m19 9-5 5-4-4-3 3"></path>
+                    </svg>
+                  }
+                />
+                <StatCard
+                  color="green"
+                  label="Problems Solved"
+                  value={Number(stats.hackerearth?.ProblemsSolved ?? 0)}
+                  icon={
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5">
+                      <path d="M21 10.5V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h12.5"></path>
+                      <path d="m9 11 3 3L22 4"></path>
+                    </svg>
+                  }
+                />
+                <StatCard
+                  color="yellow"
+                  label="Solutions Submitted"
+                  value={Number(stats.hackerearth?.Submissions ?? 0)}
+                  icon={
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5">
+                      <path d="m18 16 4-4-4-4"></path>
+                      <path d="m6 8-4 4 4 4"></path>
+                      <path d="m14.5 4-5 16"></path>
+                    </svg>
+                  }
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                {/* Algorithms Ranking */}
+                <div className="rounded-xl border border-zinc-800 bg-zinc-900/60 p-6 shadow-md">
+                  <h3 className="text-lg font-semibold mb-4 text-gray-200">Algorithms Ranking</h3>
+                  <div className="space-y-2 text-gray-300">
+                    <div className="flex justify-between"><span>Rank</span><span>{stats.hackerearth?.rankings?.algorithms?.rank ?? '—'}</span></div>
+                    <div className="flex justify-between"><span>Points</span><span>{stats.hackerearth?.rankings?.algorithms?.points ?? '—'}</span></div>
+                    <div className="flex justify-between"><span>Performance</span><span>{stats.hackerearth?.rankings?.algorithms?.performance ?? '—'}</span></div>
+                  </div>
+                </div>
+
+                {/* Data Structures Ranking */}
+                <div className="rounded-xl border border-zinc-800 bg-zinc-900/60 p-6 shadow-md">
+                  <h3 className="text-lg font-semibold mb-4 text-gray-200">Data Structures Ranking</h3>
+                  <div className="space-y-2 text-gray-300">
+                    <div className="flex justify-between"><span>Rank</span><span>{stats.hackerearth?.rankings?.dataStructures?.rank ?? '—'}</span></div>
+                    <div className="flex justify-between"><span>Points</span><span>{stats.hackerearth?.rankings?.dataStructures?.points ?? '—'}</span></div>
+                    <div className="flex justify-between"><span>Performance</span><span>{stats.hackerearth?.rankings?.dataStructures?.performance ?? '—'}</span></div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Rewards Section */}
+              {stats.hackerearth?.rewards && stats.hackerearth.rewards.length > 0 && (
+                <div className="rounded-xl border border-zinc-800 bg-zinc-900/60 p-6 shadow-md mb-8">
+                  <h3 className="text-xl font-semibold mb-6 text-gray-200 flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5 text-yellow-400">
+                      <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
+                      <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
+                      <path d="M4 22h16"></path>
+                      <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path>
+                      <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path>
+                      <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path>
+                    </svg>
+                    Rewards Progress
+                  </h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+                    {stats.hackerearth.rewards.map((reward: { category: string; level: string }, index: number) => {
+                      const [completed, total] = reward.level.split('/').map(Number);
+                      const remaining = total - completed;
+                      const percentage = ((completed / total) * 100).toFixed(0);
+
+                      const chartData = [
+                        { name: 'Completed', value: completed },
+                        { name: 'Remaining', value: remaining },
+                      ];
+
+                      // Define colors based on category
+                      const categoryColors: Record<string, [string, string]> = {
+                        'Global': ['#10b981', '#374151'],           // Green for Global
+                        'Algorithms': ['#06b6d4', '#374151'],       // Cyan for Algorithms
+                        'CPP': ['#a855f7', '#374151'],              // Purple for CPP (blend of hot pink and blue)
+                        'Data Structures': ['#ec4899', '#374151'], // Hot pink for Data Structures
+                      };
+
+                      const COLORS = categoryColors[reward.category] || ['#10b981', '#374151']; // Default to green
+                      const completedColor = COLORS[0];
+
+                      return (
+                        <div key={index} className="bg-zinc-800/40 rounded-lg p-4 border border-zinc-700 hover:border-zinc-600 transition-colors">
+                          <div className="text-center mb-2">
+                            <div className="text-sm font-semibold text-gray-300">{reward.category}</div>
+                            <div className="text-xs text-gray-500 mt-1">Level {reward.level}</div>
+                          </div>
+                          <ResponsiveContainer width="100%" height={150}>
+                            <PieChart>
+                              <Pie
+                                data={chartData}
+                                cx="50%"
+                                cy="50%"
+                                innerRadius={35}
+                                outerRadius={55}
+                                paddingAngle={5}
+                                dataKey="value"
+                              >
+                                {chartData.map((entry, i) => (
+                                  <Cell key={`cell-${i}`} fill={COLORS[i]} />
+                                ))}
+                              </Pie>
+                            </PieChart>
+                          </ResponsiveContainer>
+                          <div className="text-center mt-2">
+                            <div className="text-2xl font-bold" style={{ color: completedColor }}>{percentage}%</div>
+                            <div className="text-xs text-gray-500">completed</div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* Challenges Table */}
+              {stats.hackerearth?.challenges && stats.hackerearth.challenges.length > 0 && (
+                <ChallengesTable challenges={stats.hackerearth.challenges} />
+              )}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </>
   );
@@ -307,8 +469,8 @@ export default function CPTrackerPageClient() {
 
 // --- HELPER COMPONENTS ---
 type CardColor = 'green' | 'yellow' | 'red' | 'blue' | 'purple' | 'pink' | 'teal';
-interface StatCardProps { color: CardColor; label: string; value: number; }
-const StatCard = ({ color, label, value }: StatCardProps) => {
+interface StatCardProps { color: CardColor; label: string; value: number; icon?: React.ReactNode; }
+const StatCard = ({ color, label, value, icon }: StatCardProps) => {
     const colorClasses: Record<CardColor, string> = {
       green: 'from-green-500/10 to-green-600/5 border-green-500/20 text-green-400',
       yellow: 'from-yellow-500/10 to-yellow-600/5 border-yellow-500/20 text-yellow-400',
@@ -320,7 +482,10 @@ const StatCard = ({ color, label, value }: StatCardProps) => {
     };
     return (
       <div className={`bg-gradient-to-br ${colorClasses[color]} border rounded-xl p-6 shadow-md hover:shadow-xl hover:scale-[1.02] transition-all duration-300 min-h-[120px]`}>
-        <div className="flex items-center justify-between mb-2"><span className="text-sm text-gray-400 font-medium">{label}</span></div>
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-sm text-gray-400 font-medium">{label}</span>
+          {icon && <div className="opacity-70">{icon}</div>}
+        </div>
         <div className={`text-4xl font-bold`}>{value}</div>
       </div>
     )
@@ -331,3 +496,106 @@ const ChartPlaceholder = ({ message }: { message: string }) => (
     <p className="text-gray-400 text-center">{message}</p>
   </div>
 );
+
+interface ChallengesTableProps {
+  challenges: Array<{
+    name: string;
+    rank: number | null;
+    score: number | null;
+    ratingChange: string | null;
+  }>;
+}
+
+const ChallengesTable = ({ challenges }: ChallengesTableProps) => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+  const totalPages = Math.ceil(challenges.length / itemsPerPage);
+
+  // Reset to page 1 when challenges change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [challenges]);
+
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentChallenges = challenges.slice(startIndex, endIndex);
+
+  return (
+    <div className="rounded-xl border border-zinc-800 bg-zinc-900/60 p-6 shadow-md">
+      <h3 className="text-xl font-semibold mb-4 text-gray-200">Challenges</h3>
+
+      {/* Table */}
+      <div className="overflow-x-auto">
+        <table className="w-full text-left">
+          <thead>
+            <tr className="border-b border-zinc-700">
+              <th className="pb-3 text-gray-400 font-semibold">Contest Name</th>
+              <th className="pb-3 text-gray-400 font-semibold text-center">Rank</th>
+              <th className="pb-3 text-gray-400 font-semibold text-center">Score</th>
+              <th className="pb-3 text-gray-400 font-semibold text-center">Rating Change</th>
+            </tr>
+          </thead>
+          <tbody>
+            {currentChallenges.map((challenge, index) => (
+              <tr key={`${challenge.name}-${startIndex + index}`} className="border-b border-zinc-800 hover:bg-zinc-800/30 transition-colors">
+                <td className="py-3 text-gray-300">{challenge.name}</td>
+                <td className="py-3 text-purple-400 font-semibold text-center">{challenge.rank ?? '—'}</td>
+                <td className="py-3 text-blue-400 font-semibold text-center">{challenge.score ?? '—'}</td>
+                <td className="py-3 text-center">
+                  <span className={`font-medium inline-flex items-center gap-1 ${
+                    challenge.ratingChange && challenge.ratingChange.startsWith('+')
+                      ? 'text-green-400'
+                      : challenge.ratingChange && challenge.ratingChange.startsWith('-')
+                      ? 'text-red-400'
+                      : 'text-gray-300'
+                  }`}>
+                    {challenge.ratingChange && challenge.ratingChange.startsWith('+') && (
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-3 w-3">
+                        <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
+                        <polyline points="16 7 22 7 22 13"></polyline>
+                      </svg>
+                    )}
+                    {challenge.ratingChange ?? '—'}
+                  </span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-between mt-4 pt-4 border-t border-zinc-800">
+          <div className="text-sm text-gray-400">
+            Page {currentPage} of {totalPages} ({challenges.length} challenges)
+          </div>
+          <div className="flex gap-2">
+            <button
+              onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+              disabled={currentPage === 1}
+              className={`px-3 py-1 rounded-lg font-medium transition-all ${
+                currentPage === 1
+                  ? 'bg-zinc-800 text-gray-600 cursor-not-allowed'
+                  : 'bg-zinc-800 text-gray-300 hover:bg-zinc-700'
+              }`}
+            >
+              Previous
+            </button>
+            <button
+              onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+              disabled={currentPage === totalPages}
+              className={`px-3 py-1 rounded-lg font-medium transition-all ${
+                currentPage === totalPages
+                  ? 'bg-zinc-800 text-gray-600 cursor-not-allowed'
+                  : 'bg-zinc-800 text-gray-300 hover:bg-zinc-700'
+              }`}
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};

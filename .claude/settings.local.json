@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run dev)",
+      "WebFetch(domain:www.hackerearth.com)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

@@ -2,11 +2,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "target": "ES2020",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -27,21 +23,11 @@
       }
     ],
     "paths": {
-      "@/*": [
-        "./*"
-      ],
-      "@lib/*": [
-        "lib/*"
-      ],
-      "@components/*": [
-        "components/*"
-      ]
+      "@/*": ["./*"],
+      "@lib/*": ["lib/*"],
+      "@components/*": ["components/*"]
     },
-    "types": [
-      "node",
-      "react",
-      "react-dom"
-    ]
+    "types": ["node", "react", "react-dom"]
   },
   "include": [
     "next-env.d.ts",
@@ -50,7 +36,5 @@
     ".next/types/**/*.ts",
     "scripts/migrateBadges.ts"
   ],
-  "exclude": [
-    "node_modules"
-  ]
+  "exclude": ["node_modules"]
 }
