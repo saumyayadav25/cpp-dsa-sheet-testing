@@ -17,16 +17,23 @@ export default function TestimonialPrompt() {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 40 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4 }}
-      className="fixed bottom-20 right-3 z-50 bg-[#202029] hover:bg-[#19191f] text-white px-3 py-2 rounded-lg shadow-md w-[85vw] max-w-[300px] sm:px-4 sm:py-3"
-    >
+  initial={{ opacity: 0, y: 40 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.4 }}
+  className="fixed bottom-20 right-3 z-50 
+    bg-white text-gray-900 hover:bg-gray-100 
+    dark:bg-[#202029] dark:text-white dark:hover:bg-[#19191f] 
+    px-3 py-2 rounded-lg shadow-md 
+    w-[85vw] max-w-[300px] sm:px-4 sm:py-3"
+>
+
       <div className="relative">
         {/* Close Button */}
         <button
           onClick={() => setShowPrompt(false)}
-          className="absolute top-0 right-0 text-gray-400 hover:text-white transition"
+          className="absolute top-0 right-0 
+            text-gray-500 hover:text-black         // 👈 Visible in light mode
+            dark:text-gray-400 dark:hover:text-white transition"
         >
           <FiX className="sm:text-lg text-md" />
         </button>
