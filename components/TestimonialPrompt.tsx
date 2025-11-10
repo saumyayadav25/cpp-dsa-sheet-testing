@@ -20,8 +20,12 @@ export default function TestimonialPrompt() {
       initial={{ opacity: 0, y: 40 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className="fixed bottom-20 right-3 z-50 bg-[#202029] hover:bg-[#19191f] text-white px-3 py-2 rounded-lg shadow-md w-[85vw] max-w-[300px] sm:px-4 sm:py-3"
-    >
+    className="fixed bottom-20 right-3 z-50 px-3 py-2 rounded-lg shadow-md w-[85vw] max-w-[300px] sm:px-4 sm:py-3"
+style={{
+  backgroundColor: "var(--card)",            // use card bg var
+  color: "var(--card-foreground)",            // use card fg var
+}}
+>
       <div className="relative">
         {/* Close Button */}
         <button
