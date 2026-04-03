@@ -519,7 +519,7 @@ export default function Home() {
             {[
               {
                 title: "Total Users",
-                value: "3100+",
+                value: "6000+",
                 icon: "👥",
                 gradient: "from-blue-500 to-cyan-500",
               },
@@ -574,48 +574,6 @@ export default function Home() {
                 </motion.div>
               );
             })}
-          </motion.div>
-        </div>
-      </motion.section>
-
-      {/* COMPANY-WISE INTEREST SECTION */}
-      <motion.section
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-        viewport={{ once: true }}
-        className="px-6 md:px-20 py-20 relative overflow-hidden"
-      >
-        {/* Background decoration */}
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 via-transparent to-cyan-50/50 dark:from-blue-900/20 dark:via-transparent dark:to-cyan-900/20 pointer-events-none"></div>
-
-        <div className="relative z-10 max-w-4xl mx-auto text-center">
-          <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
-            whileInView={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.6 }}
-            className="bg-white/70 dark:bg-white/5 backdrop-blur-sm border border-gray-200/50 dark:border-white/10 rounded-3xl p-8 md:p-12 shadow-2xl"
-          >
-            <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-3xl shadow-lg">
-              🏢
-            </div>
-            <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-900 dark:text-white">
-              Want <span className="text-blue-500">Company-wise</span> Question Lists?
-            </h2>
-            <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-8 text-lg leading-relaxed">
-              We're planning to launch a company-specific DSA sheet! Fill this quick
-              form to let us know you're interested and stay in the loop.
-            </p>
-            <motion.a
-              href="https://forms.gle/z1sRLUGRvtfKrGcp7"
-              target="_blank"
-              rel="noopener noreferrer"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="inline-flex items-center gap-3 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-semibold px-8 py-4 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl"
-            >
-              📩 I'm Interested
-            </motion.a>
           </motion.div>
         </div>
       </motion.section>
